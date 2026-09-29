@@ -54,7 +54,7 @@ const MOSAIC: string[][] = [
   [
     "/photos/dishes/chicken-65.jpg",
     "/photos/dishes/veg-manchurian-noodles.jpg",
-    "/photos/dishes/gongura-chicken-biryani.jpg",
+    "/photos/dishes/egg-biryani.jpg",
     "/photos/dishes/egg-manchurian.jpg",
   ],
 ];
