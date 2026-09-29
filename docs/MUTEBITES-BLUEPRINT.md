@@ -55,6 +55,16 @@ as it was; this log lists where College Bites deliberately differs.
   collegebitessrm@gmail.com. Device storage keys renamed `mutebites.*` →
   `collegebites.*`; `about-mutebites-dialog.tsx` → `about-dialog.tsx`.
 
+**Menus (`20260929030000_seed_college_bites_menus.sql`)**
+- Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen
+  (Neerukonda, 72), Clg Bites Biryani Nation (24, 60-minute delivery).
+  Single / Full sizes are separate dishes. Agreed clean-ups: Egg
+  Manchurian is non-veg; "Tameto" → Tomato; "Manchuria" → Manchurian.
+- Photos: 38 MuteBites dish photos and 3 covers reused where the dish is
+  the same (plus a few agreed close matches), copied to `public/photos/`
+  under new names; 107 of 137 dishes have one, the rest use the
+  placeholder. Login mosaic and empty-state plates use the same files.
+
 ---
 
 ## Contents

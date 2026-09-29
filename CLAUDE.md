@@ -28,8 +28,9 @@ https://collegebitessrm.vercel.app.
 >   what's in the database, in the order it applies on a fresh project.
 >   `20260915020000_google_oauth_and_ban.sql` was run by hand in the SQL
 >   editor, so it's not in the database's migration history.
-> - MuteBites' menus, menu fixes and photos (`public/MuteBites/`) are not
->   copied; College Bites' own menu migration comes later.
+> - Menus: College Bites' own three restaurants
+>   (`20260929030000_seed_college_bites_menus.sql`); photos reused from
+>   MuteBites where the dish matches, under `public/photos/`.
 
 ## Stack
 
@@ -339,22 +340,22 @@ silently re-enables the button.
   `middleware()` to `proxy.ts`/`proxy()`; same route-matcher config,
   different filename and export name.
 - `supabase/migrations/` — hand-written SQL migrations (see rule below)
-- `public/MuteBites/` — restaurant/dish photos, one subfolder per restaurant
-  (plus `covers/` for the hero banners) — matched to database rows by name
+- `public/photos/dishes/` — dish photos (one file per dish kind, shared by
+  every restaurant and size that serves it) and `public/photos/covers/` —
+  restaurant hero banners, all reused from MuteBites — matched to database rows by name
   in `src/lib/data/dish-photos.ts`, deliberately **not** a database column
   (no schema change needed to add or swap a photo). `getRestaurantCoverPhoto()`
   and `getDishPhoto()` look up by exact restaurant/dish name; anything
   without a confident match — a dish with no distinct photo, a restaurant
   with no cover yet — falls back to the existing flat placeholder
-  (`bg-stripes`) rather than showing a mismatched image. Cover photo
-  filenames carry a `-v2`-style suffix when replaced after the first
-  publish — an intermediate cache (outside this app, never fully
+  (`bg-stripes`) rather than showing a mismatched image. A photo that's
+  replaced after publishing gets a new filename (e.g. a `-v2` suffix) — an intermediate cache (outside this app, never fully
   identified) kept re-serving an old file by its original URL even after
   verified-fresh server responses and full dev-server restarts, so a
-  changed cover photo should get a new filename, not overwrite the old one
+  changed photo should get a new filename, not overwrite the old one
   in place, to guarantee cache-safety.
   The login screen's photo mosaic (`src/app/login/page.tsx`, `MOSAIC`)
-  also references a dozen of these files by path directly — renaming or
+  and `EmptyState`'s plates also reference these files by path directly — renaming or
   removing a photo means updating that list too, or its tile goes blank.
   Home's restaurant cards slide through photos (`RestaurantPhotoSlides`,
   `src/components/home/restaurant-photo-slides.tsx`): the cover first,
@@ -448,25 +449,18 @@ roughly mirroring each page's real layout so nothing visibly jumps.
 
 ## Database schema
 
-Defined in [`supabase/migrations/20260915000000_init_schema.sql`](supabase/migrations/20260915000000_init_schema.sql),
+Defined in these migrations, in the order they apply on a fresh project
+(`supabase/migrations/` holds exactly what the database has):
+[`supabase/migrations/20260915000000_init_schema.sql`](supabase/migrations/20260915000000_init_schema.sql),
 [`supabase/migrations/20260915010000_add_user_role.sql`](supabase/migrations/20260915010000_add_user_role.sql),
-[`supabase/migrations/20260915020000_google_oauth_and_ban.sql`](supabase/migrations/20260915020000_google_oauth_and_ban.sql),
+[`supabase/migrations/20260915020000_google_oauth_and_ban.sql`](supabase/migrations/20260915020000_google_oauth_and_ban.sql) (the one run by hand in the SQL
+editor, so it's missing from the database's migration history),
 [`supabase/migrations/20260915030000_ban_by_phone.sql`](supabase/migrations/20260915030000_ban_by_phone.sql),
 [`supabase/migrations/20260915040000_drop_block_and_room.sql`](supabase/migrations/20260915040000_drop_block_and_room.sql),
 [`supabase/migrations/20260915050000_place_order_function.sql`](supabase/migrations/20260915050000_place_order_function.sql),
-[`supabase/migrations/20260915060000_seed_restaurants.sql`](supabase/migrations/20260915060000_seed_restaurants.sql)
-(data only — the 3 real partner restaurants and their menus),
 [`supabase/migrations/20260915070000_guard_phone_changes.sql`](supabase/migrations/20260915070000_guard_phone_changes.sql),
 [`supabase/migrations/20260915080000_admin_dashboard.sql`](supabase/migrations/20260915080000_admin_dashboard.sql),
-[`supabase/migrations/20260915090000_fix_users_role_column_rename.sql`](supabase/migrations/20260915090000_fix_users_role_column_rename.sql)
-(fixes a live drift — the `role` column got renamed to `student` by
-accident via the Table Editor UI, not through any migration — back to
-match every migration and the app code),
 [`supabase/migrations/20260915100000_admin_users_and_ban.sql`](supabase/migrations/20260915100000_admin_users_and_ban.sql),
-[`supabase/migrations/20260915110000_reapply_place_order_ordering_check.sql`](supabase/migrations/20260915110000_reapply_place_order_ordering_check.sql)
-(re-applies `place_order()` unchanged — the `ordering_enabled` check from
-`080000` likely never actually went live, probably split off into its own
-SQL editor tab and skipped when that migration was applied by hand),
 [`supabase/migrations/20260915120000_banned_at.sql`](supabase/migrations/20260915120000_banned_at.sql),
 [`supabase/migrations/20260915130000_enable_realtime_orders.sql`](supabase/migrations/20260915130000_enable_realtime_orders.sql)
 (adds `orders` to the `supabase_realtime` publication —
@@ -474,10 +468,6 @@ SQL editor tab and skipped when that migration was applied by hand),
 to its own order's row for live status updates on top of the normal
 server-fetched page; existing RLS still governs who can actually receive
 them, and a plain page refresh still shows the true status either way),
-[`supabase/migrations/20260915140000_seed_new_restaurants.sql`](supabase/migrations/20260915140000_seed_new_restaurants.sql)
-(data only — two more partner restaurants, **MuteBites Chinese** (since
-renamed Food Corner; 5 categories, 24 dishes) and **MuteBites Fresh Fruits** (1 category, 13
-dishes, priced per 500 g/1 kg pack), bringing the total to 5 restaurants),
 [`supabase/migrations/20260915150000_daily_order_numbers.sql`](supabase/migrations/20260915150000_daily_order_numbers.sql)
 (adds `orders.daily_number` — see below),
 [`supabase/migrations/20260916000000_trending_leaderboard.sql`](supabase/migrations/20260916000000_trending_leaderboard.sql)
@@ -488,60 +478,48 @@ dishes, priced per 500 g/1 kg pack), bringing the total to 5 restaurants),
 (drops `trending_restaurants()` again — never called by the app),
 [`supabase/migrations/20260917020000_highly_reordered_dishes.sql`](supabase/migrations/20260917020000_highly_reordered_dishes.sql)
 (adds `highly_reordered_dishes()` — see below),
-[`supabase/migrations/20260919000000_ordering_schedule.sql`](supabase/migrations/20260919000000_ordering_schedule.sql)
-(the daily ordering schedule + three-way admin override — see
-`app_settings` below),
-[`supabase/migrations/20260919010000_drop_ordering_enabled.sql`](supabase/migrations/20260919010000_drop_ordering_enabled.sql)
-(drops the old `ordering_enabled` switch it replaced),
 [`supabase/migrations/20260919020000_order_reviews.sql`](supabase/migrations/20260919020000_order_reviews.sql)
 (dish ratings — `orders.delivered_at`, `order_reviews`, `order_item_ratings`,
 `submit_review()`; see below),
-[`supabase/migrations/20260919030000_remove_bismillah_catch_all_juices.sql`](supabase/migrations/20260919030000_remove_bismillah_catch_all_juices.sql)
-(data only — deletes Bismillah's "Any Fruit Juice Bottle" and "Bismillah
-Fruit Juice (Any Flavour)"; its menu is now the 10 named fruit juices plus
-the two Sugarcane items),
-[`supabase/migrations/20260919040000_fix_banana_pack_and_bismillah_tags.sql`](supabase/migrations/20260919040000_fix_banana_pack_and_bismillah_tags.sql)
-(data only — renames "Bananas (30 g)" to "Bananas (500 g)" and drops
-Bismillah's stale "Special" cuisine tag),
-[`supabase/migrations/20260920000000_rename_chinese_to_food_corner.sql`](supabase/migrations/20260920000000_rename_chinese_to_food_corner.sql)
-(data only — "MuteBites Chinese" is now **Food Corner**, with "Chinese"
-added to its cuisine tags so search still finds it; its photo folder
-`public/MuteBites/MuteBites Chinese/` keeps the old name on purpose),
-[`supabase/migrations/20260920010000_bheemasena_single_mushroom_price.sql`](supabase/migrations/20260920010000_bheemasena_single_mushroom_price.sql)
-(data only — Single Mushroom Biryani ₹220 → ₹200),
-[`supabase/migrations/20260920020000_mixed_biryani_note.sql`](supabase/migrations/20260920020000_mixed_biryani_note.sql)
-(data only — every mixed biryani's `note` reads "Comes with both dum & fry
-pieces"; a mixed biryani added later needs it set again),
-[`supabase/migrations/20260920030000_bheemasena_mutton_prawn_biryani.sql`](supabase/migrations/20260920030000_bheemasena_mutton_prawn_biryani.sql)
-(data only — adds Mutton Afghani Biryani and Prawn Biryani, ₹400 each, to
-Bheemasena's Non-Veg Biryani section),
-[`supabase/migrations/20260920040000_bheemasena_new_dishes.sql`](supabase/migrations/20260920040000_bheemasena_new_dishes.sql)
-(data only — 16 more Bheemasena dishes across Non-Veg Biryani, Non-Veg
-Starters, Veg Curries and Non-Veg Curries; the restaurant now has 59
-dishes). Note the shape: the `values` list comes first and the
-restaurant/category are joined onto it — a `cross join` after the join
-can't see `v`.
-And [`supabase/migrations/20260921000000_push_subscriptions.sql`](supabase/migrations/20260921000000_push_subscriptions.sql)
-adds **`push_subscriptions`** — one row per device that turned
+[`supabase/migrations/20260921000000_push_subscriptions.sql`](supabase/migrations/20260921000000_push_subscriptions.sql),
+[`supabase/migrations/20260921010000_milestone_rewards.sql`](supabase/migrations/20260921010000_milestone_rewards.sql),
+[`supabase/migrations/20260921020000_trending_skip_banned.sql`](supabase/migrations/20260921020000_trending_skip_banned.sql)
+(Trending ignores orders before launch, 1 Oct 2026, and from banned phones),
+[`supabase/migrations/20260929000000_harden_functions.sql`](supabase/migrations/20260929000000_harden_functions.sql) and
+[`supabase/migrations/20260929020000_revoke_banned_check_from_public.sql`](supabase/migrations/20260929020000_revoke_banned_check_from_public.sql)
+(Supabase security advisor: fixed `search_path` on trigger functions; no
+signed-out access to `current_user_is_banned()` — a revoke from `anon`
+alone doesn't work, the grant comes through PUBLIC),
+[`supabase/migrations/20260929010000_ordering_switch_and_delivery_minutes.sql`](supabase/migrations/20260929010000_ordering_switch_and_delivery_minutes.sql)
+(Open / Closed ordering switch with no schedule, `restaurants.delivery_minutes`,
+and `place_order()` in its final form with the rate limits — see
+`app_settings` below),
+[`supabase/migrations/20260929030000_seed_college_bites_menus.sql`](supabase/migrations/20260929030000_seed_college_bites_menus.sql)
+(data only — the three partner restaurants, **Triangle Food Court**
+(Kuragallu, 41 dishes), **Local Home Kitchen** (Neerukonda, 72) and **Clg
+Bites Biryani Nation** (24: Single / Full are separate dishes; 60-minute
+delivery), 137 dishes in all). Note the shape: the `values` list comes
+first and the restaurant/section are joined onto it by name. A new
+restaurant or dish follows the same pattern, plus photo entries in
+`src/lib/data/dish-photos.ts`.
+**`push_subscriptions`** — one row per device that turned
 notifications on (`user_id`, unique `endpoint`, `p256dh`, `auth`,
 `user_agent`). RLS: a student reads/writes only their own rows; admins
 `select` every row (that's how a status change reaches the student's
 phone) and `delete` stale ones. The *new order* send can't use any
 student's session, so it goes through the service-role client — see
 **Notifications** above.
-[`supabase/migrations/20260921010000_milestone_rewards.sql`](supabase/migrations/20260921010000_milestone_rewards.sql)
-adds **`milestone_rewards`** — one row per student whose all-milestones
+**`milestone_rewards`** — one row per student whose all-milestones
 free biryani was handed over (`user_id` primary key = once per student,
 `claimed_at`, `marked_by` admin). RLS: a student selects only their own
 row; admins select all, insert (with `marked_by = auth.uid()`) and delete
 (undo). No update policy. Whether a student *qualifies* is checked in the
 app (`getUnlockedMilestones()`), not the database — see **Profile** above.
-[`supabase/migrations/20260922010000_seed_sugarcane_juice.sql`](supabase/migrations/20260922010000_seed_sugarcane_juice.sql)
-(data only — a sixth restaurant, **MuteBites Sugarcane Juice**: one
-section, one dish, "1 Litre Sugarcane Juice Bottle" ₹90, photos in
-`public/MuteBites/MuteBites Sugarcane Juice/` and
-`covers/mutebites-sugarcane-juice.jpg`).
-Migrations are applied by hand in the Supabase SQL editor (no CLI setup).
+MuteBites' own menu migrations and one-off fixes were not carried over
+(see the blueprint's College Bites port log).
+Migrations are applied through the Supabase connector (project
+`cpatbcisnrvyjztyqutq`), only after the SQL has been shown in chat and
+approved.
 
 All orders are handed over at **Gate 3** — there is no room
 delivery, so no hostel block/room is stored anywhere (not on `users`, not

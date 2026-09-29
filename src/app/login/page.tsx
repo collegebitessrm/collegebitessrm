@@ -40,22 +40,22 @@ const STRUCTURED_DATA = JSON.stringify({
  */
 const MOSAIC: string[][] = [
   [
-    "/MuteBites/A1 biryani/A1 Mixed Biryani-v2.jpg",
-    "/MuteBites/Bismillah fruit juice/Pomegranate juice.jpg",
-    "/MuteBites/MuteBites Chinese/Chicken noodles.jpg",
-    "/MuteBites/Mutebites fresh fruits/Grapes 1kg.jpg",
+    "/photos/dishes/mixed-chicken-biryani.jpg",
+    "/photos/dishes/chilli-chicken.jpg",
+    "/photos/dishes/chicken-noodles.jpg",
+    "/photos/dishes/paneer-majestic.jpg",
   ],
   [
-    "/MuteBites/Bheemasena/Paneer 65.jpg",
-    "/MuteBites/Mutebites fresh fruits/Dragon fruit 500g.jpg",
-    "/MuteBites/MuteBites Chinese/Chicken lollipop 4P.jpg",
-    "/MuteBites/MuteBites Chinese/Veg paneer friedrice.jpg",
+    "/photos/dishes/paneer-65.jpg",
+    "/photos/dishes/chicken-dum-biryani.jpg",
+    "/photos/dishes/chicken-lollipop.jpg",
+    "/photos/dishes/paneer-fried-rice.jpg",
   ],
   [
-    "/MuteBites/MuteBites Chinese/Chicken chilli.jpg",
-    "/MuteBites/Bismillah fruit juice/Pineapple juice.jpg",
-    "/MuteBites/Bheemasena/Kunda biryani.jpg",
-    "/MuteBites/Bheemasena/Chicken tandoori.jpeg",
+    "/photos/dishes/chicken-65.jpg",
+    "/photos/dishes/veg-manchurian-noodles.jpg",
+    "/photos/dishes/gongura-chicken-biryani.jpg",
+    "/photos/dishes/egg-manchurian.jpg",
   ],
 ];
 

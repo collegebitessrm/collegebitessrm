@@ -1,173 +1,142 @@
 // Static photo lookup for restaurant covers and dish thumbnails. Deliberately
-// NOT a database column — these are just files under public/MuteBites/, and
+// NOT a database column — these are just files under public/photos/, and
 // matching them by (restaurant name, dish name) needs no schema change. Only
-// dishes with an unambiguous, correctly-matched photo are listed here — a
-// dish missing from a restaurant's map falls back to the plain placeholder
-// rather than showing a mismatched photo. A few "Single X Biryani" /
-// glass-vs-bottle entries intentionally reuse the same file as their
-// full-size counterpart: same dish, different serving size.
+// dishes with a photo of the same (or, where the client agreed, a very
+// close) dish are listed here — a dish missing from a restaurant's map
+// falls back to the plain placeholder rather than showing a wrong photo.
+// Several dishes share one file on purpose: the same dish at another
+// restaurant, a "(White)" version, a Single / Full size.
+//
+// The photos come from MuteBites (the app this one was built from). A
+// changed photo gets a NEW filename rather than overwriting the old one —
+// an outside cache kept serving MuteBites' old files by URL.
 
-const BASE = "/MuteBites";
+const COVERS = "/photos/covers";
+const D = "/photos/dishes";
+const photo = (file: string) => `${D}/${file}.jpg`;
 
-/**
- * Restaurant name -> cover photo shown on the hero banner. The "-v2"
- * filenames (vs. their original bare names still sitting in
- * public/MuteBites/covers/) are deliberate: an intermediate cache
- * somewhere between this server and at least one browser kept re-serving
- * the original files by URL even after direct, verified-fresh server
- * responses and full dev-server restarts — renaming forces a URL neither
- * that cache nor any other has ever seen.
- */
+/** Restaurant name -> cover photo shown on the hero banner. */
 export const RESTAURANT_COVER_PHOTOS: Record<string, string> = {
-  "Bheemasena Restaurant": `${BASE}/covers/bheemasena-v2.jpg`,
-  "A1 Biryani Point": `${BASE}/covers/a1-biryani-v2.jpg`,
-  "Bismillah Fruit Juice": `${BASE}/covers/bismillah-juice.jpg`,
-  "Food Corner": `${BASE}/covers/mutebites-chinese-v2.jpg`,
-  "MuteBites Fresh Fruits": `${BASE}/covers/mutebites-fresh-fruits.jpg`,
-  "MuteBites Sugarcane Juice": `${BASE}/covers/mutebites-sugarcane-juice.jpg`,
+  "Triangle Food Court": `${COVERS}/triangle-food-court.jpg`,
+  "Local Home Kitchen": `${COVERS}/local-home-kitchen.jpg`,
+  "Clg Bites Biryani Nation": `${COVERS}/biryani-nation.jpg`,
 };
 
-const BHEEMASENA = `${BASE}/Bheemasena`;
-const A1 = `${BASE}/A1 biryani`;
-const BISMILLAH = `${BASE}/Bismillah fruit juice`;
-// Folder keeps the restaurant's old name (now "Food Corner") — paths are cached URLs.
-const CHINESE = `${BASE}/MuteBites Chinese`;
-const FRUITS = `${BASE}/Mutebites fresh fruits`;
-const SUGARCANE = `${BASE}/MuteBites Sugarcane Juice`;
+/** Both sizes of a Biryani Nation dish share one photo. */
+function sizes(name: string, file: string): Record<string, string> {
+  return { [`${name} (Single)`]: photo(file), [`${name} (Full)`]: photo(file) };
+}
 
 /** Restaurant name -> { dish name -> thumbnail photo }. */
 export const DISH_PHOTOS: Record<string, Record<string, string>> = {
-  "Bheemasena Restaurant": {
-    "Veg Manchuria": `${BHEEMASENA}/Veg manchurian.jpg`,
-    "Chilli Mushroom": `${BHEEMASENA}/Chilli mushroom.jpg`,
-    "Crispy Baby Corn": `${BHEEMASENA}/Crispy babycorn.jpg`,
-    "Paneer 65": `${BHEEMASENA}/Paneer 65.jpg`,
-    "Paneer Majestic": `${BHEEMASENA}/Paneer majestic.jpg`,
-    "Chilli Chicken": `${BHEEMASENA}/Chilli chicken.jpg`,
-    "Chicken Manchuria": `${BHEEMASENA}/Chicken manchurian.jpg`,
-    "Chicken 65": `${BHEEMASENA}/Chicken 65.jpg`,
-    "Chicken Majestic": `${BHEEMASENA}/Chicken majestic.jpg`,
-    "Special Paneer Biryani": `${BHEEMASENA}/Special paneer biryani.jpg`,
-    "Special Mushroom Biryani": `${BHEEMASENA}/Special mushroom biryani.jpg`,
-    "Special Veg Biryani": `${BHEEMASENA}/Special veg biryani.jpg`,
-    "Ulavacharu Biryani": `${BHEEMASENA}/UlavaCharu Veg Biryani.jpg`,
-    "Kaju Biryani": `${BHEEMASENA}/Kaju biryani.jpg`,
-    "Special Kaju Biryani": `${BHEEMASENA}/Special kaju biryani.jpg`,
-    "Special Egg Biryani": `${BHEEMASENA}/Special egg biryani.jpg`,
-    "Chicken Dum Biryani": `${BHEEMASENA}/Chicken dum biryani.jpg`,
-    "Kundan Biryani": `${BHEEMASENA}/Kunda biryani.jpg`,
-    "Chicken Fry Biryani": `${BHEEMASENA}/Chicken fry biryani.jpg`,
-    "Special Chicken Biryani": `${BHEEMASENA}/Special chicken biryani .jpg`,
-    "Joint Biryani": `${BHEEMASENA}/Joint biryani.jpg`,
-    "Chicken Mughlai Biryani": `${BHEEMASENA}/Mughlai biryani.jpg`,
-    "Chicken Lollipop Biryani": `${BHEEMASENA}/Chicken lollipop biryani.jpg`,
-    "Gongura Chicken Fry Biryani": `${BHEEMASENA}/Gongura chicken fry biryani.jpg`,
-    // Single Biryani — same dish as its full-size counterpart above, smaller portion.
-    "Single Dum Biryani": `${BHEEMASENA}/Chicken dum biryani.jpg`,
-    "Single Fry Biryani": `${BHEEMASENA}/Chicken fry biryani.jpg`,
-    "Single Special Chicken Biryani": `${BHEEMASENA}/Special chicken biryani .jpg`,
-    "Single Paneer Biryani": `${BHEEMASENA}/Special paneer biryani.jpg`,
-    "Single Mushroom Biryani": `${BHEEMASENA}/Special mushroom biryani.jpg`,
-    "Single Mughlai Biryani": `${BHEEMASENA}/Mughlai biryani.jpg`,
-    "Single Gongura Biryani": `${BHEEMASENA}/Gongura chicken fry biryani.jpg`,
-    "Mixed Biryani": `${BHEEMASENA}/Mixed Biryani-v2.jpg`, // new photo, new name — see CLAUDE.md on caches
-    "Butter Naan": `${BHEEMASENA}/Butter naan.jpg`,
-    Roti: `${BHEEMASENA}/Roti.jpg`,
-    "Paneer Butter Masala": `${BHEEMASENA}/Paneer butter masala .jpg`,
-    "Egg Burji": `${BHEEMASENA}/Egg bhurji.jpg`,
-    "Butter Chicken": `${BHEEMASENA}/Butter chicken.jpg`,
-    "Chicken Curry": `${BHEEMASENA}/Chicken Curry.jpg`,
-    "Mutton Afghani Biryani": `${BHEEMASENA}/Mutton Afghani biryani.jpg`,
-    "Mutton Keema Biryani": `${BHEEMASENA}/Mutton keema biryani.jpg`,
-    // -v2: the first upload had a watermark, replaced after it was already published.
-    "Mutton Mughlai Biryani": `${BHEEMASENA}/Mutton Mughlai biryani-v2.jpg`,
-    "Mutton Fry Biryani": `${BHEEMASENA}/Mutton fry biryani.jpg`,
-    "Chicken Wings Biryani": `${BHEEMASENA}/Chicken Wings biryani.jpg`,
-    "Chicken Tandoori Biryani": `${BHEEMASENA}/Chicken tandoori biryani.jpg`,
-    "Nawab Biryani": `${BHEEMASENA}/Nawab biryani.jpg`,
-    "Bheemasena Special Biryani": `${BHEEMASENA}/Bheemasena special biryani.jpg`,
-    "Loose Prawns": `${BHEEMASENA}/Loose prawns.jpg`,
-    "Chilli Prawns": `${BHEEMASENA}/Chilli prawns.jpg`,
-    "Methi Chaman": `${BHEEMASENA}/Methi chaman.jpg`,
-    // Filename keeps the supplied spelling ("panner"); the dish is Kaju Paneer Curry.
-    "Kaju Paneer Curry": `${BHEEMASENA}/Kaju panner curry.jpg`,
-    "Punjabi Chicken": `${BHEEMASENA}/Punjabi chicken.jpg`,
-    "Hyderabadi Chicken": `${BHEEMASENA}/Hyderabadi chicken.jpg`,
-    "Kadai Chicken": `${BHEEMASENA}/Kadai chicken.jpg`,
-    "Chicken Tikka Masala": `${BHEEMASENA}/Chicken tikka masala.jpg`,
-    "Mughlai Chicken Curry": `${BHEEMASENA}/Mughlai Chicken curry.jpg`,
-    "Prawn Biryani": `${BHEEMASENA}/Prawn biryani.jpg`,
-    "Chicken Tandoori Half": `${BHEEMASENA}/Chicken tandoori.jpeg`,
-    "Chicken Tandoori Full": `${BHEEMASENA}/Chicken tandoori.jpeg`,
-    "Kaju Paneer Butter Masala": `${BHEEMASENA}/Kaju Paneer Butter Masala.jpg`,
+  "Triangle Food Court": {
+    "Veg Manchurian": photo("veg-manchurian"),
+    "Paneer Manchurian": photo("paneer-65"),
+    "Mushroom Manchurian": photo("chilli-mushroom"),
+    "Baby Corn Manchurian": photo("crispy-baby-corn"),
+    "Vegetable Fried Rice": photo("veg-fried-rice"),
+    "Paneer Fried Rice": photo("paneer-fried-rice"),
+    "Veg Manchurian Fried Rice": photo("veg-manchurian-fried-rice"),
+    "Vegetable Noodles": photo("veg-noodles"),
+    "Veg Manchurian Noodles": photo("veg-manchurian-noodles"),
+    "Paneer Noodles": photo("paneer-noodles"),
+    "Cashew Biryani": photo("kaju-biryani"),
+    "Paneer Biryani": photo("paneer-biryani"),
+    "Mushroom Biryani": photo("mushroom-biryani"),
+    "Chicken Manchurian": photo("chicken-manchurian"),
+    "Chilli Chicken": photo("chilli-chicken"),
+    "Chicken 65": photo("chicken-65"),
+    "Majestic Chicken": photo("chicken-majestic"),
+    "Chicken Fried Rice": photo("chicken-fried-rice"),
+    "Chicken Manchurian Fried Rice": photo("chicken-manchurian"),
+    "Egg Fried Rice (Double Egg)": photo("double-egg-fried-rice"),
+    "Egg Manchurian Fried Rice": photo("egg-manchurian-fried-rice"),
+    "Chicken Noodles": photo("chicken-noodles"),
+    "Chicken Manchurian Noodles": photo("chicken-manchurian"),
+    "Egg Noodles": photo("egg-noodles"),
+    "Egg Manchurian Noodles": photo("egg-manchurian-noodles"),
+    "Chicken Dum Biryani": photo("chicken-dum-biryani"),
+    "Chicken Fry Biryani": photo("chicken-fry-biryani"),
+    "Chicken Curry Biryani": photo("chicken-biryani"),
+    "Egg Biryani": photo("egg-biryani"),
+    "Gongura Chicken Biryani": photo("gongura-chicken-biryani"),
+    "Boneless Biryani": photo("chicken-biryani"),
   },
 
-  "A1 Biryani Point": {
-    "A1 Biryani Dum Biryani": `${A1}/A1 Dum Biryani.jpg`,
-    "A1 Biryani Fry Pieces Biryani": `${A1}/A1 Fry Piece Biryani.jpg`,
-    "A1 Biryani Mixed Biryani": `${A1}/A1 Mixed Biryani-v2.jpg`,
+  "Local Home Kitchen": {
+    "Chicken Dum Biryani": photo("chicken-dum-biryani"),
+    "Chicken Fry Biryani": photo("chicken-fry-biryani"),
+    "Chicken Boneless Biryani": photo("chicken-biryani"),
+    "Chicken 65 Biryani": photo("chicken-biryani"),
+    "Chicken Lollipop Biryani": photo("chicken-lollipop-biryani"),
+    "Mughlai Biryani": photo("mughlai-biryani"),
+    "Mushroom Biryani": photo("mushroom-biryani"),
+    "Kaju Mushroom Biryani": photo("kaju-biryani"),
+    "Paneer Biryani": photo("paneer-biryani"),
+    "Kaju Paneer Biryani": photo("kaju-biryani"),
+
+    "Veg Fried Rice": photo("veg-fried-rice"),
+    "Veg Fried Rice (White)": photo("veg-fried-rice"),
+    "Veg Manchurian Rice": photo("veg-manchurian-fried-rice"),
+    "Egg Fried Rice": photo("egg-fried-rice"),
+    "Egg Fried Rice (White)": photo("egg-fried-rice"),
+    "Egg Manchurian Rice": photo("egg-manchurian-fried-rice"),
+    "Chicken Fried Rice": photo("chicken-fried-rice"),
+    "Chicken Fried Rice (White)": photo("chicken-fried-rice"),
+    "Chicken Manchurian Rice": photo("chicken-manchurian"),
+    "Double Egg Chicken Fried Rice": photo("double-egg-chicken-fried-rice"),
+    "Double Egg Chicken Fried Rice (White)": photo("double-egg-chicken-fried-rice"),
+
+    "Veg Noodles": photo("veg-noodles"),
+    "Veg Noodles (White)": photo("veg-noodles"),
+    "Veg Manchurian Noodles": photo("veg-manchurian-noodles"),
+    "Egg Noodles": photo("egg-noodles"),
+    "Egg Noodles (White)": photo("egg-noodles"),
+    "Egg Manchurian Noodles": photo("egg-manchurian-noodles"),
+    "Chicken Noodles": photo("chicken-noodles"),
+    "Chicken Noodles (White)": photo("chicken-noodles"),
+    "Chicken Manchurian Noodles": photo("chicken-manchurian"),
+    "Double Egg Chicken Noodles": photo("double-egg-chicken-noodles"),
+    "Double Egg Chicken Noodles (White)": photo("double-egg-chicken-noodles"),
+
+    "Veg Manchurian": photo("veg-manchurian"),
+    "Egg Manchurian": photo("egg-manchurian"),
+    "Paneer Manchurian": photo("paneer-65"),
+    "Paneer Majestic": photo("paneer-majestic"),
+    "Kaju Paneer Manchurian": photo("paneer-65"),
+    "Mushroom Manchurian": photo("chilli-mushroom"),
+    "Kaju Mushroom Manchurian": photo("chilli-mushroom"),
+
+    "Chicken Manchurian": photo("chicken-manchurian"),
+    "Chicken 65": photo("chicken-65"),
+    "Chilli Chicken": photo("chilli-chicken"),
+    "Chicken Majestic": photo("chicken-majestic"),
+    "Kaju Chilli Chicken": photo("chilli-chicken"),
+    "Chicken Lollipop": photo("chicken-lollipop"),
+    "KFC Chicken Lollipop": photo("chicken-lollipop"),
+
+    "Paneer Fried Rice": photo("paneer-fried-rice"),
+    "Paneer Noodles": photo("paneer-noodles"),
+
+    "SP Chicken Fried Rice": photo("chicken-fried-rice"),
+    "SP Chicken Noodles": photo("chicken-noodles"),
+    "SP Paneer Fried Rice": photo("paneer-fried-rice"),
+    "SP Paneer Noodles": photo("paneer-noodles"),
   },
 
-  "Bismillah Fruit Juice": {
-    "Carrot Juice": `${BISMILLAH}/Carrot juice.jpg`,
-    "Beetroot Juice": `${BISMILLAH}/Beetroot juice.jpg`,
-    "Pineapple Juice": `${BISMILLAH}/Pineapple juice.jpg`,
-    "Grape Juice": `${BISMILLAH}/Grape juice.jpg`,
-    "Pomegranate Juice": `${BISMILLAH}/Pomegranate juice.jpg`,
-    "Apple Juice": `${BISMILLAH}/Apple juice.jpg`,
-    "Muskmelon Juice": `${BISMILLAH}/Muskmelon-Juice.jpg`,
-    "Watermelon Juice": `${BISMILLAH}/Watermelon juice.jpg`,
-    "Banana Juice": `${BISMILLAH}/Banana juice.jpg`,
-    "Sweet Lemon Juice (Mosambi)": `${BISMILLAH}/Sweet lemon mosambi juice.jpg`,
-    "Sugarcane Juice (Glass)": `${BISMILLAH}/Sugarcane juice.jpg`,
-    "Sugarcane Juice (1 Bottle)": `${BISMILLAH}/Sugarcane juice.jpg`,
-  },
-
-  "Food Corner": {
-    "Veg Noodles": `${CHINESE}/Veg noodles.jpg`,
-    "Veg Manchurian Noodles": `${CHINESE}/Veg Manchurian Noodles.jpg`,
-    "Veg Paneer Noodles": `${CHINESE}/Veg paneer noodles.jpg`,
-    "Egg Noodles": `${CHINESE}/Egg Noodles.jpg`,
-    "Double Egg Noodles": `${CHINESE}/Double egg noodles.jpg`,
-    "Egg Manchurian Noodles": `${CHINESE}/Egg manchurian noodles.jpg`,
-    "Egg Paneer Noodles": `${CHINESE}/Egg paneer noodles.jpg`,
-    "Chicken Noodles": `${CHINESE}/Chicken noodles.jpg`,
-    "Veg Fried Rice": `${CHINESE}/Veg friedrice.jpg`,
-    "Veg Manchurian Fried Rice": `${CHINESE}/Veg manchurian friedrice.jpg`,
-    "Veg Paneer Fried Rice": `${CHINESE}/Veg paneer friedrice.jpg`,
-    "Egg Fried Rice": `${CHINESE}/Egg friedrice.jpg`,
-    "Double Egg Fried Rice": `${CHINESE}/Double egg friedrice.jpg`,
-    "Egg Manchurian Fried Rice": `${CHINESE}/Egg manchurian friedrice.jpg`,
-    "Egg Paneer Fried Rice": `${CHINESE}/Egg paneer friedrice.jpg`,
-    "Chicken Fried Rice": `${CHINESE}/Chicken friedrice.jpg`,
-    "Double Egg Chicken Fried Rice": `${CHINESE}/Double egg chicken friedrice.jpg`,
-    "Veg Manchurian": `${CHINESE}/Veg manchurian.jpg`,
-    "Egg Manchurian": `${CHINESE}/Egg manchurian.jpg`,
-    "Double Egg Manchurian": `${CHINESE}/Double egg manchurian.jpg`,
-    "Chicken Manchurian": `${CHINESE}/Chicken manchurian.jpg`,
-    "Chicken Chilli": `${CHINESE}/Chicken chilli.jpg`,
-    "4P Chicken Lollipop": `${CHINESE}/Chicken lollipop 4P.jpg`,
-    "Double Egg Chicken Noodles": `${CHINESE}/Double egg chicken noodles.jpg`,
-  },
-
-  "MuteBites Fresh Fruits": {
-    "Pomegranate (500 g)": `${FRUITS}/Pomegranate 500g.jpg`,
-    "Pomegranate (1 kg)": `${FRUITS}/Pomegranate 1kg.jpg`,
-    "Apples (500 g)": `${FRUITS}/Apple 500g.jpg`,
-    "Apples (1 kg)": `${FRUITS}/Apple 1kg.jpg`,
-    "Bananas (500 g)": `${FRUITS}/Banana 30g.jpg`, // filename typo upstream (30g), same photo
-    "Bananas (1 kg)": `${FRUITS}/Banana 1kg.jpg`,
-    "Guava (500 g)": `${FRUITS}/Guava 30g.jpg`, // filename typo upstream (30g), same photo
-    "Guava (1 kg)": `${FRUITS}/Guava 1kg.jpg`,
-    "Black Grapes (500 g)": `${FRUITS}/Grapes 500g.jpg`,
-    "Black Grapes (1 kg)": `${FRUITS}/Grapes 1kg.jpg`,
-    "Dragon Fruit (500 g)": `${FRUITS}/Dragon fruit 500g.jpg`,
-    "Dragon Fruit (1 kg)": `${FRUITS}/Dragon fruit 1kg.jpg`,
-    "Papaya (1 kg)": `${FRUITS}/Papaya 1kg.jpg`,
-  },
-
-  "MuteBites Sugarcane Juice": {
-    "1 Litre Sugarcane Juice Bottle": `${SUGARCANE}/1 Litre Sugarcane Juice Bottle.jpg`,
+  "Clg Bites Biryani Nation": {
+    ...sizes("Chicken Dum Biryani", "chicken-dum-biryani"),
+    ...sizes("Chicken Fry Biryani", "chicken-fry-biryani"),
+    ...sizes("Chicken Boneless Biryani", "chicken-biryani"),
+    ...sizes("Chicken Lollipop Biryani", "chicken-lollipop-biryani"),
+    ...sizes("Chicken Moghalai Biryani", "mughlai-biryani"),
+    ...sizes("Chicken 65 Biryani", "chicken-biryani"),
+    ...sizes("All Mix Chicken Biryani", "mixed-chicken-biryani"),
+    ...sizes("Egg Biryani", "egg-biryani"),
+    ...sizes("Veg Dum Biryani", "veg-biryani"),
+    ...sizes("Paneer Biryani", "paneer-biryani"),
+    ...sizes("Cashew Biryani", "kaju-biryani"),
+    ...sizes("Cashew Paneer Mixed Biryani", "kaju-biryani"),
   },
 };
 
@@ -184,17 +153,13 @@ export function getDishPhoto(restaurantName: string, dishName: string): string |
 /**
  * Tie-breakers for each restaurant's photo slideshow on Home's cards:
  * after order counts, these come first (e.g. before anyone has ordered
- * much). Hand-picked for photo quality (no watermarks, reads well small)
- * and to say what the kitchen is about; every name must exist in
- * DISH_PHOTOS above.
+ * much). Hand-picked to say what the kitchen is about; every name must
+ * exist in DISH_PHOTOS above.
  */
 const SIGNATURE_DISHES: Record<string, string[]> = {
-  "Bheemasena Restaurant": ["Paneer 65", "Chilli Chicken"],
-  "A1 Biryani Point": ["A1 Biryani Dum Biryani", "A1 Biryani Fry Pieces Biryani"],
-  "Bismillah Fruit Juice": ["Pomegranate Juice", "Pineapple Juice"],
-  "Food Corner": ["Chicken Noodles", "4P Chicken Lollipop"],
-  "MuteBites Fresh Fruits": ["Dragon Fruit (500 g)", "Black Grapes (1 kg)"],
-  "MuteBites Sugarcane Juice": ["1 Litre Sugarcane Juice Bottle"],
+  "Triangle Food Court": ["Chicken Noodles", "Chilli Chicken", "Gongura Chicken Biryani"],
+  "Local Home Kitchen": ["Chicken Lollipop", "Chicken Dum Biryani", "Paneer Majestic"],
+  "Clg Bites Biryani Nation": ["Chicken Dum Biryani (Single)", "All Mix Chicken Biryani (Single)"],
 };
 
 /** Most dish slides per card — each is another photo download on Home. */

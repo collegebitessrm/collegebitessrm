@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 
 // Three real menu photos fanned out like plates on a table — the "nothing
 // here yet, but this is what's waiting" art for the empty cart and the
-// empty orders list. Fixed picks (one biryani, one Chinese, one juice) so
-// it reads as the whole campus menu rather than one restaurant.
+// empty orders list. Fixed picks (noodles, biryani, a starter) so it
+// reads as the whole campus menu rather than one dish.
 const PLATES = [
-  "/MuteBites/MuteBites Chinese/Chicken noodles.jpg",
-  "/MuteBites/A1 biryani/A1 Mixed Biryani-v2.jpg",
-  "/MuteBites/Bismillah fruit juice/Pomegranate juice.jpg",
+  "/photos/dishes/chicken-noodles.jpg",
+  "/photos/dishes/mixed-chicken-biryani.jpg",
+  "/photos/dishes/chilli-chicken.jpg",
 ];
 
 /**
