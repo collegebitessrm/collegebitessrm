@@ -22,7 +22,7 @@ import { EditablePhone } from "./editable-phone";
 import { ACTIVE_ORDER_PHONE_LOCK_MESSAGE, BANNED_PHONE_LOCK_MESSAGE } from "./phone-lock";
 import { SignOutButton } from "./sign-out-button";
 
-export const metadata: Metadata = { title: "Profile · MuteBites", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Profile · College Bites", robots: { index: false, follow: false } };
 
 function initials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -103,7 +103,7 @@ export default async function ProfilePage() {
               <MapPin className="size-5 shrink-0 text-rose" aria-hidden="true" />
               <div>
                 <p className="text-label text-muted-foreground">Handover point</p>
-                <p className="font-semibold">VIT-AP Main Gate</p>
+                <p className="font-semibold">Gate 3</p>
               </div>
             </div>
           </div>

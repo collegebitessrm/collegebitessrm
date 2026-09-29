@@ -15,7 +15,7 @@ const MARK_ASPECT = 854 / 683;
 const IVORY = "#f5eae1";
 
 /**
- * Shared MuteBites app-icon: the mascot mark centred on ivory — used by
+ * Shared College Bites app-icon: the mascot mark centred on ivory — used by
  * every generated icon route (app/icons/*, app/apple-icon.tsx) so the
  * source image only ever needs updating in one place.
  */

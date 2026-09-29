@@ -8,7 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * Who gets the "new order" alert. Everyone else with the admin role keeps
  * full dashboard access — this is only about which phone buzzes.
  */
-export const ADMIN_ALERT_EMAILS = ["mutebites5@gmail.com"];
+export const ADMIN_ALERT_EMAILS = ["collegebitessrm@gmail.com"];
 
 /** Contact address push services use to reach us about a misbehaving sender. */
 const CONTACT = `mailto:${ADMIN_ALERT_EMAILS[0]}`;

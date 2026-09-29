@@ -5,13 +5,12 @@ import { SITE_URL } from "@/lib/site";
 
 /*
  * The link-preview card for every page (WhatsApp, Instagram, Google):
- * the mascot, the name and what MuteBites is on ivory, with real dishes
- * on the right. Built once at build time — nothing here depends on the
+ * the mascot, the name and what College Bites is on ivory. Built once at build time — nothing here depends on the
  * request. Served at /opengraph-image, which src/proxy.ts lets through
  * signed out (link-preview bots never sign in).
  */
 
-export const alt = "MuteBites — food delivery for VIT-AP students, pickup at Main Gate";
+export const alt = "College Bites — food delivery for SRM University AP students, pickup at Gate 3";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -34,10 +33,10 @@ export default async function OpengraphImage() {
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 56px", width: 580 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={mark} alt="" width={150} height={120} />
-          <div style={{ marginTop: 28, fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>MuteBites</div>
-          <div style={{ marginTop: 8, fontSize: 36 }}>Good food. Campus mood.</div>
+          <div style={{ marginTop: 28, fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>College Bites</div>
+          <div style={{ marginTop: 8, fontSize: 36 }}>Crave. Click. Campus.</div>
           <div style={{ marginTop: 24, fontSize: 28, lineHeight: 1.35, maxWidth: 560 }}>
-            Food delivery for VIT-AP students. Pickup at Main Gate, cash on delivery.
+            Your campus food delivery partner at SRM University AP. Pickup at Gate 3, cash on delivery.
           </div>
           <div
             style={{

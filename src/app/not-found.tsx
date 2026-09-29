@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LostTicket } from "@/components/lost-ticket";
 
-export const metadata: Metadata = { title: "Not found · MuteBites" };
+export const metadata: Metadata = { title: "Not found · College Bites" };
 
 // Root 404 — covers unmatched URLs for signed-in visitors (signed-out ones
 // are sent to /login by src/proxy.ts before they get here) and any

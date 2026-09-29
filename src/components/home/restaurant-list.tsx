@@ -98,7 +98,7 @@ export function RestaurantList({
       <p className="mt-4 flex items-center gap-2 rounded-xl border border-brand-soft-foreground/15 bg-brand-soft px-4 py-2 text-sm text-brand-soft-foreground">
         <MapPin className="size-4 shrink-0" aria-hidden="true" />
         <span>
-          Free delivery to <strong className="font-semibold text-foreground">VIT-AP Main Gate</strong>
+          Free delivery to <strong className="font-semibold text-foreground">Gate 3</strong>
         </span>
       </p>
 

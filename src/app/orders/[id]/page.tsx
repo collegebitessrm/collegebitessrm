@@ -4,7 +4,7 @@ import { OrderTracking } from "@/components/orders/order-tracking";
 import { getOrder } from "@/lib/data/orders";
 import { requireProfile } from "@/lib/profile";
 
-export const metadata: Metadata = { title: "Order details · MuteBites", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "Order details · College Bites", robots: { index: false, follow: false } };
 
 export default async function OrderDetailPage({ params, searchParams }: PageProps<"/orders/[id]">) {
   const profile = await requireProfile();

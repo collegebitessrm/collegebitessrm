@@ -43,7 +43,7 @@ export function ExportOrdersButton({ orders }: { orders: AdminOrder[] }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `mutebites-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `collegebites-orders-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }

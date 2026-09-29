@@ -6,7 +6,7 @@ import { useSyncExternalStore } from "react";
 // setting, not account data, so it isn't stored in `public.users`.
 export type ThemePreference = "light" | "dark" | "system";
 
-const STORAGE_KEY = "mutebites.theme";
+const STORAGE_KEY = "collegebites.theme";
 // First-time visitors follow their OS's light/dark setting. Only an
 // explicit choice (the Appearance toggle) moves them off "system".
 const DEFAULT: ThemePreference = "system";

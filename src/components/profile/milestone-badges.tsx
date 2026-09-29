@@ -167,7 +167,7 @@ export function MilestoneBadges({
  * after which this card says so instead of offering the claim link.
  */
 function MilestoneReward({ done, left, claimedAt }: { done: boolean; left: number; claimedAt: string | null }) {
-  const claimText = encodeURIComponent("Hi MuteBites! I've unlocked all the milestones — I'd like to claim my free biryani.");
+  const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones — I'd like to claim my free biryani.");
   return (
     <div className="mt-3 flex items-start gap-3 rounded-2xl bg-brand-soft px-4 py-3.5 text-brand-soft-foreground">
       <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-card">

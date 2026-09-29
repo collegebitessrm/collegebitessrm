@@ -2,7 +2,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * The MuteBites mascot mark on its own warm-ivory tile. The tile colour is
+ * The College Bites mark on its own warm-ivory tile. The tile colour is
  * fixed (not a theme token) on purpose: the plum mascot disappears on a
  * dark card or the plum ink surface, so it always brings its own ground,
  * the same ivory as the startup splash and the app icons. Callers size
@@ -35,7 +35,7 @@ export function BrandLogo({
     >
       <Image
         src="/brand/mark.webp"
-        alt="MuteBites — Good food. Campus mood."
+        alt="College Bites — Crave. Click. Campus."
         width={512}
         height={409}
         sizes="144px"

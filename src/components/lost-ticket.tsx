@@ -12,7 +12,7 @@ export function LostTicket({ label, token, note }: { label: string; token: strin
       aria-hidden="true"
     >
       <div className="px-6 pt-5 pb-4">
-        <p className="text-sm text-ink-foreground/75">MuteBites · VIT-AP Main Gate</p>
+        <p className="text-sm text-ink-foreground/75">College Bites · Gate 3</p>
       </div>
       <div className="relative h-0 border-t-2 border-dashed border-ink-foreground/20">
         <span className="absolute top-1/2 -left-3 size-6 -translate-y-1/2 rounded-full bg-background" />

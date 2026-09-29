@@ -18,7 +18,7 @@ function itemLinesWithPrices(order: AdminOrder): string[] {
 /** The confirmation the admin sends from an order card's WhatsApp button. */
 export function whatsAppConfirmation(order: AdminOrder): string {
   return [
-    `Hi ${order.studentName}, this is MuteBites — confirming your order ${formatOrderNumber(order.dailyNumber)}`,
+    `Hi ${order.studentName}, this is College Bites — confirming your order ${formatOrderNumber(order.dailyNumber)}`,
     `from ${order.restaurantName}:`,
     ...itemLinesWithPrices(order),
     "Do you want to go ahead with this order? Reply yes to confirm.",

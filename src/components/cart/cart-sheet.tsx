@@ -174,7 +174,7 @@ function CartContents({
             <MapPin className="size-5 shrink-0 text-rose" aria-hidden="true" />
             <div>
               <p className={eyebrow}>Handover point</p>
-              <p className="font-semibold">VIT-AP Main Gate</p>
+              <p className="font-semibold">Gate 3</p>
             </div>
           </div>
           <ContactPhone value={contactPhone} onChange={setContactPhone} />

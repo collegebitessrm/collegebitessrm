@@ -4,7 +4,7 @@ import { getSessionProfile } from "@/lib/profile";
 import { WelcomeForm } from "./welcome-form";
 
 export const metadata: Metadata = {
-  title: "Almost there · MuteBites",
+  title: "Almost there · College Bites",
   robots: { index: false, follow: false },
 };
 

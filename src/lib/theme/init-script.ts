@@ -6,7 +6,7 @@
 export const THEME_INIT_SCRIPT = `
 (function () {
   try {
-    var v = localStorage.getItem("mutebites.theme");
+    var v = localStorage.getItem("collegebites.theme");
     var pref = (v === "light" || v === "dark" || v === "system") ? v : "system";
     var dark = pref === "dark" || (pref === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
     if (dark) {

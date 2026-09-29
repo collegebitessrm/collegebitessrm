@@ -1,5 +1,5 @@
 /*
- * MuteBites service worker — notifications only.
+ * College Bites service worker — notifications only.
  *
  * Deliberately has no fetch handler: it caches nothing and never stands
  * between the app and the network, so it can't serve a stale page or
@@ -21,7 +21,7 @@ self.addEventListener("push", (event) => {
     // A push with no (or unreadable) payload still deserves something visible.
   }
 
-  const title = data.title || "MuteBites";
+  const title = data.title || "College Bites";
   event.waitUntil(
     self.registration.showNotification(title, {
       body: data.body || "",

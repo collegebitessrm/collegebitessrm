@@ -12,7 +12,7 @@ import { formatOrderNumber } from "@/lib/orders/status";
 // Order ids this device has already been asked about — the pop-up shows
 // once per order, ever, whether they rate or tap "Later". Per device, not
 // per account, same as the confetti / milestone flags.
-const PROMPTED_KEY = "mutebites.rate-prompted";
+const PROMPTED_KEY = "collegebites.rate-prompted";
 
 function readPrompted(): string[] {
   try {
@@ -64,7 +64,7 @@ export function RatePrompt({ order }: { order: RatePromptOrder }) {
         <DialogTitle className="mt-4 font-heading text-title font-bold">How was it?</DialogTitle>
         <DialogDescription className="mt-1 text-muted-foreground">
           Rate {dishLabel} from {order.restaurantName} — order {formatOrderNumber(order.dailyNumber)}.
-          Only the MuteBites team sees it.
+          Only the College Bites team sees it.
         </DialogDescription>
         <div className="mt-3 flex items-center gap-1 text-primary" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((n) => (

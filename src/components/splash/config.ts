@@ -51,9 +51,9 @@ export const SPLASH = {
   /** Last resort (CSS): the splash hides itself after this no matter what. */
   failsafeMs: 9000,
   /** sessionStorage flag — plays once per browser session (each fresh app open, not per route). */
-  sessionKey: "mutebites.splash-shown",
+  sessionKey: "collegebites.splash-shown",
   /** localStorage key; set it to "off" to disable on one device. */
-  disableKey: "mutebites.splash",
+  disableKey: "collegebites.splash",
   /** Never on these (admin tool, OAuth callback, Google's review bot on the legal pages). */
   skipPaths: ["/admin", "/auth", "/privacy", "/terms"],
 } as const;

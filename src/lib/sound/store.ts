@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 
 // Order-placed sound preference lives in localStorage only — it's a
 // per-device setting, not account data, so it isn't stored in `public.users`.
-const STORAGE_KEY = "mutebites.sound-enabled";
+const STORAGE_KEY = "collegebites.sound-enabled";
 const DEFAULT = true;
 
 function readStored(): boolean {

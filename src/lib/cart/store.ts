@@ -23,7 +23,7 @@ export type Cart = {
 };
 
 export { MAX_QUANTITY };
-const STORAGE_KEY = "mutebites.cart.v1";
+const STORAGE_KEY = "collegebites.cart.v1";
 const EMPTY: Cart = { restaurantId: null, restaurantName: null, lines: [] };
 
 let cart: Cart = EMPTY;

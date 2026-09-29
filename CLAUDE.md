@@ -1,15 +1,19 @@
 @AGENTS.md
 
-# MuteBites
+# College Bites
 
-Food delivery site for VIT-AP University students.
+Food delivery site for SRM University AP (Amaravati, Andhra Pradesh)
+students. Tagline: "Crave. Click. Campus." Pickup at **Gate 3**; support
+(call + WhatsApp) +91 99899 55833 (`src/lib/support.ts`); admin alerts to
+collegebitessrm@gmail.com (`ADMIN_ALERT_EMAILS`). The name is "College
+Bites" everywhere; "SRM" only shows in small places (site title, About
+popup footer, admin header, privacy/terms) — keep it that way. Live at
+https://collegebitessrm.vercel.app.
 
-> **Port in progress — College Bites (SRM AP).** This repo is a copy of
-> MuteBites being adapted for SRM University AP (Amaravati, AP): app name
-> College Bites, pickup at **Gate 3**, admin alerts to
-> collegebitessrm@gmail.com, launch 1 Oct 2026. Everything below still
-> describes MuteBites until the rebrand step rewrites it. What already
-> differs:
+> **Built from MuteBites (VIT-AP).** Launch 1 Oct 2026. Still MuteBites
+> until later steps: the colours, the logo / icons / splash (MuteBites
+> mascot), and the restaurants, menus and photos described below. What
+> already differs:
 > - **No daily ordering schedule.** `app_settings.ordering_mode` is only
 >   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
 >   it and `place_order()` raises `ordering_paused` when closed
@@ -93,7 +97,7 @@ Food delivery site for VIT-AP University students.
   for students who've unlocked every milestone, computed server-side in
   `getAllUsers()` with the same `getUnlockedMilestones()`; a "Free biryani
   earned" chip filters the list to them.
-  A newly unlocked milestone (per device, `mutebites.milestones-seen`)
+  A newly unlocked milestone (per device, `collegebites.milestones-seen`)
   plays the same full-screen celebration as "Order placed!" — both use
   `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: plum
   overlay, confetti unless reduced motion, the chime, tap or ~2 s to
@@ -143,10 +147,10 @@ Food delivery site for VIT-AP University students.
   that key is used; missing key = no admin push, everything else fine).
   Env: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`,
   `SUPABASE_SERVICE_ROLE_KEY`. UI: a switch in Profile, a one-time
-  "Get a ping" card on a live order (`mutebites.notify-asked`), and
+  "Get a ping" card on a live order (`collegebites.notify-asked`), and
   `NewOrderAlerts` on the dashboard — Realtime `orders` inserts play a
   **loud** repeating alarm (`playAdminAlertSound()`, its own
-  `mutebites.admin-alert-sound` switch, deliberately not the student
+  `collegebites.admin-alert-sound` switch, deliberately not the student
   chime), count new orders and refresh the list. Browsers block audio
   until a real tap, so the bell both grants permission and arms the sound.
   A push notification's *own* sound is the phone's setting, not ours —
@@ -324,7 +328,7 @@ silently re-enables the button.
 - `src/components/ui` — shadcn/ui components. Two modal-style primitives:
   `alert-dialog.tsx` (confirmations — "Cancel this order?", "Pause
   ordering campus-wide?", "Mark 3 orders delivered?") and `dialog.tsx`
-  (plain popups with no confirm/cancel semantics — the "About MuteBites"
+  (plain popups with no confirm/cancel semantics — the "About College Bites"
   card from the Home logo, the Trending popup and the one-time "How was
   it?" rating prompt). The cart and rating sheets use `sheet.tsx`. Both wrap `@base-ui/react`; reach for whichever already matches
   what you're building rather than hand-rolling a third.
@@ -397,7 +401,7 @@ silently re-enables the button.
     lower layer keeps a few extra pixels (`UNDERLAPS`) so no hairline seam
     shows.
 - **Startup splash** (`src/components/splash/`), ~2.5 s, once per browser
-  session (sessionStorage `mutebites.splash-shown` — every fresh app/PWA
+  session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
   open, never on route changes or reloads), never on `/admin`, `/auth`,
   `/privacy`, `/terms` or a tab opened in the background:
   - Storyboard (timings in `config.ts`): ivory → the mascot **runs** in
@@ -432,7 +436,7 @@ silently re-enables the button.
     close), slow/failed images (> 2.5 s) just fade out, and CSS hides the
     overlay after 9 s whatever happens.
   - Replay / disable: `?intro` (or `?splash`) forces it, `?nosplash`
-    skips one load, localStorage `mutebites.splash = "off"` disables it on
+    skips one load, localStorage `collegebites.splash = "off"` disables it on
     one device, `NEXT_PUBLIC_DISABLE_SPLASH=1` removes it from the build.
   - One-off moments that could fire underneath wait with `afterSplash()`
     (`splash/after-splash.ts`) — the milestone celebration does.
@@ -539,7 +543,7 @@ section, one dish, "1 Litre Sugarcane Juice Bottle" ₹90, photos in
 `covers/mutebites-sugarcane-juice.jpg`).
 Migrations are applied by hand in the Supabase SQL editor (no CLI setup).
 
-All orders are handed over at **VIT-AP Main Gate** — there is no room
+All orders are handed over at **Gate 3** — there is no room
 delivery, so no hostel block/room is stored anywhere (not on `users`, not
 on `orders`).
 
@@ -548,7 +552,7 @@ on `orders`).
   **not unique** — multiple Google accounts can share a phone number
   (`email` stays `not null unique`, one row per Google account, just not
   one per phone). No domain restriction on `email` — decided: any Google
-  account can sign up, not only VIT-AP student addresses. Stored
+  account can sign up, not only SRM AP student addresses. Stored
   as `+91XXXXXXXXXX` — the app normalizes every
   input to that one shape (`src/lib/phone.ts`), since bans match by exact
   phone. Also `registration_number`, `role` (`user_role` enum: `student` |
@@ -620,7 +624,7 @@ on `orders`).
   order" pill on rateable orders (`OrderSummary.rateable` — delivered,
   within 7 days, not rated), and Home shows a one-time pop-up
   (`RatePrompt`, `getRatePromptOrder()`) for the latest one, remembered
-  per device in `localStorage` (`mutebites.rate-prompted`). Both link to
+  per device in `localStorage` (`collegebites.rate-prompted`). Both link to
   `/orders/<id>?rate=1`, which opens the rating sheet on arrival.
   `REVIEW_WINDOW_MS` lives in `src/lib/reviews/limits.ts` (client-safe).
   Admin reads them at `/admin/reviews` (a "Reviews" pill on the dashboard):
@@ -820,7 +824,7 @@ one that will eventually need its own migration, once approved).
     ₹100-200/month — but it's real money the client needs to knowingly
     take on, plus a possible BSP markup/subscription if going through a
     third-party provider instead of Meta directly).
-  - The number used (currently `8247075652`, see `src/lib/support.ts`)
+  - The number used (currently `9989955833`, see `src/lib/support.ts`)
     would need to be dedicated to the WhatsApp Business Platform —
     it can no longer double as a number someone checks in the normal
     WhatsApp app; replies get read via the provider's web inbox instead.

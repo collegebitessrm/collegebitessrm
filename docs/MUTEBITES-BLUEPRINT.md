@@ -45,6 +45,16 @@ as it was; this log lists where College Bites deliberately differs.
   time passes; "Mark all delivered" delivers every confirmed order with
   no time gate.
 
+**Rebrand (text)**
+- Name "College Bites" everywhere; "SRM" only in small places (site
+  title/description, About popup footer "~ college bites · srm ap", admin
+  header, privacy/terms). Tagline "Crave. Click. Campus." (login heading,
+  About popup, manifest, share card); pitch "Your campus food delivery
+  partner. Multiple restaurants, one place — delivered to you".
+- Pickup "Gate 3"; support +91 99899 55833; admin alerts
+  collegebitessrm@gmail.com. Device storage keys renamed `mutebites.*` →
+  `collegebites.*`; `about-mutebites-dialog.tsx` → `about-dialog.tsx`.
+
 ---
 
 ## Contents

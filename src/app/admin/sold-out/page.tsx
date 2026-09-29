@@ -3,7 +3,7 @@ import { BackToDashboardLink } from "@/components/admin/back-to-dashboard-link";
 import { DishAvailabilityList } from "@/components/admin/dish-availability-list";
 import { getAdminDishes } from "@/lib/data/admin";
 
-export const metadata: Metadata = { title: "Sold out · MuteBites Admin" };
+export const metadata: Metadata = { title: "Sold out · College Bites Admin" };
 
 /**
  * Turn any dish off when the kitchen runs out, and back on when it's

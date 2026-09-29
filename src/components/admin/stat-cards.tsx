@@ -31,7 +31,7 @@ export function StatCards({
     <section className="surface-ink shadow-elevated-glow rounded-3xl bg-ink text-ink-foreground">
       <div className="px-5 pt-5 sm:px-6">
         <h2 className="font-heading text-title font-bold">Today</h2>
-        <p className="text-sm text-ink-foreground/75">{todayLabel} · VIT-AP Main Gate</p>
+        <p className="text-sm text-ink-foreground/75">{todayLabel} · Gate 3</p>
       </div>
       <dl className="mt-4 grid grid-cols-2 gap-y-4 px-5 pb-5 sm:grid-cols-4 sm:px-6">
         <Stat label="Orders" value={totalOrders} />

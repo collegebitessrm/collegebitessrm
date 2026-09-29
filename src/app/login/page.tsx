@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/login" },
 };
 
-// Tells Google who MuteBites is (name, logo, site) — structured data only,
+// Tells Google who College Bites is (name, logo, site) — structured data only,
 // nothing visible.
 const STRUCTURED_DATA = JSON.stringify({
   "@context": "https://schema.org",
@@ -23,7 +23,7 @@ const STRUCTURED_DATA = JSON.stringify({
       url: SITE_URL,
       logo: `${SITE_URL}/icons/icon-512`,
       description: SITE_DESCRIPTION,
-      areaServed: "VIT-AP University, Amaravati, Andhra Pradesh, India",
+      areaServed: "SRM University AP, Amaravati, Andhra Pradesh, India",
     },
     { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
   ],
@@ -104,16 +104,16 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           className="animate-slide-up-in mt-6 font-heading text-display font-bold"
           style={{ animationDelay: "90ms" }}
         >
-          Good food.
+          Crave. Click.
           <br />
-          Campus mood.
+          Campus.
         </h1>
         <p
           className="animate-slide-up-in mt-3 max-w-[22rem] text-base text-muted-foreground"
           style={{ animationDelay: "130ms" }}
         >
-          Biryani, Chinese, fresh juice and fruit from campus kitchens — handed over at VIT-AP
-          Main Gate. Pay when you collect.
+          Your campus food delivery partner. Multiple restaurants, one place — delivered to you
+          at Gate 3. Pay when you collect.
         </p>
 
         <div

@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 
 /** Native share sheet when available (mostly mobile); clipboard copy otherwise. */
 async function shareOrderToken(token: string) {
-  const text = `My MuteBites order token: ${token}`;
+  const text = `My College Bites order token: ${token}`;
   if (navigator.share) {
     try {
       await navigator.share({ text });
@@ -53,7 +53,7 @@ async function shareOrderToken(token: string) {
 // Confetti plays once ever, on whichever order happens to be the first
 // this device sees placed — remembered locally, not tied to the account,
 // so it survives across restaurants/orders but not across devices.
-const CONFETTI_SHOWN_KEY = "mutebites.confetti-shown";
+const CONFETTI_SHOWN_KEY = "collegebites.confetti-shown";
 
 // One icon per row of orderTimeline() (order/status.ts), by position —
 // "Order placed", "Pending confirmation" / "Restaurant confirmed", "Preparing & out for delivery".
@@ -230,7 +230,7 @@ export function OrderTracking({
               </div>
               <p className="mt-5 flex items-center gap-2 rounded-xl bg-ink-foreground/10 px-4 py-2.5 text-sm">
                 <MapPin className="size-4 shrink-0 text-ink-accent" aria-hidden="true" />
-                Collect at VIT-AP Main Gate
+                Collect at Gate 3
               </p>
             </div>
           </div>
@@ -243,7 +243,7 @@ export function OrderTracking({
               <p className="font-heading text-lg font-bold text-destructive">Order cancelled</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 This order won&apos;t be delivered. If you were charged or have questions, call
-                MuteBites.
+                College Bites.
               </p>
             </div>
           ) : (
@@ -328,10 +328,10 @@ export function OrderTracking({
           <div className="mt-4 flex items-center justify-between rounded-2xl border bg-card shadow-card px-5 py-4">
             <div>
               <p className="text-sm text-muted-foreground">Something wrong?</p>
-              <p className="font-semibold">Contact MuteBites</p>
+              <p className="font-semibold">Contact College Bites</p>
             </div>
             <SupportButtons
-              whatsappMessage={`Hi MuteBites, something's wrong with my order ${formatOrderNumber(initialOrder.dailyNumber)}.`}
+              whatsappMessage={`Hi College Bites, something's wrong with my order ${formatOrderNumber(initialOrder.dailyNumber)}.`}
             />
           </div>
         </ViewTransition>

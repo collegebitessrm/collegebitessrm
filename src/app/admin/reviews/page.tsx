@@ -3,7 +3,7 @@ import { BackToDashboardLink } from "@/components/admin/back-to-dashboard-link";
 import { ReviewsView } from "@/components/admin/reviews-view";
 import { getAdminRestaurants, getAdminReviews } from "@/lib/data/admin";
 
-export const metadata: Metadata = { title: "Reviews · MuteBites Admin" };
+export const metadata: Metadata = { title: "Reviews · College Bites Admin" };
 
 export default async function AdminReviewsPage() {
   const [reviews, restaurants] = await Promise.all([getAdminReviews(), getAdminRestaurants()]);

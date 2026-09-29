@@ -25,7 +25,7 @@ export default function Error({
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-16 text-center">
       {/* Error boundaries can't export metadata; React hoists this into <head>. */}
-      <title>Something went wrong · MuteBites</title>
+      <title>Something went wrong · College Bites</title>
       <LostTicket
         label="Kitchen hiccup"
         token="Oops"
@@ -34,7 +34,7 @@ export default function Error({
       <h1 className="mt-10 font-heading text-headline font-bold">Something went sideways</h1>
       <p className="mt-2 max-w-[20rem] text-muted-foreground">
         That didn&apos;t load properly. It&apos;s usually a blip — try again, and if it keeps
-        happening, contact MuteBites from your profile.
+        happening, contact College Bites from your profile.
       </p>
       <div className="mt-8 flex w-full max-w-xs flex-col gap-3">
         <button

@@ -5,7 +5,7 @@ import { Bell, Loader2, X } from "lucide-react";
 import { enablePush, hasPushSubscription, pushState } from "@/lib/notifications/client";
 import { toast } from "@/lib/toast/store";
 
-const DISMISSED_KEY = "mutebites.notify-asked";
+const DISMISSED_KEY = "collegebites.notify-asked";
 
 /**
  * The one-time offer on the order tracking page: turn on notifications so

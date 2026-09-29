@@ -179,7 +179,7 @@ type OrderNotifyRow = {
 /** What a student sees on their phone when their order moves on. */
 function statusPayload(order: OrderNotifyRow, status: OrderStatus): PushPayload {
   const token = formatOrderNumber(order.daily_number);
-  const where = order.restaurants?.name ?? "MuteBites";
+  const where = order.restaurants?.name ?? "College Bites";
   const copy: Partial<Record<OrderStatus, { title: string; body: string }>> = {
     confirmed: {
       title: `Order ${token} confirmed`,

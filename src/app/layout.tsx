@@ -30,12 +30,12 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   keywords: [
-    "MuteBites",
-    "VIT-AP food delivery",
-    "VIT-AP University",
+    "College Bites",
+    "SRM AP food delivery",
+    "SRM University AP",
     "Amaravati food delivery",
     "campus food delivery",
-    "biryani delivery VIT-AP",
+    "biryani delivery SRM AP",
   ],
   // Link previews (WhatsApp, Instagram, Google). The image comes from
   // app/opengraph-image.tsx and is attached automatically.
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     : undefined,
   appleWebApp: {
     capable: true,
-    title: "MuteBites",
+    title: "College Bites",
     statusBarStyle: "default",
   },
 };

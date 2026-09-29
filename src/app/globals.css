@@ -86,7 +86,7 @@
 }
 
 @theme {
-  /* Fluid: 34px on a 320px phone (so "Campus mood." stays one line), up
+  /* Fluid: 34px on a 320px phone (so "Crave. Click." stays one line), up
      to 42px from ~410px wide. */
   --text-display: clamp(2.125rem, 11vw - 0.2rem, 2.625rem);
   --text-display--line-height: 1.04;
@@ -163,7 +163,7 @@
 }
 
 /*
- * MuteBites palette — plum ink, amber actions, rose secondary.
+ * College Bites palette (still MuteBites' colours until the colour step) — plum ink, amber actions, rose secondary.
  *
  * Surfaces step in three visible layers in BOTH themes:
  *   ground (--background)  <  card (--card)  <  raised (--popover)

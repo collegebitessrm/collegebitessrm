@@ -16,7 +16,7 @@ const dishHref = (d: TrendingDish) => `/restaurants/${d.restaurantId}?dish=${d.d
 
 /**
  * Tapping the Home header's flame button pops up the top ordered dishes
- * this week — same pattern as AboutMuteBitesDialog on the logo. #1 gets a
+ * this week — same pattern as AboutDialog on the logo. #1 gets a
  * full photo; the rest are thumbnail rows with their order counts.
  */
 export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {

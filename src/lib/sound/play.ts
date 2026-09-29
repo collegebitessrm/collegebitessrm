@@ -45,7 +45,7 @@ export function playOrderPlacedSound() {
 // arrive while the dashboard sits on a counter across the room, so it's
 // loud, low-then-high, and repeats. It has its own on/off switch
 // (localStorage) rather than following the student sound preference.
-const ADMIN_SOUND_KEY = "mutebites.admin-alert-sound";
+const ADMIN_SOUND_KEY = "collegebites.admin-alert-sound";
 
 export function isAdminAlertSoundEnabled(): boolean {
   try {

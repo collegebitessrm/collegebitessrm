@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "MuteBites",
-    short_name: "MuteBites",
-    description: "Good food. Campus mood. Food delivery for VIT-AP students.",
+    name: "College Bites",
+    short_name: "College Bites",
+    description: "Crave. Click. Campus. Food delivery for SRM University AP students.",
     start_url: "/",
     display: "standalone",
     // Android's own launch screen (this colour + the icon) hands straight

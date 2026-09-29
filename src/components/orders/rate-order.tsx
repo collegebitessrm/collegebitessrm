@@ -61,7 +61,7 @@ export function RateOrder({
       <div className="mt-4 rounded-2xl border bg-card p-5 shadow-card">
         <p className="font-heading text-title font-bold">How was it?</p>
         <p className="mt-0.5 text-sm text-muted-foreground">
-          Rate your food from {restaurantName} — only the MuteBites team sees it.
+          Rate your food from {restaurantName} — only the College Bites team sees it.
         </p>
         <div className="mt-3 flex items-center gap-1 text-border" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -232,7 +232,7 @@ function RateSheet({
             {pending ? "Sending…" : allRated ? "Submit rating" : "Rate every dish to submit"}
           </button>
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            You can rate an order once. Only the MuteBites team sees it.
+            You can rate an order once. Only the College Bites team sees it.
           </p>
         </footer>
       </SheetContent>

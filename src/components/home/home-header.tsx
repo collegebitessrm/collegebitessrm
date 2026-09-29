@@ -1,5 +1,5 @@
 import { Moon, Sun, Sunrise, Sunset, type LucideIcon } from "lucide-react";
-import { AboutMuteBitesDialog } from "@/components/home/about-mutebites-dialog";
+import { AboutDialog } from "@/components/home/about-dialog";
 import { TrendingDialog } from "@/components/home/trending-dialog";
 import { BrandLogo } from "@/components/brand-logo";
 import type { TrendingDish } from "@/lib/data/trending";
@@ -37,9 +37,9 @@ export function HomeHeader({
         className={`mood-field mood-${timeOfDay} pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+6rem)]`}
       />
       <div className="relative flex items-center justify-between">
-        <AboutMuteBitesDialog>
+        <AboutDialog>
           <BrandLogo splashTarget className="size-12 rounded-2xl shadow-card" />
-        </AboutMuteBitesDialog>
+        </AboutDialog>
         <TrendingDialog dishes={trendingDishes} />
       </div>
       <p className="relative mt-8 flex items-center gap-1.5 font-semibold">

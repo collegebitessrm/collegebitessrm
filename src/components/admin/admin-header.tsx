@@ -21,7 +21,7 @@ export function AdminHeader() {
       <BrandLogo className="size-12 rounded-2xl shadow-card" />
       <div className="min-w-0 flex-1">
         <Title className="truncate font-heading text-headline font-bold">Admin</Title>
-        <p className="truncate text-sm text-muted-foreground">MuteBites operations</p>
+        <p className="truncate text-sm text-muted-foreground">College Bites operations · SRM AP</p>
       </div>
       <button
         type="button"

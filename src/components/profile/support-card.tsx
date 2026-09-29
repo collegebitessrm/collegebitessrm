@@ -6,9 +6,9 @@ export function SupportCard() {
     <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl border bg-card shadow-card px-5 py-4">
       <div>
         <p className="text-sm text-muted-foreground">Need help?</p>
-        <p className="font-semibold">Contact MuteBites</p>
+        <p className="font-semibold">Contact College Bites</p>
       </div>
-      <SupportButtons whatsappMessage="Hi MuteBites, I need help with my order." />
+      <SupportButtons whatsappMessage="Hi College Bites, I need help with my order." />
     </div>
   );
 }

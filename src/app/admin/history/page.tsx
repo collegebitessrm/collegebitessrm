@@ -3,7 +3,7 @@ import { BackToDashboardLink } from "@/components/admin/back-to-dashboard-link";
 import { OrderList } from "@/components/admin/order-list";
 import { getAdminOrderHistory, getAdminRestaurants } from "@/lib/data/admin";
 
-export const metadata: Metadata = { title: "Order history · MuteBites Admin" };
+export const metadata: Metadata = { title: "Order history · College Bites Admin" };
 
 export default async function AdminHistoryPage() {
   const [orders, restaurants] = await Promise.all([getAdminOrderHistory(), getAdminRestaurants()]);

@@ -3,7 +3,7 @@ import { BackToDashboardLink } from "@/components/admin/back-to-dashboard-link";
 import { BannedUsersSection } from "@/components/admin/banned-users-section";
 import { getBannedUsers } from "@/lib/data/admin";
 
-export const metadata: Metadata = { title: "Banned users · MuteBites Admin" };
+export const metadata: Metadata = { title: "Banned users · College Bites Admin" };
 
 export default async function AdminBannedPage() {
   const bannedUsers = await getBannedUsers();

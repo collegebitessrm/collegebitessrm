@@ -32,7 +32,7 @@ export function pushState(): PushState {
 
 const MESSAGES: Record<Exclude<PushState, "granted" | "default">, string> = {
   denied: "Notifications are blocked for this site — turn them back on in your browser settings.",
-  "ios-needs-install": "On iPhone, add MuteBites to your Home Screen first, then turn notifications on from there.",
+  "ios-needs-install": "On iPhone, add College Bites to your Home Screen first, then turn notifications on from there.",
   unsupported: "This browser can't show notifications.",
 };
 

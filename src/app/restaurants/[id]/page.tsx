@@ -21,7 +21,7 @@ export async function generateMetadata({
 }: PageProps<"/restaurants/[id]">): Promise<Metadata> {
   const { id } = await params;
   const menu = await getRestaurantMenu(id);
-  return { title: menu ? `${menu.restaurant.name} · MuteBites` : "MuteBites" };
+  return { title: menu ? `${menu.restaurant.name} · College Bites` : "College Bites" };
 }
 
 export default async function RestaurantPage({ params, searchParams }: PageProps<"/restaurants/[id]">) {

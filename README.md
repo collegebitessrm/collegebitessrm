@@ -1,13 +1,16 @@
-# MuteBites
+# College Bites
 
-Food ordering for VIT-AP University students — browse partner restaurants,
-order, and collect at VIT-AP Main Gate. Cash (or UPI) on pickup; no online
+Crave. Click. Campus. Food ordering for SRM University AP students — browse
+partner restaurants, order, and collect at Gate 3. Cash (or UPI) on pickup; no online
 payments.
 
-Live: https://mutebites.vercel.app
+Live: https://collegebitessrm.vercel.app
+
+Built from MuteBites (VIT-AP); see [`docs/MUTEBITES-BLUEPRINT.md`](docs/MUTEBITES-BLUEPRINT.md)
+and its College Bites port log.
 
 **Detailed project notes — design system, database schema, admin access,
-the ordering schedule, ratings and every non-obvious decision — live in
+the ordering switch, ratings and every non-obvious decision — live in
 [`CLAUDE.md`](CLAUDE.md). Read that before changing anything.**
 
 ## Stack

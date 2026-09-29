@@ -1,4 +1,4 @@
-// All timestamps in the app are IST wall-clock times for VIT-AP students,
+// All timestamps in the app are IST wall-clock times for SRM AP students,
 // regardless of what timezone the server happens to run in.
 const IST = "Asia/Kolkata";
 

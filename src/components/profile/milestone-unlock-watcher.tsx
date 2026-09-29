@@ -6,7 +6,7 @@ import { afterSplash } from "@/components/splash/after-splash";
 import { cn } from "@/lib/utils";
 import { MILESTONES, type MilestoneKey } from "./milestone-badges";
 
-const SEEN_KEY = "mutebites.milestones-seen";
+const SEEN_KEY = "collegebites.milestones-seen";
 
 const listFormat = new Intl.ListFormat("en", { type: "conjunction" });
 
