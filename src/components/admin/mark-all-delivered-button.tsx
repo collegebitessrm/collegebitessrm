@@ -19,38 +19,23 @@ import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 
 /**
- * Bulk "confirmed → delivered", but only for orders whose delivery slot
- * has actually ended — a confirmed order still inside its window is left
- * alone. `confirmedCount` and `eligibleCount` come from the page, computed
- * over every confirmed order (not just today's list) against "now" at
- * render time; the server re-checks eligibility itself regardless (see
- * markAllConfirmedDelivered) and reports how many it actually delivered.
+ * Bulk "confirmed → delivered" for every confirmed order (any day — not
+ * just today's list). `confirmedCount` comes from the page; the server
+ * re-reads the confirmed orders itself (markAllConfirmedDelivered) and
+ * reports how many it actually delivered.
  *
  * `disabled` goes on AlertDialogTrigger itself, not on the rendered
  * <button>: Base UI's trigger merges its own button props last, and its
  * default `disabled: false` silently overrode the element's `disabled`, so
  * the button only *looked* disabled and opened a "Mark 0 orders" dialog.
  */
-export function MarkAllDeliveredButton({
-  confirmedCount,
-  eligibleCount,
-  nextSlotEnd,
-}: {
-  confirmedCount: number;
-  eligibleCount: number;
-  /** "1:30 PM" — when the earliest still-waiting confirmed order's slot ends, or null if none are waiting. */
-  nextSlotEnd: string | null;
-}) {
+export function MarkAllDeliveredButton({ confirmedCount }: { confirmedCount: number }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
-  const disabled = eligibleCount === 0;
-  const stillWaiting = confirmedCount - eligibleCount;
-  const label =
-    stillWaiting > 0
-      ? `Mark all delivered (${eligibleCount} of ${confirmedCount})`
-      : `Mark all delivered (${eligibleCount})`;
+  const disabled = confirmedCount === 0;
+  const label = `Mark all delivered (${confirmedCount})`;
 
   function confirm() {
     startTransition(async () => {
@@ -66,13 +51,7 @@ export function MarkAllDeliveredButton({
   }
 
   // Why it's disabled, so a greyed-out button doesn't read as broken.
-  const hint = !disabled
-    ? null
-    : confirmedCount === 0
-      ? "No confirmed orders to deliver"
-      : nextSlotEnd
-        ? `Next slot ends ${nextSlotEnd}`
-        : null;
+  const hint = disabled ? "No confirmed orders to deliver" : null;
 
   return (
     <AlertDialog open={open} onOpenChange={(next) => (pending ? null : setOpen(next))}>
@@ -96,15 +75,10 @@ export function MarkAllDeliveredButton({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Mark {eligibleCount} order{eligibleCount === 1 ? "" : "s"} delivered?
+            Mark {confirmedCount} order{confirmedCount === 1 ? "" : "s"} delivered?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Every confirmed order whose delivery slot has already ended will jump straight to
-            delivered.
-            {stillWaiting > 0 &&
-              ` ${stillWaiting} other confirmed order${stillWaiting === 1 ? "" : "s"} ${
-                stillWaiting === 1 ? "hasn't reached its" : "haven't reached their"
-              } delivery window yet and will be left as confirmed.`}
+            Every confirmed order will jump straight to delivered.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

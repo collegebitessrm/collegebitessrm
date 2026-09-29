@@ -27,9 +27,9 @@ export function RestaurantList({
   /** Every dish (getSearchableDishes) — searched on the client as the student types. */
   dishes: SearchableDish[];
   orderingEnabled: boolean;
-  /** "Opens 1:30 PM" / "Paused" — the card's status chip while ordering is shut. */
+  /** "Closed" — the card's status chip while ordering is shut. */
   closedChip: string;
-  /** "Ordering opens again at 1:30 PM" — the card's footer line while ordering is shut. */
+  /** "Ordering is closed right now" — the card's footer line while ordering is shut. */
   closedLine: string;
   menuStats: Record<string, RestaurantMenuStats>;
   /** getDishOrderCounts() — the card photos lead with each restaurant's most-ordered dishes. */

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 /**
  * Re-fetches the page once `at` (epoch ms) passes — the dashboard uses it
  * so finished orders move off "Current orders" the moment their delivery
- * slot ends, without the admin reloading.
+ * time passes, without the admin reloading.
  */
 export function RefreshAt({ at }: { at: number | null }) {
   const router = useRouter();

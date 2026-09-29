@@ -41,9 +41,9 @@ export function MenuView({
   profilePhone: string;
   /** Campus-wide kill switch — dishes become un-addable when off, same as a closed restaurant. */
   orderingEnabled: boolean;
-  /** "Opens 1:30 PM" / "Paused" — shown on dish cards while ordering is shut. */
+  /** "Closed" — shown on dish cards while ordering is shut. */
   closedChip?: string;
-  /** "Ordering opens again at 1:30 PM" — shown in the cart while ordering is shut. */
+  /** "Ordering is closed right now" — shown in the cart while ordering is shut. */
   closedNote?: string;
   /** This student's most-ordered dish at this restaurant, or null — tags it "Your favorite". */
   favoriteDishId: string | null;

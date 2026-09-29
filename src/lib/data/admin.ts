@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
-import { isPastDeliverySlot, startOfTodayIST } from "@/lib/date";
+import { DEFAULT_DELIVERY_MINUTES, isPastDeliveryTime, startOfTodayIST } from "@/lib/date";
 import { getUnlockedMilestones, MILESTONES } from "@/components/profile/milestone-badges";
 import { isUuid } from "@/lib/ids";
 import { getRestaurantCount } from "./restaurants";
@@ -73,6 +73,8 @@ export type AdminOrder = {
   notes: string | null;
   restaurantId: string;
   restaurantName: string;
+  /** The restaurant's promised delivery time, in minutes from placing the order. */
+  deliveryMinutes: number;
   userId: string;
   studentName: string;
   studentBanned: boolean;
@@ -91,13 +93,13 @@ type AdminOrderRow = {
   notes: string | null;
   user_id: string;
   restaurant_id: string;
-  restaurants: { name: string } | null;
+  restaurants: { name: string; delivery_minutes: number } | null;
   users: { full_name: string; is_banned: boolean } | null;
   order_items: { dish_name: string; quantity: number; subtotal: number }[];
 };
 
 const ADMIN_ORDER_COLUMNS =
-  "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name), users(full_name, is_banned), order_items(dish_name, quantity, subtotal), daily_number";
+  "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal), daily_number";
 
 function toAdminOrder(o: AdminOrderRow): AdminOrder {
   return {
@@ -110,6 +112,7 @@ function toAdminOrder(o: AdminOrderRow): AdminOrder {
     userId: o.user_id,
     restaurantId: o.restaurant_id,
     restaurantName: o.restaurants?.name ?? "Restaurant",
+    deliveryMinutes: o.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
     studentName: o.users?.full_name ?? "Student",
     studentBanned: o.users?.is_banned ?? false,
     items: o.order_items.map((i) => ({ dishName: i.dish_name, quantity: i.quantity, subtotal: Number(i.subtotal) })),
@@ -134,7 +137,7 @@ export async function getAdminOrderDetail(id: string): Promise<AdminOrderDetail 
     supabase
       .from("orders")
       .select(
-        "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, restaurants(name), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal)",
+        "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, restaurants(name, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal)",
       )
       .eq("id", id)
       .maybeSingle<
@@ -168,27 +171,29 @@ export async function getAdminOrderDetail(id: string): Promise<AdminOrderDetail 
 }
 
 /**
- * Every `confirmed` order (any day), just id + placed-at — what the "Mark
- * all delivered" button needs to count eligible orders the same way
- * markAllConfirmedDelivered() does. The dashboard's order list is scoped to
- * today, so counting from it missed confirmed orders from earlier days that
- * the action would in fact deliver (and could leave the button disabled
- * while there was work to do).
+ * How many orders are `confirmed` right now (any day) — what "Mark all
+ * delivered" acts on (markAllConfirmedDelivered()). The dashboard's order
+ * list is scoped to today, so counting from it would miss confirmed orders
+ * from earlier days that the action would in fact deliver.
  */
-export async function getConfirmedOrderTimes(): Promise<{ id: string; createdAt: string }[]> {
+export async function getConfirmedOrderCount(): Promise<number> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("orders").select("id, created_at").eq("status", "confirmed");
+  const { count, error } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "confirmed");
 
   if (error) throw error;
-  return (data ?? []).map((o) => ({ id: o.id, createdAt: o.created_at }));
+  return count ?? 0;
 }
 
 /**
- * The main dashboard's "Current orders": today's orders (IST) whose
- * delivery slot hasn't ended yet, plus any of today's that still need an
- * admin (pending / confirmed) even past their slot, so nothing actionable
- * disappears. Delivered or cancelled orders drop off once their slot's
- * end time passes — they live on /admin/history (getAdminOrderHistory()).
+ * The main dashboard's "Current orders": today's orders (IST) until their
+ * promised delivery time (placed + the restaurant's delivery_minutes), plus
+ * any of today's that still need an admin (pending / confirmed) even past
+ * it, so nothing actionable disappears. Delivered or cancelled orders drop
+ * off once that time passes — they live on /admin/history
+ * (getAdminOrderHistory()).
  */
 export async function getAdminOrders(now: Date = new Date()): Promise<AdminOrder[]> {
   const supabase = await createClient();
@@ -202,7 +207,7 @@ export async function getAdminOrders(now: Date = new Date()): Promise<AdminOrder
   if (error) throw error;
   return (data ?? [])
     .map(toAdminOrder)
-    .filter((o) => !isFinished(o.status) || !isPastDeliverySlot(o.createdAt, now));
+    .filter((o) => !isFinished(o.status) || !isPastDeliveryTime(o.createdAt, o.deliveryMinutes, now));
 }
 
 function isFinished(status: OrderStatus) {

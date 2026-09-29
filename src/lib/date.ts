@@ -46,48 +46,35 @@ const hourMinuteFmt = new Intl.DateTimeFormat("en-GB", {
 });
 
 /**
- * The delivery slot an order falls in, purely from when it was placed (IST)
- * — the same cut-offs as the ordering schedule in src/lib/ordering.ts /
- * public.ordering_schedule_open(). Split into a lead-in and the time so the
- * UI can keep the time on one line; spaces inside `time` are no-break.
- * An order placed after the last cut-off can only exist if an admin forced
- * ordering open, so it has no slot: "to be confirmed".
+ * Minutes from placing an order to its promised delivery, when the
+ * restaurant row doesn't say (restaurants.delivery_minutes defaults to the
+ * same 40 in the database).
  */
-export function deliveryWindow(iso: string): { lead: string; time: string } {
-  const [h, m] = hourMinuteFmt.format(new Date(iso)).split(":").map(Number);
-  const minutesOfDay = h * 60 + m;
+export const DEFAULT_DELIVERY_MINUTES = 40;
 
-  if (minutesOfDay < 12 * 60 + 45) return { lead: "Delivery by", time: "1:30\u00a0PM" };
-  if (minutesOfDay < 18 * 60) return { lead: "Delivery by", time: "7:30\u00a0PM" };
-  if (minutesOfDay < 19 * 60) return { lead: "Delivery by", time: "8:15\u00a0PM" };
-  return { lead: "Delivery time", time: "to be confirmed" };
+/** When an order is promised by: placed time + the restaurant's delivery minutes. */
+export function deliveryDue(iso: string, minutes: number = DEFAULT_DELIVERY_MINUTES): Date {
+  return new Date(new Date(iso).getTime() + minutes * 60_000);
 }
 
 /**
- * The literal end-of-slot instant for an order, based on when it was
- * placed (IST wall-clock) — the same slots as deliveryWindow() above, as a
- * real Date, so admin bulk actions can gate on "has this slot actually
- * ended". A slot-less order (forced open after 7 PM) counts as ended as
- * soon as it's placed, so an admin can mark it delivered whenever.
+ * "Delivery by 8:40 PM" for an order — split into a lead-in and the time so
+ * the UI can keep the time on one line; spaces inside `time` are no-break.
  */
-export function slotEndTime(iso: string): Date {
-  const placed = new Date(iso);
-  const [h, m] = hourMinuteFmt.format(placed).split(":").map(Number);
-  const minutesOfDay = h * 60 + m;
-
-  if (minutesOfDay >= 19 * 60) return placed;
-  const [endHour, endMinute] =
-    minutesOfDay < 12 * 60 + 45 ? [13, 30] : minutesOfDay < 18 * 60 ? [19, 30] : [20, 15];
-
-  const [year, month, day] = dayKeyFmt.format(placed).split("-").map(Number);
-  // IST is a fixed UTC+5:30 offset (no DST) — subtract it from the
-  // wall-clock time to get the actual UTC instant it corresponds to.
-  return new Date(Date.UTC(year, month - 1, day, endHour, endMinute) - (5 * 60 + 30) * 60_000);
+export function deliveryWindow(
+  iso: string,
+  minutes: number = DEFAULT_DELIVERY_MINUTES,
+): { lead: string; time: string } {
+  return { lead: "Delivery by", time: time(deliveryDue(iso, minutes)).replace(/ /g, " ") };
 }
 
-/** True once an order's delivery slot has actually ended (now >= slot end). */
-export function isPastDeliverySlot(iso: string, now: Date = new Date()): boolean {
-  return now.getTime() >= slotEndTime(iso).getTime();
+/** True once an order's promised delivery time has passed. */
+export function isPastDeliveryTime(
+  iso: string,
+  minutes: number = DEFAULT_DELIVERY_MINUTES,
+  now: Date = new Date(),
+): boolean {
+  return now.getTime() >= deliveryDue(iso, minutes).getTime();
 }
 
 const weekdayFmt = new Intl.DateTimeFormat("en-US", { timeZone: IST, weekday: "long" });
@@ -146,7 +133,8 @@ export function formatShortDay(iso: string): string {
 /** The UTC instant of the start of "today" in IST wall-clock time — for scoping the admin dashboard to today's orders only. */
 export function startOfTodayIST(now: Date = new Date()): Date {
   const [year, month, day] = dayKeyFmt.format(now).split("-").map(Number);
-  // IST is a fixed UTC+5:30 offset (no DST) — see slotEndTime() above.
+  // IST is a fixed UTC+5:30 offset (no DST) — subtract it from the
+  // wall-clock time to get the actual UTC instant it corresponds to.
   return new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - (5 * 60 + 30) * 60_000);
 }
 
@@ -164,8 +152,7 @@ export function formatMonthYear(iso: string): string {
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
 
 /**
- * IST wall-clock time-of-day bucket for the Home greeting — separate from
- * the delivery-slot windows above, which are about order ETAs, not mood.
+ * IST wall-clock time-of-day bucket for the Home greeting.
  */
 export function getTimeOfDayIST(now: Date = new Date()): TimeOfDay {
   const [h] = hourMinuteFmt.format(now).split(":").map(Number);

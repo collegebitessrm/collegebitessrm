@@ -14,7 +14,7 @@ import { CopyOrderButton, OrderActions, useOrderStatus, WhatsAppButton } from ".
 export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
   const [status, setStatus] = useOrderStatus(order.status);
   const badge = statusBadge(status);
-  const slot = deliveryWindow(order.createdAt);
+  const slot = deliveryWindow(order.createdAt, order.deliveryMinutes);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">

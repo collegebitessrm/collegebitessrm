@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import { isPastDeliverySlot } from "@/lib/date";
 import { notifyUser, type PushPayload } from "@/lib/notifications/send";
 import type { OrderStatus } from "@/lib/data/types";
 import type { OrderingMode } from "@/lib/ordering";
@@ -24,16 +23,15 @@ async function assertAdmin(): Promise<{ ok: false; error: string } | null> {
 }
 
 /**
- * Campus-wide ordering override: 'auto' follows the daily schedule
- * (public.ordering_schedule_open()), 'open' / 'closed' force it either way.
- * 'closed' also turns every restaurant off, so a forced close is total —
- * switching back to Auto / Open leaves them off, and the admin turns on
- * whichever restaurants should reopen.
+ * Campus-wide ordering switch: 'open' or 'closed' (there is no daily
+ * schedule). 'closed' also turns every restaurant off, so a close is total —
+ * switching back to Open leaves them off, and the admin turns on whichever
+ * restaurants should reopen.
  */
 export async function setOrderingMode(mode: OrderingMode): Promise<AdminActionResult> {
   const denied = await assertAdmin();
   if (denied) return denied;
-  if (mode !== "auto" && mode !== "open" && mode !== "closed") {
+  if (mode !== "open" && mode !== "closed") {
     return { ok: false, error: "Unknown ordering mode." };
   }
 
@@ -253,11 +251,10 @@ export async function setStudentBanned(userId: string, banned: boolean): Promise
 }
 
 /**
- * Bulk-advances every `confirmed` order whose delivery slot has already
- * ended straight to `delivered` — a confirmed order still inside its
- * window is left alone even though it's shown in the same list. Re-checks
- * slot end here rather than trusting whatever the client sent, same as
- * every other admin write in this file trusting only what it reads itself.
+ * Bulk-advances every `confirmed` order (any day) straight to `delivered`.
+ * Reads the confirmed orders here rather than trusting whatever the client
+ * sent, same as every other admin write in this file trusting only what it
+ * reads itself.
  */
 export async function markAllConfirmedDelivered(): Promise<
   { ok: true; count: number } | { ok: false; error: string }
@@ -268,15 +265,13 @@ export async function markAllConfirmedDelivered(): Promise<
   const supabase = await createClient();
   const { data: confirmed, error: fetchError } = await supabase
     .from("orders")
-    .select("id, created_at")
+    .select("id")
     .eq("status", "confirmed");
   if (fetchError) return { ok: false, error: "Couldn't load confirmed orders. Please try again." };
 
-  const eligibleIds = (confirmed ?? [])
-    .filter((o) => isPastDeliverySlot(o.created_at))
-    .map((o) => o.id);
+  const eligibleIds = (confirmed ?? []).map((o) => o.id);
   if (eligibleIds.length === 0) {
-    return { ok: false, error: "No confirmed orders have passed their delivery slot yet." };
+    return { ok: false, error: "No confirmed orders to deliver." };
   }
 
   // Compare-and-swap on status like the single-order actions: an order a

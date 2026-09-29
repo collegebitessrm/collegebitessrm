@@ -8,32 +8,26 @@ import { RefreshAt } from "@/components/admin/refresh-at";
 import { RestaurantToggleList } from "@/components/admin/restaurant-toggle-list";
 import { StatCards } from "@/components/admin/stat-cards";
 import { adminPill } from "@/components/admin/styles";
-import { getAdminOrders, getAdminRestaurants, getConfirmedOrderTimes, getOrderCounts } from "@/lib/data/admin";
-import { formatShortDay, formatTime, isPastDeliverySlot, slotEndTime, startOfTodayIST } from "@/lib/date";
+import { getAdminOrders, getAdminRestaurants, getConfirmedOrderCount, getOrderCounts } from "@/lib/data/admin";
+import { deliveryDue, formatShortDay, startOfTodayIST } from "@/lib/date";
 import { getOrderingState } from "@/lib/data/settings";
 
 export default async function AdminPage() {
-  const [restaurants, orderCounts, ordering, orders, confirmedAll] = await Promise.all([
+  const [restaurants, orderCounts, ordering, orders, confirmedCount] = await Promise.all([
     getAdminRestaurants(),
     getOrderCounts(startOfTodayIST()),
     getOrderingState(),
     getAdminOrders(),
-    getConfirmedOrderTimes(),
+    getConfirmedOrderCount(),
   ]);
 
   const activeRestaurants = restaurants.filter((r) => r.is_active).length;
 
-  // Counted over every confirmed order (not just today's list below) —
-  // the same set markAllConfirmedDelivered() acts on.
-  const eligibleForDelivery = confirmedAll.filter((o) => isPastDeliverySlot(o.createdAt)).length;
-  const waiting = confirmedAll.filter((o) => !isPastDeliverySlot(o.createdAt));
-  // When the next finished order's slot ends and it should move to history.
+  // When the next finished order's delivery time passes and it should move
+  // to history.
   const nextDropOff = orders
     .filter((o) => o.status === "delivered" || o.status === "cancelled")
-    .map((o) => slotEndTime(o.createdAt).getTime());
-  const nextSlotEnd = waiting.length
-    ? formatTime(new Date(Math.min(...waiting.map((o) => slotEndTime(o.createdAt).getTime()))).toISOString())
-    : null;
+    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes).getTime());
 
   return (
     <>
@@ -75,21 +69,17 @@ export default async function AdminPage() {
           restaurants={restaurants}
           orderingEnabled={ordering.open}
           forcedClosed={ordering.mode === "closed"}
-          closedChip={ordering.short}
+          closedChip="Paused"
         />
       </section>
 
       <section>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-heading text-title font-bold">Current orders</h2>
-          <MarkAllDeliveredButton
-            confirmedCount={confirmedAll.length}
-            eligibleCount={eligibleForDelivery}
-            nextSlotEnd={nextSlotEnd}
-          />
+          <MarkAllDeliveredButton confirmedCount={confirmedCount} />
         </div>
         <p className="-mt-1 mb-3 text-sm text-muted-foreground">
-          Orders stay here until their delivery window ends, then move to{" "}
+          Orders stay here until their delivery time passes, then move to{" "}
           <Link href="/admin/history" className="font-semibold text-primary underline underline-offset-2">
             Order history
           </Link>

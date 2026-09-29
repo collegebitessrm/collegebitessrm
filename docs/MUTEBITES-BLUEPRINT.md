@@ -11,6 +11,42 @@ the source code itself.
 
 ---
 
+## College Bites port log
+
+This repo is College Bites (SRM University AP), built from MuteBites
+following this blueprint. Everything below is MuteBites' record and stays
+as it was; this log lists where College Bites deliberately differs.
+
+**Setup (29 Sep 2026)**
+- Supabase project `cpatbcisnrvyjztyqutq` in `ap-south-1`; Vercel project
+  `collegebitessrm` (Hobby), live at https://collegebitessrm.vercel.app;
+  private repo `collegebitessrm/collegebitessrm`.
+- Migrations applied through the Supabase connector (SQL shown and
+  approved first), except `20260915020000_google_oauth_and_ban.sql`, run by
+  hand. Skipped: every MuteBites menu migration, `…090000` (role rename
+  fix), `…110000` (re-apply), `…19000000`/`…19010000` (schedule) and
+  `…22000000` (folded into the new switch migration).
+- **Lesson:** Vercel Hobby only builds commits authored by the project
+  owner. The first push (authored by a personal git identity) showed
+  "Blocked"; the repo's git author is now set locally to
+  `collegebitessrm <collegebitessrm@gmail.com>`.
+- The Supabase security advisor flagged mutable `search_path` on the
+  trigger functions and signed-out access to `current_user_is_banned()`;
+  fixed in `20260929000000` / `20260929020000` (a revoke from `anon` alone
+  doesn't work — the grant comes through PUBLIC).
+
+**No ordering schedule** (replaces section 10's schedule table)
+- `app_settings.ordering_mode` is `'open' | 'closed'` only, flipped by the
+  admin whenever they like; `place_order()` raises `ordering_paused` while
+  closed (`ordering_closed` no longer exists).
+- Delivery promise is per restaurant: `restaurants.delivery_minutes`
+  (40 by default, Biryani Nation 60). The ticket says "Delivery by
+  <placed + minutes>"; "Current orders" drops finished orders once that
+  time passes; "Mark all delivered" delivers every confirmed order with
+  no time gate.
+
+---
+
 ## Contents
 
 1. [How to use this for a new university](#1-how-to-use-this-for-a-new-university)

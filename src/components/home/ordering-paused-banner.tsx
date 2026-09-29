@@ -1,9 +1,8 @@
 import type { OrderingState } from "@/lib/ordering";
 
 /**
- * Shown on Home whenever students can't order: between schedule slots
- * ("Ordering opens again at 1:30 PM"), after the last slot ("closed for
- * today") or when an admin has paused it. Wording from describeOrdering().
+ * Shown on Home whenever the admin has closed ordering. Wording from
+ * describeOrdering().
  */
 export function OrderingPausedBanner({ ordering }: { ordering: OrderingState }) {
   return (

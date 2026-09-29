@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
-import { istDayKey } from "@/lib/date";
+import { DEFAULT_DELIVERY_MINUTES, istDayKey } from "@/lib/date";
 import { REVIEW_WINDOW_MS } from "@/lib/reviews/limits";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/ids";
@@ -63,6 +63,8 @@ export type OrderDetail = {
   restaurantId: string;
   restaurantName: string;
   restaurantPhone: string;
+  /** The restaurant's promised delivery time, in minutes from placing the order. */
+  deliveryMinutes: number;
   items: OrderItem[];
   dailyNumber: number;
 };
@@ -172,7 +174,7 @@ type OrderDetailRow = {
   contact_phone: string;
   notes: string | null;
   restaurant_id: string;
-  restaurants: { name: string; phone: string } | null;
+  restaurants: { name: string; phone: string; delivery_minutes: number } | null;
   order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number }[];
   daily_number: number;
   delivered_at: string | null;
@@ -327,7 +329,7 @@ export const getOrder = cache(async function getOrder(
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone), order_items(id, dish_name, unit_price, quantity, subtotal), daily_number, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
+      "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal), daily_number, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
     )
     .eq("id", id)
     .eq("user_id", userId)
@@ -349,6 +351,7 @@ export const getOrder = cache(async function getOrder(
     restaurantId: data.restaurant_id,
     restaurantName: data.restaurants?.name ?? "Restaurant",
     restaurantPhone: data.restaurants?.phone ?? "",
+    deliveryMinutes: data.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
     items: data.order_items.map((i) => ({
       id: i.id,
       dishName: i.dish_name,

@@ -17,7 +17,6 @@ import { BlurImage } from "@/components/blur-image";
 import { getRestaurantCoverPhoto } from "@/lib/data/dish-photos";
 import type { AdminRestaurant } from "@/lib/data/admin";
 import { setOrderingMode, setRestaurantActive } from "@/lib/admin/actions";
-import { scheduleOpen } from "@/lib/ordering";
 import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 
@@ -52,9 +51,6 @@ function RestaurantToggleCard({
   // now) or "Closed" (which would misattribute the pause to this restaurant).
   const paused = active && !orderingEnabled;
   const cover = getRestaurantCoverPhoto(restaurant.name);
-  // Reopening from a forced close: follow the schedule if it's open right
-  // now, otherwise force ordering open (the admin asked for it open).
-  const reopenMode = scheduleOpen() ? "auto" : "open";
 
   function toggle() {
     const next = !active;
@@ -75,7 +71,7 @@ function RestaurantToggleCard({
 
   function reopenOrdering() {
     startTransition(async () => {
-      const ordering = await setOrderingMode(reopenMode);
+      const ordering = await setOrderingMode("open");
       if (!ordering.ok) {
         toast.error(ordering.error);
         return;
@@ -140,10 +136,7 @@ function RestaurantToggleCard({
             <AlertDialogTitle>Ordering is closed</AlertDialogTitle>
             <AlertDialogDescription>
               Open ordering first, then turn on the restaurants you want. Do you want to open ordering now?{" "}
-              {restaurant.name} will be turned on too.{" "}
-              {reopenMode === "auto"
-                ? "Ordering will follow the schedule (Auto)."
-                : "It's outside the schedule right now, so ordering will be forced open — switch back to Auto when you're done."}
+              {restaurant.name} will be turned on too.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

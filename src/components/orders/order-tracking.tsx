@@ -124,7 +124,7 @@ export function OrderTracking({
 
   const cancelled = status === "cancelled";
   const steps = cancelled ? [] : orderTimeline(status);
-  const eta = deliveryWindow(initialOrder.createdAt);
+  const eta = deliveryWindow(initialOrder.createdAt, initialOrder.deliveryMinutes);
   // Up to three distinct photos of what was ordered, for the ticket's header.
   const photos = initialOrder.items
     .map((item) => ({ dishName: item.dishName, src: getDishPhoto(initialOrder.restaurantName, item.dishName) }))

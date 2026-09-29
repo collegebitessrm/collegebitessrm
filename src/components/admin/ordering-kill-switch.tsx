@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Loader2, Power } from "lucide-react";
+import { Loader2, Power } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,58 +19,41 @@ import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 
 const MODES: { mode: OrderingMode; label: string }[] = [
-  { mode: "auto", label: "Auto" },
   { mode: "open", label: "Open" },
   { mode: "closed", label: "Closed" },
 ];
 
 const CONFIRM: Record<OrderingMode, { title: string; body: string; action: string }> = {
-  auto: {
-    title: "Follow the schedule?",
-    body: "Ordering opens 10:30 AM – 12:45 PM and 1:30 PM – 7:00 PM, and closes on its own in between.",
-    action: "Use schedule",
-  },
   open: {
-    title: "Force ordering open?",
-    body: "Students can order right now even outside the schedule. Orders placed after 7:00 PM have no slot — their ticket says delivery time to be confirmed. Switch back to Auto when you're done.",
-    action: "Force open",
+    title: "Open ordering?",
+    body: "Students can order right away from every restaurant that's turned on. It stays open until you close it.",
+    action: "Open ordering",
   },
   closed: {
-    title: "Pause ordering campus-wide?",
-    body: "No student can place a new order until you switch back, whatever the schedule says, and every restaurant is turned off. When you reopen, turn on the restaurants you want. Orders already placed aren't affected.",
-    action: "Pause ordering",
+    title: "Close ordering campus-wide?",
+    body: "No student can place a new order until you open it again, and every restaurant is turned off. When you reopen, turn on the restaurants you want. Orders already placed aren't affected.",
+    action: "Close ordering",
   },
 };
 
 /**
- * Footer row of the dashboard's plum "Today" card: the three-way ordering
- * override (app_settings.ordering_mode) and a line saying what's actually
- * happening right now. Auto follows public.ordering_schedule_open(); Open
- * and Closed force it either way. The status comes from the server
- * (getOrderingState) and is re-fetched after every change.
+ * Footer row of the dashboard's plum "Today" card: the campus Open / Closed
+ * switch (app_settings.ordering_mode — no daily schedule). The status comes
+ * from the server (getOrderingState) and is re-fetched after every change.
  */
 export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
   const router = useRouter();
   const [target, setTarget] = useState<OrderingMode | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const status =
-    ordering.mode === "open"
-      ? "Forced open — ignoring the schedule"
-      : ordering.mode === "closed"
-        ? "Paused by admin"
-        : ordering.open
-          ? `Following the schedule — open until ${ordering.closesAt}`
-          : `Following the schedule — ${ordering.headline.toLowerCase()}`;
+  const status = ordering.open ? "Open until you close it" : "Closed until you open it";
 
   function confirm() {
     if (!target) return;
     startTransition(async () => {
       const result = await setOrderingMode(target);
       if (result.ok) {
-        toast.success(
-          target === "auto" ? "Ordering follows the schedule." : target === "open" ? "Ordering forced open." : "Ordering paused.",
-        );
+        toast.success(target === "open" ? "Ordering is open." : "Ordering is closed.");
         setTarget(null);
         router.refresh();
       } else {
@@ -89,7 +72,7 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
           )}
           aria-hidden="true"
         >
-          {ordering.mode === "auto" ? <CalendarClock className="size-4.5" /> : <Power className="size-4.5" />}
+          <Power className="size-4.5" />
         </span>
         <div className="min-w-0">
           <p className="font-semibold">{ordering.open ? "Students can order now" : "Ordering is closed"}</p>

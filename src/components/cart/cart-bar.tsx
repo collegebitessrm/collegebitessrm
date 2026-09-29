@@ -25,7 +25,7 @@ export function CartBar({
   currentRestaurantId?: string;
   /** Campus-wide kill switch — disables checkout in the cart sheet when off. */
   orderingEnabled: boolean;
-  /** Why ordering is shut ("Ordering opens again at 1:30 PM"), shown in the cart sheet. */
+  /** Why ordering is shut ("Ordering is closed right now"), shown in the cart sheet. */
   closedNote?: string;
   /** True on pages that also render <TabBar/> below — stacks the bar above it. */
   hasTabBar?: boolean;

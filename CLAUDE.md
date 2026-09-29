@@ -13,8 +13,9 @@ Food delivery site for VIT-AP University students.
 > - **No daily ordering schedule.** `app_settings.ordering_mode` is only
 >   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
 >   it and `place_order()` raises `ordering_paused` when closed
->   (`20260929010000_ordering_switch_and_delivery_minutes.sql`). The app's
->   schedule code is removed in the next step.
+>   (`20260929010000_ordering_switch_and_delivery_minutes.sql`). The app
+>   side matches: `OrderingMode` is `"open" | "closed"`, the admin's
+>   switch is two-way, closed wording is "Ordering is closed right now".
 > - **`restaurants.delivery_minutes`** (default 40; Biryani Nation 60) —
 >   the ticket's "Delivery by" time counts from when the order was placed.
 > - **Migrations are applied through the Supabase connector** (project
@@ -70,13 +71,12 @@ Food delivery site for VIT-AP University students.
 - **Order tracking ticket**: the token card (`order-tracking.tsx`) is a
   ticket stub — up to three distinct photos of the ordered dishes on top,
   a dashed tear line with edge notches (`bg-background` circles), then the
-  token and the delivery window. `deliveryWindow()` (`src/lib/date.ts`)
-  returns `{ lead, time }` with no-break spaces inside `time`, so "8:15 PM"
-  can never wrap apart. Its cut-offs follow the daily ordering schedule
-  (placed before 12:45 PM → by 1:30 PM, before 6:00 PM → by 7:30 PM,
-  before 7:00 PM → by 8:15 PM, later only when an admin forced ordering
-  open → "to be confirmed") and mirror `slotEndTime()` — see `app_settings`
-  under Database schema. Once delivered, the ticket page also carries the
+  token and the delivery window. `deliveryWindow(createdAt, minutes)`
+  (`src/lib/date.ts`) returns `{ lead, time }` — "Delivery by" the placed
+  time plus the restaurant's `delivery_minutes` (40 by default, Biryani
+  Nation 60) — with no-break spaces inside `time`, so "8:15 PM" can never
+  wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
+  promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
 - **Profile**: one plum `MemberCard` (`src/components/profile/member-card.tsx`)
   holds identity, the weekly-rank pill and the three stats (cravings
@@ -208,10 +208,11 @@ Food delivery site for VIT-AP University students.
    letting everyone through.
 
 The main `/admin` dashboard's list is **Current orders**: today's (IST)
-orders until their delivery slot ends (`slotEndTime()`), after which a
-delivered/cancelled order drops off; pending/confirmed ones stay until
-they're done, so nothing actionable disappears (`getAdminOrders()`).
-`RefreshAt` re-fetches the page the moment the next slot ends. The stat
+orders until their promised delivery time (`deliveryDue()`: placed +
+the restaurant's `delivery_minutes`), after which a delivered/cancelled
+order drops off; pending/confirmed ones stay until they're done, so
+nothing actionable disappears (`getAdminOrders()`). `RefreshAt`
+re-fetches the page the moment the next one passes. The stat
 cards still count the whole day (`getOrderCounts(startOfTodayIST())`).
 Every order ever placed lives
 at `/admin/history` instead, grouped by day (newest first), reusing the
@@ -240,9 +241,9 @@ anyway, so the flag is never only a UI state.
 
 Visually, admin shares the student app's system: the dashboard's plum
 "Today" card (`StatCards`) carries today's counts with the campus ordering
-control (`OrderingKillSwitch` — a three-way Auto / Open / Closed switch
-for `app_settings.ordering_mode`, with a live status line such as
-"Following the schedule — open until 12:45 PM") as its footer row; secondary actions use the
+control (`OrderingKillSwitch` — a two-way Open / Closed switch for
+`app_settings.ordering_mode`, with a confirm dialog each way) as its
+footer row; secondary actions use the
 shared `adminPill` style (`src/components/admin/styles.ts`); order cards
 lead with the token and a dish photo; restaurant controls show cover
 photos; no uppercase anywhere.
@@ -265,13 +266,14 @@ with `relative z-10` — keep new controls on the card above it too.
 
 Setting ordering to **Closed** also turns every restaurant off
 (`setOrderingMode`); reopening leaves them off. Tapping "Turn on" on a
-restaurant while Closed asks "Open ordering now?" — yes sets Auto if the
-schedule is open right now, otherwise Open, and turns that restaurant on.
+restaurant while Closed asks "Open ordering now?" — yes sets Open and
+turns that restaurant on. While Closed, admin restaurant cards that are
+still on show an amber "Paused" chip.
 
-"Mark all delivered" counts eligible orders over **every** confirmed order
-(`getConfirmedOrderTimes()`), not just today's list — the same set
-`markAllConfirmedDelivered()` acts on — and says why when it's disabled
-("Next slot ends 1:30 PM"). Base UI gotcha: put `disabled` on the
+"Mark all delivered" acts on **every** confirmed order, any day, not just
+today's list (`getConfirmedOrderCount()` for the label, the same set
+`markAllConfirmedDelivered()` delivers); it's only disabled, with "No
+confirmed orders to deliver", when there are none. Base UI gotcha: put `disabled` on the
 `AlertDialogTrigger`/`DialogTrigger` itself, never on the element passed
 to its `render` prop — the trigger merges its own `disabled: false` last and
 silently re-enables the button.
@@ -573,7 +575,7 @@ on `orders`).
   The admin dashboard only ever drives two of those transitions directly —
   `pending → confirmed` and `confirmed → delivered` (`preparing` /
   `out_for_delivery` stay valid enum values but nothing in the app sets
-  them; delivery timing runs on fixed ETA slots, not admin clicks) — plus
+  them; delivery timing is a fixed promise per restaurant, not admin clicks) — plus
   a side-path to `cancelled` from any non-terminal status, each one
   compare-and-swapped on the status the admin's screen showed, so a stale
   screen or two admins clicking at once can't skip a step or act on a
@@ -639,27 +641,20 @@ on `orders`).
   order history. `dish_id` is `on delete set null` for the same reason.
 - **`app_settings`** — single-row table (`id boolean primary key default
   true check (id)` caps it at one row) holding `ordering_mode`
-  (`'auto' | 'open' | 'closed'`, default `'auto'`), the campus-wide
-  ordering override the admin dashboard's Today card sets. Public-read (the
+  (`'open' | 'closed'`, default `'open'`), the campus-wide ordering
+  switch the admin dashboard's Today card sets. **No daily schedule** —
+  the client opens and closes ordering whenever they like. Public-read (the
   student app needs to know whether it can order), admin-only update.
-  `'auto'` follows the **daily schedule** (IST), enforced by
-  `public.ordering_schedule_open()`: open 10:30 AM – 12:45 PM (slot 1,
-  delivered by 1:30 PM), closed 12:45 – 1:30 PM, open 1:30 – 7:00 PM
-  (orders before 6:00 PM → delivered by 7:30 PM, 6:00 – 7:00 PM → by
-  8:15 PM), closed from 7:00 PM until 10:30 AM. `'open'` / `'closed'`
-  force it either way (e.g. testing at night). `public.ordering_is_open()`
-  (security definer, callable by anon + authenticated) combines the two
-  and is the single source of truth — `place_order()` checks it, and the
-  app reads it via `getOrderingState()` (`src/lib/data/settings.ts`), with
-  the wording ("Ordering opens again at 1:30 PM") from
-  `describeOrdering()` in `src/lib/ordering.ts`, which mirrors the schedule
-  constants — change the SQL function and that file together.
-  `deliveryWindow()` / `slotEndTime()` (`src/lib/date.ts`) use the same
-  cut-offs; an order placed after 7:00 PM can only exist when an admin
-  forced ordering open, so it gets "Delivery time to be confirmed" and
-  counts as past its slot immediately. The old `ordering_enabled` boolean
-  it replaced was dropped in
-  [`20260919010000_drop_ordering_enabled.sql`](supabase/migrations/20260919010000_drop_ordering_enabled.sql).
+  `public.ordering_is_open()` (security definer, callable by anon +
+  authenticated) just reads it and is the single source of truth —
+  `place_order()` checks it, and the app reads it via `getOrderingState()`
+  (`src/lib/data/settings.ts`), with the wording ("Ordering is closed right
+  now") from `describeOrdering()` in `src/lib/ordering.ts`. MuteBites'
+  `ordering_enabled` boolean was replaced in the same migration
+  (`20260929010000_ordering_switch_and_delivery_minutes.sql`).
+- **`restaurants.delivery_minutes`** (`int not null default 40`, 5–240) —
+  how long after placing an order it's promised by. The ticket, the admin
+  order page and "Current orders" all compute from it (`src/lib/date.ts`).
 
 RLS is enabled on every table:
 - `restaurants` / `dish_categories` / `dishes` are public-read (browsing the
@@ -677,9 +672,8 @@ RLS is enabled on every table:
   the restaurant and `is_available`; snapshots dish name/price from
   `dishes` (never from the client); leaves `status` at `pending`; and
   computes `total_amount` itself. It also checks `public.ordering_is_open()`
-  before anything else (raising `ordering_paused` if an admin forced
-  ordering closed, or `ordering_closed` if the daily schedule is between
-  slots) — enforced in the function itself, not just hidden in the UI,
+  before anything else (raising `ordering_paused` while the admin has
+  ordering closed) — enforced in the function itself, not just hidden in the UI,
   since a direct PostgREST call would otherwise bypass an app-level check.
   Since [`20260922000000_place_order_rate_limit.sql`](supabase/migrations/20260922000000_place_order_rate_limit.sql)
   it also rate-limits, right after the ban check: at most **5 orders per
@@ -699,7 +693,7 @@ RLS is enabled on every table:
   `Content-Security-Policy` once the logs are clean; add any new external
   origin to it.
   It raises short error keys
-  (`banned`, `restaurant_closed`, `dish_unavailable`, `ordering_paused`, `ordering_closed`, …) that
+  (`banned`, `restaurant_closed`, `dish_unavailable`, `ordering_paused`, …) that
   `src/lib/orders/actions.ts` maps to messages. Admins
   can additionally update any `orders` row (e.g. changing `status`) and read
   every `orders` row, every `users` row, and every `order_items` row (not

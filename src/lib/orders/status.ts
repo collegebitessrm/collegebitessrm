@@ -39,7 +39,7 @@ export function statusBadge(status: OrderStatus): { label: string; className: st
  * The two admin-driven jumps: confirm with the restaurant, then mark
  * delivered. `preparing`/`out_for_delivery` stay valid enum values (and
  * still show on the student timeline) but aren't clicked through
- * individually — delivery timing runs on fixed ETA slots, not admin
+ * individually — delivery timing runs on a fixed promise per restaurant, not admin
  * clicks, so there's nothing for a "start preparing" / "out for delivery"
  * button to actually decide.
  */
