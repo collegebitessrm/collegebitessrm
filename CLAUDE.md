@@ -1,0 +1,854 @@
+@AGENTS.md
+
+# MuteBites
+
+Food delivery site for VIT-AP University students.
+
+> **Port in progress — College Bites (SRM AP).** This repo is a copy of
+> MuteBites being adapted for SRM University AP (Amaravati, AP): app name
+> College Bites, pickup at **Gate 3**, admin alerts to
+> collegebitessrm@gmail.com, launch 1 Oct 2026. Everything below still
+> describes MuteBites until the rebrand step rewrites it. What already
+> differs:
+> - **No daily ordering schedule.** `app_settings.ordering_mode` is only
+>   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
+>   it and `place_order()` raises `ordering_paused` when closed
+>   (`20260929010000_ordering_switch_and_delivery_minutes.sql`). The app's
+>   schedule code is removed in the next step.
+> - **`restaurants.delivery_minutes`** (default 40; Biryani Nation 60) —
+>   the ticket's "Delivery by" time counts from when the order was placed.
+> - **Migrations are applied through the Supabase connector** (project
+>   `cpatbcisnrvyjztyqutq`, `ap-south-1`), still only after the SQL has
+>   been shown in chat and approved. `supabase/migrations/` holds exactly
+>   what's in the database, in the order it applies on a fresh project.
+>   `20260915020000_google_oauth_and_ban.sql` was run by hand in the SQL
+>   editor, so it's not in the database's migration history.
+> - MuteBites' menus, menu fixes and photos (`public/MuteBites/`) are not
+>   copied; College Bites' own menu migration comes later.
+
+## Stack
+
+- **Framework**: Next.js (App Router), TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui (`src/components/ui`)
+- **Design tokens** (`src/app/globals.css`): plum `#552C4A` is ink,
+  amber carries every action (`--primary` `#A25E1D` — a hair darker than
+  the approved `#A9631F`, which fails AA as text on the ivory ground),
+  rose `#914955` is the secondary accent, blush/lavender are tint surfaces
+  only, raw amber `#C07A35` is decorative only (3.5:1, never text). Fixed
+  5-step ramps (`plum-`/`rose-`/`amber-`/`ivory-`/`forest-`/`brick-`
+  100–900) sit alongside semantic tokens that flip per theme — prefer the
+  semantic ones. Surfaces step ground (`--background`) → card → raised
+  (`--popover`), with `shadow-card` / `shadow-raised` / `shadow-overlay`
+  elevation. Text on a coloured fill uses its `*-foreground` token
+  (`text-success-foreground`, `text-destructive-foreground`, …), never
+  `text-white` — dark-mode fills are light, so white fails there. Don't
+  put `text-primary` on `bg-secondary`/`bg-brand-soft` (below 4.5:1). Use
+  `text-brand-soft-foreground` on blush instead. On the plum `bg-ink` surface
+  (token card, cart bar, banners) use `text-ink-accent` / `-ink-success` /
+  `-ink-danger` — regular amber/green/red are ~2:1 on plum.
+  Focus rings are `ring-ring/80` (3.5:1+ on card) and input borders use
+  `--input` (3.4:1+) — both chosen to meet WCAG's 3:1 for non-text UI;
+  don't drop them back to /40 or the old pale border. `npm run
+  audit:contrast` (`scripts/contrast-audit.mjs`) re-checks every token pair
+  the app uses in both themes and fails if any pair is below its minimum —
+  run it after touching colours, and add a pair when you introduce a new
+  text/surface combination.
+- **Typography**: Fraunces (`font-heading`, SOFT axis at 50 via a base
+  rule in `globals.css`) for display text and big numerals; Plus Jakarta
+  (`font-sans`) for body **and buttons** — buttons never use
+  `font-heading`. Sizes above body come from the named scale in
+  `globals.css` — `text-display` (hero), `text-headline` (page titles),
+  `text-title` (card/section titles) — not one-off `text-[2.5rem]`s.
+  Small captions above fields/sections use `text-label`: sentence case,
+  sans, no letter-spacing. No mono font is loaded any more; don't bring
+  back the mono-uppercase eyebrow style, and no `uppercase` anywhere.
+- **Home header mood field**: `HomeHeader` bleeds to the screen edges over
+  `.mood-field.mood-<morning|afternoon|evening|night>` (`globals.css`),
+  driven by `getTimeOfDayIST()`. Each mood has three `--mood-<time>-a/b/c`
+  stops per theme, checked at ≥6.7:1 for the plum heading on top — re-check
+  contrast if you change them.
+- **Order tracking ticket**: the token card (`order-tracking.tsx`) is a
+  ticket stub — up to three distinct photos of the ordered dishes on top,
+  a dashed tear line with edge notches (`bg-background` circles), then the
+  token and the delivery window. `deliveryWindow()` (`src/lib/date.ts`)
+  returns `{ lead, time }` with no-break spaces inside `time`, so "8:15 PM"
+  can never wrap apart. Its cut-offs follow the daily ordering schedule
+  (placed before 12:45 PM → by 1:30 PM, before 6:00 PM → by 7:30 PM,
+  before 7:00 PM → by 8:15 PM, later only when an admin forced ordering
+  open → "to be confirmed") and mirror `slotEndTime()` — see `app_settings`
+  under Database schema. Once delivered, the ticket page also carries the
+  rating card (`RateOrder`, see `order_reviews`).
+- **Profile**: one plum `MemberCard` (`src/components/profile/member-card.tsx`)
+  holds identity, the weekly-rank pill and the three stats (cravings
+  solved, day streak, no-shows). Milestones are data-driven in
+  `MILESTONES` (`milestone-badges.tsx`) — six tiers, all computed from
+  counts that only go up (delivered orders, distinct restaurants), so a
+  badge never re-locks; locked tiles show a progress ring and "N to go".
+  Under the grid, a blush `MilestoneReward` card carries the client's
+  offer: all six milestones = one free biryani of their choice. Earned →
+  a WhatsApp link (`SUPPORT_PHONE`) with a prefilled claim message; once
+  an admin marks it handed over on `/admin/users` (`milestone_rewards`,
+  `setMilestoneRewardClaimed()`) the card says "Free biryani claimed".
+  The admin row's "Mark claimed" (confirm dialog, with Undo) only appears
+  for students who've unlocked every milestone, computed server-side in
+  `getAllUsers()` with the same `getUnlockedMilestones()`; a "Free biryani
+  earned" chip filters the list to them.
+  A newly unlocked milestone (per device, `mutebites.milestones-seen`)
+  plays the same full-screen celebration as "Order placed!" — both use
+  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: plum
+  overlay, confetti unless reduced motion, the chime, tap or ~2 s to
+  dismiss); several at once share one overlay naming them all. Render it
+  outside any `<ViewTransition>`.
+- **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
+  `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`, all
+  using `LostTicket` (`src/components/lost-ticket.tsx`) where they can. This
+  Next.js version passes `retry` (not `reset`) to error boundaries.
+  `getRestaurantMenu()` / `getOrder()` return null for a malformed id
+  (`isUuid()`, `src/lib/ids.ts`), so a mangled URL is a 404 rather than a
+  Postgres error. Empty states go through `EmptyState`
+  (`src/components/empty-state.tsx`): `art="plates"` for empty cart /
+  orders, an icon for in-place no-match states.
+- **Icons**: lucide only — no emoji anywhere in the UI (they render
+  differently per OS and clashed with the icon set). Big
+  moments get `CelebrationOverlay`, not an emoji-laden toast.
+- **Dish deep links**: `/restaurants/<id>?dish=<dishId>` opens the menu
+  scrolled to that dish with a brief rose outline (`focusDishId` in
+  `MenuView`). Used by Home search's dish results, the Trending popup and
+  the Thursday banner (`getThursdaySpecial()` returns `dishId`).
+- **Home search** searches dishes as well as restaurants: every dish ships
+  with the page (`getSearchableDishes()`, ~100 rows) and `searchDishes()`
+  (`src/lib/search.ts`) filters on the client — every typed word must start
+  a word in the dish name, its category or its restaurant's name, in any
+  order. "veg" / "non veg" filter on the dish's veg flag instead of text
+  (so "veg" never matches inside "Non-Veg Biryani"). A "Dishes" section
+  shows above restaurants; restaurants also appear if they serve a match.
+- **Menu filters** (`MenuView`, `src/components/menu/menu-view.tsx`): one
+  sticky row — search icon, then a scrolling rail of **Veg** / **Non-veg**
+  (mutually exclusive, tap again to clear; red on light red for non-veg)
+  and the category chips. The diet toggles only appear on a menu that has
+  both kinds of dish.
+- **Notifications** (web push, `src/lib/notifications/`): students get
+  *confirmed*, *delivered* and *cancelled*; the address in
+  `ADMIN_ALERT_EMAILS` (`send.ts`) gets *new order*. `public/sw.js` is a
+  notifications-only service worker — **no fetch handler on purpose**, so
+  it can never serve a stale page. `client.ts` registers it, asks
+  permission and saves the subscription (`actions.ts` → the
+  `push_subscriptions` table); `send.ts` delivers with `web-push` and
+  deletes rows a push service reports as gone (404/410). Sends run inside
+  `after()` so a slow push service never holds up an order or a status
+  change, and never throw. Student sends go through the admin's own
+  session (admins can read every subscription row); the *new order* send
+  can't (a student's session can't see the admin's devices), so it uses
+  the service-role client (`src/lib/supabase/admin.ts` — the only place
+  that key is used; missing key = no admin push, everything else fine).
+  Env: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`,
+  `SUPABASE_SERVICE_ROLE_KEY`. UI: a switch in Profile, a one-time
+  "Get a ping" card on a live order (`mutebites.notify-asked`), and
+  `NewOrderAlerts` on the dashboard — Realtime `orders` inserts play a
+  **loud** repeating alarm (`playAdminAlertSound()`, its own
+  `mutebites.admin-alert-sound` switch, deliberately not the student
+  chime), count new orders and refresh the list. Browsers block audio
+  until a real tap, so the bell both grants permission and arms the sound.
+  A push notification's *own* sound is the phone's setting, not ours —
+  admin pushes only set `requireInteraction` and a long vibrate.
+- **Motion**: CSS only (no Framer Motion). Easing tokens `--ease-out-expo`
+  / `--ease-spring` / `--ease-in-quad` (also Tailwind `ease-*` utilities) and
+  durations `--dur-press|quick|base|slow` in `globals.css` — use them rather
+  than hand-typed curves. New animations go inside the existing
+  `prefers-reduced-motion: no-preference` block; a reduce-motion safety net
+  at the bottom collapses anything else (library animations included) to
+  its end state, spinners exempt. The global press rule transitions colour
+  and shadow as well as transform on purpose — it's unlayered, so a bare
+  `transition: transform` there would override every `transition-colors`.
+  Shared-element view transitions (card → menu hero) were considered and
+  skipped: the menu has a `loading.tsx`, so the pair rarely forms.
+- **Backend**: Supabase (Postgres + Auth + Row Level Security)
+- **Auth**: "Continue with Google" via Supabase Auth (Google OAuth
+  provider). No email/password, no OTP. On first login (no matching
+  `public.users` row yet), the app collects full name + mobile number
+  before continuing; returning users skip straight in.
+- **Payments**: Cash on delivery only — there are no payment fields or
+  payment provider anywhere in this codebase. Don't add any. The "About
+  MuteBites" popup (see below) also mentions UPI as accepted at pickup —
+  that's real, but purely physical, an informal option between the runner
+  and student handled entirely outside the app, the same as cash; it's
+  not tracked, processed, or reconciled by anything here, so it doesn't
+  contradict the rule above. Don't build actual UPI integration (a QR
+  code, a payment record, verification) without this being revisited
+  first — that would be a real payment provider, which this app
+  deliberately doesn't have.
+- **Hosting**: Vercel. `vercel.json` pins the serverless function region to
+  `bom1` (Mumbai) to match the Supabase project's `ap-south-1` region —
+  found (2026-09-17) that Vercel's default function region is US-East,
+  so every DB/auth call was crossing from Virginia to Mumbai and back on
+  every request, which was the actual cause of slow page loads (far
+  bigger than the redundant `auth.getUser()` call fixed alongside it in
+  `src/lib/profile.ts`). If Supabase's region ever changes, update this
+  to match.
+  Every push to `main` auto-deploys (usually ~30 s). The Hobby plan
+  allows 100 deployments a day and builds one at a time, so batch small
+  follow-up fixes into one push rather than pushing each tweak. The Vercel
+  CLI works via `npx -y vercel@latest` (`ls mutebites`, `inspect <url>
+  --logs`, `redeploy <url>`) with the saved login. A deploy stuck on
+  "Initializing" with no build logs has, so far, been a Vercel-side
+  incident — check https://www.vercel-status.com before redeploying (a
+  redeploy just queues behind it).
+
+## Admin access
+
+`/admin` has two layers, both required, neither optional:
+1. `requireAdmin()` (`src/lib/admin/guard.ts`) — signed in via Google, and
+   `users.role = 'admin'` (see Database schema below for how that's set).
+2. A separate passcode, checked in `src/app/admin/layout.tsx` after (1)
+   passes. The passcode lives only in the `ADMIN_PASSCODE` env var —
+   never hardcoded, never committed. Entering it right sets an httpOnly,
+   `/admin`-scoped session cookie (`src/lib/admin/passcode.ts` /
+   `passcode-actions.ts`); no `ADMIN_PASSCODE` set means the gate **fails
+   closed** — nobody gets in, admin role or not — rather than silently
+   letting everyone through.
+
+The main `/admin` dashboard's list is **Current orders**: today's (IST)
+orders until their delivery slot ends (`slotEndTime()`), after which a
+delivered/cancelled order drops off; pending/confirmed ones stay until
+they're done, so nothing actionable disappears (`getAdminOrders()`).
+`RefreshAt` re-fetches the page the moment the next slot ends. The stat
+cards still count the whole day (`getOrderCounts(startOfTodayIST())`).
+Every order ever placed lives
+at `/admin/history` instead, grouped by day (newest first), reusing the
+same `OrderList` component in a `groupByDate` mode rather than a separate
+one-off component. Every registered student is browsable (read-only, with
+a client-side search box) at `/admin/users`, reached via a "Users" button
+next to "Order history" (a third button, "Reviews", opens `/admin/reviews` —
+see `order_reviews` under Database schema) — this replaced a "Banned users" button that used
+to sit directly on the main dashboard. Banned Users management itself
+still lives on its own page, `/admin/banned` (unchanged), but is now one
+level deeper — reached via a "Banned users" button on `/admin/users`
+instead of straight from the dashboard, and its back-link points to
+`/admin/users` accordingly (`BackToDashboardLink` takes optional
+`href`/`label` overrides for this).
+
+**Sold out** (`/admin/sold-out`, a "Sold out" pill on the dashboard) lists
+every dish on every menu — including the ones already off sale, since this
+is the only way to put one back — grouped by restaurant and section, with
+restaurant tabs, a search box and a "Sold out only" filter. Each row's
+button flips `dishes.is_available` via `setDishAvailable()`
+(`src/lib/admin/actions.ts`, admin-checked like every other admin action,
+with RLS as the real boundary) and updates that row in place. A sold-out
+dish still shows on the student menu — greyed, struck through and
+unorderable (`DishCard`'s `soldOut`) — and `place_order()` refuses it
+anyway, so the flag is never only a UI state.
+
+Visually, admin shares the student app's system: the dashboard's plum
+"Today" card (`StatCards`) carries today's counts with the campus ordering
+control (`OrderingKillSwitch` — a three-way Auto / Open / Closed switch
+for `app_settings.ordering_mode`, with a live status line such as
+"Following the schedule — open until 12:45 PM") as its footer row; secondary actions use the
+shared `adminPill` style (`src/components/admin/styles.ts`); order cards
+lead with the token and a dish photo; restaurant controls show cover
+photos; no uppercase anywhere.
+
+Order cards carry a "From <restaurant>" box: one line per dish as
+"Dish name - qty" with its price — never "1× Dish" — then the note, then
+the student's name and number. The WhatsApp button's message and the copy
+button's text come from `src/lib/orders/admin-text.ts` (WhatsApp: full
+name; restaurant, each dish and the question on their own lines; a total
+line only for multi-dish orders. Copy: restaurant, each dish, name,
+number — nothing else) — keep them in step with the card.
+Tapping a card opens **`/admin/orders/[id]`** (`getAdminOrderDetail()` +
+`OrderDetailView`): timing (placed, delivery window, delivered at),
+student (phone, reg. number, email, Call / WhatsApp / Copy), each dish
+with unit price, subtotal and the student's stars if rated, total, note,
+review note, and the same Confirm / Mark delivered / Cancel actions
+(`OrderActions`, shared with the card). The card is clickable via a
+stretched link on the token (`after:inset-0`); its buttons sit above it
+with `relative z-10` — keep new controls on the card above it too.
+
+Setting ordering to **Closed** also turns every restaurant off
+(`setOrderingMode`); reopening leaves them off. Tapping "Turn on" on a
+restaurant while Closed asks "Open ordering now?" — yes sets Auto if the
+schedule is open right now, otherwise Open, and turns that restaurant on.
+
+"Mark all delivered" counts eligible orders over **every** confirmed order
+(`getConfirmedOrderTimes()`), not just today's list — the same set
+`markAllConfirmedDelivered()` acts on — and says why when it's disabled
+("Next slot ends 1:30 PM"). Base UI gotcha: put `disabled` on the
+`AlertDialogTrigger`/`DialogTrigger` itself, never on the element passed
+to its `render` prop — the trigger merges its own `disabled: false` last and
+silently re-enables the button.
+
+## Project structure
+
+- `docs/MUTEBITES-BLUEPRINT.md` — the whole project history (every
+  session, commit and migration), setup steps outside the code, lessons
+  learned, and a porting checklist for rebuilding at another university.
+  Update it alongside this file when something significant changes.
+- `src/app` — routes (App Router)
+- `src/app/robots.ts` — generates `/robots.txt` (everything but `/admin`
+  crawlable). Excluded from the `src/proxy.ts` matcher like `favicon.ico`,
+  otherwise the sign-in guard 307s crawlers to `/login` and Lighthouse
+  marks robots.txt invalid.
+- **SEO** (search basics only — signed-out visitors, and so search
+  engines, can only load `/login`, `/privacy` and `/terms`; menus are not
+  public, by decision): `src/lib/site.ts` holds the site address
+  (`NEXT_PUBLIC_SITE_URL` overrides it — set that if a custom domain is
+  added), name, search title and description. The root layout sets
+  `metadataBase`, description, keywords, Open Graph / Twitter tags and
+  Google Search Console verification (`GOOGLE_SITE_VERIFICATION` env var,
+  nothing emitted while unset). `src/app/opengraph-image.tsx` renders the
+  link-preview card (mark, name, tagline, four dish photos — literal
+  paths, update them if a photo is renamed). `/login` carries the full
+  search title, a canonical URL and Organization/WebSite JSON-LD.
+  `src/app/sitemap.ts` lists the three public pages; `robots.ts` points
+  to it and disallows `/admin`, `/auth`, `/orders`, `/profile`,
+  `/welcome`, which (plus the admin layout) are also `noindex`.
+  `sitemap.xml` and `opengraph-image` are excluded from the
+  `src/proxy.ts` matcher so bots aren't redirected to `/login`.
+- Every page has exactly one `<h1>` (order tracking's is `sr-only`; the
+  admin header's "Admin" is an h1 only on the dashboard itself, since
+  sub-pages carry their own). Keep it that way when adding pages.
+- `src/app/privacy`, `src/app/terms` — static, unauthenticated pages
+  required for the Google OAuth consent-screen review. Listed in
+  `PUBLIC_PATHS` (`src/lib/supabase/middleware.ts`) alongside `/login` and
+  `/auth` so `src/proxy.ts` doesn't bounce a signed-out visitor — or
+  Google's review bot — to `/login` before they can load them.
+- `src/app/(home)/page.tsx` — the `/` route. It lives in a `(home)` route
+  group (the parens don't affect the URL) specifically so its
+  `loading.tsx` stays scoped to just `/`. A `loading.tsx` placed directly
+  in `src/app` would become the fallback for *every* route that doesn't
+  have its own — including `/login`, `/admin`, etc. — since the app root
+  is an ancestor of all of them. Don't move `page.tsx` back out to
+  `src/app` without either dropping its `loading.tsx` or being fine with
+  that.
+- `src/components/ui` — shadcn/ui components. Two modal-style primitives:
+  `alert-dialog.tsx` (confirmations — "Cancel this order?", "Pause
+  ordering campus-wide?", "Mark 3 orders delivered?") and `dialog.tsx`
+  (plain popups with no confirm/cancel semantics — the "About MuteBites"
+  card from the Home logo, the Trending popup and the one-time "How was
+  it?" rating prompt). The cart and rating sheets use `sheet.tsx`. Both wrap `@base-ui/react`; reach for whichever already matches
+  what you're building rather than hand-rolling a third.
+- `src/lib/supabase/client.ts` — browser Supabase client
+- `src/lib/supabase/server.ts` — server Supabase client (Server Components/Actions)
+- `src/lib/supabase/middleware.ts` — session-refresh helper used by
+  `src/proxy.ts` — this Next.js version renamed `middleware.ts`/
+  `middleware()` to `proxy.ts`/`proxy()`; same route-matcher config,
+  different filename and export name.
+- `supabase/migrations/` — hand-written SQL migrations (see rule below)
+- `public/MuteBites/` — restaurant/dish photos, one subfolder per restaurant
+  (plus `covers/` for the hero banners) — matched to database rows by name
+  in `src/lib/data/dish-photos.ts`, deliberately **not** a database column
+  (no schema change needed to add or swap a photo). `getRestaurantCoverPhoto()`
+  and `getDishPhoto()` look up by exact restaurant/dish name; anything
+  without a confident match — a dish with no distinct photo, a restaurant
+  with no cover yet — falls back to the existing flat placeholder
+  (`bg-stripes`) rather than showing a mismatched image. Cover photo
+  filenames carry a `-v2`-style suffix when replaced after the first
+  publish — an intermediate cache (outside this app, never fully
+  identified) kept re-serving an old file by its original URL even after
+  verified-fresh server responses and full dev-server restarts, so a
+  changed cover photo should get a new filename, not overwrite the old one
+  in place, to guarantee cache-safety.
+  The login screen's photo mosaic (`src/app/login/page.tsx`, `MOSAIC`)
+  also references a dozen of these files by path directly — renaming or
+  removing a photo means updating that list too, or its tile goes blank.
+  Home's restaurant cards slide through photos (`RestaurantPhotoSlides`,
+  `src/components/home/restaurant-photo-slides.tsx`): the cover first,
+  then up to five available dishes with a "veg mark · name · price" chip
+  (`getRestaurantCardSlides()`, same file as above) — most ordered
+  first (campus-wide, last 30 days: `getDishOrderCounts()` in
+  `src/lib/data/trending.ts`, the same aggregate-only `trending_dishes()`
+  RPC with a high limit), ties broken by `SIGNATURE_DISHES` then menu
+  order; one slide per distinct photo, dishes without a photo skipped. The
+  cover holds 2.5 s (+0.7 s per card down the list), each dish 3.2 s —
+  hold time only counts while the card is on screen and the tab visible;
+  pauses 8 s after a touch. Tapping a dish slide opens
+  `/restaurants/<id>?dish=<dishId>` (the dish deep link), the cover opens
+  the plain menu; no autoplay under
+  reduced motion or for a closed restaurant; swiping is native
+  scroll-snap. Dish photos mount one slide ahead, only once the card has
+  been seen. The card's "24 dishes · from ₹60" line comes from
+  `getRestaurantMenuStats()` (`src/lib/data/restaurants.ts`).
+- **Logo** — two sources in `public/`: `mutebites-logo-v2-2.png`
+  (transparent; everything is generated from it) and
+  `mutebites-logo-v2-1.png` (same art on its own background, reference
+  only). `node scripts/build-brand-assets.mjs` regenerates everything
+  below from v2-2 — rerun it (and re-measure its hand-set layer regions)
+  whenever the logo changes:
+  - `public/brand/mark.webp` / `mark.png` — the mascot group only (no
+    wordmark/tagline: unreadable at icon sizes). `BrandLogo`
+    (`src/components/brand-logo.tsx`) shows `mark.webp` on a fixed ivory
+    `#f5eae1` tile in every theme — the plum mascot vanishes on dark
+    cards and the ink surface, so callers size/round it but never set
+    its background.
+  - App icons: `src/lib/app-icon.tsx` centres `mark.png` on ivory for
+    `apple-icon.tsx` and `icons/icon-192|512|512-maskable` (maskable at
+    `markScale: 0.6` to stay inside the ~80% safe circle). The manifest's
+    `background_color` is the same ivory, so Android's launch screen
+    hands straight over to the splash.
+  - `src/app/favicon.ico` — the mark on an ivory rounded square, 16/32/
+    48/64 RGBA PNG frames (Next can't generate `favicon` from code, and
+    its ico decoder rejects non-RGBA frames), written by the same script.
+  - `public/brand/splash/*.webp` + `src/components/splash/layers.ts` —
+    the startup splash layers (body, legs, arm+tray, cloche lid, steam,
+    speed trails, ground swoosh, wordmark, tagline, plus the two shoes on
+    their own) and their boxes in source-art pixels. At rest they
+    re-assemble the logo exactly; where a cut runs through solid paint the
+    lower layer keeps a few extra pixels (`UNDERLAPS`) so no hairline seam
+    shows.
+- **Startup splash** (`src/components/splash/`), ~2.5 s, once per browser
+  session (sessionStorage `mutebites.splash-shown` — every fresh app/PWA
+  open, never on route changes or reloads), never on `/admin`, `/auth`,
+  `/privacy`, `/terms` or a tab opened in the background:
+  - Storyboard (timings in `config.ts`): ivory → the mascot **runs** in
+    from the left — the legs are a jointed rig (`rig.ts`: hip/knee/ankle
+    measured on the source art, vector tubes + the real shoes) cycling
+    through `STRIDE`, 3 strides that slow as it arrives, with body bob,
+    forward lean, stretched trails, the arm/tray and lid bouncing a beat
+    behind and steam streaming back → feet plant, squash, rebound (the rig
+    ends in exactly the drawn pose and hands over to the drawn legs) →
+    swoosh draws, lid lifts with a warm glow, steam rises → wordmark, then
+    tagline → hold → the ivory screen **closes down into the page's own
+    logo tile** while the mascot shrinks onto its mark (clip-path +
+    transform, measured live), so the splash becomes the app's logo instead
+    of fading. The landing spot is whichever `BrandLogo` has
+    `splashTarget` (login page, Home header); while a `loading.tsx`
+    skeleton (`aria-busy`) is up it waits up to 1.2 s for it, and pages
+    without one get a short fade.
+  - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
+    `splash.css`), positioned in source-art pixels via `--u` (a container
+    query unit), so it lines up at any screen size. `engine.ts` is all the
+    motion — Web Animations on transform/opacity of HTML elements (legs
+    included), so it stays smooth while the app hydrates underneath. It's
+    one self-contained function that `init-script.ts` serialises
+    (`runSplash.toString()`) into a raw inline `<script>` in the root
+    layout — **not** `next/script` `beforeInteractive`, which is queued
+    until Next's JS loads and would let the app paint first (the
+    theme-init script, `src/lib/theme/init-script.ts`, is inline for the
+    same reason — no light flash for dark users). Keep `engine.ts` free of
+    imports and module-scope helpers.
+  - Reduced motion: no run — the finished logo fades in, holds ~0.65 s,
+    fades out. Safety valves: tap skips (to the finished logo, then the
+    close), slow/failed images (> 2.5 s) just fade out, and CSS hides the
+    overlay after 9 s whatever happens.
+  - Replay / disable: `?intro` (or `?splash`) forces it, `?nosplash`
+    skips one load, localStorage `mutebites.splash = "off"` disables it on
+    one device, `NEXT_PUBLIC_DISABLE_SPLASH=1` removes it from the build.
+  - One-off moments that could fire underneath wait with `afterSplash()`
+    (`splash/after-splash.ts`) — the milestone celebration does.
+
+`loading.tsx` exists for the restaurant list (`(home)`), the menu page
+(`restaurants/[id]`), both order pages (`orders`, `orders/[id]`), and
+`profile` — plain skeletons built from `src/components/ui/skeleton.tsx`,
+roughly mirroring each page's real layout so nothing visibly jumps.
+
+## Database schema
+
+Defined in [`supabase/migrations/20260915000000_init_schema.sql`](supabase/migrations/20260915000000_init_schema.sql),
+[`supabase/migrations/20260915010000_add_user_role.sql`](supabase/migrations/20260915010000_add_user_role.sql),
+[`supabase/migrations/20260915020000_google_oauth_and_ban.sql`](supabase/migrations/20260915020000_google_oauth_and_ban.sql),
+[`supabase/migrations/20260915030000_ban_by_phone.sql`](supabase/migrations/20260915030000_ban_by_phone.sql),
+[`supabase/migrations/20260915040000_drop_block_and_room.sql`](supabase/migrations/20260915040000_drop_block_and_room.sql),
+[`supabase/migrations/20260915050000_place_order_function.sql`](supabase/migrations/20260915050000_place_order_function.sql),
+[`supabase/migrations/20260915060000_seed_restaurants.sql`](supabase/migrations/20260915060000_seed_restaurants.sql)
+(data only — the 3 real partner restaurants and their menus),
+[`supabase/migrations/20260915070000_guard_phone_changes.sql`](supabase/migrations/20260915070000_guard_phone_changes.sql),
+[`supabase/migrations/20260915080000_admin_dashboard.sql`](supabase/migrations/20260915080000_admin_dashboard.sql),
+[`supabase/migrations/20260915090000_fix_users_role_column_rename.sql`](supabase/migrations/20260915090000_fix_users_role_column_rename.sql)
+(fixes a live drift — the `role` column got renamed to `student` by
+accident via the Table Editor UI, not through any migration — back to
+match every migration and the app code),
+[`supabase/migrations/20260915100000_admin_users_and_ban.sql`](supabase/migrations/20260915100000_admin_users_and_ban.sql),
+[`supabase/migrations/20260915110000_reapply_place_order_ordering_check.sql`](supabase/migrations/20260915110000_reapply_place_order_ordering_check.sql)
+(re-applies `place_order()` unchanged — the `ordering_enabled` check from
+`080000` likely never actually went live, probably split off into its own
+SQL editor tab and skipped when that migration was applied by hand),
+[`supabase/migrations/20260915120000_banned_at.sql`](supabase/migrations/20260915120000_banned_at.sql),
+[`supabase/migrations/20260915130000_enable_realtime_orders.sql`](supabase/migrations/20260915130000_enable_realtime_orders.sql)
+(adds `orders` to the `supabase_realtime` publication —
+`src/components/orders/order-tracking.tsx`, a client component, subscribes
+to its own order's row for live status updates on top of the normal
+server-fetched page; existing RLS still governs who can actually receive
+them, and a plain page refresh still shows the true status either way),
+[`supabase/migrations/20260915140000_seed_new_restaurants.sql`](supabase/migrations/20260915140000_seed_new_restaurants.sql)
+(data only — two more partner restaurants, **MuteBites Chinese** (since
+renamed Food Corner; 5 categories, 24 dishes) and **MuteBites Fresh Fruits** (1 category, 13
+dishes, priced per 500 g/1 kg pack), bringing the total to 5 restaurants),
+[`supabase/migrations/20260915150000_daily_order_numbers.sql`](supabase/migrations/20260915150000_daily_order_numbers.sql)
+(adds `orders.daily_number` — see below),
+[`supabase/migrations/20260916000000_trending_leaderboard.sql`](supabase/migrations/20260916000000_trending_leaderboard.sql)
+(adds `trending_dishes()` / `trending_restaurants()` — see below),
+[`supabase/migrations/20260917000000_my_weekly_rank.sql`](supabase/migrations/20260917000000_my_weekly_rank.sql)
+(adds `my_weekly_rank()` — see below),
+[`supabase/migrations/20260917010000_drop_unused_trending_restaurants.sql`](supabase/migrations/20260917010000_drop_unused_trending_restaurants.sql)
+(drops `trending_restaurants()` again — never called by the app),
+[`supabase/migrations/20260917020000_highly_reordered_dishes.sql`](supabase/migrations/20260917020000_highly_reordered_dishes.sql)
+(adds `highly_reordered_dishes()` — see below),
+[`supabase/migrations/20260919000000_ordering_schedule.sql`](supabase/migrations/20260919000000_ordering_schedule.sql)
+(the daily ordering schedule + three-way admin override — see
+`app_settings` below),
+[`supabase/migrations/20260919010000_drop_ordering_enabled.sql`](supabase/migrations/20260919010000_drop_ordering_enabled.sql)
+(drops the old `ordering_enabled` switch it replaced),
+[`supabase/migrations/20260919020000_order_reviews.sql`](supabase/migrations/20260919020000_order_reviews.sql)
+(dish ratings — `orders.delivered_at`, `order_reviews`, `order_item_ratings`,
+`submit_review()`; see below),
+[`supabase/migrations/20260919030000_remove_bismillah_catch_all_juices.sql`](supabase/migrations/20260919030000_remove_bismillah_catch_all_juices.sql)
+(data only — deletes Bismillah's "Any Fruit Juice Bottle" and "Bismillah
+Fruit Juice (Any Flavour)"; its menu is now the 10 named fruit juices plus
+the two Sugarcane items),
+[`supabase/migrations/20260919040000_fix_banana_pack_and_bismillah_tags.sql`](supabase/migrations/20260919040000_fix_banana_pack_and_bismillah_tags.sql)
+(data only — renames "Bananas (30 g)" to "Bananas (500 g)" and drops
+Bismillah's stale "Special" cuisine tag),
+[`supabase/migrations/20260920000000_rename_chinese_to_food_corner.sql`](supabase/migrations/20260920000000_rename_chinese_to_food_corner.sql)
+(data only — "MuteBites Chinese" is now **Food Corner**, with "Chinese"
+added to its cuisine tags so search still finds it; its photo folder
+`public/MuteBites/MuteBites Chinese/` keeps the old name on purpose),
+[`supabase/migrations/20260920010000_bheemasena_single_mushroom_price.sql`](supabase/migrations/20260920010000_bheemasena_single_mushroom_price.sql)
+(data only — Single Mushroom Biryani ₹220 → ₹200),
+[`supabase/migrations/20260920020000_mixed_biryani_note.sql`](supabase/migrations/20260920020000_mixed_biryani_note.sql)
+(data only — every mixed biryani's `note` reads "Comes with both dum & fry
+pieces"; a mixed biryani added later needs it set again),
+[`supabase/migrations/20260920030000_bheemasena_mutton_prawn_biryani.sql`](supabase/migrations/20260920030000_bheemasena_mutton_prawn_biryani.sql)
+(data only — adds Mutton Afghani Biryani and Prawn Biryani, ₹400 each, to
+Bheemasena's Non-Veg Biryani section),
+[`supabase/migrations/20260920040000_bheemasena_new_dishes.sql`](supabase/migrations/20260920040000_bheemasena_new_dishes.sql)
+(data only — 16 more Bheemasena dishes across Non-Veg Biryani, Non-Veg
+Starters, Veg Curries and Non-Veg Curries; the restaurant now has 59
+dishes). Note the shape: the `values` list comes first and the
+restaurant/category are joined onto it — a `cross join` after the join
+can't see `v`.
+And [`supabase/migrations/20260921000000_push_subscriptions.sql`](supabase/migrations/20260921000000_push_subscriptions.sql)
+adds **`push_subscriptions`** — one row per device that turned
+notifications on (`user_id`, unique `endpoint`, `p256dh`, `auth`,
+`user_agent`). RLS: a student reads/writes only their own rows; admins
+`select` every row (that's how a status change reaches the student's
+phone) and `delete` stale ones. The *new order* send can't use any
+student's session, so it goes through the service-role client — see
+**Notifications** above.
+[`supabase/migrations/20260921010000_milestone_rewards.sql`](supabase/migrations/20260921010000_milestone_rewards.sql)
+adds **`milestone_rewards`** — one row per student whose all-milestones
+free biryani was handed over (`user_id` primary key = once per student,
+`claimed_at`, `marked_by` admin). RLS: a student selects only their own
+row; admins select all, insert (with `marked_by = auth.uid()`) and delete
+(undo). No update policy. Whether a student *qualifies* is checked in the
+app (`getUnlockedMilestones()`), not the database — see **Profile** above.
+[`supabase/migrations/20260922010000_seed_sugarcane_juice.sql`](supabase/migrations/20260922010000_seed_sugarcane_juice.sql)
+(data only — a sixth restaurant, **MuteBites Sugarcane Juice**: one
+section, one dish, "1 Litre Sugarcane Juice Bottle" ₹90, photos in
+`public/MuteBites/MuteBites Sugarcane Juice/` and
+`covers/mutebites-sugarcane-juice.jpg`).
+Migrations are applied by hand in the Supabase SQL editor (no CLI setup).
+
+All orders are handed over at **VIT-AP Main Gate** — there is no room
+delivery, so no hostel block/room is stored anywhere (not on `users`, not
+on `orders`).
+
+- **`users`** — student profile, 1:1 with `auth.users` (same `id`, cascades
+  on delete). `full_name` and `phone` are both `not null`; `phone` is
+  **not unique** — multiple Google accounts can share a phone number
+  (`email` stays `not null unique`, one row per Google account, just not
+  one per phone). No domain restriction on `email` — decided: any Google
+  account can sign up, not only VIT-AP student addresses. Stored
+  as `+91XXXXXXXXXX` — the app normalizes every
+  input to that one shape (`src/lib/phone.ts`), since bans match by exact
+  phone. Also `registration_number`, `role` (`user_role` enum: `student` |
+  `admin`, default `student`), `is_banned` (default `false` — an admin
+  flips this from the admin `/admin/banned` page, e.g. for
+  repeat no-shows; `role` itself is still only ever changed by hand in the
+  database, never through the app), `banned_at` (nullable timestamptz, kept
+  correct by the `set_banned_at` trigger — set to `now()` whenever
+  `is_banned` flips true, cleared back to `null` when it flips false again,
+  regardless of whether the change came through the app or the SQL editor).
+  No `public.users` row is auto-created on
+  OAuth sign-in — the app creates it itself, once, when the first-login
+  form (full name + phone) is submitted; that's also how the app tells
+  first-time vs. returning users apart (row exists or not).
+- **`restaurants`** — `name`, `phone`, `description`, `cuisine_tags` (text
+  array), `is_active`.
+- **`dish_categories`** — menu sections scoped to a restaurant (e.g. "VEG
+  STARTERS", "NON-VEG BIRYANI"), with `sort_order` for display.
+- **`dishes`** — belongs to a restaurant and (optionally) a category;
+  `price`, `is_veg`, `note` (freeform, e.g. "Thursday Only"), `is_available`.
+- **`orders`** — `user_id`, `restaurant_id`, `status` (`order_status` enum:
+  `pending → confirmed → preparing → out_for_delivery → delivered`, or
+  `cancelled`), `contact_phone`, `notes`, `total_amount`. No payment fields — COD only.
+  The admin dashboard only ever drives two of those transitions directly —
+  `pending → confirmed` and `confirmed → delivered` (`preparing` /
+  `out_for_delivery` stay valid enum values but nothing in the app sets
+  them; delivery timing runs on fixed ETA slots, not admin clicks) — plus
+  a side-path to `cancelled` from any non-terminal status, each one
+  compare-and-swapped on the status the admin's screen showed, so a stale
+  screen or two admins clicking at once can't skip a step or act on a
+  status that's already changed. Also `daily_number` (`not null int`) —
+  the order's position that IST calendar day, campus-wide across every
+  restaurant, starting over at 1 each day — this is the "token"/order
+  number shown to both the student (pickup) and the admin (order list),
+  so the two must always agree. Assigned once, atomically, by the
+  `set_daily_order_number` trigger (`before insert on orders`) via the
+  `daily_order_counters` table below — never derived by counting/ranking
+  on read, so concurrent orders in the same second can't collide or show
+  differently to student vs. admin. `orderReference()` (the old
+  hash-of-uuid cosmetic token, e.g. "#4F2A") is gone; every display now
+  reads `daily_number` directly.
+- **`orders.delivered_at`** (nullable timestamptz) — set to `now()` by the
+  `set_delivered_at` trigger whenever `status` becomes `delivered`
+  (single or bulk "Mark delivered"); backfilled from `updated_at` for
+  orders delivered before it existed. The 7-day review window counts from
+  it.
+- **`order_reviews`** — one row per order (`order_id` primary key),
+  `user_id`, optional `note` (≤ 300 chars), `created_at`. **`order_item_ratings`**
+  — one row per dish in that order (`order_item_id` primary key, `order_id`,
+  `dish_id` set null if the dish is ever deleted, `rating` 1–5). Stars per
+  dish, one note per order, **no photos** (decided against: storage and
+  cleanup cost). RLS: a student reads only their own review/ratings,
+  admins read all; no insert/update/delete policies — the only write path
+  is `public.submit_review(order_id, ratings jsonb, note)` (security
+  definer, authenticated only), which checks the caller owns the order,
+  it's `delivered`, `delivered_at` is within 7 days, it isn't already
+  reviewed (submit once, no edits), and there's exactly one 1–5 rating
+  for every item in the order. Error keys: `order_not_found`,
+  `not_delivered`, `review_window_closed`, `already_reviewed`,
+  `note_too_long`, `invalid_ratings`. Reviews are **never shown to other
+  students** — admin-only feedback.
+  UI: `RateOrder` (`src/components/orders/rate-order.tsx`) on the order
+  tracking page — shows the moment status turns `delivered` (Realtime also
+  carries `delivered_at`), opens a bottom sheet with 1–5 stars per dish
+  (all required) and the optional note, submits via `submitReview()`
+  (`src/lib/reviews/actions.ts`, maps the error keys), then shows "You
+  rated this". `getOrder()` returns `items[].id`, `deliveredAt` and the
+  student's own `review`. Nudges: the Orders list shows an amber "Rate your
+  order" pill on rateable orders (`OrderSummary.rateable` — delivered,
+  within 7 days, not rated), and Home shows a one-time pop-up
+  (`RatePrompt`, `getRatePromptOrder()`) for the latest one, remembered
+  per device in `localStorage` (`mutebites.rate-prompted`). Both link to
+  `/orders/<id>?rate=1`, which opens the rating sheet on arrival.
+  `REVIEW_WINDOW_MS` lives in `src/lib/reviews/limits.ts` (client-safe).
+  Admin reads them at `/admin/reviews` (a "Reviews" pill on the dashboard):
+  `getAdminReviews()` (`src/lib/data/admin.ts`) + `ReviewsView` — dish
+  averages (lowest first) and review cards, filtered by restaurant and by
+  "Needs attention" (any dish ≤ 2★) / "With notes".
+- **`daily_order_counters`** — `order_day` (date, primary key), `last_number`.
+  One row per day, upserted by the trigger above (`on conflict (order_day)
+  do update set last_number = last_number + 1 returning ... into
+  new.daily_number`) — the atomic counter that makes `daily_number`
+  race-free. The app never reads or writes this table directly; RLS is
+  enabled with no policies (locks it out entirely), and the trigger's
+  writes succeed anyway since they run inside `place_order()`'s
+  security-definer context, the same way `place_order()` itself writes to
+  `orders`/`order_items` without student-facing insert policies.
+- **`order_items`** — snapshots `dish_name` and `unit_price` at order time
+  (quantity, generated `subtotal`), so later menu edits never rewrite past
+  order history. `dish_id` is `on delete set null` for the same reason.
+- **`app_settings`** — single-row table (`id boolean primary key default
+  true check (id)` caps it at one row) holding `ordering_mode`
+  (`'auto' | 'open' | 'closed'`, default `'auto'`), the campus-wide
+  ordering override the admin dashboard's Today card sets. Public-read (the
+  student app needs to know whether it can order), admin-only update.
+  `'auto'` follows the **daily schedule** (IST), enforced by
+  `public.ordering_schedule_open()`: open 10:30 AM – 12:45 PM (slot 1,
+  delivered by 1:30 PM), closed 12:45 – 1:30 PM, open 1:30 – 7:00 PM
+  (orders before 6:00 PM → delivered by 7:30 PM, 6:00 – 7:00 PM → by
+  8:15 PM), closed from 7:00 PM until 10:30 AM. `'open'` / `'closed'`
+  force it either way (e.g. testing at night). `public.ordering_is_open()`
+  (security definer, callable by anon + authenticated) combines the two
+  and is the single source of truth — `place_order()` checks it, and the
+  app reads it via `getOrderingState()` (`src/lib/data/settings.ts`), with
+  the wording ("Ordering opens again at 1:30 PM") from
+  `describeOrdering()` in `src/lib/ordering.ts`, which mirrors the schedule
+  constants — change the SQL function and that file together.
+  `deliveryWindow()` / `slotEndTime()` (`src/lib/date.ts`) use the same
+  cut-offs; an order placed after 7:00 PM can only exist when an admin
+  forced ordering open, so it gets "Delivery time to be confirmed" and
+  counts as past its slot immediately. The old `ordering_enabled` boolean
+  it replaced was dropped in
+  [`20260919010000_drop_ordering_enabled.sql`](supabase/migrations/20260919010000_drop_ordering_enabled.sql).
+
+RLS is enabled on every table:
+- `restaurants` / `dish_categories` / `dishes` are public-read (browsing the
+  menu doesn't require login). Writes (insert/update/delete) are allowed
+  for `role = 'admin'` users (via the `public.is_admin()` helper), gating
+  menu/availability management.
+- `users` / `orders` / `order_items` are scoped to `auth.uid()` — a student
+  can only read their own profile, orders, and order items (and
+  insert/update their own profile). Students **cannot insert into `orders`
+  or `order_items` directly** — there are no insert policies for them.
+  The only way to create an order is the `public.place_order(restaurant_id,
+  items jsonb, contact_phone, notes)` function (security definer, callable
+  by `authenticated` only): one transaction that checks auth, profile, ban,
+  contact phone format, restaurant `is_active`, and every dish belonging to
+  the restaurant and `is_available`; snapshots dish name/price from
+  `dishes` (never from the client); leaves `status` at `pending`; and
+  computes `total_amount` itself. It also checks `public.ordering_is_open()`
+  before anything else (raising `ordering_paused` if an admin forced
+  ordering closed, or `ordering_closed` if the daily schedule is between
+  slots) — enforced in the function itself, not just hidden in the UI,
+  since a direct PostgREST call would otherwise bypass an app-level check.
+  Since [`20260922000000_place_order_rate_limit.sql`](supabase/migrations/20260922000000_place_order_rate_limit.sql)
+  it also rate-limits, right after the ban check: at most **5 orders per
+  student per minute** (`order_rate_limited`) and **8 unfinished orders**
+  (not delivered/cancelled) at once (`too_many_open_orders`), under a
+  per-student `pg_advisory_xact_lock` so simultaneous taps can't both slip
+  under. The cart is kept on any refusal. Login needs no limit of ours —
+  Google-only, and Supabase Auth's own rate limits apply.
+- **Security headers** (`next.config.ts`, every path): `X-Frame-Options:
+  DENY`, `nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
+  `Permissions-Policy` (no camera/mic/location); HSTS comes from Vercel.
+  CSP is a moderate policy (`'unsafe-inline'` scripts because the
+  theme/splash init scripts and JSON-LD are inline on purpose; connections
+  only to self + Supabase REST/Realtime), currently **report-only** —
+  violations POST to `/api/csp-report` (excluded from the proxy matcher)
+  and land in Vercel logs as `[csp] …`. Switch the header key to
+  `Content-Security-Policy` once the logs are clean; add any new external
+  origin to it.
+  It raises short error keys
+  (`banned`, `restaurant_closed`, `dish_unavailable`, `ordering_paused`, `ordering_closed`, …) that
+  `src/lib/orders/actions.ts` maps to messages. Admins
+  can additionally update any `orders` row (e.g. changing `status`) and read
+  every `orders` row, every `users` row, and every `order_items` row (not
+  just their own — needed for the admin dashboard's order list, stat
+  counts, and showing who placed each order) — the orders update policy
+  covers the whole row, not just `status`, since Postgres RLS can't
+  restrict to a single column without a trigger. Admins can also update
+  any `users` row (needed for the ban toggle — see below).
+- Ban enforcement is by **phone number, not account**: `place_order()`
+  calls `public.current_user_is_banned()`, which — despite the
+  name — checks whether *any* `users` row sharing the calling account's
+  phone number has `is_banned = true`, not just the calling account
+  itself. This closes the loophole where a banned student just signs up
+  again with a new Google login but the same phone number. Accepted
+  tradeoff: two different students who happen to share a phone number
+  (e.g. a shared hostel/family line) would both get blocked if either is
+  banned — deliberately not scoped more precisely than that right now.
+  The cart shows a friendly message when an order is refused for a ban.
+- There is no admin login system: a user becomes an admin by manually
+  setting their own `users.role` to `'admin'` in the database after signing
+  up normally — `role` stays changeable only that way, never through the
+  API, admin included. `is_banned` **can** now be changed through the API,
+  but only by an admin (the `/admin/banned` page — search a
+  student to ban them, or unban from the banned list — on any student's
+  row; a student still can't touch their own `is_banned`). A trigger
+  (`prevent_role_self_escalation`, despite the name it now guards `role`,
+  `is_banned`, **and `phone`**) enforces both: it blocks any API change to
+  `role` outright, and blocks an API change to `is_banned` unless the
+  caller is an admin (`public.is_admin()`) — so the existing "update own
+  profile" policy can't be used to self-promote or self-unban, and the new
+  "admins can update any user" policy can't be used by a student (it only
+  grants anything to `role = 'admin'` callers to begin with). For `phone`,
+  the trigger still blocks the change outright via the API regardless of
+  admin status — direct DB access (SQL editor, migrations) is unaffected
+  and remains the only way around any of these.
+  Specifically for `phone`: the trigger raises if the account is currently
+  `is_banned` (permanent — bans match by live phone at order time, so
+  letting a banned student change it would let them escape the ban
+  outright) or if the student has any order not yet `delivered`/`cancelled`
+  (temporary — the delivery contact number shouldn't change mid-order).
+  The app enforces the same two rules up front in
+  `src/app/profile/actions.ts` (for a friendly message instead of a raw
+  DB error), but the trigger is the real boundary — `users` is reachable
+  directly via PostgREST with a student's own access token, bypassing the
+  app entirely.
+
+- **`trending_dishes(days_back int default 7, result_limit int default 5)`**
+  — security definer, callable by `authenticated` only, same pattern as
+  `place_order()`. Powers Home's "Trending this week" popup
+  (`src/components/home/trending-dialog.tsx`, opened from a flame button in
+  `home-header.tsx` — same trigger/dialog pattern as the logo's "About
+  MuteBites" popup): top ordered dishes campus-wide over a rolling window
+  (`orders.status <> 'cancelled'`, restaurant `is_active`, dish
+  `is_available`). Needed because students can only read their *own*
+  orders/order_items under RLS — there's no other way to compute a
+  cross-student aggregate. Returns only aggregate counts (dish/restaurant
+  name + a number), never anything per-student, so nothing here leaks who
+  ordered what. Since
+  [`20260921020000_trending_skip_banned.sql`](supabase/migrations/20260921020000_trending_skip_banned.sql)
+  it also skips orders placed before launch (20 Sep 2026, IST) and orders
+  from any **banned phone number** — the pre-launch test accounts were
+  banned to keep them out, so unbanning one brings its orders back into
+  Trending (and into the Home card slide order, which uses the same RPC).
+  `highly_reordered_dishes()` / `my_weekly_rank()` deliberately don't
+  filter either way.
+
+`trending_restaurants(days_back int default 7, result_limit int default 3)`
+was added in the same migration (same pattern) for a "Top restaurants"
+leaderboard that got removed from the UI before shipping, then dropped in
+[`20260917010000_drop_unused_trending_restaurants.sql`](supabase/migrations/20260917010000_drop_unused_trending_restaurants.sql)
+once confirmed unused — it no longer exists in the database.
+
+- **`my_weekly_rank(days_back int default 7)`** — security definer,
+  callable by `authenticated` only. Returns only the *calling* student's
+  own row (`where user_id = auth.uid()` inside the function) — order
+  count, rank, and percentile among everyone who ordered in the window —
+  never other students' counts or identities, unlike `trending_dishes()`
+  above which returns aggregate-only data with no user scoping at all.
+  Powers the profile's weekly-rank badge
+  (`src/components/profile/weekly-rank-badge.tsx`), shown only when
+  `percentile <= 50` and at least 5 students participated that week — a
+  UI-only choice (not a security one) so the badge stays flattering and
+  the percentile stays statistically meaningful, not a database
+  restriction. The raw percentile is never shown directly — students found
+  "Top 40%" confusing, so the UI maps it to one of three tier labels
+  instead (Top orderer `<=10%`, Frequent orderer `<=25%`, Active orderer
+  `<=50%`); `percentile`/`rank`/`totalStudents` stay in the returned row
+  for that mapping and are the only reason the raw numbers still exist.
+
+- **`highly_reordered_dishes(min_repeat_students int default 3,
+  result_limit int default 10)`** — security definer, callable by
+  `authenticated` only, same aggregate-only pattern as `trending_dishes()`.
+  A dish qualifies when at least `min_repeat_students` distinct students
+  have each ordered it 3+ times (`orders.status <> 'cancelled'`) — a
+  genuine repeat-purchase signal, deliberately different from
+  `trending_dishes()`'s raw order-volume popularity. Powers the menu's
+  "Highly re-ordered" tag (`src/components/menu/dish-card.tsx`, alongside
+  the existing "Your favorite" tag — the card shows one of the two, with
+  "Your favorite" winning if a dish is both), fetched via
+  `getHighlyReorderedDishIds()` in `src/lib/data/reorders.ts`.
+
+No other open schema TODOs right now (see "Pending decisions" below for
+one that will eventually need its own migration, once approved).
+
+## Pending decisions
+
+- **Fully automated WhatsApp order confirmation** — proposed
+  2026-09-18, not started. Today, the admin dashboard's WhatsApp button
+  (`src/components/admin/order-card.tsx`) just opens a `wa.me` link with
+  prefilled text that the admin has to manually send, then manually reads
+  the student's reply and clicks "Confirm" themselves. The plan is to
+  fully automate this end to end: the moment `placeOrder()`
+  (`src/lib/orders/actions.ts`) succeeds, the server sends the
+  confirmation message itself via the WhatsApp Business Platform (Cloud
+  API, directly or through a provider like Gupshup/AiSensy/Interakt), and
+  when the student replies "yes" a webhook auto-flips the order to
+  `confirmed` — no admin click at all for that step. The manual WhatsApp
+  button gets removed once this is live and verified working.
+
+  **Blocked on client confirmation before any implementation**, because
+  it has real, ongoing implications beyond this codebase:
+  - A recurring cost: Meta's current utility-message rate is ~₹0.115 +
+    18% GST per message (negligible at today's order volume — roughly
+    ₹100-200/month — but it's real money the client needs to knowingly
+    take on, plus a possible BSP markup/subscription if going through a
+    third-party provider instead of Meta directly).
+  - The number used (currently `8247075652`, see `src/lib/support.ts`)
+    would need to be dedicated to the WhatsApp Business Platform —
+    it can no longer double as a number someone checks in the normal
+    WhatsApp app; replies get read via the provider's web inbox instead.
+  - Meta business verification and message-template pre-approval, which
+    has its own turnaround time (hours to a few days) and requires the
+    client to sign off on the exact wording before it's submitted.
+  - A new webhook endpoint (security-sensitive — needs signature
+    verification) to receive replies and match them back to the right
+    pending order; a student with more than one pending order at once
+    needs a disambiguation rule that doesn't exist yet.
+
+  Next step: the dev asks the client about the three bullets above (cost,
+  giving up normal app access on that number, and template wording) and
+  confirms before any code or schema work starts. Once approved, this
+  will need its own migration (e.g. tracking a sent message's id/status
+  against an order) — subject to the schema-change hard rule below like
+  everything else.
+
+## Hard rule: schema changes
+
+**Never change the database schema without showing the SQL first**, in
+chat, and getting explicit go-ahead — regardless of how small the change
+looks. After approval, add a new timestamped file under
+`supabase/migrations/` (never edit a migration that's already been applied)
+and update the schema summary above to match.

@@ -1,0 +1,779 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Brand ramps — fixed values, identical in light and dark. Five steps per
+ * role (100 lightest -> 900 darkest); the 500 of plum/rose/amber is the
+ * approved brand swatch itself. Components should normally reach for the
+ * semantic tokens further down (bg-primary, text-rose, bg-card, …), which
+ * DO flip per theme; the raw ramps are for one-off decorative work where a
+ * specific, theme-independent shade is the point (illustrations, photo
+ * scrims, confetti).
+ */
+@theme {
+  --color-plum-100: #efe3ea;
+  --color-plum-300: #a9789a;
+  --color-plum-500: #552c4a;
+  --color-plum-700: #3f2037;
+  --color-plum-900: #26121f;
+
+  --color-rose-100: #f8dedc;
+  --color-rose-300: #d7a8b8;
+  --color-rose-500: #914955;
+  --color-rose-700: #7a3743;
+  --color-rose-900: #45202a;
+
+  --color-amber-100: #f7e6d2;
+  --color-amber-300: #e0ae78;
+  --color-amber-500: #c07a35;
+  --color-amber-700: #a25e1d;
+  --color-amber-900: #6b3d12;
+
+  --color-ivory-100: #fffdfa;
+  --color-ivory-300: #faf3ec;
+  --color-ivory-500: #f3e7dd;
+  --color-ivory-700: #e5d3c8;
+  --color-ivory-900: #c9b3a6;
+
+  --color-forest-100: #e3efe7;
+  --color-forest-300: #8cc3a6;
+  --color-forest-500: #2f6b4f;
+  --color-forest-700: #22503a;
+  --color-forest-900: #14301f;
+
+  --color-brick-100: #fbe3df;
+  --color-brick-300: #f08271;
+  --color-brick-500: #b42b1c;
+  --color-brick-700: #8e2416;
+  --color-brick-900: #561409;
+}
+
+/*
+ * Type scale — the named steps for display text (Fraunces via font-heading).
+ * Body copy keeps Tailwind's text-sm/text-base; everything bigger than a
+ * card title should come from here rather than one-off text-[2.5rem]s.
+ *   display   login / welcome hero
+ *   headline  page titles (Your orders, restaurant name, cart)
+ *   title     card and section titles
+ *   label     small caption above a field or section — sentence case,
+ *             sans, no letter-spacing. Replaces the old mono-uppercase
+ *             eyebrows, which made screens read like developer tooling.
+ */
+/*
+ * Motion tokens. Three curves and four durations cover every animation in
+ * the app; reach for these instead of hand-typing cubic-beziers.
+ *   ease-out-expo  things arriving (sheets, toasts, content sliding in)
+ *   ease-spring    small confirmations that should feel springy (add to
+ *                  cart, count bumps) — overshoots slightly, keep it short
+ *   ease-in-quad   things leaving
+ * Durations: press 120ms · quick 180ms · base 240ms · slow 400ms. The
+ * ease-* ones also generate Tailwind utilities (ease-out-expo, …).
+ */
+@theme {
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+}
+
+:root {
+  --dur-press: 120ms;
+  --dur-quick: 180ms;
+  --dur-base: 240ms;
+  --dur-slow: 400ms;
+}
+
+@theme {
+  /* Fluid: 34px on a 320px phone (so "Campus mood." stays one line), up
+     to 42px from ~410px wide. */
+  --text-display: clamp(2.125rem, 11vw - 0.2rem, 2.625rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.025em;
+  --text-headline: 1.875rem;
+  --text-headline--line-height: 1.1;
+  --text-headline--letter-spacing: -0.02em;
+  --text-title: 1.4375rem;
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.01em;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.125rem;
+  --text-label--font-weight: 600;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jakarta);
+  --font-heading: var(--font-fraunces), var(--font-jakarta);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-accent: var(--ink-accent);
+  --color-ink-success: var(--ink-success);
+  --color-ink-danger: var(--ink-danger);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-foreground: var(--brand-soft-foreground);
+  --color-rose: var(--rose);
+  --color-rose-foreground: var(--rose-foreground);
+  --color-amber: var(--amber);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-overlay: var(--elevation-overlay);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * MuteBites palette — plum ink, amber actions, rose secondary.
+ *
+ * Surfaces step in three visible layers in BOTH themes:
+ *   ground (--background)  <  card (--card)  <  raised (--popover)
+ * plus --secondary/--muted as the recessed chip/well surface. Light mode
+ * used to have all four within ~2% of each other (one cream wash); the
+ * ground is now a warm ivory and cards sit on it as near-white, with a
+ * plum-tinted border and shadow-card to finish the separation.
+ *
+ * Contrast (WCAG 2.x, checked for every pair below):
+ *   light  foreground/ground 13:1 · muted-fg on secondary 5.1:1
+ *          primary text on ground 4.6:1 · white on primary 5.05:1
+ *   dark   foreground/ground 15.9:1 · muted-fg on secondary 6.4:1
+ *          primary text on ground 7.6:1 · primary-fg on primary 7:1
+ *
+ * --primary is #A25E1D, a ~2% nudge darker than the approved #A9631F:
+ * #A9631F is 4.68:1 with white (passes as a button fill) but only 4.25:1
+ * as TEXT on the ivory ground, and text-primary is used for prices/links
+ * all over. #A25E1D passes both and is visually indistinguishable.
+ * The raw #C07A35 (--amber) is decorative-only: 3.5:1, never text.
+ */
+:root {
+  --background: #faf3ec;
+  --foreground: #3f2037;
+  --card: #ffffff;
+  --card-foreground: #3f2037;
+  --popover: #ffffff;
+  --popover-foreground: #3f2037;
+  --primary: #a25e1d;
+  --primary-foreground: #ffffff;
+  --secondary: #f3e7dd;
+  --secondary-foreground: #3f2037;
+  --muted: #f3e7dd;
+  --muted-foreground: #76596c;
+  --accent: #f3e7dd;
+  --accent-foreground: #3f2037;
+  --destructive: #b42b1c;
+  --destructive-foreground: #ffffff;
+  --border: #e5d3c8;
+  /* 3.5:1 against card — WCAG 1.4.11 wants 3:1 for a control's boundary. */
+  --input: #9d8478;
+  --ring: #a25e1d;
+  --ink: #552c4a;
+  --ink-foreground: #fff8f2;
+  /* Accents that sit ON the ink surface (token card, cart bar, banners).
+     The normal amber/forest/brick are ~2:1 on plum, so ink surfaces get
+     their own tints — checked >=4.8:1 against the lighter top of the
+     surface-ink gradient, not just flat --ink. */
+  --ink-accent: #f0c38f;
+  --ink-success: #a6d9bd;
+  --ink-danger: #f6ada1;
+  --brand-soft: #f8dedc;
+  --brand-soft-foreground: #7a3743;
+  --rose: #914955;
+  --rose-foreground: #ffffff;
+  --amber: #c07a35;
+  --success: #2f6b4f;
+  --success-foreground: #ffffff;
+  --success-soft: #e3efe7;
+  --stripe-a: #f0e2d7;
+  --stripe-b: #f8efe7;
+  --chart-1: #552c4a;
+  --chart-2: #914955;
+  --chart-3: #c07a35;
+  --chart-4: #2f6b4f;
+  --chart-5: #d7a8b8;
+  --radius: 0.875rem;
+  --sidebar: #faf3ec;
+  --sidebar-foreground: #3f2037;
+  --sidebar-primary: #a25e1d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3e7dd;
+  --sidebar-accent-foreground: #3f2037;
+  --sidebar-border: #e5d3c8;
+  --sidebar-ring: #a25e1d;
+
+  /* Elevation — plum-tinted in light mode so shadows read as part of the
+     palette rather than grey smudges on ivory. */
+  --elevation-card: 0 1px 2px rgb(85 44 74 / 6%), 0 4px 12px -4px rgb(85 44 74 / 10%);
+  --elevation-raised: 0 2px 4px rgb(85 44 74 / 6%), 0 12px 28px -8px rgb(85 44 74 / 18%);
+  --elevation-overlay: 0 4px 8px rgb(85 44 74 / 8%), 0 24px 48px -12px rgb(85 44 74 / 28%);
+
+  /* Home header ambient field, three stops per time of day — see
+     .mood-field below and HomeHeader. Alpha is baked into each stop so the
+     field reads clearly on ivory while the plum heading on top of its
+     densest point stays above 7:1. */
+  --mood-morning-a: #f0c38fcc;
+  --mood-morning-b: #f8dedc;
+  --mood-morning-c: #e0ae7866;
+  --mood-afternoon-a: #e0ae78aa;
+  --mood-afternoon-b: #f7e6d2;
+  --mood-afternoon-c: #f0c38f88;
+  --mood-evening-a: #d7a8b8cc;
+  --mood-evening-b: #f8dedc;
+  --mood-evening-c: #e0ae7855;
+  --mood-night-a: #a9789a99;
+  --mood-night-b: #d7a8b8cc;
+  --mood-night-c: #efe3ea;
+}
+
+/* Dark: plum-tinted grounds (not neutral grey) so the brand survives at
+   night. Fills that carry text (success/destructive/primary) get a dark
+   *-foreground instead of white — the dark-mode fills are light enough
+   that white text on them would fail. */
+.dark {
+  --background: #170f14;
+  --foreground: #f5eae1;
+  --card: #21161c;
+  --card-foreground: #f5eae1;
+  --popover: #2a1d24;
+  --popover-foreground: #f5eae1;
+  --primary: #d9974f;
+  --primary-foreground: #2a140c;
+  --secondary: #2e2028;
+  --secondary-foreground: #f5eae1;
+  --muted: #2e2028;
+  --muted-foreground: #b8a0ae;
+  --accent: #2e2028;
+  --accent-foreground: #f5eae1;
+  --destructive: #f08271;
+  --destructive-foreground: #2a0e09;
+  --border: rgb(245 234 225 / 11%);
+  --input: rgb(245 234 225 / 40%);
+  --ring: #d9974f;
+  --ink: #ebd9e2;
+  --ink-foreground: #3f2037;
+  --ink-accent: #7a4511;
+  --ink-success: #22503a;
+  --ink-danger: #8e2416;
+  --brand-soft: #3b2029;
+  --brand-soft-foreground: #f2c3c8;
+  --rose: #d7a8b8;
+  --rose-foreground: #2a1420;
+  --amber: #d9974f;
+  --success: #7cc4a0;
+  --success-foreground: #0f2419;
+  --success-soft: #15271e;
+  --stripe-a: #2a1c24;
+  --stripe-b: #21161c;
+  --chart-1: #ebd9e2;
+  --chart-2: #d7a8b8;
+  --chart-3: #d9974f;
+  --chart-4: #7cc4a0;
+  --chart-5: #a9789a;
+  --sidebar: #21161c;
+  --sidebar-foreground: #f5eae1;
+  --sidebar-primary: #d9974f;
+  --sidebar-primary-foreground: #2a140c;
+  --sidebar-accent: #2e2028;
+  --sidebar-accent-foreground: #f5eae1;
+  --sidebar-border: rgb(245 234 225 / 11%);
+  --sidebar-ring: #d9974f;
+
+  --elevation-card: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 12px -4px rgb(0 0 0 / 35%);
+  --elevation-raised: 0 2px 4px rgb(0 0 0 / 30%), 0 12px 28px -8px rgb(0 0 0 / 50%);
+  --elevation-overlay: 0 4px 8px rgb(0 0 0 / 35%), 0 24px 48px -12px rgb(0 0 0 / 60%);
+
+  --mood-morning-a: #c07a3566;
+  --mood-morning-b: #91495555;
+  --mood-morning-c: #6b3d1288;
+  --mood-afternoon-a: #d9974f55;
+  --mood-afternoon-b: #6b3d1299;
+  --mood-afternoon-c: #91495544;
+  --mood-evening-a: #91495599;
+  --mood-evening-b: #552c4acc;
+  --mood-evening-c: #c07a3544;
+  --mood-night-a: #552c4a;
+  --mood-night-b: #3f2a6bcc;
+  --mood-night-c: #91495555;
+}
+
+/*
+ * Home header's time-of-day ambient field: a top-down wash of the mood's
+ * middle colour, a broad light source from the top-left and a second one
+ * low and to the right, all fading out downward into the ground, so the header has an atmosphere instead of a hard band. On
+ * screens wider than the app column the sides fade too, so the field
+ * never ends in a visible vertical edge.
+ */
+.mood-field {
+  background:
+    radial-gradient(95% 110% at 0% 0%, var(--mood-a), transparent 70%),
+    radial-gradient(110% 70% at 70% 80%, var(--mood-c), transparent 70%),
+    linear-gradient(var(--mood-b), transparent);
+  mask-image: linear-gradient(to bottom, #000 45%, transparent);
+}
+@media (min-width: 28rem) {
+  .mood-field {
+    mask-image:
+      linear-gradient(to bottom, #000 45%, transparent),
+      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    mask-composite: intersect;
+  }
+}
+.mood-morning {
+  --mood-a: var(--mood-morning-a);
+  --mood-b: var(--mood-morning-b);
+  --mood-c: var(--mood-morning-c);
+}
+.mood-afternoon {
+  --mood-a: var(--mood-afternoon-a);
+  --mood-b: var(--mood-afternoon-b);
+  --mood-c: var(--mood-afternoon-c);
+}
+.mood-evening {
+  --mood-a: var(--mood-evening-a);
+  --mood-b: var(--mood-evening-b);
+  --mood-c: var(--mood-evening-c);
+}
+.mood-night {
+  --mood-a: var(--mood-night-a);
+  --mood-b: var(--mood-night-b);
+  --mood-c: var(--mood-night-c);
+}
+
+/* Striped stand-in for photos we don't have yet (matches the design refs). */
+@utility bg-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--stripe-a) 0 14px,
+    var(--stripe-b) 14px 28px
+  );
+}
+
+/*
+ * Tasteful gradient depth for the app's headline ink/primary surfaces — the
+ * cart bar, primary CTAs (Continue with Google, Place order, View cart),
+ * and hero-style cards (the order-tracking token card). Layered as a
+ * background-image over the element's existing flat background-color, so
+ * it stays a graceful flat fallback wherever color-mix() isn't supported,
+ * and deliberately subtle (a soft light source, not gloss) so the app's
+ * clean flat look holds everywhere this ISN'T applied.
+ */
+@utility surface-primary {
+  background-image: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--primary) 100%, white 14%) 0%,
+    var(--primary) 55%,
+    color-mix(in srgb, var(--primary) 100%, black 8%) 100%
+  );
+}
+
+@utility surface-ink {
+  background-image: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--ink) 100%, white 10%) 0%,
+    var(--ink) 55%,
+    color-mix(in srgb, var(--ink) 100%, black 12%) 100%
+  );
+}
+
+/* Elevation for the surfaces above: a neutral drop shadow plus a soft
+   brand-colored glow underneath, instead of a plain grey shadow-xl.
+   Fixed black for the neutral layer (not var(--ink), which flips to a
+   near-white "high-contrast chip" color in dark mode) — a shadow should
+   always read as occlusion, not as the surface's own fill color. */
+@utility shadow-elevated-glow {
+  box-shadow:
+    0 14px 30px -10px rgb(0 0 0 / 45%),
+    0 10px 22px -12px color-mix(in srgb, var(--primary) 50%, transparent);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/80;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Fraunces at SOFT 50: rounded, friendly terminals instead of the sharp
+     bookish default. Numbers in the display face (prices, tokens, totals)
+     use lining figures, not the old-style ones Fraunces can fall into. */
+  .font-heading {
+    font-variation-settings: "SOFT" 50;
+    font-variant-numeric: lining-nums;
+  }
+}
+
+/*
+ * Small CSS-only motion moments (add-to-cart morph, cart bar entrance,
+ * count bounce). Kept inside `no-preference` so anyone with "reduce
+ * motion" set gets the plain, instant state change instead — no
+ * transform/opacity animation at all, never just a faster one.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-pop-in {
+    animation: pop-in var(--dur-quick) var(--ease-spring) both;
+  }
+  .animate-bounce-count {
+    animation: bounce-count var(--dur-base) var(--ease-spring);
+  }
+  .animate-slide-up-in {
+    animation: slide-up-in var(--dur-base) var(--ease-out-expo) both;
+  }
+  .animate-toast-in {
+    animation: toast-in var(--dur-base) var(--ease-out-expo) both;
+  }
+  .animate-overlay-in {
+    animation: overlay-in var(--dur-base) var(--ease-out-expo) both;
+  }
+  .animate-overlay-out {
+    animation: overlay-out var(--dur-base) var(--ease-in-quad) both;
+  }
+  .animate-confetti-fall {
+    animation-name: confetti-fall;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation-fill-mode: both;
+  }
+  .animate-ping-slow {
+    animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  /* Deep-linked dish (?dish=): a rose outline that drops in from a little
+     further out, pulses once, then fades — "here it is", not a blinking
+     alarm. The outline lives on its own property so it never fights the
+     in-cart amber ring (box-shadow). */
+  .animate-highlight {
+    outline: 3px solid transparent;
+    animation: highlight-arrive 3s var(--ease-out-expo) both;
+  }
+  /* Milestone progress rings fill from empty the first time they paint. */
+  .ring-fill {
+    transition: stroke-dashoffset 900ms var(--ease-out-expo) 150ms;
+  }
+  @starting-style {
+    .ring-fill {
+      stroke-dashoffset: var(--ring-empty);
+    }
+  }
+  .animate-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .animate-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--foreground) 12%, transparent),
+      transparent
+    );
+    animation: shimmer-sweep 1.6s ease-in-out infinite;
+  }
+
+  /*
+   * Tactile press feedback — every native <button> gets a slight
+   * scale-down on tap, app-wide, with zero per-component changes since
+   * this codebase already uses semantic <button> consistently for real
+   * actions. `.pressable` opts in the handful of <Link>-styled cards/CTAs
+   * that aren't literal <button> elements. Deliberately not applied to
+   * plain text links (Cancel, Edit, "Track order →") — a scale effect on
+   * inline underlined text reads as glitchy, not tactile. Also skips
+   * [aria-haspopup] triggers (dropdown/dialog openers), matching the
+   * exclusion already built into components/ui/button.tsx's own
+   * active:not-aria-[haspopup]:translate-y-px — the reveal is the
+   * feedback there, not a press.
+   */
+  /* Lists the colour/shadow properties too: this rule is unlayered, so a
+     bare transition: transform here used to override every
+     transition-colors / transition-shadow utility on the same element and
+     make hovers snap instead of fade. */
+  button:not(:disabled):not([aria-haspopup]),
+  .pressable {
+    transition-property: transform, color, background-color, border-color, box-shadow, opacity, filter;
+    transition-duration: var(--dur-press);
+    transition-timing-function: ease-out;
+  }
+  button:not(:disabled):not([aria-haspopup]):active,
+  .pressable:active {
+    transform: scale(0.97);
+  }
+
+}
+
+@keyframes highlight-arrive {
+  0% {
+    outline-offset: 10px;
+    outline-color: transparent;
+  }
+  18% {
+    outline-offset: 3px;
+    outline-color: var(--rose);
+  }
+  34% {
+    outline-offset: 6px;
+  }
+  50% {
+    outline-offset: 3px;
+  }
+  78% {
+    outline-color: var(--rose);
+  }
+  100% {
+    outline-offset: 3px;
+    outline-color: transparent;
+  }
+}
+
+@keyframes shimmer-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes ping-slow {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-count {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.22);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(220px) translateX(var(--confetti-drift, 0px)) rotate(var(--confetti-rotate, 180deg));
+    opacity: 0;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/*
+ * Directional page-to-page View Transitions — home <-> restaurant menu,
+ * orders list <-> order detail, and menu -> order tracking right after
+ * placing an order. Each <Link>/router.push carries a "nav-forward" or
+ * "nav-back" transitionType (see the page files), which these rules turn
+ * into a slide. Keeps the page clickable mid-transition (unnamed content
+ * isn't hit-tested otherwise), and drops to an instant swap — the
+ * browser's own default — for reduce-motion, same as the rest of this
+ * file's motion.
+ */
+:root {
+  --vt-duration-exit: 150ms;
+  --vt-duration-enter: 210ms;
+  --vt-duration-move: 400ms;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/*
+ * Safety net: everything above is opt-in under no-preference, but library
+ * animations (tw-animate's dialog/sheet enter/exit, Tailwind's pulse and
+ * ping) aren't. With reduce set, collapse all of them to an instant end
+ * state. Spinners are exempt — they're a progress signal, not decoration.
+ * (The startup splash animates with the Web Animations API, which this
+ * doesn't touch; components/splash/engine.ts handles reduced motion itself.)
+ */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.animate-spin),
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes vt-fade {
+  from {
+    filter: blur(3px);
+    opacity: 0;
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+::view-transition-old(.nav-forward) {
+  --vt-slide-offset: -60px;
+  animation:
+    var(--vt-duration-exit) ease-in both vt-fade reverse,
+    var(--vt-duration-move) ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --vt-slide-offset: 60px;
+  animation:
+    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in-out both vt-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --vt-slide-offset: 60px;
+  animation:
+    var(--vt-duration-exit) ease-in both vt-fade reverse,
+    var(--vt-duration-move) ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --vt-slide-offset: -60px;
+  animation:
+    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in-out both vt-slide;
+}
+
+@keyframes vt-slide {
+  from {
+    translate: var(--vt-slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+/*
+ * The loading.tsx -> page.tsx handoff (see REVEAL_EXIT/REVEAL_ENTER in
+ * lib/nav-transition.ts): the skeleton slides down and out as the
+ * Suspense boundary resolves, the real content slides up and in.
+ */
+::view-transition-old(.slide-down) {
+  animation:
+    var(--vt-duration-exit) ease-out both vt-fade reverse,
+    var(--vt-duration-exit) ease-out both vt-slide-y reverse;
+}
+::view-transition-new(.slide-up) {
+  animation:
+    var(--vt-duration-enter) ease-in var(--vt-duration-exit) both vt-fade,
+    var(--vt-duration-move) ease-in both vt-slide-y;
+}
+
+@keyframes vt-slide-y {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,98 @@
+/*
+ * Startup splash (./app-splash.tsx). Static layout and resting states only:
+ * all motion is Web Animations from ./engine.ts, which also sets
+ * data-splash on <html> — the overlay stays hidden unless this load plays
+ * it. Warm ivory in both themes; the logo is drawn for it.
+ */
+.app-splash {
+  display: none;
+}
+html[data-splash="play"] .app-splash,
+html[data-splash="run"] .app-splash,
+html[data-splash="out"] .app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f5eae1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Last resort if the engine dies mid-way: never cover the app for good.
+   (Not on "out", where the engine's own exit animation runs.) */
+html[data-splash="play"] .app-splash,
+html[data-splash="run"] .app-splash {
+  animation: sp-failsafe 1ms linear 9s both;
+}
+html[data-splash="play"],
+html[data-splash="run"] {
+  overflow: hidden;
+}
+html[data-splash="out"] .app-splash {
+  pointer-events: none;
+}
+
+.sp-stage {
+  position: relative;
+  container-type: inline-size;
+  /* The morph into the page's logo tile scales from the top-left corner. */
+  transform-origin: 0 0;
+  visibility: hidden;
+}
+html[data-splash-ran] .sp-stage {
+  visibility: visible;
+}
+.sp-canvas,
+.sp-fill {
+  position: absolute;
+  inset: 0;
+}
+.sp-layer,
+.sp-shoe,
+.sp-tube,
+.sp-glow,
+.sp-wisp {
+  position: absolute;
+}
+.sp-layer img,
+.sp-shoe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+}
+/* The vector leg rig only exists for the run-in; at rest (and under
+   reduced motion) the drawn legs show. The engine unhides it. */
+.sp-rig {
+  visibility: hidden;
+}
+.sp-joint {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+}
+.sp-tube {
+  display: block;
+}
+.sp-glow {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(192 122 53 / 0.55), rgb(192 122 53 / 0));
+  opacity: 0;
+}
+.sp-wisp {
+  overflow: visible;
+  opacity: 0;
+  transform-origin: 50% 100%;
+}
+
+@keyframes sp-failsafe {
+  to {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
