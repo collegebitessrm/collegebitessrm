@@ -10,9 +10,8 @@ Bites" everywhere; "SRM" only shows in small places (site title, About
 popup footer, admin header, privacy/terms) — keep it that way. Live at
 https://collegebitessrm.vercel.app.
 
-> **Built from MuteBites (VIT-AP).** Launch 1 Oct 2026. Still MuteBites
-> until the logo step: the logo / icons / splash (MuteBites mascot). What
-> already differs:
+> **Built from MuteBites (VIT-AP).** Launch 1 Oct 2026. What differs from
+> MuteBites:
 > - **No daily ordering schedule.** `app_settings.ordering_mode` is only
 >   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
 >   it and `place_order()` raises `ordering_paused` when closed
@@ -383,68 +382,48 @@ silently re-enables the button.
   scroll-snap. Dish photos mount one slide ahead, only once the card has
   been seen. The card's "24 dishes · from ₹60" line comes from
   `getRestaurantMenuStats()` (`src/lib/data/restaurants.ts`).
-- **Logo** — two sources in `public/`: `mutebites-logo-v2-2.png`
-  (transparent; everything is generated from it) and
-  `mutebites-logo-v2-1.png` (same art on its own background, reference
-  only). `node scripts/build-brand-assets.mjs` regenerates everything
-  below from v2-2 — rerun it (and re-measure its hand-set layer regions)
-  whenever the logo changes:
-  - `public/brand/mark.webp` / `mark.png` — the mascot group only (no
-    wordmark/tagline: unreadable at icon sizes). `BrandLogo`
-    (`src/components/brand-logo.tsx`) shows `mark.webp` on a fixed ivory
-    `#f5eae1` tile in every theme — the plum mascot vanishes on dark
-    cards and the ink surface, so callers size/round it but never set
-    its background.
-  - App icons: `src/lib/app-icon.tsx` centres `mark.png` on ivory for
+- **Logo** — the client's logo, two files in `public/`: `logo-v1-2.png`
+  (transparent; everything is generated from it) and `logo-v1-1.png`
+  (same art on its own background, reference only). `node
+  scripts/build-brand-assets.mjs` regenerates everything below from v1-2 —
+  rerun it whenever the logo changes:
+  - `public/brand/mark.webp` / `mark.png` — the logo's navy rounded-square
+    icon tile only (scooter, campus, grad cap), found by its navy fill. The
+    wordmark and tagline are never used as an image: they're unreadable at
+    icon sizes and the transparent file's wordmark carries a coloured glow
+    from background removal.
+  - `src/lib/brand-mark.ts` — `MARK_NAVY`, the tile's navy sampled from the
+    art. `BrandLogo` (`src/components/brand-logo.tsx`) shows the tile on
+    that navy, so callers size/round it freely and it reads as one tile in
+    both themes.
+  - App icons: `src/lib/app-icon.tsx` puts the tile on `MARK_NAVY` for
     `apple-icon.tsx` and `icons/icon-192|512|512-maskable` (maskable at
-    `markScale: 0.6` to stay inside the ~80% safe circle). The manifest's
-    `background_color` is the same ivory, so Android's launch screen
-    hands straight over to the splash.
-  - `src/app/favicon.ico` — the mark on an ivory rounded square, 16/32/
-    48/64 RGBA PNG frames (Next can't generate `favicon` from code, and
-    its ico decoder rejects non-RGBA frames), written by the same script.
-  - `public/brand/splash/*.webp` + `src/components/splash/layers.ts` —
-    the startup splash layers (body, legs, arm+tray, cloche lid, steam,
-    speed trails, ground swoosh, wordmark, tagline, plus the two shoes on
-    their own) and their boxes in source-art pixels. At rest they
-    re-assemble the logo exactly; where a cut runs through solid paint the
-    lower layer keeps a few extra pixels (`UNDERLAPS`) so no hairline seam
-    shows.
-- **Startup splash** (`src/components/splash/`), ~2.5 s, once per browser
+    `markScale: 0.8` to stay inside the ~80% safe circle). The manifest's
+    `background_color` is the mint ground `#EFF7F6`.
+  - `src/app/favicon.ico` — the tile, 16/32/48/64 RGBA PNG frames (Next
+    can't generate `favicon` from code, and its ico decoder rejects
+    non-RGBA frames), written by the same script.
+- **Startup splash** (`src/components/splash/`), ~1.6 s, once per browser
   session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
   open, never on route changes or reloads), never on `/admin`, `/auth`,
   `/privacy`, `/terms` or a tab opened in the background:
-  - Storyboard (timings in `config.ts`): ivory → the mascot **runs** in
-    from the left — the legs are a jointed rig (`rig.ts`: hip/knee/ankle
-    measured on the source art, vector tubes + the real shoes) cycling
-    through `STRIDE`, 3 strides that slow as it arrives, with body bob,
-    forward lean, stretched trails, the arm/tray and lid bouncing a beat
-    behind and steam streaming back → feet plant, squash, rebound (the rig
-    ends in exactly the drawn pose and hands over to the drawn legs) →
-    swoosh draws, lid lifts with a warm glow, steam rises → wordmark, then
-    tagline → hold → the ivory screen **closes down into the page's own
-    logo tile** while the mascot shrinks onto its mark (clip-path +
-    transform, measured live), so the splash becomes the app's logo instead
-    of fading. The landing spot is whichever `BrandLogo` has
-    `splashTarget` (login page, Home header); while a `loading.tsx`
-    skeleton (`aria-busy`) is up it waits up to 1.2 s for it, and pages
-    without one get a short fade.
+  - A short logo fade-in on the mint ground: the navy tile rises in and
+    settles, "College Bites" (Fraunces) and the tagline follow, a hold,
+    then the screen fades to the app. Timings in `config.ts`. (MuteBites'
+    running-mascot splash was cut for its own mascot and was removed.)
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
-    `splash.css`), positioned in source-art pixels via `--u` (a container
-    query unit), so it lines up at any screen size. `engine.ts` is all the
-    motion — Web Animations on transform/opacity of HTML elements (legs
-    included), so it stays smooth while the app hydrates underneath. It's
-    one self-contained function that `init-script.ts` serialises
-    (`runSplash.toString()`) into a raw inline `<script>` in the root
-    layout — **not** `next/script` `beforeInteractive`, which is queued
-    until Next's JS loads and would let the app paint first (the
-    theme-init script, `src/lib/theme/init-script.ts`, is inline for the
-    same reason — no light flash for dark users). Keep `engine.ts` free of
-    imports and module-scope helpers.
-  - Reduced motion: no run — the finished logo fades in, holds ~0.65 s,
-    fades out. Safety valves: tap skips (to the finished logo, then the
-    close), slow/failed images (> 2.5 s) just fade out, and CSS hides the
-    overlay after 9 s whatever happens.
+    `splash.css`). `engine.ts` is all the motion — Web Animations on
+    transform/opacity — in one self-contained function that
+    `init-script.ts` serialises (`runSplash.toString()`) into a raw inline
+    `<script>` in the root layout — **not** `next/script`
+    `beforeInteractive`, which is queued until Next's JS loads and would let
+    the app paint first (the theme-init script, `src/lib/theme/init-script.ts`,
+    is inline for the same reason — no light flash for dark users). Keep
+    `engine.ts` free of imports and module-scope helpers.
+  - Reduced motion: no rise — the logo fades in, holds ~0.65 s, fades out.
+    Safety valves: tap skips, a logo image that hasn't loaded within 2.5 s
+    means it doesn't play, and CSS hides the overlay after 9 s whatever
+    happens.
   - Replay / disable: `?intro` (or `?splash`) forces it, `?nosplash`
     skips one load, localStorage `collegebites.splash = "off"` disables it on
     one device, `NEXT_PUBLIC_DISABLE_SPLASH=1` removes it from the build.

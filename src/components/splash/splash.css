@@ -2,7 +2,8 @@
  * Startup splash (./app-splash.tsx). Static layout and resting states only:
  * all motion is Web Animations from ./engine.ts, which also sets
  * data-splash on <html> — the overlay stays hidden unless this load plays
- * it. Warm ivory in both themes; the logo is drawn for it.
+ * it. Mint ground with the navy logo tile in both themes (the logo is
+ * drawn for a light ground).
  */
 .app-splash {
   display: none;
@@ -16,7 +17,9 @@ html[data-splash="out"] .app-splash {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: #f5eae1;
+  background:
+    radial-gradient(90% 60% at 50% 38%, #dfe3ff 0%, transparent 70%),
+    #eff7f6;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -36,57 +39,41 @@ html[data-splash="out"] .app-splash {
 }
 
 .sp-stage {
-  position: relative;
-  container-type: inline-size;
-  /* The morph into the page's logo tile scales from the top-left corner. */
-  transform-origin: 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   visibility: hidden;
 }
 html[data-splash-ran] .sp-stage {
   visibility: visible;
 }
-.sp-canvas,
-.sp-fill {
-  position: absolute;
-  inset: 0;
+.sp-mark {
+  width: min(44vw, 11rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 22%;
+  box-shadow: 0 18px 40px -14px rgb(23 63 107 / 35%);
 }
-.sp-layer,
-.sp-shoe,
-.sp-tube,
-.sp-glow,
-.sp-wisp {
-  position: absolute;
-}
-.sp-layer img,
-.sp-shoe {
+.sp-mark img {
   display: block;
   width: 100%;
   height: 100%;
   -webkit-user-drag: none;
 }
-/* The vector leg rig only exists for the run-in; at rest (and under
-   reduced motion) the drawn legs show. The engine unhides it. */
-.sp-rig {
-  visibility: hidden;
+.sp-word {
+  margin-top: 1.5rem;
+  color: #173f6b;
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
-.sp-joint {
-  position: absolute;
-  width: 0;
-  height: 0;
-  transform-origin: 0 0;
-}
-.sp-tube {
-  display: block;
-}
-.sp-glow {
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(192 122 53 / 0.55), rgb(192 122 53 / 0));
-  opacity: 0;
-}
-.sp-wisp {
-  overflow: visible;
-  opacity: 0;
-  transform-origin: 50% 100%;
+.sp-tagline {
+  margin-top: 0.5rem;
+  color: #007a6b;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 @keyframes sp-failsafe {

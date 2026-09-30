@@ -96,7 +96,6 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       <div className="relative -mt-24 flex flex-col px-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
         <BrandLogo
           preload
-          splashTarget
           className="animate-pop-in size-20 rounded-3xl shadow-raised ring-4 ring-background"
         />
 

@@ -86,6 +86,20 @@ as it was; this log lists where College Bites deliberately differs.
   pills, selected chips teal (new `--chip-active` token). Target look:
   `docs/design-reference.webp`.
 
+**Logo, icons, splash** (replaces section 12)
+- Source: `public/logo-v1-2.png` (transparent). `build-brand-assets.mjs`
+  was rewritten: it finds the navy icon tile by its navy fill (rows and
+  columns with a real run of navy, stopping at the gap above the wordmark
+  — the glow specks from background removal broke a plain alpha bounding
+  box) and writes `mark.webp/png`, the favicon and `MARK_NAVY`.
+- App icons are the tile on its own navy; `BrandLogo` shows the tile on
+  the same navy. The share card is mint with the tile, name, tagline,
+  pitch and three dish photos.
+- Splash: MuteBites' running mascot (layers, leg rig, "land on the logo
+  tile") removed; replaced by a ~1.6 s fade-in of the tile, name and
+  tagline on mint, keeping the same safety rules (once per session, skip
+  paths, tap to skip, reduced motion, 9 s failsafe).
+
 ---
 
 ## Contents

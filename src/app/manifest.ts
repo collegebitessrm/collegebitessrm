@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "standalone",
     // Android's own launch screen (this colour + the icon) hands straight
     // over to the in-app splash, which uses the same ivory.
-    background_color: "#f5eae1",
+    background_color: "#eff7f6",
     theme_color: "#eff7f6",
     icons: [
       { src: "/icons/icon-192", sizes: "192x192", type: "image/png", purpose: "any" },
