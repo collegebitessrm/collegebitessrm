@@ -237,7 +237,15 @@ author.
   pops in filled (`animate-tab-pop` / `animate-tab-stretch`). It shows on
   exactly `/`, `/orders` and `/profile`; on drill-down screens
   (`/restaurants/*`, `/orders/*`) it slides down and is `inert`; elsewhere
-  it renders nothing. Tapping the current tab scrolls to the top. Floating
+  it renders nothing. Tapping the current tab scrolls to the top.
+  It's also a real slider: press anywhere on the bar and slide sideways
+  (past 8px) — the pill lifts and follows the finger 1:1 (pointer capture),
+  the tab under it lights up with a tiny `navigator.vibrate` buzz where
+  supported, and release snaps to that tab and `router.push`es it; the
+  click that follows a drag is swallowed. `touch-action: pan-y` keeps
+  vertical page scrolling; plain taps and keyboard links work as before.
+  The tab under the finger is computed in the pointer handlers (the
+  React compiler lint forbids measuring refs during render). Floating
   (`rounded-full bg-card/85` with blur), so pages keep `pb-28`; the Home
   `CartBar` (`hasTabBar`) sits just above it. Don't add `<TabBar />` to a page.
 - **Dish deep links**: `/restaurants/<id>?dish=<dishId>` opens the menu
