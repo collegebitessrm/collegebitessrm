@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
  * One dish in the menu's two-column photo grid: a big square photo with
  * the add control floating in its corner (a round "+", which becomes a
  * "− n +" stepper once the dish is in the cart, while the photo picks up
- * an amber ring), and name + price on the page underneath — no bordered
+ * a ring), and name + price on the page underneath — no bordered
  * row, no "ADD" button hanging off a thumbnail. Dishes without a photo get
  * a typographic tile (their initial in the display face) instead of a
  * mismatched image.
@@ -102,7 +102,7 @@ export function DishCard({
           "relative aspect-square rounded-3xl bg-secondary transition-shadow",
           inCart && "ring-3 ring-primary ring-offset-2 ring-offset-background",
           highlighted &&
-            "animate-highlight motion-reduce:outline-3 motion-reduce:outline-offset-3 motion-reduce:outline-rose",
+            "animate-highlight motion-reduce:outline-3 motion-reduce:outline-offset-3 motion-reduce:outline-aqua",
         )}
       >
         {photo ? (
@@ -116,7 +116,7 @@ export function DishCard({
           </div>
         ) : (
           <div
-            className="absolute inset-0 flex items-center justify-center rounded-3xl bg-brand-soft font-heading text-6xl font-bold text-brand-soft-foreground/60"
+            className="absolute inset-0 flex items-center justify-center rounded-3xl bg-pink-soft font-heading text-6xl font-bold text-pink-soft-foreground/60"
             aria-hidden="true"
           >
             {dish.name.trim().charAt(0)}
@@ -160,7 +160,7 @@ export function DishCard({
         </h3>
         <p className="mt-1 flex flex-wrap items-baseline gap-x-2">
           <span className="font-heading text-lg font-bold">{formatRupees(dish.price)}</span>
-          {dish.note && <span className="text-xs font-semibold text-rose">{dish.note}</span>}
+          {dish.note && <span className="text-xs font-semibold text-aqua">{dish.note}</span>}
         </p>
       </div>
     </article>

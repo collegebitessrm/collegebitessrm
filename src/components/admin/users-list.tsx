@@ -122,7 +122,7 @@ export function UsersList({ users: initialUsers }: { users: AdminUser[] }) {
 
               {/* Only students who've unlocked every milestone ever see this row. */}
               {user.rewardEarned && (
-                <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-brand-soft px-3.5 py-2.5 text-brand-soft-foreground">
+                <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl bg-pink-soft px-3.5 py-2.5 text-pink-soft-foreground">
                   <p className="flex min-w-0 items-center gap-2 text-sm font-semibold">
                     <Gift className="size-4 shrink-0" aria-hidden="true" />
                     {user.rewardClaimedAt

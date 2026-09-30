@@ -27,53 +27,67 @@ author.
 
 - **Framework**: Next.js (App Router), TypeScript
 - **Styling**: Tailwind CSS v4 + shadcn/ui (`src/components/ui`)
-- **Design tokens** (`src/app/globals.css`): the finished app should look
-  like the client's brand sheet, **`docs/design-reference.webp`** — judge
-  visual changes against it. Airy pastel surfaces, navy for text and pill
-  buttons, teal accents, soft yellow highlights. Navy is `#173F6B` (the
-  brief's `#0A2540` read as black; it's `navy-900` now); yellow is soft
-  butter `#F6DC8A` (`--amber`, highlights only — `#F5C518` was too loud).
-  Light: mint ground `#EFF7F6`, white cards, periwinkle-tint wells
-  `#EDF0FF`, periwinkle borders. Dark: lifted navy `#15325A` → `#1C3F6E` →
-  `#234A7E`. The hero surfaces (`bg-ink` + `surface-ink`: ticket, member
-  card, cart bar, banners, admin Today card, celebration) are the
-  periwinkle → lavender gradient (`--ink` → `--ink-2`) with navy text in
-  **both** themes. Real buttons (Continue with Google, Place order, View
-  cart, Call/WhatsApp) are the navy `bg-primary` pill (teal with navy
-  text in dark); selected chips and tabs use `bg-chip-active
-  text-chip-active-foreground` (teal). Teal as text is `#007A6B`
-  (`--rose` — token names are historical: `--rose` is the teal accent,
-  `--amber` the soft yellow, `--brand-soft` the pink tint). Fixed 5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/
-  `forest-`/`brick-` 100–900) sit alongside semantic tokens that flip per
-  theme — prefer the semantic ones. Text on a coloured fill uses its
-  `*-foreground` token, never `text-white`. On `bg-ink` use
-  `text-ink-foreground` (at /75 or stronger for secondary lines — fainter
-  fails on pastel) and `text-ink-accent` / `-ink-success` / `-ink-danger`.
-  Don't put `text-primary` on `bg-secondary` in dark mode (3.9:1). Photos
-  never get tints or overlays. Tapping the Appearance toggle cross-fades
-  the theme (a root view transition in `src/lib/theme/store.ts`; instant
-  under reduced motion). Focus rings are `ring-ring/80` and input borders
-  use `--input` — both meet WCAG's 3:1 for non-text UI. `npm run
-  audit:contrast` (`scripts/contrast-audit.mjs`) re-checks every token pair
-  in both themes, including both ends of the ink gradient and the Home
-  heading over each mood field, and fails if any pair is below its minimum
-  — run it after touching colours, and add a pair for any new text/surface
-  combination.
-- **Typography**: Fraunces (`font-heading`, SOFT axis at 50 via a base
-  rule in `globals.css`) for display text and big numerals; Plus Jakarta
-  (`font-sans`) for body **and buttons** — buttons never use
-  `font-heading`. Sizes above body come from the named scale in
+- **Design tokens** (`src/app/globals.css`): the **Vice Dusk × Leonida
+  Gold** palette — a hybrid of GTA Vice City and GTA VI, built around
+  *light* rather than flat swatches: a deep blue-violet dusk ground, neon
+  that glows (Ocean Drive magenta `#FF2E88`, Keys cyan `#22DDEB` — the
+  logo's teal switched on), a sunset that bleeds gold `#FFB557` → coral
+  `#FF6A5B` → magenta `#FF3D93`, and electric violet `#7A28E8` as the far
+  edge of the sky. Light mode is the same scene at golden hour: sand ground
+  `#FFF5EE`, white cards with warm coral-tinted shadows, lilac wells
+  `#F6EEFF`, deep text `#1A0F3D`. Dark ("dusk"): `#0E0A24` → card
+  `#1A1238` → raised `#251A4E`, text `#FFF0F6`, with a 1px rim light baked
+  into the card elevation. The brand sheet (`docs/design-reference.webp`)
+  still sets the logo and the layout ideas; its palette was replaced.
+  Roles: actions are the `surface-primary` gradient pill over `bg-primary`
+  (`--primary` → `--primary-2`: magenta → violet with white text in light,
+  neon → tangerine with dusk text in dark; the shadcn `Button` default does
+  the same); selected chips/tabs are `bg-chip-active
+  text-chip-active-foreground` (cyan); `text-aqua` for cuisines/info,
+  `text-primary` for links, `--gold` / `--gold-strong` for stars and
+  highlights (gold is never text on light). The hero surfaces (`bg-hero` +
+  `surface-hero`: ticket, member card, cart bar, banners, admin Today card,
+  celebration) are the sunset gradient with **dusk text in both themes** —
+  secondary lines at `text-hero-foreground/85` or stronger (fainter fails
+  on the magenta end), accents `text-hero-accent` / `-hero-success` /
+  `-hero-danger`. **Lighting kit** (use it, so nothing looks flat):
+  `glow-neon` / `glow-cyan` / `glow-sun` bloom shadows, `rim-light`,
+  `text-sunset` gradient headline text (every stop checked on its ground,
+  `--heading-a|b|c`), and a two-glow sky over the top of every page (body
+  background, `--page-glow-*`). Restraint: one bloom per screen region —
+  the main action or the hero; everything else gets rim light and tinted
+  shadows. Fixed 5-step ramps (`night-`/`pink-`/`aqua-`/`sunset-`/
+  `gold-`/`violet-`/`sand-`/`forest-`/`brick-` 100–900, plus `coral-500`)
+  sit alongside semantic tokens that flip per theme — prefer the semantic
+  ones. Text on a coloured fill uses its `*-foreground` token, never
+  `text-white`. `bg-pink-soft text-pink-soft-foreground` is the pink tint.
+  Photos never get tints or overlays. Tapping the Appearance toggle
+  cross-fades the theme (a root view transition in
+  `src/lib/theme/store.ts`; instant under reduced motion). Focus rings are
+  `ring-ring/80` and input borders use `--input` — both meet WCAG's 3:1
+  for non-text UI. `npm run audit:contrast` (`scripts/contrast-audit.mjs`)
+  re-checks every token pair in both themes — both ends of the action
+  gradient, every hero stop, every heading gradient stop on the ground,
+  under the page sky and over each Home mood — and fails if any pair is
+  below its minimum. Run it after touching colours, and add a pair for any
+  new text/surface combination.
+- **Typography**: Poppins (`font-heading`, weights 500/600/700 only — it
+  isn't a variable font) for display text and big numerals (tabular
+  figures via a base rule); Inter (`font-sans`, variable) for body **and
+  buttons** — buttons never use `font-heading`. Both from `next/font` in
+  `src/app/layout.tsx`. Sizes above body come from the named scale in
   `globals.css` — `text-display` (hero), `text-headline` (page titles),
   `text-title` (card/section titles) — not one-off `text-[2.5rem]`s.
   Small captions above fields/sections use `text-label`: sentence case,
-  sans, no letter-spacing. No mono font is loaded any more; don't bring
-  back the mono-uppercase eyebrow style, and no `uppercase` anywhere.
+  sans, no letter-spacing. No mono font is loaded; don't bring back the
+  mono-uppercase eyebrow style, and no `uppercase` anywhere.
 - **Home header mood field**: `HomeHeader` bleeds to the screen edges over
   `.mood-field.mood-<morning|afternoon|evening|night>` (`globals.css`),
   driven by `getTimeOfDayIST()`. Each mood has three `--mood-<time>-a/b/c`
-  stops per theme (gold/pink mornings, aqua afternoons, the brief's
-  periwinkle → lavender for evenings and nights), checked at ≥6.7:1 for the
-  heading on top by the contrast audit — re-run it if you change them.
+  stops per theme (Leonida sunrise gold/peach, Vice beach cyan haze,
+  golden-hour tangerine → magenta, neon-night violet), checked by the
+  contrast audit at ≥6.7:1 for the plain greeting and ≥4.5:1 for every
+  `text-sunset` stop on top — re-run it if you change them.
 - **Order tracking ticket**: the token card (`order-tracking.tsx`) is a
   ticket stub — up to three distinct photos of the ordered dishes on top,
   a dashed tear line with edge notches (`bg-background` circles), then the
@@ -84,7 +98,7 @@ author.
   wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
-- **Profile**: one pastel `MemberCard` (`src/components/profile/member-card.tsx`)
+- **Profile**: one sunset `MemberCard` (`src/components/profile/member-card.tsx`)
   holds identity, the weekly-rank pill and the three stats (cravings
   solved, day streak, no-shows). Milestones are data-driven in
   `MILESTONES` (`milestone-badges.tsx`) — six tiers, all computed from
@@ -101,8 +115,8 @@ author.
   earned" chip filters the list to them.
   A newly unlocked milestone (per device, `collegebites.milestones-seen`)
   plays the same full-screen celebration as "Order placed!" — both use
-  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: pastel ink
-  overlay, confetti unless reduced motion, the chime, tap or ~2 s to
+  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: sunset
+  hero overlay, confetti unless reduced motion, the chime, tap or ~2 s to
   dismiss); several at once share one overlay naming them all. Render it
   outside any `<ViewTransition>`.
 - **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
@@ -244,7 +258,7 @@ dish still shows on the student menu — greyed, struck through and
 unorderable (`DishCard`'s `soldOut`) — and `place_order()` refuses it
 anyway, so the flag is never only a UI state.
 
-Visually, admin shares the student app's system: the dashboard's pastel
+Visually, admin shares the student app's system: the dashboard's sunset
 "Today" card (`StatCards`) carries today's counts with the campus ordering
 control (`OrderingKillSwitch` — a two-way Open / Closed switch for
 `app_settings.ordering_mode`, with a confirm dialog each way) as its
@@ -288,7 +302,8 @@ silently re-enables the button.
 - `docs/CLIENT-GUIDE.md` — the plain-English guide for the College Bites
   team (admin access, open/close ordering, handling orders, sold out,
   bans, rewards). Keep it in step when an admin flow or label changes.
-- `docs/design-reference.webp` — the client's brand sheet; the target look.
+- `docs/design-reference.webp` — the client's brand sheet: the logo and
+  layout reference (its palette was replaced by Vice Dusk × Leonida Gold).
 - `docs/BLUEPRINT.md` — the whole project in one place: setup outside
   the code (Supabase, Google, Vercel, GitHub), architecture, business
   rules, every migration, lessons learned and what's still open. Update it
@@ -395,7 +410,7 @@ silently re-enables the button.
   - App icons: `src/lib/app-icon.tsx` puts the tile on `MARK_NAVY` for
     `apple-icon.tsx` and `icons/icon-192|512|512-maskable` (maskable at
     `markScale: 0.8` to stay inside the ~80% safe circle). The manifest's
-    `background_color` is the mint ground `#EFF7F6`.
+    `background_color` is the sand ground `#FFF5EE`.
   - `src/app/favicon.ico` — the tile, 16/32/48/64 RGBA PNG frames (Next
     can't generate `favicon` from code, and its ico decoder rejects
     non-RGBA frames), written by the same script.
@@ -403,8 +418,9 @@ silently re-enables the button.
   session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
   open, never on route changes or reloads), never on `/admin`, `/auth`,
   `/privacy`, `/terms` or a tab opened in the background:
-  - A short logo fade-in on the mint ground: the navy tile rises in and
-    settles, "College Bites" (Fraunces) and the tagline follow, a hold,
+  - A short logo fade-in on the sand ground (dusk with neon glows for
+    dark-mode users — the theme-init script has set `.dark` by then): the navy tile rises in and
+    settles, "College Bites" (Poppins) and the tagline follow, a hold,
     then the screen fades to the app. Timings in `config.ts`.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
     `splash.css`). `engine.ts` is all the motion — Web Animations on

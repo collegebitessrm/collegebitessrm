@@ -12,7 +12,7 @@ import { RestaurantPhotoSlides } from "./restaurant-photo-slides";
  * their own (RestaurantPhotoSlides), inset inside the card rather than a
  * full-bleed banner with the name over a dark scrim. Name,
  * cuisines, description and a short "24 dishes · from ₹60" line sit
- * underneath on the card surface, with the amber arrow as the one action
+ * underneath on the card surface, with the round arrow as the one action
  * cue. Free delivery is campus-wide, so it's said once in the
  * handover strip above the list, not on every card.
  */
@@ -75,7 +75,7 @@ export function RestaurantCard({
           <div className="min-w-0">
             <h2 className="font-heading text-title font-bold">{restaurant.name}</h2>
             {restaurant.cuisine_tags.length > 0 && (
-              <p className="mt-0.5 text-sm font-medium text-rose">
+              <p className="mt-0.5 text-sm font-medium text-aqua">
                 {restaurant.cuisine_tags.join(" · ")}
               </p>
             )}

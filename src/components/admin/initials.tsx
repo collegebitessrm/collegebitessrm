@@ -4,7 +4,7 @@ export function Initials({ name }: { name: string }) {
   const letters = ((parts[0]?.[0] ?? "") + (parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : "")).toUpperCase();
   return (
     <span
-      className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-brand-soft font-heading font-bold text-brand-soft-foreground"
+      className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-pink-soft font-heading font-bold text-pink-soft-foreground"
       aria-hidden="true"
     >
       {letters}

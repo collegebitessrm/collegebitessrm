@@ -58,7 +58,7 @@ export function OrderCard({ order }: { order: AdminOrder }) {
   return (
     <div className="relative rounded-3xl border bg-card p-4 shadow-card transition-shadow hover:shadow-raised">
       <div className="flex items-start gap-3">
-        <span className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-brand-soft font-heading text-xl font-bold text-brand-soft-foreground/60">
+        <span className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-pink-soft font-heading text-xl font-bold text-pink-soft-foreground/60">
           {photo ? (
             <BlurImage src={photo} alt="" sizes="56px" className="object-cover" />
           ) : (

@@ -100,7 +100,7 @@ export default async function ProfilePage() {
               <Lock className="size-4 shrink-0 text-muted-foreground" aria-label="Can't be changed" />
             </div>
             <div className="flex items-center gap-3 px-5 py-4">
-              <MapPin className="size-5 shrink-0 text-rose" aria-hidden="true" />
+              <MapPin className="size-5 shrink-0 text-aqua" aria-hidden="true" />
               <div>
                 <p className="text-label text-muted-foreground">Handover point</p>
                 <p className="font-semibold">Gate 3</p>

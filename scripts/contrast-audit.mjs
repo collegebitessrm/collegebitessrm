@@ -29,19 +29,31 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
 // [label, fg token, fg alpha, bg stack (bottom first, [token, alpha]), min]
 const T = (t, a = 1) => [t, a];
 const checks = [
+  // Ground, cards and wells
   ['body text on ground', 'foreground', 1, [T('background')], 4.5],
+  ['body text under the page sky (both glows)', 'foreground', 1, [T('background'), T('page-glow-b'), T('page-glow-a')], 4.5],
   ['body text on card', 'foreground', 1, [T('card')], 4.5],
+  ['body text on popover', 'foreground', 1, [T('popover')], 4.5],
   ['muted text on ground', 'muted-foreground', 1, [T('background')], 4.5],
+  ['muted text under the page sky', 'muted-foreground', 1, [T('background'), T('page-glow-b'), T('page-glow-a')], 4.5],
   ['muted text on card', 'muted-foreground', 1, [T('card')], 4.5],
-  ['muted text on secondary chip', 'muted-foreground', 1, [T('secondary')], 4.5],
+  ['muted text on secondary well / chip', 'muted-foreground', 1, [T('secondary')], 4.5],
   ['muted text on popover', 'muted-foreground', 1, [T('popover')], 4.5],
-  ['search placeholder (muted on secondary)', 'muted-foreground', 1, [T('secondary')], 4.5],
-  ['amber text (prices/links) on ground', 'primary', 1, [T('background')], 4.5],
-  ['amber text on card', 'primary', 1, [T('card')], 4.5],
-  ['button text on amber', 'primary-foreground', 1, [T('primary')], 4.5],
-  ['rose cuisines on card', 'rose', 1, [T('card')], 4.5],
-  ['rose cuisines on ground (menu sheet)', 'rose', 1, [T('background')], 4.5],
-  ['blush chip text', 'brand-soft-foreground', 1, [T('brand-soft')], 4.5],
+  // Actions: the gradient pill runs --primary -> --primary-2
+  ['button text on primary (gradient start)', 'primary-foreground', 1, [T('primary')], 4.5],
+  ['button text on primary-2 (gradient end)', 'primary-foreground', 1, [T('primary-2')], 4.5],
+  ['primary as text (links) on ground', 'primary', 1, [T('background')], 4.5],
+  ['primary as text on card', 'primary', 1, [T('card')], 4.5],
+  ['primary text on primary/10 over card (admin pills)', 'primary', 1, [T('card'), T('primary', 0.1)], 4.5],
+  ['primary pill vs ground (non-text, 3:1)', 'primary', 1, [T('background')], 3.0],
+  ['selected chip text', 'chip-active-foreground', 1, [T('chip-active')], 4.5],
+  // Accent text
+  ['aqua text (cuisines) on card', 'aqua', 1, [T('card')], 4.5],
+  ['aqua text on ground', 'aqua', 1, [T('background')], 4.5],
+  ['aqua text on secondary well', 'aqua', 1, [T('secondary')], 4.5],
+  ['pink-soft chip text', 'pink-soft-foreground', 1, [T('pink-soft')], 4.5],
+  ['gold-strong marks (stars) vs card (non-text, 3:1)', 'gold-strong', 1, [T('card')], 3.0],
+  // Status
   ['success text on success-soft chip', 'success', 1, [T('success-soft')], 4.5],
   ['success text on card', 'success', 1, [T('card')], 4.5],
   ['destructive text on card', 'destructive', 1, [T('card')], 4.5],
@@ -49,31 +61,41 @@ const checks = [
   ['destructive text on destructive/5 over card (outlined buttons)', 'destructive', 1, [T('card'), T('destructive', 0.05)], 4.5],
   ['text on success fill', 'success-foreground', 1, [T('success')], 4.5],
   ['text on destructive fill', 'destructive-foreground', 1, [T('destructive')], 4.5],
-  ['ink text on ink', 'ink-foreground', 1, [T('ink')], 4.5],
-  ['ink text on ink-2 (lavender end of the gradient)', 'ink-foreground', 1, [T('ink-2')], 4.5],
-  ['ink text/75 on ink-2', 'ink-foreground', 0.75, [T('ink-2')], 4.5],
-  ['ink-accent on ink-2', 'ink-accent', 1, [T('ink-2')], 4.5],
-  ['ink-success on ink-2', 'ink-success', 1, [T('ink-2')], 4.5],
-  ['ink-danger on ink-2', 'ink-danger', 1, [T('ink-2')], 4.5],
-  ['selected chip text', 'chip-active-foreground', 1, [T('chip-active')], 4.5],
-  ['rose (teal text) on secondary well', 'rose', 1, [T('secondary')], 4.5],
-  ['ink text/75 on ink (secondary lines)', 'ink-foreground', 0.75, [T('ink')], 4.5],
-  ['ink text/75 ("/5" in admin)', 'ink-foreground', 0.75, [T('ink')], 3.0],
-  ['ink-accent on ink', 'ink-accent', 1, [T('ink')], 4.5],
-  ['ink-success on ink', 'ink-success', 1, [T('ink')], 4.5],
-  ['ink-danger on ink', 'ink-danger', 1, [T('ink')], 4.5],
-  ['ink-danger on ink-foreground/10 over ink (Pause ordering)', 'ink-danger', 1, [T('ink'), T('ink-foreground', 0.1)], 4.5],
-  ['ink text on ink-success fill (Turn ordering on)', 'ink', 1, [T('ink-success')], 4.5],
-  ['ink text on ink-foreground/10 chip over ink', 'ink-foreground', 1, [T('ink'), T('ink-foreground', 0.1)], 4.5],
-  ['frosted chip text (muted on card/90 over ink-ish photo)', 'muted-foreground', 1, [T('ink'), T('card', 0.9)], 4.5],
-  ['success on frosted chip (card/90 over dark photo)', 'success', 1, [T('ink'), T('card', 0.9)], 4.5],
-  ['amber button vs ground (non-text, 3:1)', 'primary', 1, [T('background')], 3.0],
+  // The sunset hero (gold -> coral -> magenta): every stop
+  ...['hero-a', 'hero-b', 'hero-c'].flatMap((stop) => [
+    [`hero text on ${stop}`, 'hero-foreground', 1, [T(stop)], 4.5],
+    [`hero secondary text (/85) on ${stop}`, 'hero-foreground', 0.85, [T(stop)], 4.5],
+    [`hero-accent on ${stop}`, 'hero-accent', 1, [T(stop)], 4.5],
+    [`hero-success on ${stop}`, 'hero-success', 1, [T(stop)], 4.5],
+    [`hero-danger on ${stop}`, 'hero-danger', 1, [T(stop)], 4.5],
+    [`hero text on hero-foreground/10 chip over ${stop}`, 'hero-foreground', 1, [T(stop), T('hero-foreground', 0.1)], 4.5],
+    [`hero-danger on hero-foreground/10 over ${stop} (Pause ordering)`, 'hero-danger', 1, [T(stop), T('hero-foreground', 0.1)], 4.5],
+    [`hero-success power icon on its /20 chip over ${stop} (non-text, 3:1)`, 'hero-success', 1, [T(stop), T('hero-success', 0.2)], 3.0],
+    [`hero-danger power icon on its /20 chip over ${stop} (non-text, 3:1)`, 'hero-danger', 1, [T(stop), T('hero-danger', 0.2)], 3.0],
+  ]),
+  ['coral text on the dusk segment (admin switch)', 'hero', 1, [T('hero-foreground')], 4.5],
+  ['coral text on hero-success fill (Turn ordering on)', 'hero', 1, [T('hero-success')], 4.5],
+  // Frosted chips on photos: a dark photo (dusk) and a bright one (gold)
+  ['frosted chip text (muted on card/90 over a dark photo)', 'muted-foreground', 1, [T('hero-foreground'), T('card', 0.9)], 4.5],
+  ['frosted chip text (muted on card/90 over a bright photo)', 'muted-foreground', 1, [T('hero-a'), T('card', 0.9)], 4.5],
+  ['success on frosted chip (card/90 over a dark photo)', 'success', 1, [T('hero-foreground'), T('card', 0.9)], 4.5],
+  // Controls
   ['input border vs card (non-text, 3:1 — WCAG 1.4.11)', 'input', 1, [T('card')], 3.0],
   ['focus ring (ring/80) vs card (non-text, 3:1)', 'ring', 0.8, [T('card')], 3.0],
-  ['Home heading on morning mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-morning-b'), T('mood-morning-a')], 6.7],
-  ['Home heading on afternoon mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-afternoon-b'), T('mood-afternoon-a')], 6.7],
-  ['Home heading on evening mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-evening-b'), T('mood-evening-a')], 6.7],
-  ['Home heading on night mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-night-b'), T('mood-night-a')], 6.7],
+  ['focus ring (ring/80) vs ground (non-text, 3:1)', 'ring', 0.8, [T('background')], 3.0],
+  // Gradient headline text (text-sunset): every stop, on the ground and under the sky
+  ...['heading-a', 'heading-b', 'heading-c'].flatMap((stop) => [
+    [`${stop} headline on ground`, stop, 1, [T('background')], 4.5],
+    [`${stop} headline under the page sky`, stop, 1, [T('background'), T('page-glow-b'), T('page-glow-a')], 4.5],
+  ]),
+  // Home header sky at its strongest point for each time of day — the plain
+  // greeting and every stop of a gradient heading
+  ...['morning', 'afternoon', 'evening', 'night'].flatMap((m) => [
+    [`Home greeting on ${m} sky`, 'foreground', 1, [T('background'), T(`mood-${m}-b`), T(`mood-${m}-a`)], 6.7],
+    ...['heading-a', 'heading-b', 'heading-c'].map((stop) => [
+      `${stop} Home heading on ${m} sky`, stop, 1, [T('background'), T(`mood-${m}-b`), T(`mood-${m}-a`)], 4.5,
+    ]),
+  ]),
 ];
 
 let fails = 0;

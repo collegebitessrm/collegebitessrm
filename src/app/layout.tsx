@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import { AppSplash } from "@/components/splash/app-splash";
 import { SPLASH_DISABLED } from "@/components/splash/config";
 import { SPLASH_INIT_SCRIPT } from "@/components/splash/init-script";
@@ -8,19 +8,19 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 import { THEME_INIT_SCRIPT } from "@/lib/theme/init-script";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+// Body and buttons. Variable, so every weight comes from one file.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
-// Display face. Only the SOFT axis (rounded terminals, set in
-// globals.css) on top of weight: adding opsz as well took the preloaded
-// Fraunces file from 62KB to 121KB, for a display cut this app's bold
-// headings barely show.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Display text and big numbers (the brand sheet's heading face). Poppins
+// isn't a variable font, so only the weights the app actually uses load:
+// 700 for headings, 600/500 for the few softer display lines.
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
-  axes: ["SOFT"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -68,8 +68,8 @@ export const viewport: Viewport = {
   // Matches --background in globals.css. Follows the OS scheme only — an
   // in-app theme override can't retarget this meta tag before paint.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#eff7f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#15325a" },
+    { media: "(prefers-color-scheme: light)", color: "#fff5ee" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e0a24" },
   ],
 };
 
@@ -81,7 +81,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       // "dark" class / colorScheme style, and the splash-init script
       // data-splash, before React hydrates — expected, not a real mismatch.
       suppressHydrationWarning
-      className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {/* Raw inline <script>, not next/script: beforeInteractive inline

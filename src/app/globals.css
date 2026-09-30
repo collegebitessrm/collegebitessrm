@@ -5,41 +5,70 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Brand ramps — fixed values, identical in light and dark. Five steps per
- * role (100 lightest -> 900 darkest); the 500 of navy/teal/gold is the
- * client's brand swatch itself. Components should normally reach for the
- * semantic tokens further down (bg-primary, text-rose, bg-card, …), which
- * DO flip per theme; the raw ramps are for one-off decorative work where a
- * specific, theme-independent shade is the point (illustrations, photo
- * scrims, confetti).
+ * Vice Dusk × Leonida Gold — fixed ramps, identical in light and dark. Five
+ * steps per hue (100 lightest -> 900 darkest); the 500 is the named colour
+ * itself. Components should normally reach for the semantic tokens further
+ * down (bg-primary, text-aqua, bg-card, …), which DO flip per theme; the
+ * raw ramps are for one-off decorative work where a specific,
+ * theme-independent shade is the point (illustrations, confetti, glows).
+ *
+ *   night   #0E0A24  Vice dusk — the dark ground, and text on every neon
+ *                    or sunset fill. Blue-violet on purpose, never plum.
+ *   pink    #FF2E88  Ocean Drive neon — dark-mode actions, glows. #D6006C
+ *                    is its light-mode ink.
+ *   aqua    #22DDEB  Keys cyan — selected chips, focus, cool light. It's
+ *                    the logo's teal switched on.
+ *   sunset  #FF7A2F  Leonida tangerine — the warm end of actions.
+ *   coral   #FF6A5B  only ever the middle of the sunset gradient, where
+ *                    orange melts into pink.
+ *   gold    #FFC857  Starfish gold — stars, highlights (#C77F00 on light).
+ *   violet  #7A28E8  the far edge of the sky; end of light-mode actions.
+ *   sand    #FFF5EE  golden-hour ground.
  */
 @theme {
-  /* College Bites brand ramps (fixed, same in both themes) — prefer the
-     semantic tokens below. Navy is lifted off the brief's #0A2540 (which
-     reads as black; kept as navy-900) and gold is a soft butter yellow. */
-  --color-navy-100: #e3eaf2;
-  --color-navy-300: #7d93ad;
-  --color-navy-500: #173f6b;
-  --color-navy-700: #0f2d52;
-  --color-navy-900: #0a2540;
+  --color-night-100: #e9e6f5;
+  --color-night-300: #8f86b8;
+  --color-night-500: #3a2f6b;
+  --color-night-700: #1a1238;
+  --color-night-900: #0e0a24;
 
-  --color-teal-100: #d6f5f0;
-  --color-teal-300: #7bdfd0;
-  --color-teal-500: #00c2a8;
-  --color-teal-700: #007a6b;
-  --color-teal-900: #00453c;
+  --color-pink-100: #ffe3f0;
+  --color-pink-300: #ff8cc0;
+  --color-pink-500: #ff2e88;
+  --color-pink-700: #d6006c;
+  --color-pink-900: #8a0046;
 
-  --color-gold-100: #fff6d9;
-  --color-gold-300: #fbeab6;
-  --color-gold-500: #f6dc8a;
-  --color-gold-700: #b8962e;
-  --color-gold-900: #5c4400;
+  --color-aqua-100: #d9fafc;
+  --color-aqua-300: #7eeef5;
+  --color-aqua-500: #22ddeb;
+  --color-aqua-700: #00707e;
+  --color-aqua-900: #003b43;
 
-  --color-mint-100: #ffffff;
-  --color-mint-300: #eff7f6;
-  --color-mint-500: #e2eeec;
-  --color-mint-700: #c9dcda;
-  --color-mint-900: #9fb8b5;
+  --color-sunset-100: #ffe9da;
+  --color-sunset-300: #ffb557;
+  --color-sunset-500: #ff7a2f;
+  --color-sunset-700: #b24a00;
+  --color-sunset-900: #5e2600;
+
+  --color-coral-500: #ff6a5b;
+
+  --color-gold-100: #fff4d6;
+  --color-gold-300: #ffdc8f;
+  --color-gold-500: #ffc857;
+  --color-gold-700: #c77f00;
+  --color-gold-900: #6b4300;
+
+  --color-violet-100: #efe6ff;
+  --color-violet-300: #b79cff;
+  --color-violet-500: #7a28e8;
+  --color-violet-700: #5a1bb0;
+  --color-violet-900: #2e0b63;
+
+  --color-sand-100: #ffffff;
+  --color-sand-300: #fff5ee;
+  --color-sand-500: #fbe8dc;
+  --color-sand-700: #f0d2c2;
+  --color-sand-900: #d9b3a0;
 
   --color-forest-100: #e3efe7;
   --color-forest-300: #8cc3a6;
@@ -55,7 +84,7 @@
 }
 
 /*
- * Type scale — the named steps for display text (Fraunces via font-heading).
+ * Type scale — the named steps for display text (Poppins via font-heading).
  * Body copy keeps Tailwind's text-sm/text-base; everything bigger than a
  * card title should come from here rather than one-off text-[2.5rem]s.
  *   display   login / welcome hero
@@ -89,17 +118,18 @@
 }
 
 @theme {
-  /* Fluid: 34px on a 320px phone (so "Crave. Click." stays one line), up
-     to 42px from ~410px wide. */
-  --text-display: clamp(2.125rem, 11vw - 0.2rem, 2.625rem);
-  --text-display--line-height: 1.04;
-  --text-display--letter-spacing: -0.025em;
-  --text-headline: 1.875rem;
-  --text-headline--line-height: 1.1;
+  /* Poppins runs wider and taller than a serif of the same size, so the
+     steps sit a little smaller. Fluid display: 32px on a 320px phone (so
+     "Crave. Click." stays one line), up to 40px from ~410px wide. */
+  --text-display: clamp(2rem, 10vw, 2.5rem);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.03em;
+  --text-headline: 1.75rem;
+  --text-headline--line-height: 1.15;
   --text-headline--letter-spacing: -0.02em;
-  --text-title: 1.4375rem;
-  --text-title--line-height: 1.2;
-  --text-title--letter-spacing: -0.01em;
+  --text-title: 1.3125rem;
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.015em;
   --text-label: 0.8125rem;
   --text-label--line-height: 1.125rem;
   --text-label--font-weight: 600;
@@ -108,21 +138,21 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jakarta);
-  --font-heading: var(--font-fraunces), var(--font-jakarta);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-poppins), var(--font-inter);
+  --color-hero: var(--hero);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-accent: var(--hero-accent);
+  --color-hero-success: var(--hero-success);
+  --color-hero-danger: var(--hero-danger);
   --color-chip-active: var(--chip-active);
   --color-chip-active-foreground: var(--chip-active-foreground);
-  --color-ink-foreground: var(--ink-foreground);
-  --color-ink-accent: var(--ink-accent);
-  --color-ink-success: var(--ink-success);
-  --color-ink-danger: var(--ink-danger);
-  --color-brand-soft: var(--brand-soft);
-  --color-brand-soft-foreground: var(--brand-soft-foreground);
-  --color-rose: var(--rose);
-  --color-rose-foreground: var(--rose-foreground);
-  --color-amber: var(--amber);
+  --color-pink-soft: var(--pink-soft);
+  --color-pink-soft-foreground: var(--pink-soft-foreground);
+  --color-aqua: var(--aqua);
+  --color-aqua-foreground: var(--aqua-foreground);
+  --color-gold: var(--gold);
+  --color-gold-strong: var(--gold-strong);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-success-soft: var(--success-soft);
@@ -169,181 +199,215 @@
 }
 
 /*
- * College Bites palette — matches the client's brand sheet
- * (docs/design-reference.webp): airy pastel surfaces, navy for text and
- * pill buttons, teal accents, soft yellow for small highlights.
+ * Vice Dusk × Leonida Gold — the palette is built around LIGHT, not a row
+ * of equal swatches: a deep dusk ground, neon that glows (magenta, cyan), a
+ * sunset that bleeds gold → coral → magenta, and violet as the far edge of
+ * the sky. Light mode is the same scene at golden hour.
  *
- *   navy   #173F6B  text, primary pill buttons (lifted off the brief's
- *                   #0A2540, which read as black — kept as navy-900)
- *   teal   #00C2A8  selected chips (--chip-active), dark-mode buttons;
- *                   #007A6B wherever teal is TEXT (--rose: prices, cuisines)
- *   yellow #F6DC8A  soft butter (--amber), decoration/highlights only —
- *                   the brief's #F5C518 was too loud
- *   pastels         --ink/--ink-2 periwinkle → lavender hero gradient
- *                   (ticket, member card, cart bar, banners, Today card) in
- *                   BOTH themes with navy text; periwinkle wells; pink tint
+ *   actions   --primary → --primary-2 gradient pill (surface-primary):
+ *             light magenta → violet with white text, dark neon magenta →
+ *             tangerine with dusk text. Solid --primary is the fallback
+ *             and the colour of primary-as-text (links).
+ *   chips     --chip-active: Keys cyan with deep text, both themes.
+ *   text      --aqua (cuisines, info), --primary (links), --gold (stars)
+ *   hero      --hero-a → -b → -c sunset (surface-hero): pickup pass,
+ *             member card, cart bar, banners, admin Today card. Dusk
+ *             text in BOTH themes, at full strength — faded text fails on
+ *             the magenta end.
+ *   light     --glow-* bloom colours (glow-neon/-cyan/-sun utilities),
+ *             --page-glow-* (the sky over every page), rim light baked
+ *             into the dark card elevation, --heading-* (text-sunset).
  *
  * Surfaces step ground < card < raised in both themes:
- *   light  mint #EFF7F6 < white < white, periwinkle-tint wells #EDF0FF
- *   dark   lifted navy #15325A < #1C3F6E < #234A7E (blue, not black)
+ *   light  sand #FFF5EE < white < white, lilac wells #F6EEFF
+ *   dark   dusk #0E0A24 < #1A1238 < #251A4E (blue-violet, not black)
  *
- * Every text/surface pair (and the Home heading over each mood field) is
- * checked by `npm run audit:contrast`.
+ * Every text/surface pair (and the Home heading over each sky) is checked
+ * by `npm run audit:contrast`.
  */
 :root {
-  --background: #eff7f6;
-  --foreground: #173f6b;
+  --background: #fff5ee;
+  --foreground: #1a0f3d;
   --card: #ffffff;
-  --card-foreground: #173f6b;
+  --card-foreground: #1a0f3d;
   --popover: #ffffff;
-  --popover-foreground: #173f6b;
-  --primary: #173f6b;
+  --popover-foreground: #1a0f3d;
+  --primary: #c2005e;
+  --primary-2: #7a28e8;
   --primary-foreground: #ffffff;
-  --secondary: #edf0ff;
-  --secondary-foreground: #173f6b;
-  --muted: #edf0ff;
-  --muted-foreground: #584a70;
-  --accent: #edf0ff;
-  --accent-foreground: #173f6b;
+  --secondary: #f6eeff;
+  --secondary-foreground: #1a0f3d;
+  --muted: #f6eeff;
+  --muted-foreground: #5b4f86;
+  --accent: #f6eeff;
+  --accent-foreground: #1a0f3d;
   --destructive: #b42b1c;
   --destructive-foreground: #ffffff;
-  --border: #cfdaff;
-  /* 3.5:1 against card — WCAG 1.4.11 wants 3:1 for a control's boundary. */
-  --input: #6c7ca6;
-  --ring: #007a6b;
-  --ink: #c9d0ff;
-  --ink-foreground: #0f2d52;
-  /* Accents that sit ON the pastel ink surface (token card, cart bar,
-     banners) — deep teal/green/red that read on periwinkle and lavender
-     (checked by the contrast audit against both gradient ends). */
-  --ink-accent: #00594e;
-  --ink-success: #0b5a47;
-  --ink-danger: #8e2416;
-  --ink-2: #dccfff;
-  --chip-active: #00c2a8;
-  --chip-active-foreground: #0f2d52;
-  --brand-soft: #fbe2ef;
-  --brand-soft-foreground: #7a1f55;
-  --rose: #007a6b;
-  --rose-foreground: #ffffff;
-  --amber: #f6dc8a;
+  --border: #efdcea;
+  /* 3.3:1 against card — WCAG 1.4.11 wants 3:1 for a control's boundary. */
+  --input: #9186b8;
+  --ring: #00707e;
+  /* The sunset hero: gold → coral → magenta, dusk text on all of it. */
+  --hero: #ff6a5b;
+  --hero-a: #ffb557;
+  --hero-b: #ff6a5b;
+  --hero-c: #ff3d93;
+  --hero-foreground: #0e0a24;
+  /* Accents that sit ON the sunset hero (initials, "Show this token",
+     stat numbers that need a second colour) — checked against every stop. */
+  --hero-accent: #2a0752;
+  --hero-success: #022617;
+  --hero-danger: #350303;
+  --chip-active: #10cfdd;
+  --chip-active-foreground: #1a0f3d;
+  --pink-soft: #ffe6f1;
+  --pink-soft-foreground: #9c0050;
+  --aqua: #00707e;
+  --aqua-foreground: #ffffff;
+  --gold: #ffc857;
+  /* Stars and other gold marks on light surfaces need 3:1 as graphics. */
+  --gold-strong: #c77f00;
   --success: #0e7556;
   --success-foreground: #ffffff;
   --success-soft: #dcf4ea;
-  --stripe-a: #e4eaff;
-  --stripe-b: #eef1ff;
-  --chart-1: #173f6b;
-  --chart-2: #00c2a8;
-  --chart-3: #f6dc8a;
-  --chart-4: #7bdff2;
-  --chart-5: #c8b6ff;
+  --stripe-a: #fbe6f0;
+  --stripe-b: #fff2f7;
+  --chart-1: #c2005e;
+  --chart-2: #10cfdd;
+  --chart-3: #ffc857;
+  --chart-4: #ff7a2f;
+  --chart-5: #7a28e8;
   --radius: 0.875rem;
-  --sidebar: #eff7f6;
-  --sidebar-foreground: #173f6b;
-  --sidebar-primary: #173f6b;
+  --sidebar: #fff5ee;
+  --sidebar-foreground: #1a0f3d;
+  --sidebar-primary: #c2005e;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #edf0ff;
-  --sidebar-accent-foreground: #173f6b;
-  --sidebar-border: #cfdaff;
-  --sidebar-ring: #007a6b;
+  --sidebar-accent: #f6eeff;
+  --sidebar-accent-foreground: #1a0f3d;
+  --sidebar-border: #efdcea;
+  --sidebar-ring: #00707e;
 
-  /* Elevation — navy-tinted in light mode so shadows read as part of the
-     palette rather than grey smudges on mint. */
-  --elevation-card: 0 1px 2px rgb(23 63 107 / 5%), 0 4px 14px -4px rgb(23 63 107 / 10%);
-  --elevation-raised: 0 2px 4px rgb(23 63 107 / 5%), 0 12px 28px -8px rgb(23 63 107 / 16%);
-  --elevation-overlay: 0 4px 8px rgb(23 63 107 / 7%), 0 24px 48px -12px rgb(23 63 107 / 24%);
+  /* Light. Bloom colours for the glow-* utilities, the sky that sits over
+     the top of every page, and the gradient-text stops. */
+  --glow-neon: rgb(214 0 108 / 42%);
+  --glow-cyan: rgb(16 207 221 / 45%);
+  --glow-sun: rgb(255 106 91 / 45%);
+  --page-glow-a: rgb(255 106 91 / 16%);
+  --page-glow-b: rgb(255 200 87 / 24%);
+  --heading-a: #a30052;
+  --heading-b: #8a1494;
+  --heading-c: #6a22d6;
 
-  /* Home header ambient field, three stops per time of day — see
-     .mood-field below and HomeHeader. Gold/pink mornings, aqua
-     afternoons, the brief's periwinkle → lavender hero gradient for
-     evenings and nights. Alpha is baked into each stop so the navy heading
-     on top of the densest point stays above 6.7:1 (contrast audit). */
-  --mood-morning-a: #f6dc8a66;
-  --mood-morning-b: #f2b5d466;
-  --mood-morning-c: #7bdff244;
-  --mood-afternoon-a: #7bdff277;
-  --mood-afternoon-b: #d6f5f0;
-  --mood-afternoon-c: #b8c0ff55;
-  --mood-evening-a: #b8c0ff99;
-  --mood-evening-b: #c8b6ff77;
-  --mood-evening-c: #f2b5d455;
-  --mood-night-a: #b8c0ff77;
-  --mood-night-b: #c8b6ff99;
-  --mood-night-c: #e7c6ff88;
+  /* Elevation — warm, coral-tinted in golden hour so shadows read as
+     sunlight rather than grey smudges on sand. */
+  --elevation-card: 0 1px 2px rgb(26 15 61 / 5%), 0 8px 22px -10px rgb(255 106 91 / 24%);
+  --elevation-raised: 0 2px 4px rgb(26 15 61 / 5%), 0 16px 32px -12px rgb(255 106 91 / 30%);
+  --elevation-overlay: 0 4px 8px rgb(26 15 61 / 8%), 0 28px 56px -16px rgb(122 40 232 / 28%);
+
+  /* Home header sky, three stops per time of day — see .mood-field below
+     and HomeHeader. Leonida sunrise (gold/peach), Vice beach afternoon
+     (cyan haze), golden-hour evening (tangerine → magenta), neon night
+     (violet with a magenta edge). Alpha is baked into each stop so the
+     heading on top of the densest point stays above 6.7:1 (contrast
+     audit). */
+  --mood-morning-a: #ffc85788;
+  --mood-morning-b: #ffe9da;
+  --mood-morning-c: #ff6a5b33;
+  --mood-afternoon-a: #10cfdd44;
+  --mood-afternoon-b: #fff0e6;
+  --mood-afternoon-c: #ffc85755;
+  --mood-evening-a: #ffb55799;
+  --mood-evening-b: #ffe3ee;
+  --mood-evening-c: #ff3d9344;
+  --mood-night-a: #7a28e833;
+  --mood-night-b: #f6eeff;
+  --mood-night-c: #ff2e8833;
 }
 
-/* Dark: layered, lifted navy grounds (not black, not an inverted light
-   mode); the pastel ink surface stays pastel with navy text. Fills that carry text (success/destructive/primary) get a dark
-   *-foreground instead of white — the dark-mode fills are light enough
-   that white text on them would fail. */
+/* Dusk: a layered blue-violet night (not black, not an inverted light
+   mode). Neon fills carry dusk text — they're far too bright for white.
+   Cards get a 1px rim light on the top edge, baked into their elevation. */
 .dark {
-  --background: #15325a;
-  --foreground: #f4f7fb;
-  --card: #1c3f6e;
-  --card-foreground: #f4f7fb;
-  --popover: #234a7e;
-  --popover-foreground: #f4f7fb;
-  --primary: #00c2a8;
-  --primary-foreground: #0f2d52;
-  --secondary: #244b7e;
-  --secondary-foreground: #f4f7fb;
-  --muted: #244b7e;
-  --muted-foreground: #cdd8ff;
-  --accent: #244b7e;
-  --accent-foreground: #f4f7fb;
-  --destructive: #ffa294;
+  --background: #0e0a24;
+  --foreground: #fff0f6;
+  --card: #1a1238;
+  --card-foreground: #fff0f6;
+  --popover: #251a4e;
+  --popover-foreground: #fff0f6;
+  --primary: #ff2e88;
+  --primary-2: #ff7a2f;
+  --primary-foreground: #0e0a24;
+  --secondary: #251a4e;
+  --secondary-foreground: #fff0f6;
+  --muted: #251a4e;
+  --muted-foreground: #bfb4e8;
+  --accent: #251a4e;
+  --accent-foreground: #fff0f6;
+  --destructive: #ff8a7a;
   --destructive-foreground: #2a0e09;
-  --border: rgb(200 182 255 / 28%);
-  --input: rgb(205 216 255 / 60%);
-  --ring: #7bdff2;
-  --ink: #c3ccff;
-  --ink-foreground: #0f2d52;
-  --ink-accent: #00594e;
-  --ink-success: #0b5a47;
-  --ink-danger: #8e2416;
-  --ink-2: #d6c9ff;
-  --chip-active: #00c2a8;
-  --chip-active-foreground: #0f2d52;
-  --brand-soft: #3e2e66;
-  --brand-soft-foreground: #f2d9ff;
-  --rose: #7bdff2;
-  --rose-foreground: #0f2d52;
-  --amber: #f6dc8a;
-  --success: #62e0bf;
+  --border: rgb(191 180 232 / 16%);
+  --input: #6e62a6;
+  --ring: #22ddeb;
+  --hero: #ff6a5b;
+  --hero-a: #ffb557;
+  --hero-b: #ff6a5b;
+  --hero-c: #ff3d93;
+  --hero-foreground: #0e0a24;
+  --hero-accent: #2a0752;
+  --hero-success: #022617;
+  --hero-danger: #350303;
+  --chip-active: #22ddeb;
+  --chip-active-foreground: #0e0a24;
+  --pink-soft: #3a1242;
+  --pink-soft-foreground: #ffc2de;
+  --aqua: #3de6f2;
+  --aqua-foreground: #0e0a24;
+  --gold: #ffc857;
+  --gold-strong: #ffc857;
+  --success: #5fe3b9;
   --success-foreground: #06281f;
-  --success-soft: #134a4f;
-  --stripe-a: #22477a;
-  --stripe-b: #1c3f6e;
-  --chart-1: #f4f7fb;
-  --chart-2: #00c2a8;
-  --chart-3: #f6dc8a;
-  --chart-4: #7bdff2;
-  --chart-5: #c8b6ff;
-  --sidebar: #1c3f6e;
-  --sidebar-foreground: #f4f7fb;
-  --sidebar-primary: #00c2a8;
-  --sidebar-primary-foreground: #0f2d52;
-  --sidebar-accent: #244b7e;
-  --sidebar-accent-foreground: #f4f7fb;
-  --sidebar-border: rgb(200 182 255 / 28%);
-  --sidebar-ring: #7bdff2;
+  --success-soft: #0f3b3a;
+  --stripe-a: #221848;
+  --stripe-b: #1a1238;
+  --chart-1: #ff2e88;
+  --chart-2: #22ddeb;
+  --chart-3: #ffc857;
+  --chart-4: #ff7a2f;
+  --chart-5: #b79cff;
+  --sidebar: #1a1238;
+  --sidebar-foreground: #fff0f6;
+  --sidebar-primary: #ff2e88;
+  --sidebar-primary-foreground: #0e0a24;
+  --sidebar-accent: #251a4e;
+  --sidebar-accent-foreground: #fff0f6;
+  --sidebar-border: rgb(191 180 232 / 16%);
+  --sidebar-ring: #22ddeb;
 
-  --elevation-card: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 12px -4px rgb(0 0 0 / 35%);
-  --elevation-raised: 0 2px 4px rgb(0 0 0 / 30%), 0 12px 28px -8px rgb(0 0 0 / 50%);
-  --elevation-overlay: 0 4px 8px rgb(0 0 0 / 35%), 0 24px 48px -12px rgb(0 0 0 / 60%);
+  --glow-neon: rgb(255 46 136 / 55%);
+  --glow-cyan: rgb(34 221 235 / 45%);
+  --glow-sun: rgb(255 106 91 / 50%);
+  --page-glow-a: rgb(255 46 136 / 16%);
+  --page-glow-b: rgb(34 221 235 / 10%);
+  --heading-a: #ffc857;
+  --heading-b: #ff8a6e;
+  --heading-c: #ff6fb4;
 
-  --mood-morning-a: #f6dc8a1a;
-  --mood-morning-b: #00c2a814;
-  --mood-morning-c: #7bdff222;
-  --mood-afternoon-a: #00c2a82a;
-  --mood-afternoon-b: #244b7eaa;
-  --mood-afternoon-c: #7bdff233;
-  --mood-evening-a: #c8b6ff24;
-  --mood-evening-b: #244b7e88;
-  --mood-evening-c: #f2b5d42a;
-  --mood-night-a: #c8b6ff20;
-  --mood-night-b: #1c3f6e99;
-  --mood-night-c: #b8c0ff2a;
+  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(0 0 0 / 40%), 0 10px 26px -12px rgb(0 0 0 / 60%);
+  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(0 0 0 / 40%), 0 16px 34px -12px rgb(122 40 232 / 45%);
+  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(0 0 0 / 45%), 0 28px 56px -16px rgb(255 46 136 / 30%);
+
+  --mood-morning-a: #ffc85726;
+  --mood-morning-b: #2a1a4ecc;
+  --mood-morning-c: #ff7a2f22;
+  --mood-afternoon-a: #22ddeb26;
+  --mood-afternoon-b: #1a1238cc;
+  --mood-afternoon-c: #7a28e833;
+  --mood-evening-a: #ff7a2f30;
+  --mood-evening-b: #2a1245cc;
+  --mood-evening-c: #ff2e8833;
+  --mood-night-a: #7a28e83a;
+  --mood-night-b: #1a1238cc;
+  --mood-night-c: #ff2e882a;
 }
 
 /*
@@ -399,37 +463,69 @@
 }
 
 /*
- * Tasteful gradient depth for the app's headline ink/primary surfaces — the
- * cart bar, primary CTAs (Continue with Google, Place order, View cart),
- * and hero-style cards (the order-tracking token card). Layered as a
- * background-image over the element's existing flat background-color, so
- * it stays a graceful flat fallback wherever color-mix() isn't supported,
- * and deliberately subtle (a soft light source, not gloss) so the app's
- * clean flat look holds everywhere this ISN'T applied.
+ * The lighting kit. The palette only works if things look LIT, so these
+ * are used across the whole app rather than on one hero:
+ *
+ *   surface-primary  the action pill: --primary → --primary-2 (magenta →
+ *                    violet at golden hour, neon → tangerine at dusk), with
+ *                    a soft highlight along the top edge like a lit tube.
+ *                    Layered over bg-primary, which stays the flat fallback.
+ *   surface-hero     the sunset: gold → coral → magenta, with a faint
+ *                    light source top-left. Dusk text on it.
+ *   glow-neon/-cyan/-sun  coloured bloom under a surface. Restraint: one
+ *                    bloom per screen region — the main action or the
+ *                    hero — everything else gets rim light and the tinted
+ *                    card shadows (--elevation-*).
+ *   text-sunset      gradient headline text; every stop is contrast-checked
+ *                    on the ground it sits on (--heading-*).
  */
 @utility surface-primary {
-  background-image: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--primary) 100%, white 14%) 0%,
-    var(--primary) 55%,
-    color-mix(in srgb, var(--primary) 100%, black 8%) 100%
-  );
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / 16%), transparent 48%),
+    linear-gradient(115deg, var(--primary) 0%, var(--primary-2) 100%);
 }
 
-@utility surface-ink {
-  /* The brand's periwinkle → lavender hero gradient (docs/design-reference.webp). */
-  background-image: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
+@utility surface-hero {
+  background-image:
+    radial-gradient(120% 90% at 0% 0%, rgb(255 255 255 / 22%), transparent 55%),
+    linear-gradient(135deg, var(--hero-a) 0%, var(--hero-b) 50%, var(--hero-c) 100%);
 }
 
-/* Elevation for the surfaces above: a neutral drop shadow plus a soft
-   brand-colored glow underneath, instead of a plain grey shadow-xl.
-   Fixed black for the neutral layer (not var(--ink), which flips to a
-   near-white "high-contrast chip" color in dark mode) — a shadow should
-   always read as occlusion, not as the surface's own fill color. */
-@utility shadow-elevated-glow {
+@utility glow-neon {
   box-shadow:
-    0 14px 30px -10px rgb(0 0 0 / 45%),
-    0 10px 22px -12px color-mix(in srgb, var(--primary) 50%, transparent);
+    0 2px 6px -2px rgb(14 10 36 / 30%),
+    0 14px 32px -12px var(--glow-neon);
+}
+
+@utility glow-cyan {
+  box-shadow:
+    0 2px 6px -2px rgb(14 10 36 / 25%),
+    0 10px 26px -10px var(--glow-cyan);
+}
+
+@utility glow-sun {
+  box-shadow:
+    0 4px 10px -4px rgb(14 10 36 / 35%),
+    0 22px 48px -18px var(--glow-neon),
+    0 12px 30px -16px var(--glow-sun);
+}
+
+/* An inset top highlight — the edge of a card catching the neon above it.
+   Dark cards already carry one inside --elevation-card; this is for
+   surfaces that don't use shadow-card (chips, the tab bar, sheets). */
+@utility rim-light {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 9%);
+}
+
+@utility text-sunset {
+  background-image: linear-gradient(100deg, var(--heading-a) 0%, var(--heading-b) 50%, var(--heading-c) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  @media (forced-colors: active) {
+    background-image: none;
+    color: CanvasText;
+  }
 }
 
 @layer base {
@@ -438,16 +534,21 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* The sky over every page: two soft light sources above the top edge
+       (coral + gold at golden hour, magenta + cyan at dusk) that fade out
+       within the first screen, so no page sits on a flat, unlit ground. */
+    background-image:
+      radial-gradient(70rem 30rem at 110% -12rem, var(--page-glow-a), transparent 70%),
+      radial-gradient(56rem 26rem at -20% -10rem, var(--page-glow-b), transparent 70%);
+    background-repeat: no-repeat;
   }
   html {
     @apply font-sans;
   }
-  /* Fraunces at SOFT 50: rounded, friendly terminals instead of the sharp
-     bookish default. Numbers in the display face (prices, tokens, totals)
-     use lining figures, not the old-style ones Fraunces can fall into. */
+  /* Poppins for display text and big numbers: tabular figures so tokens,
+     prices and totals don't jitter as they change. */
   .font-heading {
-    font-variation-settings: "SOFT" 50;
-    font-variant-numeric: lining-nums;
+    font-variant-numeric: lining-nums tabular-nums;
   }
 }
 
@@ -484,10 +585,10 @@
   .animate-ping-slow {
     animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
-  /* Deep-linked dish (?dish=): a rose outline that drops in from a little
+  /* Deep-linked dish (?dish=): a cyan outline that drops in from a little
      further out, pulses once, then fades — "here it is", not a blinking
      alarm. The outline lives on its own property so it never fights the
-     in-cart amber ring (box-shadow). */
+     in-cart ring (box-shadow). */
   .animate-highlight {
     outline: 3px solid transparent;
     animation: highlight-arrive 3s var(--ease-out-expo) both;
@@ -556,7 +657,7 @@
   }
   18% {
     outline-offset: 3px;
-    outline-color: var(--rose);
+    outline-color: var(--aqua);
   }
   34% {
     outline-offset: 6px;
@@ -565,7 +666,7 @@
     outline-offset: 3px;
   }
   78% {
-    outline-color: var(--rose);
+    outline-color: var(--aqua);
   }
   100% {
     outline-offset: 3px;

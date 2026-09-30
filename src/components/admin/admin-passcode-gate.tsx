@@ -33,7 +33,7 @@ export function AdminPasscodeGate() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col items-center justify-center px-6">
-      <div className="surface-ink flex size-14 items-center justify-center rounded-2xl bg-ink text-ink-foreground shadow-raised">
+      <div className="surface-hero flex size-14 items-center justify-center rounded-2xl bg-hero text-hero-foreground shadow-raised">
         <Lock className="size-6" />
       </div>
       <h1 className="mt-5 text-center font-heading text-headline font-bold">Admin passcode</h1>

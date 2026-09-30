@@ -73,7 +73,7 @@ export function MilestoneUnlockWatcher({ unlockedCsv }: { unlockedCsv: string })
           <span
             key={key}
             className={cn(
-              "animate-pop-in flex items-center justify-center rounded-full bg-ink-foreground/10 text-ink-accent",
+              "animate-pop-in flex items-center justify-center rounded-full bg-hero-foreground/10 text-hero-accent",
               several ? "size-14" : "size-20",
             )}
           >
@@ -84,10 +84,10 @@ export function MilestoneUnlockWatcher({ unlockedCsv }: { unlockedCsv: string })
       <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">
         {several ? `${milestones.length} milestones unlocked!` : "Milestone unlocked!"}
       </p>
-      <p className="mt-1 text-ink-foreground/75">Added to your profile</p>
+      <p className="mt-1 text-hero-foreground/85">Added to your profile</p>
       <p
         className={cn(
-          "animate-pop-in mt-4 max-w-xs font-heading font-bold tracking-tight text-balance text-ink-accent",
+          "animate-pop-in mt-4 max-w-xs font-heading font-bold tracking-tight text-balance text-hero-accent",
           several ? "text-3xl" : "text-5xl",
         )}
       >

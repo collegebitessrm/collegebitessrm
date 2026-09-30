@@ -6,8 +6,8 @@ import type { TrendingDish } from "@/lib/data/trending";
 import type { TimeOfDay } from "@/lib/date";
 
 // Each time of day gets its own ambient field (.mood-field.mood-<time> in
-// globals.css) — sunrise amber, bright afternoon, rose dusk, plum night —
-// plus a greeting and a hero question to match.
+// globals.css) — Leonida sunrise, Vice beach afternoon, golden-hour
+// evening, neon night — plus a greeting and a hero question to match.
 const MOOD: Record<TimeOfDay, { greeting: string; Icon: LucideIcon; heading: string }> = {
   morning: { greeting: "Good morning", Icon: Sunrise, heading: "Fuel up for the day?" },
   afternoon: { greeting: "Hey", Icon: Sun, heading: "What are we craving now?" },

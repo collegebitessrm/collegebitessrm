@@ -110,7 +110,7 @@ export function OrderList({
               type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
-              className="absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-border text-foreground outline-none hover:bg-ink hover:text-ink-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
+              className="absolute top-1/2 right-2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-border text-foreground outline-none hover:bg-hero hover:text-hero-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
             >
               <X className="size-3.5" />
             </button>

@@ -81,12 +81,12 @@ export function CartLineRow({ line, restaurantName }: { line: CartLine; restaura
         }}
         className="relative flex touch-pan-y items-center gap-3 bg-background py-3.5"
       >
-        <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-brand-soft">
+        <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-pink-soft">
           {photo ? (
             <BlurImage src={photo} alt="" sizes="64px" className="object-cover" />
           ) : (
             <span
-              className="flex size-full items-center justify-center font-heading text-2xl font-bold text-brand-soft-foreground/60"
+              className="flex size-full items-center justify-center font-heading text-2xl font-bold text-pink-soft-foreground/60"
               aria-hidden="true"
             >
               {line.name.trim().charAt(0)}

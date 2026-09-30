@@ -88,14 +88,14 @@ export function RestaurantList({
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute top-1/2 right-4 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-border text-foreground outline-none hover:bg-ink hover:text-ink-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
+            className="absolute top-1/2 right-4 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-border text-foreground outline-none hover:bg-hero hover:text-hero-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
           >
             <X className="size-4" />
           </button>
         )}
       </label>
 
-      <p className="mt-4 flex items-center gap-2 rounded-xl border border-brand-soft-foreground/15 bg-brand-soft px-4 py-2 text-sm text-brand-soft-foreground">
+      <p className="mt-4 flex items-center gap-2 rounded-xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-2 text-sm text-pink-soft-foreground">
         <MapPin className="size-4 shrink-0" aria-hidden="true" />
         <span>
           Free delivery to <strong className="font-semibold text-foreground">Gate 3</strong>
@@ -172,7 +172,7 @@ function DishResult({ dish, restaurantName }: { dish: SearchableDish; restaurant
       >
         <span
           className={cn(
-            "relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-brand-soft font-heading text-xl font-bold text-brand-soft-foreground/60",
+            "relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-pink-soft font-heading text-xl font-bold text-pink-soft-foreground/60",
             !dish.isAvailable && "grayscale",
           )}
         >

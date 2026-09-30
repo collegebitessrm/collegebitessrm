@@ -248,21 +248,30 @@ migrations are never edited, so they stay.
 
 ## 7. Design
 
-Target: `docs/design-reference.webp`. Airy pastel surfaces, navy for text
-and pill buttons, teal accents, soft yellow highlights.
+The logo and the layout ideas come from `docs/design-reference.webp` (the
+client's brand sheet). Since the 30 Sep 2026 redesign the palette is
+**Vice Dusk × Leonida Gold**, a GTA Vice City × GTA VI hybrid built around
+light: things should look lit, not flat.
 
-- **Colours:** navy `#173F6B` (the brief's `#0A2540` read as black), teal
-  `#00C2A8` (as text `#007A6B`), soft yellow `#F6DC8A` (the brief's
-  `#F5C518` was too loud). Light: mint ground `#EFF7F6`, white cards,
-  periwinkle-tint wells, periwinkle borders. Dark: lifted navy `#15325A`
-  → `#1C3F6E` → `#234A7E`. Hero surfaces (ticket, member card, cart bar,
-  banners, admin Today card) are a periwinkle → lavender gradient with
-  navy text in both themes; buttons are navy pills; selected chips teal.
+- **Colours:** dusk `#0E0A24` (blue-violet, never plum), Ocean Drive neon
+  `#FF2E88`, Keys cyan `#22DDEB` (the logo's teal switched on), Leonida
+  tangerine `#FF7A2F`, coral `#FF6A5B` (only as the middle of the sunset),
+  Starfish gold `#FFC857`, electric violet `#7A28E8`, golden-hour sand
+  `#FFF5EE`. Light: sand ground, white cards with warm coral shadows,
+  lilac wells, deep text `#1A0F3D`. Dark: dusk → `#1A1238` → `#251A4E`
+  with a rim light on cards. Actions are a gradient pill (magenta → violet
+  in light, neon → tangerine in dark); selected chips cyan; hero surfaces
+  (ticket, member card, cart bar, banners, admin Today card) the sunset
+  gold → coral → magenta with dusk text in both themes.
+- **Lighting kit:** bloom shadows (`glow-neon`, `glow-cyan`, `glow-sun`),
+  `rim-light`, `text-sunset` gradient headlines, and a two-glow sky over
+  the top of every page. One bloom per screen region.
 - **Contrast:** `npm run audit:contrast` checks every text/surface pair in
-  both themes (plus the Home heading over each mood colour) and fails
-  below the minimum. Run it after any colour change.
-- **Type:** Fraunces for display and big numbers, Plus Jakarta for body
-  and all buttons; named sizes; no mono, no uppercase.
+  both themes — both ends of the action gradient, every hero stop, every
+  headline-gradient stop on the ground, under the sky and over each Home
+  mood — and fails below the minimum. Run it after any colour change.
+- **Type:** Poppins (500/600/700) for display and big numbers, Inter for
+  body and all buttons; named sizes; no mono, no uppercase.
 - **Motion:** CSS and Web Animations only; everything respects reduced
   motion. The theme toggle cross-fades.
 - **Every page has exactly one `<h1>`.** Check changes at 320 px, light
@@ -329,6 +338,9 @@ the admin taps "Tap to arm sound" each visit.
 | Logo tile bounds wrong | Glow specks and the navy wordmark counted as "tile" | Detect by rows/columns with a real run of navy; stop at the first gap |
 | Navy read as black, yellow too loud | Brief's exact values on phone screens | Lift navy to `#173F6B`, soften yellow to `#F6DC8A`, more pastel surfaces |
 | Pastel mood washes too strong for the heading | Alpha too high | Contrast audit now checks the heading over each mood |
+| First GTA-inspired palette read as "AI-picked" and bland | Evenly spaced swatches on flat surfaces | Design around light: glows, rim light, gradients that bleed into each other; hand-tune hues off the obvious values |
+| Neon magenta can't carry white text (3.5:1) | Bright fills | Dusk text on every neon/sunset fill; in light mode the action gradient is deep magenta → violet with white text |
+| Gradient headlines failed over the Home sky | The sky brightens the dark ground | The audit checks every gradient stop over every mood; the dark heading stops are lifted |
 | Share card build failed | It read photos that weren't in the repo | Literal photo paths; update them if photos change |
 | Disabled button still clickable | Base UI's trigger overrides `disabled` from `render` | Put `disabled` on the trigger itself |
 | `loading.tsx` at the app root flashed everywhere | Root loading is every route's fallback | Home lives in a `(home)` route group |

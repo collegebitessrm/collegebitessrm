@@ -169,7 +169,7 @@ export function MilestoneBadges({
 function MilestoneReward({ done, left, claimedAt }: { done: boolean; left: number; claimedAt: string | null }) {
   const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones — I'd like to claim my free biryani.");
   return (
-    <div className="mt-3 flex items-start gap-3 rounded-2xl bg-brand-soft px-4 py-3.5 text-brand-soft-foreground">
+    <div className="mt-3 flex items-start gap-3 rounded-2xl bg-pink-soft px-4 py-3.5 text-pink-soft-foreground">
       <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-card">
         <Gift className="size-4.5" aria-hidden="true" />
       </span>
@@ -261,7 +261,7 @@ function BadgeTile({
               strokeLinecap="round"
               strokeDasharray={RING_CIRCUMFERENCE}
               strokeDashoffset={dashOffset}
-              className="ring-fill stroke-rose"
+              className="ring-fill stroke-aqua"
               style={{ "--ring-empty": RING_CIRCUMFERENCE } as CSSProperties}
             />
           </svg>

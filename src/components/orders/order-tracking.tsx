@@ -138,8 +138,8 @@ export function OrderTracking({
         <CelebrationOverlay confettiOnceKey={CONFETTI_SHOWN_KEY}>
           <BrandLogo className="animate-pop-in size-20 rounded-3xl" />
           <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">Order placed!</p>
-          <p className="mt-1 text-ink-foreground/75">Show this token at the gate</p>
-          <p className="animate-pop-in mt-4 font-heading text-7xl font-bold tracking-tight text-ink-accent">
+          <p className="mt-1 text-hero-foreground/85">Show this token at the gate</p>
+          <p className="animate-pop-in mt-4 font-heading text-7xl font-bold tracking-tight text-hero-accent">
             {formatOrderNumber(initialOrder.dailyNumber)}
           </p>
         </CelebrationOverlay>
@@ -162,7 +162,7 @@ export function OrderTracking({
           </h1>
           {/* The token as a ticket stub: what you ordered (photos) above
               the tear line, what you show at the gate below it. */}
-          <div className="surface-ink shadow-elevated-glow relative overflow-hidden rounded-3xl bg-ink text-ink-foreground">
+          <div className="surface-hero glow-sun relative overflow-hidden rounded-3xl bg-hero text-hero-foreground">
             {photos.length > 0 && (
               <div
                 className={cn("grid h-36 gap-1 p-2 pb-0", cancelled && "opacity-60 grayscale")}
@@ -172,7 +172,7 @@ export function OrderTracking({
                   <div
                     key={src}
                     className={cn(
-                      "relative overflow-hidden bg-ink-foreground/10",
+                      "relative overflow-hidden bg-hero-foreground/10",
                       i === 0 && "rounded-tl-[1.25rem]",
                       i === photos.length - 1 && "rounded-tr-[1.25rem]",
                     )}
@@ -185,12 +185,12 @@ export function OrderTracking({
 
             <div className="px-6 pt-4 pb-5">
               <div className="flex items-center justify-between gap-2">
-                <p className="min-w-0 truncate text-sm text-ink-foreground/75">
+                <p className="min-w-0 truncate text-sm text-hero-foreground/85">
                   {initialOrder.restaurantName} · {formatTime(initialOrder.createdAt)}
                 </p>
                 {live && (
-                  <span className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-ink-success">
-                    <span className="size-2.5 rounded-full bg-ink-success motion-safe:animate-pulse" aria-hidden="true" />
+                  <span className="flex shrink-0 items-center gap-1.5 text-xs font-semibold text-hero-success">
+                    <span className="size-2.5 rounded-full bg-hero-success motion-safe:animate-pulse" aria-hidden="true" />
                     Live
                   </span>
                 )}
@@ -198,7 +198,7 @@ export function OrderTracking({
             </div>
 
             {/* Tear line: dashed rule with a notch cut out of each edge. */}
-            <div className="relative h-0 border-t-2 border-dashed border-ink-foreground/20" aria-hidden="true">
+            <div className="relative h-0 border-t-2 border-dashed border-hero-foreground/20" aria-hidden="true">
               <span className="absolute top-1/2 -left-3 size-6 -translate-y-1/2 rounded-full bg-background" />
               <span className="absolute top-1/2 -right-3 size-6 -translate-y-1/2 rounded-full bg-background" />
             </div>
@@ -206,7 +206,7 @@ export function OrderTracking({
             <div className="px-6 pt-5 pb-6">
               <div className="flex items-end justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-label text-ink-accent">{cancelled ? "Order token" : "Show this token"}</p>
+                  <p className="text-label text-hero-accent">{cancelled ? "Order token" : "Show this token"}</p>
                   <div className="mt-1 flex items-center gap-2">
                     <p className={cn("font-heading text-5xl leading-none font-bold", cancelled && "line-through opacity-60")}>
                       {formatOrderNumber(initialOrder.dailyNumber)}
@@ -215,7 +215,7 @@ export function OrderTracking({
                       type="button"
                       onClick={() => shareOrderToken(formatOrderNumber(initialOrder.dailyNumber))}
                       aria-label="Share order token"
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-ink-foreground/10 outline-none hover:bg-ink-foreground/20 focus-visible:ring-2 focus-visible:ring-ink-foreground"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-hero-foreground/10 outline-none hover:bg-hero-foreground/20 focus-visible:ring-2 focus-visible:ring-hero-foreground"
                     >
                       <Share2 className="size-4" />
                     </button>
@@ -223,13 +223,13 @@ export function OrderTracking({
                 </div>
                 {!cancelled && (
                   <p className="shrink-0 text-right">
-                    <span className="block text-sm text-ink-foreground/75">{eta.lead}</span>
+                    <span className="block text-sm text-hero-foreground/85">{eta.lead}</span>
                     <span className="block font-heading text-xl font-bold whitespace-nowrap">{eta.time}</span>
                   </p>
                 )}
               </div>
-              <p className="mt-5 flex items-center gap-2 rounded-xl bg-ink-foreground/10 px-4 py-2.5 text-sm">
-                <MapPin className="size-4 shrink-0 text-ink-accent" aria-hidden="true" />
+              <p className="mt-5 flex items-center gap-2 rounded-xl bg-hero-foreground/10 px-4 py-2.5 text-sm">
+                <MapPin className="size-4 shrink-0 text-hero-accent" aria-hidden="true" />
                 Collect at Gate 3
               </p>
             </div>
@@ -299,7 +299,7 @@ export function OrderTracking({
                 const photo = getDishPhoto(initialOrder.restaurantName, item.dishName);
                 return (
                   <li key={item.dishName} className="flex items-center gap-3 py-2.5">
-                    <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-brand-soft font-heading font-bold text-brand-soft-foreground/60">
+                    <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-pink-soft font-heading font-bold text-pink-soft-foreground/60">
                       {photo ? (
                         <BlurImage src={photo} alt="" sizes="44px" className="object-cover" />
                       ) : (

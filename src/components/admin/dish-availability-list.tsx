@@ -169,7 +169,7 @@ function DishRow({
     <div className="flex items-center gap-3 rounded-2xl border bg-card p-2.5 pr-3 shadow-card">
       <span
         className={cn(
-          "relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-brand-soft font-heading font-bold text-brand-soft-foreground/60",
+          "relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-pink-soft font-heading font-bold text-pink-soft-foreground/60",
           !available && "opacity-60 grayscale",
         )}
       >

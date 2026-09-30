@@ -105,7 +105,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
             <header className="pt-6 pb-3">
               <h1 className="font-heading text-headline font-bold">{restaurant.name}</h1>
               {restaurant.cuisine_tags.length > 0 && (
-                <p className="mt-1 font-medium text-rose">{restaurant.cuisine_tags.join(" · ")}</p>
+                <p className="mt-1 font-medium text-aqua">{restaurant.cuisine_tags.join(" · ")}</p>
               )}
               {restaurant.description && (
                 <p className="mt-1 text-muted-foreground">{restaurant.description}</p>

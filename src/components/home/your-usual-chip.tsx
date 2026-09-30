@@ -56,13 +56,13 @@ export function YourUsualChip({ usual }: { usual: UsualCart }) {
       <button
         type="button"
         onClick={handleTap}
-        className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-primary/20 bg-brand-soft px-5 py-3.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+        className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-primary/20 bg-pink-soft px-5 py-3.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
       >
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <RotateCcw className="size-5" aria-hidden="true" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold text-brand-soft-foreground">Your usual</span>
+          <span className="block font-semibold text-pink-soft-foreground">Your usual</span>
           <span className="block truncate text-sm text-muted-foreground">
             {usual.restaurantName} · {itemCount} {itemCount === 1 ? "item" : "items"}
           </span>

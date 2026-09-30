@@ -47,7 +47,7 @@ export function CartBar({
               hasTabBar ? "bottom-20 pb-0" : "bottom-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
             )}
           >
-            <div className="surface-ink shadow-elevated-glow flex items-center gap-3 rounded-3xl bg-ink p-3 pl-3.5 text-ink-foreground">
+            <div className="surface-hero glow-sun flex items-center gap-3 rounded-3xl bg-hero p-3 pl-3.5 text-hero-foreground">
               {/* The actual food in the cart, not just a count: up to two
                   dish photos overlapping, falling back to the dish's initial.
                   Dropped below 360px so the total never gets squeezed. */}
@@ -57,7 +57,7 @@ export function CartBar({
                   return (
                     <span
                       key={line.dishId}
-                      className="animate-pop-in relative flex size-11 items-center justify-center overflow-hidden rounded-full bg-ink-foreground/15 font-heading text-lg font-bold ring-2 ring-ink"
+                      className="animate-pop-in relative flex size-11 items-center justify-center overflow-hidden rounded-full bg-hero-foreground/15 font-heading text-lg font-bold ring-2 ring-hero"
                     >
                       {photo ? (
                         <Image src={photo} alt="" fill sizes="44px" className="object-cover" />
@@ -81,7 +81,7 @@ export function CartBar({
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="surface-primary flex h-14 shrink-0 items-center gap-2 rounded-2xl bg-primary px-5 text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ink-foreground/80"
+                className="surface-primary flex h-14 shrink-0 items-center gap-2 rounded-2xl bg-primary px-5 text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-hero-foreground/80"
               >
                 View cart <ArrowRight className="size-5" />
               </button>

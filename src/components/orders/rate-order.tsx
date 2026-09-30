@@ -253,7 +253,7 @@ function DishRating({
 }) {
   return (
     <li className="flex items-center gap-3 py-4">
-      <span className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-brand-soft font-heading text-xl font-bold text-brand-soft-foreground/60">
+      <span className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-pink-soft font-heading text-xl font-bold text-pink-soft-foreground/60">
         {photo ? (
           <BlurImage src={photo} alt="" sizes="56px" className="object-cover" />
         ) : (

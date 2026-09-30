@@ -37,7 +37,7 @@ const CONFIRM: Record<OrderingMode, { title: string; body: string; action: strin
 };
 
 /**
- * Footer row of the dashboard's plum "Today" card: the campus Open / Closed
+ * Footer row of the dashboard's sunset "Today" card: the campus Open / Closed
  * switch (app_settings.ordering_mode — no daily schedule). The status comes
  * from the server (getOrderingState) and is re-fetched after every change.
  */
@@ -68,7 +68,7 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
         <span
           className={cn(
             "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full",
-            ordering.open ? "bg-ink-success/20 text-ink-success" : "bg-ink-danger/20 text-ink-danger",
+            ordering.open ? "bg-hero-success/20 text-hero-success" : "bg-hero-danger/20 text-hero-danger",
           )}
           aria-hidden="true"
         >
@@ -76,14 +76,14 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
         </span>
         <div className="min-w-0">
           <p className="font-semibold">{ordering.open ? "Students can order now" : "Ordering is closed"}</p>
-          <p className="max-w-md text-sm text-ink-foreground/75">{status}</p>
+          <p className="max-w-md text-sm text-hero-foreground/85">{status}</p>
         </div>
       </div>
 
       <div
         role="radiogroup"
         aria-label="Ordering mode"
-        className="flex shrink-0 rounded-full bg-ink-foreground/10 p-1"
+        className="flex shrink-0 rounded-full bg-hero-foreground/10 p-1"
       >
         {MODES.map(({ mode, label }) => {
           const active = ordering.mode === mode;
@@ -95,8 +95,8 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
               aria-checked={active}
               onClick={() => !active && setTarget(mode)}
               className={cn(
-                "h-9 rounded-full px-4 text-sm font-bold outline-none focus-visible:ring-3 focus-visible:ring-ink-foreground/60",
-                active ? "bg-ink-foreground text-ink" : "text-ink-foreground/75 hover:text-ink-foreground",
+                "h-9 rounded-full px-4 text-sm font-bold outline-none focus-visible:ring-3 focus-visible:ring-hero-foreground/60",
+                active ? "bg-hero-foreground text-hero" : "text-hero-foreground/85 hover:text-hero-foreground",
               )}
             >
               {label}

@@ -53,7 +53,7 @@ export function NotifyMeCard() {
 
   return (
     <div className="mt-4 flex items-center gap-3 rounded-2xl border bg-card p-4 shadow-card">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-soft-foreground">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-pink-soft text-pink-soft-foreground">
         <Bell className="size-5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">

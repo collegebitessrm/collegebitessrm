@@ -54,7 +54,7 @@ export function RatePrompt({ order }: { order: RatePromptOrder }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="flex flex-col items-center text-center">
-        <span className="relative flex size-24 items-center justify-center overflow-hidden rounded-3xl bg-brand-soft font-heading text-4xl font-bold text-brand-soft-foreground/60 shadow-raised">
+        <span className="relative flex size-24 items-center justify-center overflow-hidden rounded-3xl bg-pink-soft font-heading text-4xl font-bold text-pink-soft-foreground/60 shadow-raised">
           {photo ? (
             <BlurImage src={photo} alt="" sizes="96px" className="object-cover" />
           ) : (

@@ -171,7 +171,7 @@ function CartContents({
 
         <div className="mt-4 divide-y rounded-2xl border bg-card shadow-card">
           <div className="flex items-center gap-4 px-5 py-4">
-            <MapPin className="size-5 shrink-0 text-rose" aria-hidden="true" />
+            <MapPin className="size-5 shrink-0 text-aqua" aria-hidden="true" />
             <div>
               <p className={eyebrow}>Handover point</p>
               <p className="font-semibold">Gate 3</p>
@@ -197,11 +197,11 @@ function CartContents({
           </dl>
           <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-2.5">
-              <Banknote className="size-4 shrink-0 text-rose" aria-hidden="true" />
+              <Banknote className="size-4 shrink-0 text-aqua" aria-hidden="true" />
               Pay on delivery — cash or UPI at the gate.
             </li>
             <li className="flex items-center gap-2.5">
-              <QrCode className="size-4 shrink-0 text-rose" aria-hidden="true" />
+              <QrCode className="size-4 shrink-0 text-aqua" aria-hidden="true" />
               Paying cash? Exact change helps.
             </li>
           </ul>
@@ -256,7 +256,7 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
   if (!editing) {
     return (
       <div className="flex items-center gap-4 px-5 py-4">
-        <Phone className="size-5 shrink-0 text-rose" aria-hidden="true" />
+        <Phone className="size-5 shrink-0 text-aqua" aria-hidden="true" />
         <div className="min-w-0 flex-1">
           <p className={eyebrow}>Your number</p>
           <p className="font-semibold tabular-nums">{formatStoredMobile(value)}</p>

@@ -6,7 +6,7 @@
  *   0–520      the logo tile rises in and settles (slight scale + fade)
  *   180–620    "College Bites" and the tagline follow
  *   620–1300   hold
- *   1300–1650  the mint screen fades away to the app
+ *   1300–1650  the splash screen fades away to the app
  */
 export const SPLASH = {
   /** Logo tile rise-in. */

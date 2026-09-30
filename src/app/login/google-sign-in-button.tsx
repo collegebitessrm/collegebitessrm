@@ -32,11 +32,11 @@ export function GoogleSignInButton() {
       <Button
         onClick={signIn}
         disabled={pending}
-        className="surface-primary shadow-elevated-glow h-14 w-full gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground hover:brightness-95"
+        className="surface-primary glow-neon h-14 w-full gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground hover:brightness-95"
       >
         <span className="flex size-8 items-center justify-center rounded-full bg-white">
           {pending ? (
-            <Loader2 className="size-4 animate-spin text-navy-700" />
+            <Loader2 className="size-4 animate-spin text-night-700" />
           ) : (
             <GoogleIcon />
           )}

@@ -21,13 +21,13 @@ export function isActiveStatus(status: OrderStatus): boolean {
 export function statusBadge(status: OrderStatus): { label: string; className: string } {
   switch (status) {
     case "pending":
-      return { label: "Placed", className: "bg-brand-soft text-brand-soft-foreground" };
+      return { label: "Placed", className: "bg-pink-soft text-pink-soft-foreground" };
     case "confirmed":
-      return { label: "Confirmed", className: "bg-brand-soft text-brand-soft-foreground" };
+      return { label: "Confirmed", className: "bg-pink-soft text-pink-soft-foreground" };
     case "preparing":
-      return { label: "Preparing", className: "bg-brand-soft text-brand-soft-foreground" };
+      return { label: "Preparing", className: "bg-pink-soft text-pink-soft-foreground" };
     case "out_for_delivery":
-      return { label: "Out for delivery", className: "bg-brand-soft text-brand-soft-foreground" };
+      return { label: "Out for delivery", className: "bg-pink-soft text-pink-soft-foreground" };
     case "delivered":
       return { label: "Delivered", className: "bg-success-soft text-success" };
     case "cancelled":

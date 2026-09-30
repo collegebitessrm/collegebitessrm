@@ -122,7 +122,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           {error && (
             <p
               role="alert"
-              className="mb-4 rounded-xl bg-brand-soft px-4 py-3 text-center text-sm text-brand-soft-foreground"
+              className="mb-4 rounded-xl bg-pink-soft px-4 py-3 text-center text-sm text-pink-soft-foreground"
             >
               Sign-in didn&apos;t go through — give it another shot.
             </p>

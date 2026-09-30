@@ -120,7 +120,7 @@ function OrderThumb({ order, className }: { order: OrderSummary; className?: str
   return (
     <span
       className={cn(
-        "relative flex shrink-0 items-center justify-center overflow-hidden bg-brand-soft font-heading font-bold text-brand-soft-foreground/60",
+        "relative flex shrink-0 items-center justify-center overflow-hidden bg-pink-soft font-heading font-bold text-pink-soft-foreground/60",
         className,
       )}
     >
@@ -203,7 +203,7 @@ function PastOrderRow({ order }: { order: OrderSummary }) {
           transitionTypes={["nav-forward"]}
           aria-label={`Reorder from ${order.restaurantName}`}
           title="Reorder"
-          className="pressable flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand-soft-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
+          className="pressable flex size-10 shrink-0 items-center justify-center rounded-full bg-pink-soft text-pink-soft-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
         >
           <RotateCcw className="size-4" aria-hidden="true" />
         </Link>

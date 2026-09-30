@@ -3,7 +3,7 @@ import "./splash.css";
 
 /**
  * The startup splash: the logo's navy icon tile, then "College Bites" and
- * the tagline in the app's own fonts, on the mint ground — a short
+ * the tagline in the app's own fonts, on the sand ground (dusk in dark mode) — a short
  * fade-in, a hold, and a fade to the app. All motion comes from
  * ./engine.ts, run by the inline script in the root layout; this is only
  * markup, hidden until that script decides this load plays it.

@@ -11,19 +11,19 @@ export default function Loading() {
       <span className="sr-only">Loading your profile…</span>
 
       <ViewTransition {...REVEAL_EXIT}>
-        <div className="rounded-3xl bg-ink p-5">
+        <div className="rounded-3xl bg-hero p-5">
           <div className="flex items-center gap-4">
-            <Skeleton className="size-16 shrink-0 rounded-2xl bg-ink-foreground/10" />
+            <Skeleton className="size-16 shrink-0 rounded-2xl bg-hero-foreground/10" />
             <div className="min-w-0 flex-1">
-              <Skeleton className="h-6 w-40 bg-ink-foreground/10" />
-              <Skeleton className="mt-2 h-4 w-32 bg-ink-foreground/10" />
+              <Skeleton className="h-6 w-40 bg-hero-foreground/10" />
+              <Skeleton className="mt-2 h-4 w-32 bg-hero-foreground/10" />
             </div>
           </div>
-          <div className="mt-5 grid grid-cols-3 gap-3 border-t border-ink-foreground/15 pt-4">
+          <div className="mt-5 grid grid-cols-3 gap-3 border-t border-hero-foreground/15 pt-4">
             {[0, 1, 2].map((i) => (
               <div key={i} className="flex flex-col items-center gap-1.5">
-                <Skeleton className="h-7 w-8 bg-ink-foreground/10" />
-                <Skeleton className="h-3 w-16 bg-ink-foreground/10" />
+                <Skeleton className="h-7 w-8 bg-hero-foreground/10" />
+                <Skeleton className="h-3 w-16 bg-hero-foreground/10" />
               </div>
             ))}
           </div>

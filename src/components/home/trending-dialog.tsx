@@ -47,7 +47,7 @@ export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {
             transitionTypes={["nav-forward"]}
             className="pressable group mt-4 block rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
           >
-            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-brand-soft">
+            <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-pink-soft">
               <DishPhoto dish={top} sizes="(min-width: 384px) 336px, 85vw" className="text-5xl" />
               <span className="absolute top-2.5 left-2.5 rounded-full bg-primary px-2.5 py-0.5 font-heading text-sm font-bold text-primary-foreground">
                 #1
@@ -73,7 +73,7 @@ export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {
                   <span className="w-5 shrink-0 text-center font-heading font-bold text-muted-foreground tabular-nums">
                     {i + 2}
                   </span>
-                  <span className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-brand-soft">
+                  <span className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-pink-soft">
                     <DishPhoto dish={d} sizes="48px" className="text-lg" />
                   </span>
                   <span className="min-w-0 flex-1 text-left">
@@ -104,7 +104,7 @@ function DishPhoto({ dish, sizes, className }: { dish: TrendingDish; sizes: stri
   ) : (
     <span
       className={cn(
-        "flex size-full items-center justify-center font-heading font-bold text-brand-soft-foreground/60",
+        "flex size-full items-center justify-center font-heading font-bold text-pink-soft-foreground/60",
         className,
       )}
       aria-hidden="true"

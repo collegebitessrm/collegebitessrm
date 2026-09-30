@@ -11,7 +11,8 @@ type Piece = {
   color: string;
 };
 
-const COLORS = ["#00c2a8", "#f6dc8a", "#7bdff2", "#c8b6ff", "#f2b5d4", "#173f6b"];
+// Vice Dusk × Leonida Gold: neon magenta, cyan, gold, tangerine, violet, coral.
+const COLORS = ["#ff2e88", "#22ddeb", "#ffc857", "#ff7a2f", "#7a28e8", "#ff6a5b"];
 const PIECE_COUNT = 20;
 
 function makePieces(): Piece[] {

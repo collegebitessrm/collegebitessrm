@@ -68,8 +68,8 @@ export function EditablePhone({
   }
 
   return (
-    <form action={formAction} className="bg-brand-soft px-5 py-4">
-      <p className={cn(eyebrow, "text-brand-soft-foreground")}>Mobile number · editing</p>
+    <form action={formAction} className="bg-pink-soft px-5 py-4">
+      <p className={cn(eyebrow, "text-pink-soft-foreground")}>Mobile number · editing</p>
       <div className="mt-2 flex gap-2">
         <div
           className={cn(
