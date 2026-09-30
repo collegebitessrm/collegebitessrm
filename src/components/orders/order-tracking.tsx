@@ -12,8 +12,8 @@ import {
   MapPin,
   Receipt,
   Share2,
-  type LucideIcon,
-} from "lucide-react";
+  type AppIcon,
+} from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { BrandLogo } from "@/components/brand-logo";
 import { CelebrationOverlay } from "@/components/celebration-overlay";
@@ -57,7 +57,7 @@ const CONFETTI_SHOWN_KEY = "collegebites.confetti-shown";
 
 // One icon per row of orderTimeline() (order/status.ts), by position —
 // "Order placed", "Pending confirmation" / "Restaurant confirmed", "Preparing & out for delivery".
-const STEP_ICONS: LucideIcon[] = [Receipt, ChefHat, CookingPot];
+const STEP_ICONS: AppIcon[] = [Receipt, ChefHat, CookingPot];
 
 /**
  * Renders the tracking page and keeps `status`/`updatedAt` live via
@@ -340,7 +340,7 @@ export function OrderTracking({
   );
 }
 
-function StepDot({ state, Icon }: { state: TimelineStepState; Icon: LucideIcon }) {
+function StepDot({ state, Icon }: { state: TimelineStepState; Icon: AppIcon }) {
   if (state === "done") {
     return (
       <span className="animate-pop-in flex size-9 shrink-0 items-center justify-center rounded-full bg-success text-success-foreground">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarHeart, ChevronRight } from "lucide-react";
+import { CalendarHeart, ChevronRight } from "@/components/icons";
 import type { ThursdaySpecial } from "@/lib/data/restaurants";
 
 /** Thursday-only banner nudging toward the day's special dish. */

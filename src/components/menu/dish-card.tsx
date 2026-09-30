@@ -1,6 +1,6 @@
 "use client";
 
-import { Minus, Plus, Repeat, Star } from "lucide-react";
+import { Minus, Plus, Repeat, Star } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { VegMark } from "@/components/veg-mark";
 import { MAX_QUANTITY } from "@/lib/cart/store";
@@ -64,7 +64,7 @@ export function DishCard({
       aria-label={`Add ${dish.name}`}
       className="animate-pop-in flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-raised outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
     >
-      <Plus className="size-5" strokeWidth={2.5} />
+      <Plus className="size-5" />
     </button>
   ) : (
     <div className="animate-pop-in flex h-11 items-center gap-1 rounded-full bg-primary p-1 text-primary-foreground shadow-raised">
@@ -127,7 +127,7 @@ export function DishCard({
           <span className="absolute top-2 left-2 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-full bg-card/90 px-2 py-0.5 text-xs font-semibold backdrop-blur-sm">
             {isFavorite ? (
               <>
-                <Star className="size-3 shrink-0 fill-primary text-primary" aria-hidden="true" />
+                <Star className="size-3 shrink-0 icon-solid text-gold-strong" aria-hidden="true" />
                 <span className="truncate">Your favorite</span>
               </>
             ) : (

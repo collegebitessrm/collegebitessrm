@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "@/components/icons";
 import { MAX_QUANTITY } from "@/lib/cart/limits";
 import { setQuantity, type CartLine } from "@/lib/cart/store";
 import { getDishPhoto } from "@/lib/data/dish-photos";

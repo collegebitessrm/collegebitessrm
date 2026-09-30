@@ -128,9 +128,27 @@ author.
   Postgres error. Empty states go through `EmptyState`
   (`src/components/empty-state.tsx`): `art="plates"` for empty cart /
   orders, an icon for in-place no-match states.
-- **Icons**: lucide only — no emoji anywhere in the UI (they render
-  differently per OS and clashed with the icon set). Big
-  moments get `CelebrationOverlay`, not an emoji-laden toast.
+- **Icons**: Phosphor, **duotone** by default (outline + a soft fill
+  layer, like the brand sheet's two-tone icons), always imported from
+  `src/components/icons.tsx` — never from `@phosphor-icons/react`
+  directly. That file maps the app's icon names (kept from the lucide
+  era, so `Utensils` is Phosphor's `ForkKnife`, `Loader2` its
+  `CircleNotch`, `MessageCircle` the WhatsApp logo) to Phosphor's SSR
+  build, one import per icon: it works in server and client components,
+  and only used icons ship (Next doesn't optimise Phosphor's barrel file).
+  Defaults: 24px, aria-hidden unless labelled, plain glyphs (Plus, X,
+  arrows, carets, Check) bold. Need a new icon → add a line to the `MAP`
+  there. `lucide-react` is uninstalled; a shadcn component added later
+  must have its icon imports switched to `@/components/icons`. Two
+  utilities restyle the fill layer (`globals.css`): `icon-solid` makes it
+  opaque (filled stars — use it instead of `fill-*` classes, which don't
+  fill a duotone icon) and `icon-tint-<colour>` paints it a palette colour
+  (`icon-tint-gold` on the trending flame, reward gift, unlocked
+  milestones and rating prompts; `icon-tint-primary` on the Gate 3 pin).
+  Rating stars are `icon-solid text-gold-strong`. Active tabs use
+  `weight="fill"`. No emoji anywhere in the UI (they render differently
+  per OS and clash with the icon set). Big moments get
+  `CelebrationOverlay`, not an emoji-laden toast.
 - **Dish deep links**: `/restaurants/<id>?dish=<dishId>` opens the menu
   scrolled to that dish with a brief rose outline (`focusDishId` in
   `MenuView`). Used by Home search's dish results, the Trending popup and

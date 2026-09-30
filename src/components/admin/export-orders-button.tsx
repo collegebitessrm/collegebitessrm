@@ -1,6 +1,6 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { Download } from "@/components/icons";
 import type { AdminOrder } from "@/lib/data/admin";
 import { formatOrderTimestamp } from "@/lib/date";
 import { formatRupees } from "@/lib/format";

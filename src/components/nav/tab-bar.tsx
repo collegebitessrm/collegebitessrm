@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Receipt, User, Utensils } from "lucide-react";
+import { Receipt, User, Utensils } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 const TABS = [
@@ -36,7 +36,7 @@ export function TabBar() {
               active ? "text-primary" : "text-muted-foreground",
             )}
           >
-            <Icon className="size-5" strokeWidth={active ? 2.5 : 2} aria-hidden="true" />
+            <Icon className="size-6" weight={active ? "fill" : "duotone"} />
             {label}
           </Link>
         );

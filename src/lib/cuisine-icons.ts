@@ -10,8 +10,8 @@ import {
   Utensils,
   UtensilsCrossed,
   Wheat,
-  type LucideIcon,
-} from "lucide-react";
+  type AppIcon,
+} from "@/components/icons";
 
 // Keyword -> icon, checked in order (first match wins) against the
 // lowercased cuisine tag / dish-category name. Covers every value in the
@@ -19,7 +19,7 @@ import {
 // 20260915140000_seed_new_restaurants.sql) — anything unrecognised (a
 // category added by hand later) falls back to a plain fork-and-knife
 // rather than guessing.
-const RULES: [string, LucideIcon][] = [
+const RULES: [string, AppIcon][] = [
   ["sugarcane", GlassWater],
   ["biryani", CookingPot],
   ["curr", Soup],
@@ -35,10 +35,10 @@ const RULES: [string, LucideIcon][] = [
 ];
 
 /** Small icon for a cuisine tag or dish-category name, e.g. "Non-Veg Biryani". */
-export function getCuisineIcon(label: string): LucideIcon {
+export function getCuisineIcon(label: string): AppIcon {
   const lower = label.toLowerCase();
   return RULES.find(([keyword]) => lower.includes(keyword))?.[1] ?? Utensils;
 }
 
 /** The "All" menu-category filter chip isn't a real category — fixed icon. */
-export const AllCategoriesIcon: LucideIcon = LayoutGrid;
+export const AllCategoriesIcon: AppIcon = LayoutGrid;

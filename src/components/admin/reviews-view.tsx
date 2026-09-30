@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { MessageSquareText, Star, StarHalf } from "lucide-react";
+import { MessageSquareText, Star, StarHalf } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import type { AdminRestaurant, AdminReview } from "@/lib/data/admin";
 import { formatOrderTimestamp } from "@/lib/date";
@@ -84,7 +84,7 @@ export function ReviewsView({ reviews, restaurants }: { reviews: AdminReview[]; 
               </h2>
               {overall !== null && (
                 <span className="flex items-center gap-1.5 text-sm font-semibold">
-                  <Star className="size-4 fill-primary text-primary" aria-hidden="true" />
+                  <Star className="size-4 icon-solid text-gold-strong" aria-hidden="true" />
                   {overall.toFixed(1)} overall · {allRatings.length} ratings
                 </span>
               )}
@@ -201,11 +201,11 @@ function Stars({ value }: { value: number }) {
     <span className="flex shrink-0 items-center" role="img" aria-label={`${value.toFixed(1)} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((n) =>
         n <= rounded ? (
-          <Star key={n} className="size-4 fill-primary text-primary" aria-hidden="true" />
+          <Star key={n} className="size-4 icon-solid text-gold-strong" aria-hidden="true" />
         ) : n - 0.5 === rounded ? (
           <span key={n} className="relative size-4" aria-hidden="true">
             <Star className="absolute inset-0 size-4 text-border" />
-            <StarHalf className="absolute inset-0 size-4 fill-primary text-primary" />
+            <StarHalf className="absolute inset-0 size-4 icon-solid text-gold-strong" />
           </span>
         ) : (
           <Star key={n} className="size-4 text-border" aria-hidden="true" />

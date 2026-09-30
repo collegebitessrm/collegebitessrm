@@ -1,6 +1,6 @@
 "use client";
 
-import { Phone, Star } from "lucide-react";
+import { Phone, Star } from "@/components/icons";
 import type { AdminOrderDetail } from "@/lib/data/admin";
 import { deliveryWindow, formatOrderTimestamp } from "@/lib/date";
 import { formatRupees } from "@/lib/format";
@@ -132,7 +132,7 @@ function Stars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className={cn("size-3.5", n <= rating ? "fill-current text-primary" : "text-muted-foreground/40")}
+          className={cn("size-3.5", n <= rating ? "icon-solid text-gold-strong" : "text-muted-foreground/40")}
           aria-hidden="true"
         />
       ))}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
-import { Lock, MapPin } from "lucide-react";
+import { Lock, MapPin } from "@/components/icons";
 import { TabBar } from "@/components/nav/tab-bar";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
@@ -100,7 +100,7 @@ export default async function ProfilePage() {
               <Lock className="size-4 shrink-0 text-muted-foreground" aria-label="Can't be changed" />
             </div>
             <div className="flex items-center gap-3 px-5 py-4">
-              <MapPin className="size-5 shrink-0 text-aqua" aria-hidden="true" />
+              <MapPin className="icon-tint-primary size-5 shrink-0 text-aqua" aria-hidden="true" />
               <div>
                 <p className="text-label text-muted-foreground">Handover point</p>
                 <p className="font-semibold">Gate 3</p>

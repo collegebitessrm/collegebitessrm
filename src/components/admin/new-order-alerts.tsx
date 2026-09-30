@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, BellOff, BellRing, Loader2, Volume2, VolumeX } from "lucide-react";
+import { Bell, BellOff, BellRing, Loader2, Volume2, VolumeX } from "@/components/icons";
 import { adminPill } from "@/components/admin/styles";
 import { enablePush, hasPushSubscription, pushState } from "@/lib/notifications/client";
 import {

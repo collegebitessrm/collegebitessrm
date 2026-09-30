@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { getDishPhoto } from "@/lib/data/dish-photos";
@@ -66,9 +66,9 @@ export function RatePrompt({ order }: { order: RatePromptOrder }) {
           Rate {dishLabel} from {order.restaurantName} — order {formatOrderNumber(order.dailyNumber)}.
           Only the College Bites team sees it.
         </DialogDescription>
-        <div className="mt-3 flex items-center gap-1 text-primary" aria-hidden="true">
+        <div className="mt-3 flex items-center gap-1 text-gold-strong" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((n) => (
-            <Star key={n} className="size-6" />
+            <Star key={n} className="icon-tint-gold size-6" />
           ))}
         </div>
         <div className="mt-5 flex w-full flex-col gap-2">

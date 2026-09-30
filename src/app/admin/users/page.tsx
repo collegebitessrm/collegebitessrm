@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ShieldBan } from "lucide-react";
+import { ShieldBan } from "@/components/icons";
 import { BackToDashboardLink } from "@/components/admin/back-to-dashboard-link";
 import { adminPill } from "@/components/admin/styles";
 import { UsersList } from "@/components/admin/users-list";

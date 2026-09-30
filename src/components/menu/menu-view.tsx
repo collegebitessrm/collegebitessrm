@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Drumstick, Leaf, Search, SearchX, UtensilsCrossed, X } from "lucide-react";
+import { Drumstick, Leaf, Search, SearchX, UtensilsCrossed, X } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import { CartBar } from "@/components/cart/cart-bar";
 import {

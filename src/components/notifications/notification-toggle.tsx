@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { Bell, BellOff, Loader2 } from "lucide-react";
+import { Bell, BellOff, Loader2 } from "@/components/icons";
 import { disablePush, enablePush, hasPushSubscription, pushState } from "@/lib/notifications/client";
 import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";

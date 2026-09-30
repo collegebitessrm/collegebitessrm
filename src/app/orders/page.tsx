@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ViewTransition } from "react";
-import { ArrowRight, ChevronRight, RotateCcw, Star } from "lucide-react";
+import { ArrowRight, ChevronRight, RotateCcw, Star } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { EmptyState } from "@/components/empty-state";
 import { TabBar } from "@/components/nav/tab-bar";
@@ -190,7 +190,7 @@ function PastOrderRow({ order }: { order: OrderSummary }) {
           </p>
           {order.rateable && (
             <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-xs font-bold text-primary-foreground">
-              <Star className="size-3 fill-current" aria-hidden="true" />
+              <Star className="icon-solid size-3" aria-hidden="true" />
               Rate your order
             </span>
           )}

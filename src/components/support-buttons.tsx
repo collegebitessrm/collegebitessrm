@@ -1,4 +1,4 @@
-import { MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "@/components/icons";
 import { whatsAppLink } from "@/lib/phone";
 import { SUPPORT_PHONE } from "@/lib/support";
 

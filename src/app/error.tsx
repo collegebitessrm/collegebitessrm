@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { RotateCw } from "lucide-react";
+import { RotateCw } from "@/components/icons";
 import { LostTicket } from "@/components/lost-ticket";
 
 // Root error boundary for anything below the root layout. Note this

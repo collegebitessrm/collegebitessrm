@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/icons";
 import type { CardSlide } from "@/lib/data/dish-photos";
 import type { RestaurantMenuStats } from "@/lib/data/restaurants";
 import type { Restaurant } from "@/lib/data/types";

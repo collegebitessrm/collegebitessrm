@@ -8,8 +8,8 @@ import {
   Lock,
   Repeat,
   UtensilsCrossed,
-  type LucideIcon,
-} from "lucide-react";
+  type AppIcon,
+} from "@/components/icons";
 import { SUPPORT_PHONE } from "@/lib/support";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,7 @@ type MilestoneStats = {
 export const MILESTONES: {
   key: MilestoneKey;
   label: string;
-  Icon: LucideIcon;
+  Icon: AppIcon;
   /** [current, target] toward unlocking. */
   progress: (s: MilestoneStats) => [number, number];
   /** "19 more orders" etc., shown while locked. */
@@ -171,7 +171,7 @@ function MilestoneReward({ done, left, claimedAt }: { done: boolean; left: numbe
   return (
     <div className="mt-3 flex items-start gap-3 rounded-2xl bg-pink-soft px-4 py-3.5 text-pink-soft-foreground">
       <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-card">
-        <Gift className="size-4.5" aria-hidden="true" />
+        <Gift className="icon-tint-gold size-4.5" aria-hidden="true" />
       </span>
       <div className="min-w-0 text-sm">
         {claimedAt ? (
@@ -225,7 +225,7 @@ function BadgeTile({
   progress,
   caption,
 }: {
-  Icon: LucideIcon;
+  Icon: AppIcon;
   label: string;
   unlocked: boolean;
   /** 0–1 fraction toward this milestone, drawn as a ring around a locked icon. */
@@ -272,7 +272,7 @@ function BadgeTile({
             unlocked ? "size-12 bg-primary text-primary-foreground" : "size-9 bg-secondary text-muted-foreground",
           )}
         >
-          <Icon className={unlocked ? "size-5.5" : "size-4.5"} aria-hidden="true" />
+          <Icon className={unlocked ? "icon-tint-gold size-5.5" : "size-4.5"} aria-hidden="true" />
         </span>
         {!unlocked && (
           <span className="absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full border bg-card text-muted-foreground">

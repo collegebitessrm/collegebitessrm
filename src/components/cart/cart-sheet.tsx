@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Banknote, Loader2, MapPin, Phone, QrCode, X } from "lucide-react";
+import { Banknote, Loader2, MapPin, Phone, QrCode, X } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
@@ -171,7 +171,7 @@ function CartContents({
 
         <div className="mt-4 divide-y rounded-2xl border bg-card shadow-card">
           <div className="flex items-center gap-4 px-5 py-4">
-            <MapPin className="size-5 shrink-0 text-aqua" aria-hidden="true" />
+            <MapPin className="icon-tint-primary size-5 shrink-0 text-aqua" aria-hidden="true" />
             <div>
               <p className={eyebrow}>Handover point</p>
               <p className="font-semibold">Gate 3</p>

@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut, RotateCw } from "lucide-react";
+import { LogOut, RotateCw } from "@/components/icons";
 import { BrandLogo } from "@/components/brand-logo";
 import { signOutAndClearCart } from "@/lib/sign-out";
 import { cn } from "@/lib/utils";

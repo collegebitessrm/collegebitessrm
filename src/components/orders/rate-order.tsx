@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, MessageSquareText, Star, X } from "lucide-react";
+import { Loader2, MessageSquareText, Star, X } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -63,9 +63,9 @@ export function RateOrder({
         <p className="mt-0.5 text-sm text-muted-foreground">
           Rate your food from {restaurantName} — only the College Bites team sees it.
         </p>
-        <div className="mt-3 flex items-center gap-1 text-border" aria-hidden="true">
+        <div className="mt-3 flex items-center gap-1 text-gold-strong" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((n) => (
-            <Star key={n} className="size-6" />
+            <Star key={n} className="icon-tint-gold size-6" />
           ))}
         </div>
         <button
@@ -119,7 +119,7 @@ function Stars({ value, size }: { value: number; size: string }) {
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className={cn(size, n <= value ? "fill-primary text-primary" : "text-border")}
+          className={cn(size, n <= value ? "icon-solid text-gold-strong" : "text-border")}
           aria-hidden="true"
         />
       ))}
@@ -275,7 +275,7 @@ function DishRating({
                 className="flex size-9 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
               >
                 <Star
-                  className={cn("size-7", n <= value ? "fill-primary text-primary" : "text-muted-foreground")}
+                  className={cn("size-7", n <= value ? "icon-solid text-gold-strong" : "text-muted-foreground")}
                   aria-hidden="true"
                 />
               </button>

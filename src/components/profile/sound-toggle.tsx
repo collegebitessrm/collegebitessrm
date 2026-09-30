@@ -1,6 +1,6 @@
 "use client";
 
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX } from "@/components/icons";
 import { setSoundEnabled, useSoundEnabled } from "@/lib/sound/store";
 import { cn } from "@/lib/utils";
 

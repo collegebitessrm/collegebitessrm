@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "@/components/icons";
 import { useToasts } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 

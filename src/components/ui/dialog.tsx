@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
-import { X } from "lucide-react"
+import { X } from "@/components/icons"
 import { cn } from "cn"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {

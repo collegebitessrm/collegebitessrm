@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { History, PackageX, Star, Users } from "lucide-react";
+import { History, PackageX, Star, Users } from "@/components/icons";
 import { MarkAllDeliveredButton } from "@/components/admin/mark-all-delivered-button";
 import { NewOrderAlerts } from "@/components/admin/new-order-alerts";
 import { OrderingKillSwitch } from "@/components/admin/ordering-kill-switch";

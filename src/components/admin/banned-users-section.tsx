@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { Loader2, Search, ShieldCheck } from "lucide-react";
+import { Loader2, Search, ShieldCheck } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,

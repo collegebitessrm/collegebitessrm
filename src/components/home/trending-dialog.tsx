@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Flame } from "lucide-react";
+import { ChevronRight, Flame } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { getDishPhoto } from "@/lib/data/dish-photos";
@@ -28,11 +28,11 @@ export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {
         aria-label="Trending this week"
         className="pressable flex size-12 shrink-0 items-center justify-center rounded-2xl bg-card/80 shadow-card outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
       >
-        <Flame className="size-6 text-primary" aria-hidden="true" />
+        <Flame className="icon-tint-gold size-6 text-primary" aria-hidden="true" />
       </DialogTrigger>
       <DialogContent>
         <DialogTitle className="flex items-center gap-2 font-heading text-title font-bold">
-          <Flame className="size-5 text-primary" aria-hidden="true" />
+          <Flame className="icon-tint-gold size-5 text-primary" aria-hidden="true" />
           Trending this week
         </DialogTitle>
         <DialogDescription className="text-sm text-muted-foreground">

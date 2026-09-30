@@ -528,6 +528,27 @@
   }
 }
 
+/*
+ * Icons (src/components/icons.tsx) are Phosphor duotone: an outline plus a
+ * fill layer drawn at opacity 0.2. These two utilities restyle that layer:
+ *   icon-solid        makes it opaque — a filled star, an active tab
+ *   icon-tint-<col>   paints it a palette colour (icon-tint-gold,
+ *                     icon-tint-primary, icon-tint-aqua…) — the brand
+ *                     sheet's two-tone look: a gold star, a pink heart
+ */
+@utility icon-solid {
+  & path[opacity="0.2"] {
+    opacity: 1;
+  }
+}
+
+@utility icon-tint-* {
+  & path[opacity="0.2"] {
+    fill: --value(--color-*);
+    opacity: 0.9;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/80;

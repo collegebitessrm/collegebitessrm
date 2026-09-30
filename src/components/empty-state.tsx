@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import type { LucideIcon } from "lucide-react";
+import type { AppIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 // Three real menu photos fanned out like plates on a table — the "nothing
@@ -27,7 +27,7 @@ export function EmptyState({
   compact = false,
 }: {
   art?: "plates";
-  icon?: LucideIcon;
+  icon?: AppIcon;
   title: string;
   children?: ReactNode;
   action?: ReactNode;

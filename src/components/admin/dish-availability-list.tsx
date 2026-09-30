@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition, type ReactNode } from "react";
-import { Loader2, PackageX, Search, SearchX } from "lucide-react";
+import { Loader2, PackageX, Search, SearchX } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { EmptyState } from "@/components/empty-state";
 import { VegMark } from "@/components/veg-mark";

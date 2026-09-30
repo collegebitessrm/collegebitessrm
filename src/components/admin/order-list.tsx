@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type ReactNode } from "react";
-import { ChevronDown, Inbox, Search, X } from "lucide-react";
+import { ChevronDown, Inbox, Search, X } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import {
   DropdownMenu,

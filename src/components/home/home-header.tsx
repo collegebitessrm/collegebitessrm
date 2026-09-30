@@ -1,4 +1,4 @@
-import { Moon, Sun, Sunrise, Sunset, type LucideIcon } from "lucide-react";
+import { MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
 import { TrendingDialog } from "@/components/home/trending-dialog";
 import { BrandLogo } from "@/components/brand-logo";
@@ -8,11 +8,11 @@ import type { TimeOfDay } from "@/lib/date";
 // Each time of day gets its own ambient field (.mood-field.mood-<time> in
 // globals.css) — Leonida sunrise, Vice beach afternoon, golden-hour
 // evening, neon night — plus a greeting and a hero question to match.
-const MOOD: Record<TimeOfDay, { greeting: string; Icon: LucideIcon; heading: string }> = {
+const MOOD: Record<TimeOfDay, { greeting: string; Icon: AppIcon; heading: string }> = {
   morning: { greeting: "Good morning", Icon: Sunrise, heading: "Fuel up for the day?" },
   afternoon: { greeting: "Hey", Icon: Sun, heading: "What are we craving now?" },
   evening: { greeting: "Good evening", Icon: Sunset, heading: "Dinner o'clock?" },
-  night: { greeting: "Hey", Icon: Moon, heading: "Late night craving?" },
+  night: { greeting: "Hey", Icon: MoonStars, heading: "Late night craving?" },
 };
 
 export function HomeHeader({

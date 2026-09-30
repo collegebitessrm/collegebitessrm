@@ -1,4 +1,4 @@
-import { Flame, Sparkle, Trophy, type LucideIcon } from "lucide-react";
+import { Flame, Sparkle, Trophy, type AppIcon } from "@/components/icons";
 import type { WeeklyRank } from "@/lib/data/rank";
 
 const MIN_PARTICIPANTS = 5;
@@ -6,7 +6,7 @@ const MIN_PARTICIPANTS = 5;
 // Tiers instead of a raw percentile — "Top 40%" reads as ambiguous
 // stats-speak (students kept asking what it meant); a label needs no
 // interpreting. Checked in order, first match wins.
-const TIERS: { maxPercentile: number; label: string; Icon: LucideIcon }[] = [
+const TIERS: { maxPercentile: number; label: string; Icon: AppIcon }[] = [
   { maxPercentile: 10, label: "Top orderer this week", Icon: Trophy },
   { maxPercentile: 25, label: "Frequent orderer this week", Icon: Flame },
   { maxPercentile: 50, label: "Active orderer this week", Icon: Sparkle },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { Gift, Loader2, Search } from "lucide-react";
+import { Gift, Loader2, Search } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,

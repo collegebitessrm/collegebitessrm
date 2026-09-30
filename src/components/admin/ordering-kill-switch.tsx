@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Power } from "lucide-react";
+import { Loader2, Power } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,

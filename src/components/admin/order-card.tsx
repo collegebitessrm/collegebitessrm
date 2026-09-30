@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, Copy, Loader2, MessageCircle } from "lucide-react";
+import { Check, Copy, Loader2, MessageCircle } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,

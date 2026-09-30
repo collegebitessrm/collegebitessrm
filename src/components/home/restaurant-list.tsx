@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, MapPin, Search, SearchX, X } from "lucide-react";
+import { ChevronRight, MapPin, Search, SearchX, X } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { EmptyState } from "@/components/empty-state";
 import { VegMark } from "@/components/veg-mark";
@@ -96,7 +96,7 @@ export function RestaurantList({
       </label>
 
       <p className="mt-4 flex items-center gap-2 rounded-xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-2 text-sm text-pink-soft-foreground">
-        <MapPin className="size-4 shrink-0" aria-hidden="true" />
+        <MapPin className="icon-tint-primary size-4 shrink-0" aria-hidden="true" />
         <span>
           Free delivery to <strong className="font-semibold text-foreground">Gate 3</strong>
         </span>

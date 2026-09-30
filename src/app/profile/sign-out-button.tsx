@@ -1,7 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
-import { Loader2, LogOut } from "lucide-react";
+import { Loader2, LogOut } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -24,7 +24,7 @@ migration, what went wrong along the way and what's still open.
 | Ordering | An **Open / Closed** switch the admin flips — no daily schedule |
 | Support | +91 99899 55833 (call + WhatsApp) · collegebitessrm@gmail.com |
 | Admin alerts go to | collegebitessrm@gmail.com |
-| Stack | Next.js 16 (App Router, customised build), React 19, TypeScript, Tailwind CSS v4, shadcn/ui on `@base-ui/react`, lucide icons, Supabase (Postgres, Auth, RLS, Realtime), `web-push`, Vercel (Hobby) |
+| Stack | Next.js 16 (App Router, customised build), React 19, TypeScript, Tailwind CSS v4, shadcn/ui on `@base-ui/react`, Phosphor icons (duotone), Supabase (Postgres, Auth, RLS, Realtime), `web-push`, Vercel (Hobby) |
 | Regions | Supabase `ap-south-1` (Mumbai), Vercel functions pinned to `bom1` (Mumbai) |
 | Target look | `docs/design-reference.webp` (the client's brand sheet) |
 | Team guide | `docs/CLIENT-GUIDE.md` (plain English, for the people running it) |
@@ -54,7 +54,7 @@ migration, what went wrong along the way and what's still open.
    `middleware.ts`, error boundaries get `retry`, `after()`).
 7. **The database is the real security boundary.** Every app-side check
    is repeated in RLS, a trigger or a security-definer function.
-8. **No emoji, no uppercase text, lucide icons only.** Cash on delivery
+8. **No emoji, no uppercase text, Phosphor icons only (from `src/components/icons.tsx`).** Cash on delivery
    only — no payment code, ever.
 
 ---
@@ -272,6 +272,10 @@ light: things should look lit, not flat.
   mood — and fails below the minimum. Run it after any colour change.
 - **Type:** Poppins (500/600/700) for display and big numbers, Inter for
   body and all buttons; named sizes; no mono, no uppercase.
+- **Icons:** Phosphor, duotone by default, all through
+  `src/components/icons.tsx` (one import per icon so only used icons ship).
+  `icon-solid` fills the soft layer (rating stars), `icon-tint-gold` /
+  `icon-tint-primary` colour it like the brand sheet's two-tone icons.
 - **Motion:** CSS and Web Animations only; everything respects reduced
   motion. The theme toggle cross-fades.
 - **Every page has exactly one `<h1>`.** Check changes at 320 px, light
