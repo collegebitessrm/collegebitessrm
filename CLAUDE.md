@@ -763,6 +763,48 @@ once confirmed unused — it no longer exists in the database.
 No other open schema TODOs right now (see "Pending decisions" below for
 one that will eventually need its own migration, once approved).
 
+## Pending (as of 30 Sep 2026)
+
+Parked by the developer — do these only when asked.
+
+**Before / around launch**
+- **Clear test orders** — wait for the developer's prompt; show the delete
+  SQL first (orders, their items, ratings and `daily_order_counters`, so
+  launch day starts at token #1 with empty history).
+- **Publish the Google sign-in app** out of "Testing" (Google Auth
+  Platform → Audience) — until then only listed test users can sign in.
+- **Switch the content policy to enforced** — browse the signed-in
+  screens, then within the hour search Vercel dashboard → Logs for `csp`
+  (Hobby keeps ~1 hour; a real report is a Warning). Empty (ignoring the
+  `TEST-from-Claude-ignore` line) → change the header key in
+  `next.config.ts` to `Content-Security-Policy`.
+
+**Worth doing soon (code only, no database)**
+- **Harden the admin passcode cookie** — it currently stores the passcode
+  value itself (httpOnly, `/admin`-scoped). Store a signed token (HMAC of
+  the passcode with a server secret) and compare in constant time
+  (`src/lib/admin/passcode.ts` / `passcode-actions.ts`).
+- **`docs/CLIENT-GUIDE.md` payments line** says "Cash on delivery only";
+  UPI at pickup is confirmed fine, so it should read "cash, or UPI at
+  pickup".
+
+**When the client has time**
+- Real **restaurant phone numbers** (all three use the support number).
+- **Photos**: 30 of 137 dishes use the placeholder (Schezwan items,
+  Pepper/Lemon/Garlic/555 Chicken, some rice/noodle variants); the three
+  covers are reused photos, not the real restaurants. New photos need no
+  database change — new filename + an entry in `dish-photos.ts`.
+
+**Optional, later**
+- **Google Search Console** (`GOOGLE_SITE_VERIFICATION`, see
+  `docs/BLUEPRINT.md`).
+- **Supabase performance suggestions** — wrap `auth.uid()` as
+  `(select auth.uid())` in policies, add indexes on a few foreign keys;
+  only matters if order volume grows, and goes through the schema hard
+  rule.
+- **Automated WhatsApp confirmation** — see below; needs the client's
+  agreement first.
+
 ## Ideas not started
 
 - **Automated WhatsApp order confirmation** — not discussed with the client
