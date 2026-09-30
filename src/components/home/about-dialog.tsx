@@ -14,23 +14,24 @@ export function AboutDialog({ children }: { children: ReactNode }) {
       >
         {children}
       </DialogTrigger>
-      <DialogContent className="flex flex-col items-center text-center">
-        <BrandLogo className="size-16 rounded-2xl" />
-        <DialogTitle className="mt-4">College Bites</DialogTitle>
-        <p className="text-sm font-semibold text-primary">Crave. Click. Campus.</p>
+      <DialogContent className="flex flex-col items-center overflow-hidden text-center">
+        {/* A strip of the sign-in sunset, with the logo rising out of it. */}
+        <div aria-hidden="true" className="surface-hero relative -mx-6 -mt-6 h-24 self-stretch overflow-hidden">
+          <div className="promo-sun absolute -bottom-16 left-1/2 size-40 -translate-x-1/2 rounded-full" />
+        </div>
+        <BrandLogo className="relative -mt-10 size-18 rounded-[1.4rem] shadow-raised ring-4 ring-popover" />
+        <DialogTitle className="mt-3 text-title">College Bites</DialogTitle>
+        <p className="text-sm font-bold text-sunset">Crave. Click. Campus.</p>
         <DialogDescription className="mt-3 leading-relaxed">
           Your campus food delivery partner. Multiple restaurants, one place, delivered to you —
           biryani, fried rice, noodles and starters, veg and non-veg, from real partner
           kitchens near SRM AP.
         </DialogDescription>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Pay on delivery · Pickup at Gate 3
-          <br />
-          Pay through cash or UPI
-        </p>
-        <p className="mt-4 text-label text-primary">
-          Fast · Reliable · Affordable
-        </p>
+        <ul className="mt-4 flex flex-wrap justify-center gap-1.5 text-xs font-semibold">
+          <li className="rounded-full bg-secondary px-2.5 py-1">Pickup at Gate 3</li>
+          <li className="rounded-full bg-secondary px-2.5 py-1">Pay on delivery — cash or UPI</li>
+        </ul>
+        <p className="mt-4 text-label text-primary">Fast · Reliable · Affordable</p>
         <p className="mt-4 text-xs text-muted-foreground">~ college bites · srm ap</p>
       </DialogContent>
     </Dialog>

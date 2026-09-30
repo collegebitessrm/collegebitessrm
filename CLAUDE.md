@@ -146,14 +146,26 @@ author.
   dismiss); several at once share one overlay naming them all. Render it
   outside any `<ViewTransition>`.
 - **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
-  `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`, all
-  using `LostTicket` (`src/components/lost-ticket.tsx`) where they can. This
-  Next.js version passes `retry` (not `reset`) to error boundaries.
+  `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`. The
+  first two use `WrongTurn` (`src/components/wrong-turn.tsx`): a small
+  tilted sunset card — the big label (#404 / Oops), a note, and the order
+  road's scooter stopped facing back with a "?" over it (flipped with CSS
+  `scale`, since the bob animation would override the icon's own
+  `mirrored` transform). It replaced the MuteBites-era `LostTicket` stub.
+  This Next.js version passes `retry` (not `reset`) to error boundaries.
   `getRestaurantMenu()` / `getOrder()` return null for a malformed id
   (`isUuid()`, `src/lib/ids.ts`), so a mangled URL is a 404 rather than a
   Postgres error. Empty states go through `EmptyState`
   (`src/components/empty-state.tsx`): `art="plates"` for empty cart /
-  orders, an icon for in-place no-match states.
+  orders (the plates pop in one after another), an icon on a pink tile for
+  in-place no-match states.
+- **Overlays and toasts**: dialogs and alert dialogs sit over a dusk
+  (`bg-night-900/50`) blurred backdrop, rounded 2rem / 1.75rem with a
+  border, alert buttons are pills. The About dialog has a strip of the
+  sunset with the logo rising out of it. `CelebrationOverlay` is the
+  sunset (`surface-hero`) with slowly turning light rays (`sunburst`
+  utility) and the striped sun. Toasts are popover pills with a green /
+  red icon disc. Skeletons shimmer with a warm coral band.
 - **Icons**: Phosphor, **duotone** by default (outline + a soft fill
   layer, like the brand sheet's two-tone icons), always imported from
   `src/components/icons.tsx` — never from `@phosphor-icons/react`

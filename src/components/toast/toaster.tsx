@@ -16,15 +16,22 @@ export function Toaster() {
           key={t.id}
           role={t.kind === "error" ? "alert" : "status"}
           className={cn(
-            "animate-toast-in flex max-w-sm items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold shadow-xl",
-            t.kind === "error" ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground",
+            "animate-toast-in flex max-w-sm items-center gap-2.5 rounded-full border bg-popover py-2 pr-4 pl-2 text-sm font-semibold text-popover-foreground shadow-overlay backdrop-blur",
+            t.kind === "error" ? "border-destructive/30" : "border-success/30",
           )}
         >
-          {t.kind === "error" ? (
-            <AlertCircle className="size-4 shrink-0" aria-hidden="true" />
-          ) : (
-            <CheckCircle2 className="size-4 shrink-0" aria-hidden="true" />
-          )}
+          <span
+            className={cn(
+              "flex size-7 shrink-0 items-center justify-center rounded-full",
+              t.kind === "error" ? "bg-destructive text-destructive-foreground" : "bg-success text-success-foreground",
+            )}
+          >
+            {t.kind === "error" ? (
+              <AlertCircle className="size-4" weight="bold" aria-hidden="true" />
+            ) : (
+              <CheckCircle2 className="size-4" weight="bold" aria-hidden="true" />
+            )}
+          </span>
           {t.message}
         </div>
       ))}

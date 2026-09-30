@@ -49,7 +49,7 @@ export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {
           >
             <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-pink-soft">
               <DishPhoto dish={top} sizes="(min-width: 384px) 336px, 85vw" className="text-5xl" />
-              <span className="absolute top-2.5 left-2.5 rounded-full bg-primary px-2.5 py-0.5 font-heading text-sm font-bold text-primary-foreground">
+              <span className="surface-primary glow-neon absolute top-2.5 left-2.5 rounded-full bg-primary px-2.5 py-0.5 font-heading text-sm font-bold text-primary-foreground">
                 #1
               </span>
               <span className="absolute top-2.5 right-2.5 rounded-full bg-card/90 px-2.5 py-0.5 text-xs font-semibold backdrop-blur-sm">
@@ -70,7 +70,7 @@ export function TrendingDialog({ dishes }: { dishes: TrendingDish[] }) {
                   transitionTypes={["nav-forward"]}
                   className="pressable flex items-center gap-3 rounded-xl py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ring/80"
                 >
-                  <span className="w-5 shrink-0 text-center font-heading font-bold text-muted-foreground tabular-nums">
+                  <span className="w-5 shrink-0 text-center font-heading font-bold text-primary tabular-nums">
                     {i + 2}
                   </span>
                   <span className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-pink-soft">

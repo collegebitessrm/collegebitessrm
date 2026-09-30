@@ -83,17 +83,20 @@ export function CelebrationOverlay({
       role="status"
       onClick={finish}
       className={cn(
-        "fixed inset-0 z-[90] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-hero px-6 text-center text-hero-foreground",
+        "surface-hero fixed inset-0 z-[90] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-hero px-6 text-center text-hero-foreground",
         phase === "out" ? "animate-overlay-out" : "animate-overlay-in",
       )}
     >
+      {/* Rays of light turning slowly behind the moment, and the retro sun. */}
+      <span aria-hidden="true" className="sunburst animate-ring-spin pointer-events-none absolute size-[150vmax] [animation-duration:40s]" />
+      <span aria-hidden="true" className="promo-sun pointer-events-none absolute -bottom-24 size-80 rounded-full" />
       <span
         aria-hidden="true"
         className="animate-ping-slow pointer-events-none absolute size-56 rounded-full bg-hero-accent/25 blur-3xl"
       />
       {showConfetti && <ConfettiBurst />}
       <div className="relative flex flex-col items-center">{children}</div>
-      <p className="relative mt-6 text-sm text-hero-foreground/85">Tap to continue</p>
+      <p className="relative mt-6 text-sm font-medium">Tap to continue</p>
     </div>
   );
 }

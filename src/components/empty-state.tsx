@@ -41,11 +41,12 @@ export function EmptyState({
             <span
               key={src}
               className={cn(
-                "absolute top-1/2 size-24 -translate-y-1/2 overflow-hidden rounded-3xl border-4 border-background bg-secondary shadow-raised",
+                "animate-pop-in absolute top-1/2 size-24 -translate-y-1/2 overflow-hidden rounded-3xl border-4 border-background bg-secondary shadow-raised",
                 i === 0 && "left-0 -rotate-10",
                 i === 1 && "left-1/2 z-10 size-28 -translate-x-1/2",
                 i === 2 && "right-0 rotate-10",
               )}
+              style={{ animationDelay: `${i * 90}ms` }}
             >
               <Image src={src} alt="" fill sizes="112px" className="object-cover" />
             </span>
@@ -54,10 +55,10 @@ export function EmptyState({
       )}
       {Icon && (
         <span
-          className="flex size-14 items-center justify-center rounded-full bg-secondary text-muted-foreground"
+          className="animate-pop-in flex size-16 items-center justify-center rounded-[1.25rem] bg-pink-soft text-pink-soft-foreground shadow-card"
           aria-hidden="true"
         >
-          <Icon className="size-6" />
+          <Icon className="icon-tint-gold size-7" />
         </span>
       )}
       <p className={cn("font-heading font-bold", compact ? "mt-4 text-lg" : "mt-6 text-title")}>{title}</p>

@@ -76,14 +76,14 @@ export function RatePrompt({ order }: { order: RatePromptOrder }) {
             href={`/orders/${order.id}?rate=1`}
             transitionTypes={["nav-forward"]}
             onClick={() => setOpen(false)}
-            className="pressable surface-primary flex h-12 items-center justify-center rounded-2xl bg-primary font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
+            className="pressable surface-primary glow-neon flex h-12 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
           >
             Rate now
           </Link>
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="h-11 rounded-2xl font-semibold text-muted-foreground outline-none hover:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/80"
+            className="h-11 rounded-full font-semibold text-muted-foreground outline-none hover:bg-secondary hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/80"
           >
             Later
           </button>
