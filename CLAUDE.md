@@ -149,6 +149,16 @@ author.
   `weight="fill"`. No emoji anywhere in the UI (they render differently
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
+- **Bottom bar** (`TabBar`, `src/components/nav/tab-bar.tsx`): mounted once
+  in the **root layout**, not per page, so it stays alive across tab
+  changes and its lit pill (`surface-primary glow-neon`) slides — with a
+  spring and a squash as it lands — to the tapped tab while the new icon
+  pops in filled (`animate-tab-pop` / `animate-tab-stretch`). It shows on
+  exactly `/`, `/orders` and `/profile`; on drill-down screens
+  (`/restaurants/*`, `/orders/*`) it slides down and is `inert`; elsewhere
+  it renders nothing. Tapping the current tab scrolls to the top. Floating
+  (`rounded-full bg-card/85` with blur), so pages keep `pb-28`; the Home
+  `CartBar` (`hasTabBar`) sits just above it. Don't add `<TabBar />` to a page.
 - **Dish deep links**: `/restaurants/<id>?dish=<dishId>` opens the menu
   scrolled to that dish with a brief rose outline (`focusDishId` in
   `MenuView`). Used by Home search's dish results, the Trending popup and

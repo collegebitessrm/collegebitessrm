@@ -27,7 +27,8 @@ export function CartBar({
   orderingEnabled: boolean;
   /** Why ordering is shut ("Ordering is closed right now"), shown in the cart sheet. */
   closedNote?: string;
-  /** True on pages that also render <TabBar/> below — stacks the bar above it. */
+  /** True on the tab screens, where the floating <TabBar/> (root layout) sits
+   *  below — stacks the cart bar just above it. */
   hasTabBar?: boolean;
 }) {
   const cart = useCart();
@@ -44,7 +45,9 @@ export function CartBar({
           <div
             className={cn(
               "animate-slide-up-in fixed inset-x-0 z-20 mx-auto w-full max-w-md px-4",
-              hasTabBar ? "bottom-20 pb-0" : "bottom-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
+              hasTabBar
+                ? "bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.5rem)] pb-0"
+                : "bottom-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
             )}
           >
             <div className="surface-hero glow-sun flex items-center gap-3 rounded-3xl bg-hero p-3 pl-3.5 text-hero-foreground">

@@ -272,6 +272,9 @@ light: things should look lit, not flat.
   mood — and fails below the minimum. Run it after any colour change.
 - **Type:** Poppins (500/600/700) for display and big numbers, Inter for
   body and all buttons; named sizes; no mono, no uppercase.
+- **Bottom bar:** one floating bar in the root layout for Food / Orders /
+  Profile; a lit pill slides to the tapped tab. It slides away on menus and
+  order tickets and isn't shown on sign-in, admin or legal pages.
 - **Icons:** Phosphor, duotone by default, all through
   `src/components/icons.tsx` (one import per icon so only used icons ship).
   `icon-solid` fills the soft layer (rating stars), `icon-tint-gold` /

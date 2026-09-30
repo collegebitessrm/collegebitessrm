@@ -6,7 +6,6 @@ import { RestaurantList } from "@/components/home/restaurant-list";
 import { SignInWelcomeToast } from "@/components/home/sign-in-welcome-toast";
 import { ThursdayNudge } from "@/components/home/thursday-nudge";
 import { YourUsualChip } from "@/components/home/your-usual-chip";
-import { TabBar } from "@/components/nav/tab-bar";
 import { getRestaurantMenuStats, getRestaurants, getSearchableDishes, getThursdaySpecial } from "@/lib/data/restaurants";
 import { getOrderingState } from "@/lib/data/settings";
 import { getDishOrderCounts, getTrendingDishes } from "@/lib/data/trending";
@@ -68,7 +67,6 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </ViewTransition>
       </ViewTransition>
       <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} hasTabBar />
-      <TabBar />
     </main>
   );
 }

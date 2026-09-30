@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
+import { TabBar } from "@/components/nav/tab-bar";
 import { AppSplash } from "@/components/splash/app-splash";
 import { SPLASH_DISABLED } from "@/components/splash/config";
 import { SPLASH_INIT_SCRIPT } from "@/components/splash/init-script";
@@ -102,6 +103,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </>
         )}
         {children}
+        {/* The student bottom bar: here rather than in each page so it stays
+            mounted and its pill can slide between tabs. It decides for
+            itself where it shows (TabBar). */}
+        <TabBar />
         <Toaster />
       </body>
     </html>

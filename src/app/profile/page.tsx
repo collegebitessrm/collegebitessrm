@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { Lock, MapPin } from "@/components/icons";
-import { TabBar } from "@/components/nav/tab-bar";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
 import { MilestoneUnlockWatcher } from "@/components/profile/milestone-unlock-watcher";
@@ -135,7 +134,6 @@ export default async function ProfilePage() {
         </ViewTransition>
       </ViewTransition>
 
-      <TabBar />
     </main>
   );
 }

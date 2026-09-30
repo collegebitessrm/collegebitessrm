@@ -606,6 +606,14 @@
   .animate-ping-slow {
     animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
+  /* Bottom bar (TabBar): the new tab's icon pops in with a little twist,
+     and the sliding pill squashes wide as it lands, then settles. */
+  .animate-tab-pop {
+    animation: tab-pop var(--dur-slow) var(--ease-spring) both;
+  }
+  .animate-tab-stretch {
+    animation: tab-stretch var(--dur-slow) var(--ease-out-expo) both;
+  }
   /* Deep-linked dish (?dish=): a cyan outline that drops in from a little
      further out, pulses once, then fades — "here it is", not a blinking
      alarm. The outline lives on its own property so it never fights the
@@ -701,6 +709,27 @@
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes tab-pop {
+  0% {
+    transform: scale(0.6) rotate(-14deg);
+  }
+  60% {
+    transform: scale(1.14) rotate(4deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes tab-stretch {
+  0% {
+    transform: scaleX(1.16) scaleY(0.88);
+  }
+  100% {
+    transform: none;
   }
 }
 

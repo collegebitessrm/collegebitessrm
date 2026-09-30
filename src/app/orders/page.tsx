@@ -4,7 +4,6 @@ import { ViewTransition } from "react";
 import { ArrowRight, ChevronRight, RotateCcw, Star } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { EmptyState } from "@/components/empty-state";
-import { TabBar } from "@/components/nav/tab-bar";
 import { getDishPhoto } from "@/lib/data/dish-photos";
 import { getOrderHistory, type OrderSummary } from "@/lib/data/orders";
 import { formatDayHeading, formatTime, istDayKey } from "@/lib/date";
@@ -83,7 +82,6 @@ export default async function OrdersPage() {
         </ViewTransition>
       </ViewTransition>
 
-      <TabBar />
     </main>
   );
 }
