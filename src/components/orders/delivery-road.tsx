@@ -1,17 +1,39 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useState, type CSSProperties } from "react";
 import { Check, ChefHat, MapPin, Moped } from "@/components/icons";
 import type { OrderStatus } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 
-/** How far along the road the scooter is, per status (0–1). */
-const PROGRESS: Record<OrderStatus, number> = {
-  pending: 0.1,
-  confirmed: 0.42,
-  preparing: 0.6,
-  out_for_delivery: 0.8,
-  delivered: 1,
-  cancelled: 0,
+/*
+ * Where the scooter may be, per status, as [floor, ceiling] (0–1). Between
+ * them it rides with the CLOCK — the share of the promised delivery time
+ * (placed → placed + delivery_minutes) that has passed — so it creeps
+ * forward minute by minute instead of jumping at the end. The ceilings
+ * keep it honest: it never rides past "waiting for the restaurant" before
+ * the order's confirmed, and never reaches the gate before it's delivered
+ * (running late, it waits just short of Gate 3).
+ */
+const RANGE: Record<OrderStatus, [number, number]> = {
+  pending: [0.06, 0.2],
+  confirmed: [0.2, 0.94],
+  preparing: [0.2, 0.94],
+  out_for_delivery: [0.5, 0.94],
+  delivered: [1, 1],
+  cancelled: [0, 0],
 };
+
+/** How often the scooter moves on. */
+const TICK_MS = 15_000;
+
+function progressAt(status: OrderStatus, createdAt: string, minutes: number, now: number | null): number {
+  const [floor, ceiling] = RANGE[status];
+  // Before the first tick (and on the server) it sits at the floor, so the
+  // server and browser render the same thing.
+  if (now === null) return floor;
+  const elapsed = (now - new Date(createdAt).getTime()) / (minutes * 60_000);
+  return Math.min(ceiling, Math.max(floor, elapsed));
+}
 
 const MESSAGE: Record<OrderStatus, string> = {
   pending: "Waiting for the restaurant to confirm",
@@ -24,8 +46,8 @@ const MESSAGE: Record<OrderStatus, string> = {
 
 /**
  * The road from the kitchen to Gate 3, with the delivery scooter riding
- * along it as the order's status changes (Realtime moves it live on the
- * tracking page): dashed lane markings, the stretch already covered lit
+ * along it with the clock (see RANGE) and the order's status (Realtime
+ * moves it live on the tracking page): dashed lane markings, the stretch already covered lit
  * up, a chef's hat at the start and the Gate 3 pin at the end. The
  * scooter bobs while it's on the move and turns into a tick on arrival.
  *
@@ -37,15 +59,33 @@ const MESSAGE: Record<OrderStatus, string> = {
 export function DeliveryRoad({
   status,
   restaurantName,
+  createdAt,
+  deliveryMinutes,
   tone = "hero",
   showMessage = true,
 }: {
   status: OrderStatus;
   restaurantName: string;
+  /** When the order was placed — the start of the ride. */
+  createdAt: string;
+  /** The restaurant's promise — the ride's length. */
+  deliveryMinutes: number;
   tone?: "hero" | "card";
   showMessage?: boolean;
 }) {
-  const p = PROGRESS[status];
+  const [now, setNow] = useState<number | null>(null);
+  const riding = status !== "delivered" && status !== "cancelled";
+  useEffect(() => {
+    if (!riding) return;
+    const tick = () => setNow(Date.now());
+    const first = setTimeout(tick, 0);
+    const every = setInterval(tick, TICK_MS);
+    return () => {
+      clearTimeout(first);
+      clearInterval(every);
+    };
+  }, [riding]);
+  const p = progressAt(status, createdAt, deliveryMinutes, now);
   const arrived = status === "delivered";
   const hero = tone === "hero";
 

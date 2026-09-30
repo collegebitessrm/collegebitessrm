@@ -164,7 +164,14 @@ function ActiveOrderCard({ order }: { order: OrderSummary }) {
         </div>
       </div>
       <div className="mt-3">
-        <DeliveryRoad status={order.status} restaurantName={order.restaurantName} tone="card" showMessage={false} />
+        <DeliveryRoad
+          status={order.status}
+          restaurantName={order.restaurantName}
+          createdAt={order.createdAt}
+          deliveryMinutes={order.deliveryMinutes}
+          tone="card"
+          showMessage={false}
+        />
       </div>
       <span className="surface-primary mt-3 flex h-11 items-center justify-center gap-1.5 rounded-full bg-primary text-sm font-bold text-primary-foreground">
         Track order <ArrowRight className="size-4" aria-hidden="true" />

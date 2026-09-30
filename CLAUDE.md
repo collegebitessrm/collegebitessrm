@@ -102,11 +102,15 @@ author.
   "Collect at Gate 3 · pay on delivery" pill, and while the order is live
   a footer strip with `DeliveryRoad` (`src/components/orders/delivery-road.tsx`):
   the road from the kitchen (chef's hat) to Gate 3 (pin) with Phosphor's
-  `Moped` riding along it by status (`PROGRESS`: pending 10%, confirmed
-  42%, preparing 60%, out for delivery 80%, delivered 100% → a tick), the
-  covered stretch lit, a one-line status message (`aria-live`). Realtime
-  status updates move it live (CSS transition on `left` / `width` via a
-  `--p` custom property). The Orders list's in-progress card reuses it
+  `Moped` riding along it WITH THE CLOCK: position = time since placing ÷
+  the restaurant's `delivery_minutes`, re-read every 15 s, bounded per
+  status by `RANGE` [floor, ceiling] — pending 6–20% (it can't ride far
+  before the restaurant confirms), confirmed / preparing 20–94%, out for
+  delivery 50–94% (running late, it waits just short of the gate),
+  delivered 100% → a tick. Before the first tick (and on the server) it
+  sits at the floor, so hydration matches. The covered stretch is lit, a
+  one-line status message is `aria-live`, and Realtime status changes move
+  it live (CSS transition on `left` / `width` via a `--p` custom property). The Orders list's in-progress card reuses it
   (`tone="card"`, no message). The step list sits in a card below the
   pass. `statusBadge()` (`src/lib/orders/status.ts`, shared with admin)
   uses the brand sheet's colours: Placed / Preparing gold, Confirmed cyan,

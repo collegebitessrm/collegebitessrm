@@ -21,6 +21,8 @@ export type OrderSummary = {
   /** Snapshotted dish names in order — the orders list looks up a photo from the first one it can. */
   dishNames: string[];
   dailyNumber: number;
+  /** The restaurant's delivery promise — the in-progress card's road rides against it. */
+  deliveryMinutes: number;
   /** Delivered within the last 7 days and not rated yet — the Orders list's "Rate" pill. */
   rateable: boolean;
 };
@@ -75,7 +77,7 @@ type OrderSummaryRow = {
   total_amount: number;
   created_at: string;
   restaurant_id: string;
-  restaurants: { name: string } | null;
+  restaurants: { name: string; delivery_minutes: number } | null;
   order_items: { dish_name: string; quantity: number }[];
   daily_number: number;
   delivered_at: string | null;
@@ -96,7 +98,7 @@ export async function getOrderHistory(userId: string): Promise<OrderSummary[]> {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, total_amount, created_at, restaurant_id, restaurants(name), order_items(dish_name, quantity), daily_number, delivered_at, order_reviews(order_id)",
+      "id, status, total_amount, created_at, restaurant_id, restaurants(name, delivery_minutes), order_items(dish_name, quantity), daily_number, delivered_at, order_reviews(order_id)",
     )
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
@@ -115,6 +117,7 @@ export async function getOrderHistory(userId: string): Promise<OrderSummary[]> {
     itemsSummary: summarizeItems(o.order_items),
     dishNames: o.order_items.map((i) => i.dish_name),
     dailyNumber: o.daily_number,
+    deliveryMinutes: o.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
     rateable: isRateable(o.status, o.delivered_at, hasReview(o.order_reviews)),
   }));
 }

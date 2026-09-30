@@ -240,7 +240,12 @@ export function OrderTracking({
 
             {!cancelled && (
               <div className="border-t border-hero-foreground/15 bg-hero-foreground/[0.06] px-6 pt-4 pb-5">
-                <DeliveryRoad status={status} restaurantName={initialOrder.restaurantName} />
+                <DeliveryRoad
+                  status={status}
+                  restaurantName={initialOrder.restaurantName}
+                  createdAt={initialOrder.createdAt}
+                  deliveryMinutes={initialOrder.deliveryMinutes}
+                />
               </div>
             )}
           </section>
