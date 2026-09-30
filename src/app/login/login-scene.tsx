@@ -4,26 +4,28 @@ import { cn } from "@/lib/utils";
 import "./login.css";
 
 /*
- * Real dishes floating in the sunset sky, framed like photo prints. Each
- * drifts on its own clock (--drift) after popping in (--card-delay).
+ * Real dishes floating in the sunset sky, framed like photo prints, between
+ * the two palms. Sized by the sky's HEIGHT (aspect 4/5), so on a short
+ * phone they shrink with it instead of burying the sun. Each drifts on its
+ * own clock (--drift) after popping in (--card-delay).
  * Literal paths: renaming one of these photos means updating it here.
  */
 const CARDS = [
   {
     src: "/photos/dishes/chicken-dum-biryani.jpg",
-    className: "left-[6%] top-[8%] w-[33%] -rotate-8",
+    className: "left-[14%] top-[6%] h-[42%] -rotate-8",
     style: { "--card-delay": "0.45s", "--drift": "7s" },
     eager: true,
   },
   {
     src: "/photos/dishes/chicken-noodles.jpg",
-    className: "right-[6%] top-[5%] w-[28%] rotate-7",
+    className: "right-[10%] top-[10%] h-[38%] rotate-7",
     style: { "--card-delay": "0.6s", "--drift": "8.5s" },
     eager: true,
   },
   {
     src: "/photos/dishes/paneer-65.jpg",
-    className: "left-[40%] top-[2%] w-[20%] rotate-3",
+    className: "left-[45%] top-[2%] h-[28%] rotate-3",
     style: { "--card-delay": "0.75s", "--drift": "6s" },
     eager: false,
   },
@@ -45,8 +47,8 @@ export function LoginScene() {
       <div className="absolute inset-0 mx-auto w-full max-w-md">
         <div className="login-glow absolute left-1/2 aspect-[2/1] w-[130%]" />
         <div className="login-sun absolute left-1/2 aspect-square w-[58%] rounded-full" />
-        <Palm className="-left-[7%] h-[78%]" />
-        <Palm className="login-palm-right -right-[9%] h-[62%] -scale-x-100" />
+        <Palm className="-left-[7%] h-[60%]" />
+        <Palm className="login-palm-right -right-[9%] h-[48%] -scale-x-100" />
         {CARDS.map((card) => (
           <div
             key={card.src}
@@ -57,7 +59,7 @@ export function LoginScene() {
               src={card.src}
               alt=""
               fill
-              sizes="(max-width: 448px) 34vw, 150px"
+              sizes="160px"
               loading={card.eager ? "eager" : "lazy"}
               fetchPriority={card.eager ? "high" : undefined}
               className="object-cover"

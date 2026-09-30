@@ -56,7 +56,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             />
             <div className="login-rise min-w-0 pb-1" style={{ "--rise-delay": "0.38s" } as CSSProperties}>
               <p className="font-heading text-xl leading-none font-bold">College Bites</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">Campus food, delivered to the gate</p>
+              <p className="mt-1.5 text-sm text-muted-foreground">Campus food, delivered</p>
             </div>
           </div>
 
