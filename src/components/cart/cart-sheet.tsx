@@ -88,7 +88,7 @@ function EmptyCart({ onBrowse }: { onBrowse: () => void }) {
           <Link
             href="/"
             onClick={onBrowse}
-            className="pressable surface-ink flex h-14 items-center rounded-2xl bg-ink px-8 text-lg font-bold text-ink-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
+            className="pressable surface-primary flex h-14 items-center rounded-2xl bg-primary px-8 text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
           >
             Browse restaurants
           </Link>

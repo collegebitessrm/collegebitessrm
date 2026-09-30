@@ -32,7 +32,7 @@ export function GoogleSignInButton() {
       <Button
         onClick={signIn}
         disabled={pending}
-        className="surface-ink shadow-elevated-glow h-14 w-full gap-3 rounded-2xl bg-ink text-base font-semibold text-ink-foreground hover:brightness-95"
+        className="surface-primary shadow-elevated-glow h-14 w-full gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground hover:brightness-95"
       >
         <span className="flex size-8 items-center justify-center rounded-full bg-white">
           {pending ? (

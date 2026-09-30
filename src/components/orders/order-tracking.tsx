@@ -138,7 +138,7 @@ export function OrderTracking({
         <CelebrationOverlay confettiOnceKey={CONFETTI_SHOWN_KEY}>
           <BrandLogo className="animate-pop-in size-20 rounded-3xl" />
           <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">Order placed!</p>
-          <p className="mt-1 text-ink-foreground/70">Show this token at the gate</p>
+          <p className="mt-1 text-ink-foreground/75">Show this token at the gate</p>
           <p className="animate-pop-in mt-4 font-heading text-7xl font-bold tracking-tight text-ink-accent">
             {formatOrderNumber(initialOrder.dailyNumber)}
           </p>

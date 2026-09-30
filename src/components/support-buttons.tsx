@@ -9,7 +9,7 @@ export function SupportButtons({ whatsappMessage }: { whatsappMessage: string })
       <a
         href={`tel:${SUPPORT_PHONE}`}
         aria-label="Call College Bites support"
-        className="flex size-11 items-center justify-center rounded-xl bg-ink text-ink-foreground outline-none hover:bg-ink/90 focus-visible:ring-3 focus-visible:ring-ring/80"
+        className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/80"
       >
         <Phone className="size-4" />
       </a>

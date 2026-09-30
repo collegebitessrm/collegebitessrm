@@ -84,7 +84,7 @@ export function MilestoneUnlockWatcher({ unlockedCsv }: { unlockedCsv: string })
       <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">
         {several ? `${milestones.length} milestones unlocked!` : "Milestone unlocked!"}
       </p>
-      <p className="mt-1 text-ink-foreground/70">Added to your profile</p>
+      <p className="mt-1 text-ink-foreground/75">Added to your profile</p>
       <p
         className={cn(
           "animate-pop-in mt-4 max-w-xs font-heading font-bold tracking-tight text-balance text-ink-accent",

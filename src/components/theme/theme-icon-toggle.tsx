@@ -29,7 +29,7 @@ export function ThemeIconToggle() {
             className={cn(
               "flex size-8 items-center justify-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/80",
               selected
-                ? "bg-ink text-ink-foreground"
+                ? "bg-chip-active text-chip-active-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

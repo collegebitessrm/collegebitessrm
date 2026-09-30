@@ -200,7 +200,7 @@ export function MenuView({
                           className={cn(
                             "flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-semibold whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/80",
                             filter === chip.key
-                              ? "bg-ink text-ink-foreground"
+                              ? "bg-chip-active text-chip-active-foreground"
                               : "bg-secondary text-secondary-foreground hover:bg-border",
                           )}
                         >

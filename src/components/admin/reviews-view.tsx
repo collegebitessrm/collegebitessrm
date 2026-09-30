@@ -129,7 +129,7 @@ export function ReviewsView({ reviews, restaurants }: { reviews: AdminReview[]; 
                     onClick={() => setFilter(f.value)}
                     className={cn(
                       "h-9 rounded-full px-3.5 text-sm font-semibold outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
-                      filter === f.value ? "bg-ink text-ink-foreground" : "bg-secondary text-secondary-foreground hover:bg-border",
+                      filter === f.value ? "bg-chip-active text-chip-active-foreground" : "bg-secondary text-secondary-foreground hover:bg-border",
                     )}
                   >
                     {f.label}
@@ -223,7 +223,7 @@ function Tab({ active, onClick, children }: { active: boolean; onClick: () => vo
       aria-pressed={active}
       className={cn(
         "h-10 shrink-0 rounded-full px-4 text-sm font-semibold whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/80",
-        active ? "bg-ink text-ink-foreground" : "bg-secondary text-secondary-foreground hover:bg-border",
+        active ? "bg-chip-active text-chip-active-foreground" : "bg-secondary text-secondary-foreground hover:bg-border",
       )}
     >
       {children}

@@ -93,7 +93,7 @@ export function CelebrationOverlay({
       />
       {showConfetti && <ConfettiBurst />}
       <div className="relative flex flex-col items-center">{children}</div>
-      <p className="relative mt-6 text-sm text-ink-foreground/50">Tap to continue</p>
+      <p className="relative mt-6 text-sm text-ink-foreground/75">Tap to continue</p>
     </div>
   );
 }

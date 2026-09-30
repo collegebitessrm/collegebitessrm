@@ -15,12 +15,13 @@
  */
 @theme {
   /* College Bites brand ramps (fixed, same in both themes) — prefer the
-     semantic tokens below. 500 is the brand value from the client's palette. */
+     semantic tokens below. Navy is lifted off the brief's #0A2540 (which
+     reads as black; kept as navy-900) and gold is a soft butter yellow. */
   --color-navy-100: #e3eaf2;
   --color-navy-300: #7d93ad;
-  --color-navy-500: #0a2540;
-  --color-navy-700: #081d33;
-  --color-navy-900: #041222;
+  --color-navy-500: #173f6b;
+  --color-navy-700: #0f2d52;
+  --color-navy-900: #0a2540;
 
   --color-teal-100: #d6f5f0;
   --color-teal-300: #7bdfd0;
@@ -28,11 +29,11 @@
   --color-teal-700: #007a6b;
   --color-teal-900: #00453c;
 
-  --color-gold-100: #fdf4d3;
-  --color-gold-300: #f8dc72;
-  --color-gold-500: #f5c518;
-  --color-gold-700: #a8860a;
-  --color-gold-900: #5c4905;
+  --color-gold-100: #fff6d9;
+  --color-gold-300: #fbeab6;
+  --color-gold-500: #f6dc8a;
+  --color-gold-700: #b8962e;
+  --color-gold-900: #5c4400;
 
   --color-mint-100: #ffffff;
   --color-mint-300: #eff7f6;
@@ -110,6 +111,9 @@
   --font-sans: var(--font-jakarta);
   --font-heading: var(--font-fraunces), var(--font-jakarta);
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-chip-active: var(--chip-active);
+  --color-chip-active-foreground: var(--chip-active-foreground);
   --color-ink-foreground: var(--ink-foreground);
   --color-ink-accent: var(--ink-accent);
   --color-ink-success: var(--ink-success);
@@ -165,181 +169,181 @@
 }
 
 /*
- * College Bites palette — the client's colour system. Deep Navy #0A2540
- * and Teal #00C2A8 lead; Golden Yellow #F5C518 is for highlights only;
- * the pastels are tints and decoration, never small text.
+ * College Bites palette — matches the client's brand sheet
+ * (docs/design-reference.webp): airy pastel surfaces, navy for text and
+ * pill buttons, teal accents, soft yellow for small highlights.
  *
- * Surfaces step in three layers in BOTH themes:
- *   ground (--background)  <  card (--card)  <  raised (--popover)
- * plus --secondary/--muted as the recessed chip/well surface.
- *   light  mint ground #EFF7F6, white cards, warm ivory #F4EBD9 wells,
- *          soft periwinkle #BBD0FF borders
- *   dark   navy ground #0A2540, cards #123451, raised #183C55,
- *          dusty-purple borders (#9D84A3 at 40%)
+ *   navy   #173F6B  text, primary pill buttons (lifted off the brief's
+ *                   #0A2540, which read as black — kept as navy-900)
+ *   teal   #00C2A8  selected chips (--chip-active), dark-mode buttons;
+ *                   #007A6B wherever teal is TEXT (--rose: prices, cuisines)
+ *   yellow #F6DC8A  soft butter (--amber), decoration/highlights only —
+ *                   the brief's #F5C518 was too loud
+ *   pastels         --ink/--ink-2 periwinkle → lavender hero gradient
+ *                   (ticket, member card, cart bar, banners, Today card) in
+ *                   BOTH themes with navy text; periwinkle wells; pink tint
  *
- * Primary buttons: navy with white text (light), teal with navy text
- * (dark) — as the brief asks. Because --primary is also the price/link
- * colour, light-mode prices and links are navy, not teal: brief teal is
- * 2.2:1 on white, far below the 4.5:1 text needs.
+ * Surfaces step ground < card < raised in both themes:
+ *   light  mint #EFF7F6 < white < white, periwinkle-tint wells #EDF0FF
+ *   dark   lifted navy #15325A < #1C3F6E < #234A7E (blue, not black)
  *
- * Where the brief's exact colour fails contrast as text, the nearest
- * passing shade is used instead (the brief colour stays for fills):
- *   teal text (cuisines, dish notes, icons)  #007A6B  (brief #00C2A8)
- *   secondary text (light)                   #5D4A66  (brief #9D84A3)
- *   input borders (light)                    #6C7CA6  (brief #BBD0FF)
- * --amber is gold, decorative only; --ink-accent is gold on the navy ink
- * surface (9.5:1), dark gold on the dark-mode periwinkle ink.
- *
- * Every text/surface pair is checked by `npm run audit:contrast`.
+ * Every text/surface pair (and the Home heading over each mood field) is
+ * checked by `npm run audit:contrast`.
  */
 :root {
   --background: #eff7f6;
-  --foreground: #0a2540;
+  --foreground: #173f6b;
   --card: #ffffff;
-  --card-foreground: #0a2540;
+  --card-foreground: #173f6b;
   --popover: #ffffff;
-  --popover-foreground: #0a2540;
-  --primary: #0a2540;
+  --popover-foreground: #173f6b;
+  --primary: #173f6b;
   --primary-foreground: #ffffff;
-  --secondary: #f4ebd9;
-  --secondary-foreground: #0a2540;
-  --muted: #f4ebd9;
-  --muted-foreground: #5d4a66;
-  --accent: #f4ebd9;
-  --accent-foreground: #0a2540;
+  --secondary: #edf0ff;
+  --secondary-foreground: #173f6b;
+  --muted: #edf0ff;
+  --muted-foreground: #584a70;
+  --accent: #edf0ff;
+  --accent-foreground: #173f6b;
   --destructive: #b42b1c;
   --destructive-foreground: #ffffff;
-  --border: #bbd0ff;
+  --border: #cfdaff;
   /* 3.5:1 against card — WCAG 1.4.11 wants 3:1 for a control's boundary. */
   --input: #6c7ca6;
   --ring: #007a6b;
-  --ink: #0a2540;
-  --ink-foreground: #ffffff;
-  /* Accents that sit ON the ink surface (token card, cart bar, banners).
-     The normal teal/green/red are too dark on navy, so ink surfaces get
-     their own tints (checked by the contrast audit). */
-  --ink-accent: #f5c518;
-  --ink-success: #7bdfd0;
-  --ink-danger: #ffb0a3;
+  --ink: #c9d0ff;
+  --ink-foreground: #0f2d52;
+  /* Accents that sit ON the pastel ink surface (token card, cart bar,
+     banners) — deep teal/green/red that read on periwinkle and lavender
+     (checked by the contrast audit against both gradient ends). */
+  --ink-accent: #00594e;
+  --ink-success: #0b5a47;
+  --ink-danger: #8e2416;
+  --ink-2: #dccfff;
+  --chip-active: #00c2a8;
+  --chip-active-foreground: #0f2d52;
   --brand-soft: #fbe2ef;
   --brand-soft-foreground: #7a1f55;
   --rose: #007a6b;
   --rose-foreground: #ffffff;
-  --amber: #f5c518;
+  --amber: #f6dc8a;
   --success: #0e7556;
   --success-foreground: #ffffff;
   --success-soft: #dcf4ea;
-  --stripe-a: #e2eeec;
-  --stripe-b: #eaf3f2;
-  --chart-1: #0a2540;
+  --stripe-a: #e4eaff;
+  --stripe-b: #eef1ff;
+  --chart-1: #173f6b;
   --chart-2: #00c2a8;
-  --chart-3: #f5c518;
+  --chart-3: #f6dc8a;
   --chart-4: #7bdff2;
   --chart-5: #c8b6ff;
   --radius: 0.875rem;
   --sidebar: #eff7f6;
-  --sidebar-foreground: #0a2540;
-  --sidebar-primary: #0a2540;
+  --sidebar-foreground: #173f6b;
+  --sidebar-primary: #173f6b;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f4ebd9;
-  --sidebar-accent-foreground: #0a2540;
-  --sidebar-border: #bbd0ff;
+  --sidebar-accent: #edf0ff;
+  --sidebar-accent-foreground: #173f6b;
+  --sidebar-border: #cfdaff;
   --sidebar-ring: #007a6b;
 
   /* Elevation — navy-tinted in light mode so shadows read as part of the
      palette rather than grey smudges on mint. */
-  --elevation-card: 0 1px 2px rgb(10 37 64 / 6%), 0 4px 12px -4px rgb(10 37 64 / 10%);
-  --elevation-raised: 0 2px 4px rgb(10 37 64 / 6%), 0 12px 28px -8px rgb(10 37 64 / 18%);
-  --elevation-overlay: 0 4px 8px rgb(10 37 64 / 8%), 0 24px 48px -12px rgb(10 37 64 / 28%);
+  --elevation-card: 0 1px 2px rgb(23 63 107 / 5%), 0 4px 14px -4px rgb(23 63 107 / 10%);
+  --elevation-raised: 0 2px 4px rgb(23 63 107 / 5%), 0 12px 28px -8px rgb(23 63 107 / 16%);
+  --elevation-overlay: 0 4px 8px rgb(23 63 107 / 7%), 0 24px 48px -12px rgb(23 63 107 / 24%);
 
   /* Home header ambient field, three stops per time of day — see
      .mood-field below and HomeHeader. Gold/pink mornings, aqua
      afternoons, the brief's periwinkle → lavender hero gradient for
      evenings and nights. Alpha is baked into each stop so the navy heading
      on top of the densest point stays above 6.7:1 (contrast audit). */
-  --mood-morning-a: #f5c51855;
+  --mood-morning-a: #f6dc8a66;
   --mood-morning-b: #f2b5d466;
   --mood-morning-c: #7bdff244;
   --mood-afternoon-a: #7bdff277;
   --mood-afternoon-b: #d6f5f0;
   --mood-afternoon-c: #b8c0ff55;
-  --mood-evening-a: #b8c0ffcc;
-  --mood-evening-b: #c8b6ff99;
+  --mood-evening-a: #b8c0ff99;
+  --mood-evening-b: #c8b6ff77;
   --mood-evening-c: #f2b5d455;
-  --mood-night-a: #b8c0ff99;
-  --mood-night-b: #c8b6ffcc;
+  --mood-night-a: #b8c0ff77;
+  --mood-night-b: #c8b6ff99;
   --mood-night-c: #e7c6ff88;
 }
 
-/* Dark: layered navy grounds (not neutral grey, not an inverted light
-   mode). The ink surface flips to soft periwinkle with navy text. Fills that carry text (success/destructive/primary) get a dark
+/* Dark: layered, lifted navy grounds (not black, not an inverted light
+   mode); the pastel ink surface stays pastel with navy text. Fills that carry text (success/destructive/primary) get a dark
    *-foreground instead of white — the dark-mode fills are light enough
    that white text on them would fail. */
 .dark {
-  --background: #0a2540;
-  --foreground: #eff7f6;
-  --card: #123451;
-  --card-foreground: #eff7f6;
-  --popover: #183c55;
-  --popover-foreground: #eff7f6;
+  --background: #15325a;
+  --foreground: #f4f7fb;
+  --card: #1c3f6e;
+  --card-foreground: #f4f7fb;
+  --popover: #234a7e;
+  --popover-foreground: #f4f7fb;
   --primary: #00c2a8;
-  --primary-foreground: #0a2540;
-  --secondary: #183c55;
-  --secondary-foreground: #eff7f6;
-  --muted: #183c55;
-  --muted-foreground: #bbd0ff;
-  --accent: #183c55;
-  --accent-foreground: #eff7f6;
-  --destructive: #ff9585;
+  --primary-foreground: #0f2d52;
+  --secondary: #244b7e;
+  --secondary-foreground: #f4f7fb;
+  --muted: #244b7e;
+  --muted-foreground: #cdd8ff;
+  --accent: #244b7e;
+  --accent-foreground: #f4f7fb;
+  --destructive: #ffa294;
   --destructive-foreground: #2a0e09;
-  --border: rgb(157 132 163 / 40%);
-  --input: rgb(187 208 255 / 55%);
+  --border: rgb(200 182 255 / 28%);
+  --input: rgb(205 216 255 / 60%);
   --ring: #7bdff2;
-  --ink: #bbd0ff;
-  --ink-foreground: #0a2540;
-  --ink-accent: #5c4400;
+  --ink: #c3ccff;
+  --ink-foreground: #0f2d52;
+  --ink-accent: #00594e;
   --ink-success: #0b5a47;
   --ink-danger: #8e2416;
-  --brand-soft: #33285a;
-  --brand-soft-foreground: #e7c6ff;
+  --ink-2: #d6c9ff;
+  --chip-active: #00c2a8;
+  --chip-active-foreground: #0f2d52;
+  --brand-soft: #3e2e66;
+  --brand-soft-foreground: #f2d9ff;
   --rose: #7bdff2;
-  --rose-foreground: #0a2540;
-  --amber: #f5c518;
-  --success: #4fd8b4;
+  --rose-foreground: #0f2d52;
+  --amber: #f6dc8a;
+  --success: #62e0bf;
   --success-foreground: #06281f;
-  --success-soft: #0f3a3a;
-  --stripe-a: #17395a;
-  --stripe-b: #123451;
-  --chart-1: #eff7f6;
+  --success-soft: #134a4f;
+  --stripe-a: #22477a;
+  --stripe-b: #1c3f6e;
+  --chart-1: #f4f7fb;
   --chart-2: #00c2a8;
-  --chart-3: #f5c518;
+  --chart-3: #f6dc8a;
   --chart-4: #7bdff2;
   --chart-5: #c8b6ff;
-  --sidebar: #123451;
-  --sidebar-foreground: #eff7f6;
+  --sidebar: #1c3f6e;
+  --sidebar-foreground: #f4f7fb;
   --sidebar-primary: #00c2a8;
-  --sidebar-primary-foreground: #0a2540;
-  --sidebar-accent: #183c55;
-  --sidebar-accent-foreground: #eff7f6;
-  --sidebar-border: rgb(157 132 163 / 40%);
+  --sidebar-primary-foreground: #0f2d52;
+  --sidebar-accent: #244b7e;
+  --sidebar-accent-foreground: #f4f7fb;
+  --sidebar-border: rgb(200 182 255 / 28%);
   --sidebar-ring: #7bdff2;
 
   --elevation-card: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 12px -4px rgb(0 0 0 / 35%);
   --elevation-raised: 0 2px 4px rgb(0 0 0 / 30%), 0 12px 28px -8px rgb(0 0 0 / 50%);
   --elevation-overlay: 0 4px 8px rgb(0 0 0 / 35%), 0 24px 48px -12px rgb(0 0 0 / 60%);
 
-  --mood-morning-a: #f5c51833;
-  --mood-morning-b: #00c2a822;
+  --mood-morning-a: #f6dc8a1a;
+  --mood-morning-b: #00c2a814;
   --mood-morning-c: #7bdff222;
-  --mood-afternoon-a: #00c2a830;
-  --mood-afternoon-b: #183c55aa;
+  --mood-afternoon-a: #00c2a82a;
+  --mood-afternoon-b: #244b7eaa;
   --mood-afternoon-c: #7bdff233;
-  --mood-evening-a: #9d84a355;
-  --mood-evening-b: #183c55cc;
-  --mood-evening-c: #c8b6ff33;
-  --mood-night-a: #9d84a344;
-  --mood-night-b: #123451;
-  --mood-night-c: #c8b6ff33;
+  --mood-evening-a: #c8b6ff24;
+  --mood-evening-b: #244b7e88;
+  --mood-evening-c: #f2b5d42a;
+  --mood-night-a: #c8b6ff20;
+  --mood-night-b: #1c3f6e99;
+  --mood-night-c: #b8c0ff2a;
 }
 
 /*
@@ -413,12 +417,8 @@
 }
 
 @utility surface-ink {
-  background-image: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--ink) 100%, white 10%) 0%,
-    var(--ink) 55%,
-    color-mix(in srgb, var(--ink) 100%, black 12%) 100%
-  );
+  /* The brand's periwinkle → lavender hero gradient (docs/design-reference.webp). */
+  background-image: linear-gradient(135deg, var(--ink) 0%, var(--ink-2) 100%);
 }
 
 /* Elevation for the surfaces above: a neutral drop shadow plus a soft

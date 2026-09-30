@@ -78,6 +78,13 @@ as it was; this log lists where College Bites deliberately differs.
   `--primary` with the navy buttons.
 - The contrast audit now also checks the Home heading over every mood
   field. The Appearance toggle cross-fades via a root view transition.
+- **Revised the next day (6b)** after client feedback — "navy looks
+  black", "yellow too bright", "use the light colours more": navy lifted
+  to `#173F6B`, yellow softened to `#F6DC8A`, dark mode lifted to
+  `#15325A`, and every hero surface (`bg-ink`) became a periwinkle →
+  lavender gradient with navy text in both themes. Buttons became navy
+  pills, selected chips teal (new `--chip-active` token). Target look:
+  `docs/design-reference.webp`.
 
 ---
 

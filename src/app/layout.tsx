@@ -69,7 +69,7 @@ export const viewport: Viewport = {
   // in-app theme override can't retarget this meta tag before paint.
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#eff7f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a2540" },
+    { media: "(prefers-color-scheme: dark)", color: "#15325a" },
   ],
 };
 

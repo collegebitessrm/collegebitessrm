@@ -35,41 +35,38 @@ https://collegebitessrm.vercel.app.
 
 - **Framework**: Next.js (App Router), TypeScript
 - **Styling**: Tailwind CSS v4 + shadcn/ui (`src/components/ui`)
-- **Design tokens** (`src/app/globals.css`): the client's College Bites
-  palette. Deep Navy `#0A2540` and Teal `#00C2A8` lead; Golden Yellow
-  `#F5C518` is highlights only (`--amber`, `--ink-accent`); pastels
-  (periwinkle, lavender, mauve, pink, aqua) are tints and decoration, never
-  small text. Light: mint ground `#EFF7F6`, white cards, warm-ivory
-  `#F4EBD9` wells, periwinkle `#BBD0FF` borders, navy `bg-ink` hero
-  surfaces. Dark: layered navy (`#0A2540` → `#123451` → `#183C55`),
-  dusty-purple borders, and `bg-ink` flips to soft periwinkle with navy
-  text. Primary buttons are navy/white (light) and teal/navy (dark), as the
-  brief asks — and since `--primary` is also the price/link colour,
-  light-mode prices and links are navy (brief teal is 2.2:1 on white).
-  Where a brief colour fails as text, the nearest passing shade is used:
-  teal text `#007A6B` (`--rose`, the secondary accent — the token keeps
-  its MuteBites name, like `--amber` and `--brand-soft`), light secondary
-  text `#5D4A66` (brief `#9D84A3`), light input borders `#6C7CA6`. Fixed
-  5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/`forest-`/`brick-`
-  100–900) sit alongside semantic tokens that flip per theme — prefer the
-  semantic ones. Surfaces step ground (`--background`) → card → raised
-  (`--popover`), with `shadow-card` / `shadow-raised` / `shadow-overlay`
-  elevation. Text on a coloured fill uses its `*-foreground` token
-  (`text-success-foreground`, `text-destructive-foreground`, …), never
-  `text-white` — dark-mode fills are light, so white fails there. Use
-  `text-brand-soft-foreground` on the pink `bg-brand-soft` tint. On the
-  `bg-ink` surface (token card, cart bar, banners) use `text-ink-accent` /
-  `-ink-success` / `-ink-danger` — the regular teal/green/red don't read
-  on it. Photos never get tints or overlays. Tapping the Appearance toggle
-  cross-fades the theme (a root view transition in `src/lib/theme/store.ts`;
-  instant under reduced motion).
-  Focus rings are `ring-ring/80` and input borders use `--input` — both
-  chosen to meet WCAG's 3:1 for non-text UI; don't drop them back to /40
-  or a pale border. `npm run audit:contrast` (`scripts/contrast-audit.mjs`)
-  re-checks every token pair the app uses in both themes, including the
-  Home heading over each mood field, and fails if any pair is below its
-  minimum — run it after touching colours, and add a pair when you
-  introduce a new text/surface combination.
+- **Design tokens** (`src/app/globals.css`): the finished app should look
+  like the client's brand sheet, **`docs/design-reference.webp`** — judge
+  visual changes against it. Airy pastel surfaces, navy for text and pill
+  buttons, teal accents, soft yellow highlights. Navy is `#173F6B` (the
+  brief's `#0A2540` read as black; it's `navy-900` now); yellow is soft
+  butter `#F6DC8A` (`--amber`, highlights only — `#F5C518` was too loud).
+  Light: mint ground `#EFF7F6`, white cards, periwinkle-tint wells
+  `#EDF0FF`, periwinkle borders. Dark: lifted navy `#15325A` → `#1C3F6E` →
+  `#234A7E`. The hero surfaces (`bg-ink` + `surface-ink`: ticket, member
+  card, cart bar, banners, admin Today card, celebration) are the
+  periwinkle → lavender gradient (`--ink` → `--ink-2`) with navy text in
+  **both** themes. Real buttons (Continue with Google, Place order, View
+  cart, Call/WhatsApp) are the navy `bg-primary` pill (teal with navy
+  text in dark); selected chips and tabs use `bg-chip-active
+  text-chip-active-foreground` (teal). Teal as text is `#007A6B`
+  (`--rose` — the token keeps its MuteBites name, like `--amber` and
+  `--brand-soft`). Fixed 5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/
+  `forest-`/`brick-` 100–900) sit alongside semantic tokens that flip per
+  theme — prefer the semantic ones. Text on a coloured fill uses its
+  `*-foreground` token, never `text-white`. On `bg-ink` use
+  `text-ink-foreground` (at /75 or stronger for secondary lines — fainter
+  fails on pastel) and `text-ink-accent` / `-ink-success` / `-ink-danger`.
+  Don't put `text-primary` on `bg-secondary` in dark mode (3.9:1). Photos
+  never get tints or overlays. Tapping the Appearance toggle cross-fades
+  the theme (a root view transition in `src/lib/theme/store.ts`; instant
+  under reduced motion). Focus rings are `ring-ring/80` and input borders
+  use `--input` — both meet WCAG's 3:1 for non-text UI. `npm run
+  audit:contrast` (`scripts/contrast-audit.mjs`) re-checks every token pair
+  in both themes, including both ends of the ink gradient and the Home
+  heading over each mood field, and fails if any pair is below its minimum
+  — run it after touching colours, and add a pair for any new text/surface
+  combination.
 - **Typography**: Fraunces (`font-heading`, SOFT axis at 50 via a base
   rule in `globals.css`) for display text and big numerals; Plus Jakarta
   (`font-sans`) for body **and buttons** — buttons never use
@@ -95,7 +92,7 @@ https://collegebitessrm.vercel.app.
   wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
-- **Profile**: one ink (navy) `MemberCard` (`src/components/profile/member-card.tsx`)
+- **Profile**: one pastel `MemberCard` (`src/components/profile/member-card.tsx`)
   holds identity, the weekly-rank pill and the three stats (cravings
   solved, day streak, no-shows). Milestones are data-driven in
   `MILESTONES` (`milestone-badges.tsx`) — six tiers, all computed from
@@ -112,7 +109,7 @@ https://collegebitessrm.vercel.app.
   earned" chip filters the list to them.
   A newly unlocked milestone (per device, `collegebites.milestones-seen`)
   plays the same full-screen celebration as "Order placed!" — both use
-  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: ink
+  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: pastel ink
   overlay, confetti unless reduced motion, the chime, tap or ~2 s to
   dismiss); several at once share one overlay naming them all. Render it
   outside any `<ViewTransition>`.
@@ -256,7 +253,7 @@ dish still shows on the student menu — greyed, struck through and
 unorderable (`DishCard`'s `soldOut`) — and `place_order()` refuses it
 anyway, so the flag is never only a UI state.
 
-Visually, admin shares the student app's system: the dashboard's ink (navy)
+Visually, admin shares the student app's system: the dashboard's pastel
 "Today" card (`StatCards`) carries today's counts with the campus ordering
 control (`OrderingKillSwitch` — a two-way Open / Closed switch for
 `app_settings.ordering_mode`, with a confirm dialog each way) as its

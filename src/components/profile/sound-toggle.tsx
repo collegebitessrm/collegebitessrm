@@ -22,7 +22,7 @@ export function SoundToggle() {
     >
       <span
         className={cn(
-          "flex size-6 items-center justify-center rounded-full bg-white text-ink shadow transition-transform",
+          "flex size-6 items-center justify-center rounded-full bg-white text-primary shadow transition-transform",
           enabled ? "translate-x-7" : "translate-x-1",
         )}
       >
