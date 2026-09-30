@@ -1,8 +1,6 @@
 import { MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
-import { TrendingDialog } from "@/components/home/trending-dialog";
 import { BrandLogo } from "@/components/brand-logo";
-import type { TrendingDish } from "@/lib/data/trending";
 import type { TimeOfDay } from "@/lib/date";
 
 // Each time of day gets its own sky (.mood-field.mood-<time> in
@@ -11,23 +9,21 @@ import type { TimeOfDay } from "@/lib/date";
 const MOOD: Record<TimeOfDay, { greeting: string; Icon: AppIcon; question: string }> = {
   morning: { greeting: "Good morning", Icon: Sunrise, question: "Fuel up for the day?" },
   afternoon: { greeting: "Good afternoon", Icon: Sun, question: "What are you craving today?" },
-  evening: { greeting: "Good evening", Icon: Sunset, question: "Dinner o'clock — what's it going to be?" },
+  evening: { greeting: "Good evening", Icon: Sunset, question: "Dinner o'clock. What's it going to be?" },
   night: { greeting: "Still up", Icon: MoonStars, question: "Late-night craving?" },
 };
 
 /**
- * Home's header, over the time-of-day sky: the logo (opens About) and the
- * Trending flame on top, then a small time-of-day line, "Hey, <name>" in
+ * Home's header, over the time-of-day sky: the logo (opens About) on top,
+ * then a small time-of-day line, "Hey, <name>" in
  * the sunset gradient, and the question of the hour.
  */
 export function HomeHeader({
   fullName,
   timeOfDay,
-  trendingDishes,
 }: {
   fullName: string;
   timeOfDay: TimeOfDay;
-  trendingDishes: TrendingDish[];
 }) {
   const { greeting, Icon, question } = MOOD[timeOfDay];
   const firstName = fullName.trim().split(/\s+/)[0];
@@ -45,7 +41,6 @@ export function HomeHeader({
         <AboutDialog>
           <BrandLogo className="size-12 rounded-2xl shadow-card" />
         </AboutDialog>
-        <TrendingDialog dishes={trendingDishes} />
       </div>
       <p className="relative mt-7 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
         <Icon className="icon-tint-gold size-4.5 shrink-0" />

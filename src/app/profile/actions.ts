@@ -14,7 +14,7 @@ export async function updateFullName(
   formData: FormData,
 ): Promise<FieldActionState> {
   const { user } = await getSessionProfile();
-  if (!user) return { error: "Please sign in again — we lost your session." };
+  if (!user) return { error: "Please sign in again, we lost your session." };
 
   const fullName = String(formData.get("fullName") ?? "")
     .trim()
@@ -24,7 +24,7 @@ export async function updateFullName(
 
   const supabase = await createClient();
   const { error } = await supabase.from("users").update({ full_name: fullName }).eq("id", user.id);
-  if (error) return { error: "Couldn't save your name — please try again." };
+  if (error) return { error: "Couldn't save your name. Please try again." };
 
   // Other pages (home header, etc.) read the name server-side too.
   revalidatePath("/", "layout");
@@ -36,7 +36,7 @@ export async function updatePhone(
   formData: FormData,
 ): Promise<FieldActionState> {
   const { user, profile } = await getSessionProfile();
-  if (!user || !profile) return { error: "Please sign in again — we lost your session." };
+  if (!user || !profile) return { error: "Please sign in again, we lost your session." };
 
   // Real enforcement lives here, not in the UI — the UI hiding the Edit
   // button is just a convenience; someone calling this action directly
@@ -56,7 +56,7 @@ export async function updatePhone(
 
   const supabase = await createClient();
   const { error } = await supabase.from("users").update({ phone }).eq("id", user.id);
-  if (error) return { error: "Couldn't save your number — please try again." };
+  if (error) return { error: "Couldn't save your number. Please try again." };
 
   revalidatePath("/", "layout");
   return {};

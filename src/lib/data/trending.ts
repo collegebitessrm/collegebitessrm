@@ -18,7 +18,7 @@ type TrendingDishRow = {
   order_count: number;
 };
 
-/** Top ordered dishes campus-wide over the last 7 days, for Home's "Trending this week" leaderboard. */
+/** Top ordered dishes campus-wide over the last 7 days, ranked first in Home's "Campus favourites" row. */
 export async function getTrendingDishes(limit = 5): Promise<TrendingDish[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("trending_dishes", { result_limit: limit });

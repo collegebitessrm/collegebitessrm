@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BlurImage } from "@/components/blur-image";
-import { Flame, Sparkle } from "@/components/icons";
+import { Flame } from "@/components/icons";
 import { VegMark } from "@/components/veg-mark";
 import { getDishPhoto, getSignatureDishes } from "@/lib/data/dish-photos";
 import type { SearchableDish } from "@/lib/data/restaurants";
@@ -10,8 +10,6 @@ import { formatRupees } from "@/lib/format";
 
 /** Most cards in the row. */
 const MAX = 8;
-/** Fewer trending dishes (with photos) than this and the row shows favourites instead. */
-const MIN_TRENDING = 3;
 
 type RailDish = {
   id: string;
@@ -21,18 +19,18 @@ type RailDish = {
   restaurantId: string;
   restaurantName: string;
   photo: string;
+  /** Trending position (campus-wide orders, last 7 days); absent for a signature dish. */
   rank?: number;
 };
 
-export type Rail = { kind: "trending" | "favourites"; dishes: RailDish[] };
+export type Rail = { dishes: RailDish[] };
 
 /**
- * What Home's photo row shows. Real trending dishes (campus-wide orders,
- * last 7 days) when there are enough of them with photos; otherwise — at
- * launch, or in a quiet week — each restaurant's signature dishes,
- * interleaved, under an honest "Campus favourites" title rather than
- * pretending they're trending. Sold-out dishes and dishes without a
- * photo are skipped.
+ * Home's one "Campus favourites" row: the week's real trending dishes
+ * first, ranked #1, #2…, then each restaurant's signature dishes,
+ * interleaved, to fill the row. Only trending dishes carry a rank badge,
+ * so a signature dish is never passed off as trending. Sold-out dishes,
+ * dishes without a photo and repeats are skipped.
  */
 export function buildRail(
   trending: TrendingDish[],
@@ -42,14 +40,13 @@ export function buildRail(
   const byId = new Map(dishes.map((d) => [d.id, d]));
   const names = new Map(restaurants.map((r) => [r.id, r.name]));
 
-  const hot: RailDish[] = [];
+  const row: RailDish[] = [];
   for (const t of trending) {
     const d = byId.get(t.dishId);
     const photo = d && getDishPhoto(t.restaurantName, d.name);
-    if (!d || !d.isAvailable || !photo) continue;
-    hot.push({ ...pick(d, t.restaurantName, photo), rank: hot.length + 1 });
+    if (!d || !d.isAvailable || !photo || row.length >= MAX) continue;
+    row.push({ ...pick(d, t.restaurantName, photo), rank: row.length + 1 });
   }
-  if (hot.length >= MIN_TRENDING) return { kind: "trending", dishes: hot.slice(0, MAX) };
 
   // Round-robin through the restaurants' signature dishes, so the row
   // mixes kitchens instead of showing one restaurant's three first.
@@ -62,11 +59,17 @@ export function buildRail(
         return d && photo ? [pick(d, names.get(d.restaurantId) ?? r.name, photo)] : [];
       }),
     );
-  const favourites: RailDish[] = [];
-  for (let i = 0; favourites.length < MAX && perRestaurant.some((list) => i < list.length); i++) {
-    for (const list of perRestaurant) if (list[i] && favourites.length < MAX) favourites.push(list[i]);
+  const seen = new Set(row.map((d) => d.id));
+  for (let i = 0; row.length < MAX && perRestaurant.some((list) => i < list.length); i++) {
+    for (const list of perRestaurant) {
+      const d = list[i];
+      if (d && !seen.has(d.id) && row.length < MAX) {
+        seen.add(d.id);
+        row.push(d);
+      }
+    }
   }
-  return { kind: "favourites", dishes: favourites };
+  return { dishes: row };
 }
 
 function pick(d: SearchableDish, restaurantName: string, photo: string): RailDish {
@@ -74,24 +77,23 @@ function pick(d: SearchableDish, restaurantName: string, photo: string): RailDis
 }
 
 /**
- * Home's horizontal photo row — "Popular this week" (with #1, #2… badges)
- * or "Campus favourites". Each card opens the menu at that dish (?dish=).
- * Bleeds to the screen edges and snaps card by card.
+ * Home's horizontal photo row, "Campus favourites": trending dishes (with
+ * #1, #2… badges) then signature dishes. Each card opens the menu at that
+ * dish (?dish=). Bleeds to the screen edges and snaps card by card.
  */
 export function PopularRail({ rail }: { rail: Rail }) {
   if (rail.dishes.length === 0) return null;
-  const trending = rail.kind === "trending";
-  const Icon = trending ? Flame : Sparkle;
+  const hasTrending = rail.dishes.some((d) => d.rank);
 
   return (
     <section aria-labelledby="popular-heading" className="mt-9">
       <div className="flex items-end justify-between gap-3">
         <h2 id="popular-heading" className="flex items-center gap-2 font-heading text-title font-bold">
-          <Icon className="icon-tint-gold size-5.5 text-primary" />
-          {trending ? "Popular this week" : "Campus favourites"}
+          <Flame className="icon-tint-gold size-5.5 text-primary" />
+          Campus favourites
         </h2>
         <p className="shrink-0 pb-0.5 text-sm text-muted-foreground">
-          {trending ? "Most ordered" : "Signature dishes"}
+          {hasTrending ? "Most ordered first" : "Signature dishes"}
         </p>
       </div>
       <ul className="-mx-6 mt-3 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pt-1 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

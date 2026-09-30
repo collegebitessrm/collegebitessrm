@@ -72,8 +72,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             className="login-rise mt-2.5 max-w-[22rem] text-muted-foreground"
             style={{ "--rise-delay": "0.54s" } as CSSProperties}
           >
-            Your campus food delivery partner. Multiple restaurants, one place — delivered to you
-            at Gate 3.
+            Biryani, fried rice and late-night starters from kitchens near campus, brought to
+            Gate 3.
           </p>
 
           <ul
@@ -86,7 +86,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             </li>
             <li className="inline-flex items-center gap-1.5 rounded-full border bg-secondary/70 px-3 py-1.5">
               <Banknote className="icon-tint-gold size-4 shrink-0 text-aqua" />
-              Pay on delivery — cash or UPI
+              Pay on delivery, cash or UPI
             </li>
           </ul>
 
@@ -96,7 +96,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
                 role="alert"
                 className="mb-4 rounded-xl bg-pink-soft px-4 py-3 text-center text-sm text-pink-soft-foreground"
               >
-                Sign-in didn&apos;t go through — give it another shot.
+                Sign-in didn&apos;t go through. Give it another shot.
               </p>
             )}
             <GoogleSignInButton />

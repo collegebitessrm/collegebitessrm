@@ -47,7 +47,7 @@ async function shareOrderToken(token: string) {
     await navigator.clipboard.writeText(token);
     toast.success("Token copied!");
   } catch {
-    toast.error("Couldn't copy — try selecting it manually.");
+    toast.error("Couldn't copy. Try selecting it manually.");
   }
 }
 

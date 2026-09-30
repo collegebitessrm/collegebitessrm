@@ -37,10 +37,10 @@ function progressAt(status: OrderStatus, createdAt: string, minutes: number, now
 
 const MESSAGE: Record<OrderStatus, string> = {
   pending: "Waiting for the restaurant to confirm",
-  confirmed: "Confirmed — it's being made",
+  confirmed: "Confirmed, it's being made",
   preparing: "Being made right now",
   out_for_delivery: "On its way to Gate 3",
-  delivered: "At the gate — enjoy!",
+  delivered: "At the gate. Enjoy!",
   cancelled: "",
 };
 

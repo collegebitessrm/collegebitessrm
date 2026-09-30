@@ -14,7 +14,7 @@ export default async function AdminHistoryPage() {
         <BackToDashboardLink />
         <h1 className="mt-4 font-heading text-headline font-bold">Order history</h1>
         <p className="mt-1 text-muted-foreground">
-          Every order ever placed, grouped by day — the dashboard only shows current ones. Tap an order for its full details.
+          Every order ever placed, grouped by day. The dashboard only shows current ones. Tap an order for its full details.
         </p>
       </div>
 

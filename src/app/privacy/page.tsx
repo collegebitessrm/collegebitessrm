@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         <p>Orders are shared with partner restaurants to fulfill delivery.</p>
         <p>
           When you rate an order, your star ratings and optional note are stored with that order
-          and seen only by the College Bites team — never by other students.
+          and seen only by the College Bites team, never by other students.
         </p>
         <p>
           If you turn on order notifications, we store the address your browser gives us for

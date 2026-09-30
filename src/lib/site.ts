@@ -7,7 +7,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://collegebit
 
 export const SITE_NAME = "College Bites";
 
-export const SITE_TITLE = "College Bites — Food delivery for SRM University AP students";
+export const SITE_TITLE = "College Bites | Food delivery for SRM University AP students";
 
 export const SITE_DESCRIPTION =
-  "Your campus food delivery partner at SRM University AP, Amaravati — biryani, fried rice, noodles and starters from multiple restaurants in one place. Pick up at Gate 3 and pay on delivery — cash or UPI.";
+  "Order biryani, fried rice, noodles and starters from kitchens near SRM University AP, Amaravati. Pick up at Gate 3 and pay on delivery with cash or UPI.";

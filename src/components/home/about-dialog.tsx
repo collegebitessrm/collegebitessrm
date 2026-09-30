@@ -23,15 +23,14 @@ export function AboutDialog({ children }: { children: ReactNode }) {
         <DialogTitle className="mt-3 text-title">College Bites</DialogTitle>
         <p className="text-sm font-bold text-sunset">Crave. Click. Campus.</p>
         <DialogDescription className="mt-3 leading-relaxed">
-          Your campus food delivery partner. Multiple restaurants, one place, delivered to you —
-          biryani, fried rice, noodles and starters, veg and non-veg, from real partner
-          kitchens near SRM AP.
+          Biryani, fried rice, noodles and starters, veg and non-veg, from partner kitchens
+          near SRM AP. Order here, collect at Gate 3.
         </DialogDescription>
         <ul className="mt-4 flex flex-wrap justify-center gap-1.5 text-xs font-semibold">
           <li className="rounded-full bg-secondary px-2.5 py-1">Pickup at Gate 3</li>
-          <li className="rounded-full bg-secondary px-2.5 py-1">Pay on delivery — cash or UPI</li>
+          <li className="rounded-full bg-secondary px-2.5 py-1">Pay on delivery, cash or UPI</li>
         </ul>
-        <p className="mt-4 text-label text-primary">Fast · Reliable · Affordable</p>
+        <p className="mt-4 text-label text-primary">Order in a minute · Collect at Gate 3</p>
         <p className="mt-4 text-xs text-muted-foreground">~ college bites · srm ap</p>
       </DialogContent>
     </Dialog>

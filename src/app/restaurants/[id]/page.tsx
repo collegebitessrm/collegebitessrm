@@ -131,7 +131,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
               {!active && (
                 <p className="mt-4 rounded-2xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-3 text-sm text-pink-soft-foreground">
                   <strong className="font-semibold">Closed right now.</strong> You can browse the
-                  menu — ordering opens when they&apos;re back.
+                  menu, and ordering opens when they&apos;re back.
                 </p>
               )}
               {paused && (

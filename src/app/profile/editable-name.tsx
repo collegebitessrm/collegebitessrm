@@ -19,7 +19,7 @@ export function EditableName({ initialValue }: { initialValue: string }) {
       if (!result.error) {
         setValue(String(formData.get("fullName") ?? "").trim().replace(/\s+/g, " "));
         setEditing(false);
-        toast.success("Got it — your name's updated.");
+        toast.success("Got it, your name's updated.");
       } else {
         toast.error(result.error);
       }

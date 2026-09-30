@@ -39,7 +39,7 @@ export type PlaceOrderResult =
 export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResult> {
   const { user, profile } = await getSessionProfile();
   if (!user || !profile)
-    return { ok: false, error: "Looks like you got signed out — sign in again to place your order." };
+    return { ok: false, error: "Looks like you got signed out. Sign in again to place your order." };
 
   // Shape checks — this is a public endpoint, don't trust the payload.
   if (
@@ -56,7 +56,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     ) ||
     new Set(input.lines.map((l) => l.dishId)).size !== input.lines.length
   ) {
-    return { ok: false, error: "Something's off with your cart — give it a quick look and try again." };
+    return { ok: false, error: "Something's off with your cart. Give it a quick look and try again." };
   }
 
   const contactPhone = normalizeIndianMobile(String(input.contactPhone ?? ""));
@@ -64,13 +64,13 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
 
   const notes = String(input.notes ?? "").trim();
   if (notes.length > MAX_NOTES) {
-    return { ok: false, error: `That note's a bit long — keep it under ${MAX_NOTES} characters.` };
+    return { ok: false, error: `That note's a bit long. Keep it under ${MAX_NOTES} characters.` };
   }
 
   // App-side menu checks first: they can name what changed and fix the
   // cart. place_order() re-checks everything and has the final say.
   const menu = await getRestaurantMenu(input.restaurantId);
-  if (!menu) return { ok: false, error: "This restaurant isn't around anymore — try another one?" };
+  if (!menu) return { ok: false, error: "This restaurant isn't around anymore. Try another one?" };
   if (!menu.restaurant.is_active) {
     return {
       ok: false,
@@ -97,7 +97,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   if (updatedPrices.length > 0) {
     return {
       ok: false,
-      error: "Heads up — some prices just changed. Your cart's updated, take a peek at the new total.",
+      error: "Heads up, some prices just changed. Your cart's updated, take a peek at the new total.",
       updatedPrices,
     };
   }
@@ -135,21 +135,21 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   return { ok: true, orderId };
 }
 
-const GENERIC_ERROR = "Couldn't place your order — mind trying again?";
+const GENERIC_ERROR = "Couldn't place your order. Mind trying again?";
 
 // Keys raised by public.place_order() → what the student sees.
 const PLACE_ORDER_ERRORS: Record<string, string> = {
-  not_authenticated: "Looks like you got signed out — sign in again to place your order.",
-  profile_missing: "Looks like you got signed out — sign in again to place your order.",
+  not_authenticated: "Looks like you got signed out. Sign in again to place your order.",
+  profile_missing: "Looks like you got signed out. Sign in again to place your order.",
   banned: "Ordering's blocked for this phone number. If that doesn't sound right, please reach out to support.",
-  ordering_paused: "Ordering's closed right now — check back in a bit. Your cart is saved.",
+  ordering_paused: "Ordering's closed right now. Check back in a bit. Your cart is saved.",
   invalid_contact_phone: "Enter a valid 10-digit mobile number.",
-  notes_too_long: `That note's a bit long — keep it under ${MAX_NOTES} characters.`,
+  notes_too_long: `That note's a bit long. Keep it under ${MAX_NOTES} characters.`,
   restaurant_closed: "This restaurant isn't taking orders right now.",
-  empty_cart: "Your cart's empty — go pick something tasty.",
-  invalid_items: "Something's off with your cart — give it a quick look and try again.",
-  dish_unavailable: "Something in your cart just sold out — hop back to the menu to swap it out.",
+  empty_cart: "Your cart's empty. Go pick something tasty.",
+  invalid_items: "Something's off with your cart. Give it a quick look and try again.",
+  dish_unavailable: "Something in your cart just sold out. Hop back to the menu to swap it out.",
   // Rate limits (20260922000000_place_order_rate_limit.sql): 5 a minute, 8 unfinished.
-  order_rate_limited: "That's a lot of orders in a minute — wait a moment and try again. Your cart is saved.",
-  too_many_open_orders: "You already have 8 orders on the way — once one is delivered you can order again.",
+  order_rate_limited: "That's a lot of orders in a minute. Wait a moment and try again. Your cart is saved.",
+  too_many_open_orders: "You already have 8 orders on the way. Once one is delivered you can order again.",
 };

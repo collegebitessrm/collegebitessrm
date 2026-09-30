@@ -26,7 +26,7 @@ export default async function AdminUsersPage() {
         </div>
         <h1 className="mt-4 font-heading text-headline font-bold">Users</h1>
         <p className="mt-1 text-muted-foreground">
-          Everyone registered on College Bites — {users.length} total.
+          Everyone registered on College Bites, {users.length} in total.
         </p>
       </div>
 

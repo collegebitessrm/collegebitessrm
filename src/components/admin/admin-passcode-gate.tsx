@@ -38,7 +38,7 @@ export function AdminPasscodeGate() {
       </div>
       <h1 className="mt-5 text-center font-heading text-headline font-bold">Admin passcode</h1>
       <p className="mt-1.5 text-center text-muted-foreground">
-        Enter the admin passcode to continue — a second check on top of your account.
+        Enter the admin passcode to continue. It&apos;s a second check on top of your account.
       </p>
 
       <form onSubmit={submit} className="mt-6 w-full">

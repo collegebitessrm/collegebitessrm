@@ -63,7 +63,7 @@ export function RatePrompt({ order }: { order: RatePromptOrder }) {
         </span>
         <DialogTitle className="mt-4 font-heading text-title font-bold">How was it?</DialogTitle>
         <DialogDescription className="mt-1 text-muted-foreground">
-          Rate {dishLabel} from {order.restaurantName} — order {formatOrderNumber(order.dailyNumber)}.
+          Rate {dishLabel} from {order.restaurantName}, order {formatOrderNumber(order.dailyNumber)}.
           Only the College Bites team sees it.
         </DialogDescription>
         <div className="mt-3 flex items-center gap-1 text-gold-strong" aria-hidden="true">

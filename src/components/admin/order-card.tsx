@@ -72,7 +72,7 @@ export function OrderCard({ order }: { order: AdminOrder }) {
               className="rounded-md font-heading text-2xl leading-none font-bold tabular-nums outline-none after:absolute after:inset-0 after:rounded-3xl focus-visible:after:ring-3 focus-visible:after:ring-ring/80"
             >
               {formatOrderNumber(order.dailyNumber)}
-              <span className="sr-only"> — open order details</span>
+              <span className="sr-only">, open order details</span>
             </Link>
             <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold", badge.className)}>
               {badge.label}
@@ -138,7 +138,7 @@ export function CopyOrderButton({ order }: { order: AdminOrder }) {
       setTimeout(() => setCopied(false), 2000);
       toast.success("Order details copied.");
     } catch {
-      toast.error("Couldn't copy — your browser blocked it.");
+      toast.error("Couldn't copy, your browser blocked it.");
     }
   }
 

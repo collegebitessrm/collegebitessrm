@@ -200,7 +200,7 @@ function SheetBody({
           className="surface-primary glow-neon flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-60 disabled:shadow-none"
         >
           {count === 0 ? (
-            "No dishes match — try fewer"
+            "No dishes match. Try fewer"
           ) : (
             <>
               Show{" "}

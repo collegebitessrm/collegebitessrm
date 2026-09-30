@@ -135,7 +135,7 @@ export function MilestoneBadges({
       </div>
       {next && (
         <p className="mt-0.5 text-sm text-muted-foreground">
-          Next up: <span className="font-semibold text-foreground">{next.label}</span> —{" "}
+          Next up: <span className="font-semibold text-foreground">{next.label}</span>,{" "}
           {next.remaining(next.target - next.current).toLowerCase()}
         </p>
       )}
@@ -174,7 +174,7 @@ export function MilestoneBadges({
 function MilestoneReward({ unlocked, total, claimedAt }: { unlocked: number; total: number; claimedAt: string | null }) {
   const done = unlocked === total;
   const left = total - unlocked;
-  const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones — I'd like to claim my free biryani.");
+  const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones. I'd like to claim my free biryani.");
 
   if (done && !claimedAt) {
     return (
@@ -185,7 +185,7 @@ function MilestoneReward({ unlocked, total, claimedAt }: { unlocked: number; tot
         </span>
         <p className="relative mt-3 font-heading text-title font-bold">You&apos;ve earned a free biryani!</p>
         <p className="relative mt-1 text-sm text-hero-foreground/85">
-          Every milestone done — pick any biryani you like, on us.
+          Every milestone done. Pick any biryani you like, on us.
         </p>
         <a
           href={`https://wa.me/${SUPPORT_PHONE.replace("+", "")}?text=${claimText}`}
@@ -210,14 +210,14 @@ function MilestoneReward({ unlocked, total, claimedAt }: { unlocked: number; tot
           <>
             <p className="font-semibold">Free biryani claimed</p>
             <p className="mt-0.5">
-              Handed over on {formatDayMonth(claimedAt)} — enjoy, and thanks for sticking with us.
+              Handed over on {formatDayMonth(claimedAt)}. Enjoy, and thanks for sticking with us.
             </p>
           </>
         ) : (
           <>
             <p className="font-semibold">A free biryani is waiting</p>
             <p className="mt-0.5">
-              Unlock all {total} milestones and your next biryani is on us — any one you like.
+              Unlock all {total} milestones and your next biryani is on us, any one you like.
             </p>
             <div className="mt-2.5 flex items-center gap-2.5">
               <div

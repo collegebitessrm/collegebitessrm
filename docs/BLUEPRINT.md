@@ -291,7 +291,7 @@ light: things should look lit, not flat.
   - *Home:* sky header ("Hey, <name>" in the gradient), pill search,
     "What's on your mind?" food-type tiles, sticky filter chips and a
     filter sheet (Swiggy / Zomato style, state in the URL), a sunset promo,
-    a "Popular this week" / "Campus favourites" photo row, and restaurant
+    a "Campus favourites" photo row (trending dishes ranked first, then signature dishes), and restaurant
     cards with cuisine and delivery-time chips.
   - *Menu and cart:* chips header, a sunset "tried N of M" bar, section
     headings with food icons, a "+" that grows into the stepper, pink

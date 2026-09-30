@@ -95,7 +95,7 @@ function EmptyCart({ onBrowse }: { onBrowse: () => void }) {
           </Link>
         }
       >
-        Pick a restaurant and add a few dishes — most orders take under a minute.
+        Pick a restaurant and add a few dishes. Most orders take under a minute.
       </EmptyState>
     </div>
   );
@@ -165,7 +165,7 @@ function CartContents({
             onChange={(e) => setNotes(e.target.value)}
             maxLength={MAX_NOTES}
             rows={2}
-            placeholder="Order notes — e.g. “less spicy”"
+            placeholder="Order notes, e.g. “less spicy”"
             className="min-h-14 resize-none rounded-2xl bg-card px-5 py-4 text-base shadow-card md:text-base"
           />
         </label>
@@ -203,7 +203,7 @@ function CartContents({
           <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-2.5">
               <Banknote className="size-4 shrink-0 text-aqua" aria-hidden="true" />
-              Pay on delivery — cash or UPI at the gate.
+              Pay on delivery, cash or UPI at the gate.
             </li>
             <li className="flex items-center gap-2.5">
               <QrCode className="size-4 shrink-0 text-aqua" aria-hidden="true" />
@@ -329,7 +329,7 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
         </button>
       </div>
       <p id="contact-phone-hint" className={cn("mt-1.5 text-sm", invalid ? "text-destructive" : "text-muted-foreground")}>
-        {invalid ? "Enter a valid 10-digit mobile number." : "Only for this order — your profile number stays the same."}
+        {invalid ? "Enter a valid 10-digit mobile number." : "Only for this order. Your profile number stays the same."}
       </p>
       <button
         type="button"

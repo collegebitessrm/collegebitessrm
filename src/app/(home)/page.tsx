@@ -51,7 +51,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       {ratePrompt && <RatePrompt order={ratePrompt} />}
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
-          <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} trendingDishes={trendingDishes} />
+          <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} />
           {usual && orderingEnabled && <YourUsualChip usual={usual} />}
           {thursdaySpecial && <ThursdayNudge special={thursdaySpecial} />}
           {!orderingEnabled && <OrderingPausedBanner ordering={ordering} />}

@@ -178,7 +178,7 @@ function BanStudentSearch({ onBanned }: { onBanned: (user: StudentSearchResult) 
             <AlertDialogTitle>Ban {target?.fullName}?</AlertDialogTitle>
             <AlertDialogDescription>
               {target &&
-                `This blocks new orders from ${formatStoredMobile(target.phone)} campus-wide — including any other account signed in with the same number. You can unban at any time.`}
+                `This blocks new orders from ${formatStoredMobile(target.phone)} campus-wide, including any other account signed in with the same number. You can unban at any time.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

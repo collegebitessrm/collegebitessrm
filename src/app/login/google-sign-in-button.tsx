@@ -21,7 +21,7 @@ export function GoogleSignInButton() {
     });
     // On success the browser is already navigating to Google.
     if (error) {
-      setError("Couldn't reach Google — check your connection and try again.");
+      setError("Couldn't reach Google. Check your connection and try again.");
       setPending(false);
     }
   }

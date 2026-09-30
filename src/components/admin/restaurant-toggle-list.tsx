@@ -111,7 +111,7 @@ function RestaurantToggleCard({
           {!active ? "Closed" : paused ? closedChip : "Open"}
         </p>
         {paused && (
-          <p className="mt-1 text-xs text-muted-foreground">Campus ordering is closed — see Today above.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Campus ordering is closed. See Today above.</p>
         )}
       </div>
 

@@ -23,7 +23,7 @@ export function BrandLogo({ className, preload }: { className?: string; preload?
     >
       <Image
         src="/brand/mark.webp"
-        alt="College Bites — Crave. Click. Campus."
+        alt="College Bites: Crave. Click. Campus."
         width={512}
         height={512}
         sizes="144px"

@@ -51,7 +51,7 @@ export function RateOrder({
   if (!windowOpen) {
     return (
       <p className="mt-4 rounded-[1.5rem] bg-secondary px-5 py-3.5 text-sm text-muted-foreground">
-        Ratings closed — they&apos;re open for 7 days after delivery.
+        Ratings closed. They&apos;re open for 7 days after delivery.
       </p>
     );
   }
@@ -61,7 +61,7 @@ export function RateOrder({
       <div className="animate-slide-up-in mt-4 rounded-[1.5rem] border bg-card p-5 shadow-card">
         <p className="font-heading text-title font-bold">How was it?</p>
         <p className="mt-0.5 text-sm text-muted-foreground">
-          Rate your food from {restaurantName} — only the College Bites team sees it.
+          Rate your food from {restaurantName}. Only the College Bites team sees it.
         </p>
         <div className="mt-3 flex items-center gap-1 text-gold-strong" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((n) => (

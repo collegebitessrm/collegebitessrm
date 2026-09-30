@@ -31,7 +31,7 @@ export function EditablePhone({
         const normalized = normalizeIndianMobile(String(formData.get("phone") ?? ""));
         if (normalized) setValue(normalized);
         setEditing(false);
-        toast.success("Got it — your number's updated.");
+        toast.success("Got it, your number's updated.");
       } else {
         toast.error(result.error);
       }

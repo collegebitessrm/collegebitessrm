@@ -14,7 +14,7 @@ export default async function AdminBannedPage() {
         <BackToDashboardLink href="/admin/users" label="Back to users" />
         <h1 className="mt-4 font-heading text-headline font-bold">Banned users</h1>
         <p className="mt-1 text-muted-foreground">
-          Search a student to ban them, or unban from the list below — bans match by phone number,
+          Search a student to ban them, or unban from the list below. Bans match by phone number,
           campus-wide.
         </p>
       </div>

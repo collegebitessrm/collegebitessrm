@@ -14,7 +14,7 @@ export default async function AdminReviewsPage() {
         <BackToDashboardLink />
         <h1 className="mt-4 font-heading text-headline font-bold">Reviews</h1>
         <p className="mt-1 text-muted-foreground">
-          Star ratings and notes students left on delivered orders — {reviews.length}{" "}
+          Star ratings and notes students left on delivered orders: {reviews.length}{" "}
           {reviews.length === 1 ? "review" : "reviews"} so far. Only admins can see these.
         </p>
       </div>

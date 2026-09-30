@@ -42,7 +42,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
           <BrandLogo className="relative size-14 rounded-2xl shadow-raised ring-2 ring-hero-foreground/15" />
           <h1 className="relative mt-4 font-heading text-display font-bold">Almost there</h1>
           <p className="relative mt-1.5 text-lg leading-snug text-hero-foreground/85">
-            We only ask once — then you go straight to the food.
+            We only ask once, then you go straight to the food.
           </p>
         </header>
 
@@ -99,7 +99,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
             className={cn("text-[0.95rem]", phoneError ? "text-destructive" : "text-muted-foreground")}
           >
             {phoneError ??
-              "Required — the delivery person calls this at the gate. Make sure this is your WhatsApp number."}
+              "Required. The delivery person calls this at the gate. Make sure this is your WhatsApp number."}
           </p>
         </div>
 
@@ -108,7 +108,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
           <span>
             All orders are handed over at{" "}
             <strong className="font-semibold">Gate 3</strong>, never at your room. Pay on
-            delivery — cash or UPI.
+            delivery, cash or UPI.
           </span>
         </p>
       </div>

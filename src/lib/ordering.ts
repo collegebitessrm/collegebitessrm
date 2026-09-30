@@ -29,6 +29,6 @@ export function describeOrdering(mode: OrderingMode, open: boolean): OrderingSta
     mode,
     short: "Closed",
     headline: "Ordering is closed right now",
-    detail: "Menus stay open for browsing — check back in a bit.",
+    detail: "Menus stay open for browsing. Check back in a bit.",
   };
 }

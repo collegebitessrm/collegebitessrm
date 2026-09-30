@@ -12,7 +12,7 @@ import { SITE_URL } from "@/lib/site";
  * signed out (link-preview bots never sign in).
  */
 
-export const alt = "College Bites — food delivery for SRM University AP students, pickup at Gate 3";
+export const alt = "College Bites: food delivery for SRM University AP students, pickup at Gate 3";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

@@ -34,14 +34,14 @@ export async function submitReview(input: {
   return { ok: true };
 }
 
-const GENERIC_ERROR = "Couldn't save your rating — mind trying again?";
+const GENERIC_ERROR = "Couldn't save your rating. Mind trying again?";
 
 // Keys raised by public.submit_review() → what the student sees.
 const REVIEW_ERRORS: Record<string, string> = {
-  not_authenticated: "Looks like you got signed out — sign in again to rate your order.",
+  not_authenticated: "Looks like you got signed out. Sign in again to rate your order.",
   order_not_found: "We couldn't find that order.",
   not_delivered: "You can rate this once it's delivered.",
-  review_window_closed: "Ratings close 7 days after delivery — this one's past that.",
+  review_window_closed: "Ratings close 7 days after delivery, and this one's past that.",
   already_reviewed: "You've already rated this order.",
   note_too_long: `Keep the note under ${MAX_REVIEW_NOTE} characters.`,
   invalid_ratings: "Give every dish a star rating before submitting.",

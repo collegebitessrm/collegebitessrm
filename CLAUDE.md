@@ -192,24 +192,26 @@ author.
   utilities restyle the fill layer (`globals.css`): `icon-solid` makes it
   opaque (filled stars — use it instead of `fill-*` classes, which don't
   fill a duotone icon) and `icon-tint-<colour>` paints it a palette colour
-  (`icon-tint-gold` on the trending flame, reward gift, unlocked
+  (`icon-tint-gold` on the Campus favourites flame, reward gift, unlocked
   milestones and rating prompts; `icon-tint-primary` on the Gate 3 pin).
   Rating stars are `icon-solid text-gold-strong`. Active tabs use
   `weight="fill"`. No emoji anywhere in the UI (they render differently
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
 - **Home layout** (`src/app/(home)/page.tsx`, `src/components/home/`): the
-  header over the time-of-day sky (logo → About, Trending flame; a small
+  header over the time-of-day sky (logo → About; a small
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —
   hidden while searching — `PromoCard` (sunset `surface-hero` card: fast
   delivery, free to Gate 3, pay on delivery, the logo tile floating over a
   small striped `promo-sun`) and `PopularRail`: a snap-scrolling row of
-  photo cards that deep-link to the dish. `buildRail()` shows real
-  trending dishes ("Popular this week", #1/#2 badges) when at least 3 have
-  photos and are available, otherwise the restaurants' signature dishes
-  interleaved ("Campus favourites", `getSignatureDishes()` in
-  `dish-photos.ts`) — never signature dishes labelled as trending.
+  photo cards that deep-link to the dish, titled "Campus favourites".
+  `buildRail()` puts the week's real trending dishes first (#1/#2 badges,
+  available and with a photo), then fills the row to 8 with the
+  restaurants' signature dishes interleaved (`getSignatureDishes()` in
+  `dish-photos.ts`, no repeats) — only trending dishes get a rank badge,
+  so a signature dish is never labelled as trending. This row replaced the
+  old Trending popup (flame button in the header), removed 1 Oct 2026.
   Then "Restaurants near campus" with `RestaurantCard`s: photo slides,
   name (h3) and area with a pin, cuisine chips in aqua plus a
   `delivery_minutes` chip ("40 min"), a glowing arrow, and a footer with
@@ -250,7 +252,7 @@ author.
   `CartBar` (`hasTabBar`) sits just above it. Don't add `<TabBar />` to a page.
 - **Dish deep links**: `/restaurants/<id>?dish=<dishId>` opens the menu
   scrolled to that dish with a brief rose outline (`focusDishId` in
-  `MenuView`). Used by Home search's dish results, the Trending popup and
+  `MenuView`). Used by Home search's dish results, the Campus favourites row and
   the Thursday banner (`getThursdaySpecial()` returns `dishId`).
 - **Home search** searches dishes as well as restaurants: every dish ships
   with the page (`getSearchableDishes()`, ~100 rows) and `searchDishes()`
@@ -506,7 +508,7 @@ silently re-enables the button.
   `alert-dialog.tsx` (confirmations — "Cancel this order?", "Pause
   ordering campus-wide?", "Mark 3 orders delivered?") and `dialog.tsx`
   (plain popups with no confirm/cancel semantics — the "About College Bites"
-  card from the Home logo, the Trending popup and the one-time "How was
+  card from the Home logo and the one-time "How was
   it?" rating prompt). The cart and rating sheets use `sheet.tsx`. Both wrap `@base-ui/react`; reach for whichever already matches
   what you're building rather than hand-rolling a third.
 - `src/lib/supabase/client.ts` — browser Supabase client
@@ -885,10 +887,8 @@ RLS is enabled on every table:
 
 - **`trending_dishes(days_back int default 7, result_limit int default 5)`**
   — security definer, callable by `authenticated` only, same pattern as
-  `place_order()`. Powers Home's "Trending this week" popup
-  (`src/components/home/trending-dialog.tsx`, opened from a flame button in
-  `home-header.tsx` — same trigger/dialog pattern as the logo's "About
-  College Bites" popup): top ordered dishes campus-wide over a rolling window
+  `place_order()`. Powers the ranked start of Home's "Campus favourites"
+  row (`popular-rail.tsx`; the old Trending popup is gone): top ordered dishes campus-wide over a rolling window
   (`orders.status <> 'cancelled'`, restaurant `is_active`, dish
   `is_available`). Needed because students can only read their *own*
   orders/order_items under RLS — there's no other way to compute a

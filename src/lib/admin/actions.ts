@@ -159,7 +159,7 @@ export async function advanceOrderStatus(
     .returns<OrderNotifyRow[]>();
   if (error) return { ok: false, error: "Couldn't update that order. Please try again." };
   if (!data || data.length === 0) {
-    return { ok: false, error: "That order just changed — refresh and try again." };
+    return { ok: false, error: "That order just changed. Refresh and try again." };
   }
 
   const order = data[0];
@@ -223,7 +223,7 @@ export async function cancelOrder(orderId: string, currentStatus: OrderStatus): 
     .returns<OrderNotifyRow[]>();
   if (error) return { ok: false, error: "Couldn't cancel that order. Please try again." };
   if (!data || data.length === 0) {
-    return { ok: false, error: "That order just changed — refresh and try again." };
+    return { ok: false, error: "That order just changed. Refresh and try again." };
   }
 
   const cancelled = data[0];

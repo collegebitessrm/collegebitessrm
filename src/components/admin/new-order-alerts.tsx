@@ -79,7 +79,7 @@ export function NewOrderAlerts() {
       if (result.ok) {
         setPushOn(true);
         playAdminAlertSound();
-        toast.success("Alerts on — that's how a new order will sound.");
+        toast.success("Alerts on. That's how a new order will sound.");
       } else {
         toast.error(result.error);
       }

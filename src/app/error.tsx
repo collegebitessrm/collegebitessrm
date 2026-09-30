@@ -33,7 +33,7 @@ export default function Error({
       />
       <h1 className="mt-10 font-heading text-headline font-bold">Something went sideways</h1>
       <p className="mt-2 max-w-[20rem] text-muted-foreground">
-        That didn&apos;t load properly. It&apos;s usually a blip — try again, and if it keeps
+        That didn&apos;t load properly. It&apos;s usually a blip. Try again, and if it keeps
         happening, contact College Bites from your profile.
       </p>
       <div className="mt-8 flex w-full max-w-xs flex-col gap-3">

@@ -61,7 +61,7 @@ export function RestaurantList({
   menuStats: Record<string, RestaurantMenuStats>;
   /** getDishOrderCounts() — card photo order, "Recommended" sort and the Popular chip. */
   dishOrderCounts: Record<string, number>;
-  /** getTrendingDishes() — the photo row's "Popular this week" when there's enough of it. */
+  /** getTrendingDishes() — ranked first in the "Campus favourites" photo row. */
   trendingDishes: TrendingDish[];
 }) {
   const [query, setQuery] = useState("");

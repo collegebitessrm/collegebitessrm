@@ -98,7 +98,7 @@ export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
 
       {order.review && (
         <Section title="Review">
-          <p className="text-sm text-muted-foreground">Rated {formatOrderTimestamp(order.review.createdAt)} — stars are shown per dish above.</p>
+          <p className="text-sm text-muted-foreground">Rated {formatOrderTimestamp(order.review.createdAt)}. Stars are shown per dish above.</p>
           {order.review.note && <p className="mt-2">“{order.review.note}”</p>}
         </Section>
       )}
