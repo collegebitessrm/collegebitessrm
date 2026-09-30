@@ -60,7 +60,9 @@ export function LoginScene() {
               alt=""
               fill
               sizes="160px"
-              loading={card.eager ? "eager" : "lazy"}
+              // All three are on screen at load: never lazy (an empty
+              // frame would sit in the sky), the big two at high priority.
+              loading="eager"
               fetchPriority={card.eager ? "high" : undefined}
               className="object-cover"
             />

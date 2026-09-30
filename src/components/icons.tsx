@@ -24,6 +24,7 @@ import type { Icon as PhosphorIcon, IconProps } from "@phosphor-icons/react/dist
 import { ArrowClockwise as PhArrowClockwise } from "@phosphor-icons/react/dist/ssr/ArrowClockwise";
 import { ArrowCounterClockwise as PhArrowCounterClockwise } from "@phosphor-icons/react/dist/ssr/ArrowCounterClockwise";
 import { ArrowLeft as PhArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { ArrowsDownUp as PhArrowsDownUp } from "@phosphor-icons/react/dist/ssr/ArrowsDownUp";
 import { ArrowRight as PhArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
 import { Bell as PhBell } from "@phosphor-icons/react/dist/ssr/Bell";
 import { BellRinging as PhBellRinging } from "@phosphor-icons/react/dist/ssr/BellRinging";
@@ -73,6 +74,7 @@ import { ShareNetwork as PhShareNetwork } from "@phosphor-icons/react/dist/ssr/S
 import { ShieldCheck as PhShieldCheck } from "@phosphor-icons/react/dist/ssr/ShieldCheck";
 import { ShieldSlash as PhShieldSlash } from "@phosphor-icons/react/dist/ssr/ShieldSlash";
 import { SignOut as PhSignOut } from "@phosphor-icons/react/dist/ssr/SignOut";
+import { SlidersHorizontal as PhSlidersHorizontal } from "@phosphor-icons/react/dist/ssr/SlidersHorizontal";
 import { SmileyMeh as PhSmileyMeh } from "@phosphor-icons/react/dist/ssr/SmileyMeh";
 import { Sparkle as PhSparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
 import { SpeakerHigh as PhSpeakerHigh } from "@phosphor-icons/react/dist/ssr/SpeakerHigh";
@@ -114,6 +116,8 @@ export const Apple = make(PhOrange, "Apple");
 export const ArrowLeft = make(PhArrowLeft, "ArrowLeft", "bold");
 /** go / continue */
 export const ArrowRight = make(PhArrowRight, "ArrowRight", "bold");
+/** sort */
+export const ArrowsDownUp = make(PhArrowsDownUp, "ArrowsDownUp");
 /** Centurion milestone */
 export const Award = make(PhMedal, "Award");
 /** cash at pickup */
@@ -210,6 +214,8 @@ export const RotateCw = make(PhArrowClockwise, "RotateCw");
 export const Search = make(PhMagnifyingGlass, "Search");
 /** no results */
 export const SearchX = make(PhSmileyMeh, "SearchX");
+/** filters */
+export const SlidersHorizontal = make(PhSlidersHorizontal, "SlidersHorizontal");
 /** share token */
 export const Share2 = make(PhShareNetwork, "Share2");
 /** banned users */

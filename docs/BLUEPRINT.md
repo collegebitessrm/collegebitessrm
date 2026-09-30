@@ -118,7 +118,7 @@ verify, submit `sitemap.xml`.
 | `/login` | Sunset-scene sign-in (sun, sea, palms, floating dishes), "Continue with Google" | public |
 | `/auth/callback` | Swaps Google's code for a session | public |
 | `/welcome` | First-login form (full name + phone), once | signed in, no profile yet |
-| `/` | Home: sky header, search, sunset promo, popular / favourites photo row, restaurant cards | student |
+| `/` | Home: sky header, search, food-type tiles + filter chips / sheet (URL state), sunset promo, popular / favourites photo row, restaurant cards | student |
 | `/restaurants/[id]` | Menu (`?dish=<id>` deep link) | student |
 | `/orders`, `/orders/[id]` | Order history; tracking ticket (`?rate=1` opens rating) | student |
 | `/profile` | Member card, milestones, reward, details, settings | student |

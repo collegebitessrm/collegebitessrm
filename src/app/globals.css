@@ -524,6 +524,13 @@
   mask-composite: add;
 }
 
+/* The ring around the chosen "What's on your mind?" tile: the whole sunset
+   run as a circle (gold → coral → magenta → violet → cyan). Decorative,
+   so fixed colours; it turns slowly (animate-ring-spin). */
+@utility food-ring {
+  background: conic-gradient(#ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857);
+}
+
 @utility rim-light {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 9%);
 }
@@ -616,6 +623,9 @@
   }
   .animate-ping-slow {
     animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .animate-ring-spin {
+    animation: ring-spin 5s linear infinite;
   }
   /* A gentle up-and-down hover for floating decoration (the promo card's
      logo tile). transform only, so it never fights translate/rotate. */
@@ -725,6 +735,12 @@
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes ring-spin {
+  to {
+    rotate: 1turn;
   }
 }
 

@@ -47,6 +47,8 @@ const checks = [
   ['primary text on primary/10 over card (admin pills)', 'primary', 1, [T('card'), T('primary', 0.1)], 4.5],
   ['primary pill vs ground (non-text, 3:1)', 'primary', 1, [T('background')], 3.0],
   ['selected chip text', 'chip-active-foreground', 1, [T('chip-active')], 4.5],
+  ['Non-veg chip on (destructive on destructive/10 over the ground)', 'destructive', 1, [T('background'), T('destructive', 0.1)], 4.5],
+  ['Filters count badge (chip-active text on its foreground)', 'chip-active', 1, [T('chip-active-foreground')], 4.5],
   ['bottom-bar tab label (muted on card/85 over the ground)', 'muted-foreground', 1, [T('background'), T('card', 0.85)], 4.5],
   // Accent text
   ['aqua text (cuisines) on card', 'aqua', 1, [T('card')], 4.5],

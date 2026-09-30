@@ -200,8 +200,33 @@ author.
   (`src/lib/search.ts`) filters on the client — every typed word must start
   a word in the dish name, its category or its restaurant's name, in any
   order. "veg" / "non veg" filter on the dish's veg flag instead of text
-  (so "veg" never matches inside "Non-Veg Biryani"). A "Dishes" section
-  shows above restaurants; restaurants also appear if they serve a match.
+  (so "veg" never matches inside "Non-Veg Biryani"). Results show in the
+  same dish grid as the filters below (sold-out and closed-kitchen dishes
+  stay in while searching, greyed / last); restaurants also appear if they
+  serve a match.
+- **Home filter** (Swiggy / Zomato style; `src/lib/home-filters.ts` +
+  `src/components/home/`): all on the device over the dishes Home already
+  ships — no new query. `FoodTypeRail` ("What's on your mind?"): round
+  photo tiles for `FOOD_TYPES` (Biryani, Fried rice, Noodles, Starters,
+  Chicken, Paneer, Egg, Mushroom — matched on dish name + section, a dish
+  can be in several; only types with something orderable show; tile photos
+  are literal paths there), chosen tile ringed by a turning `food-ring`.
+  `FilterBar`: sticky chips — Filters (count badge) and Sort open
+  `FilterSheet`; Veg / Non-veg (one or the other, non-veg red like the
+  menu), Under ₹200, `FAST_MINUTES` (40) delivery, and Popular (only once
+  `POPULAR_MIN` = 3 dishes have 3+ orders in 30 days). `FilterSheet`
+  (bottom sheet) edits a draft — sort (Recommended = most ordered first,
+  price up/down, fastest), diet, price bands, restaurants, 40-min, popular,
+  show sold-out — with a live "Show N dishes" button that applies it.
+  Browsing hides dishes from switched-off restaurants and sold-out ones.
+  State lives in the URL (`?type=biryani&diet=veg&sort=price-asc…`,
+  `parseFilters` / `serializeFilters`, unknown values ignored), written
+  with `window.history.replaceState` (Next syncs `useSearchParams`; no
+  server round-trip), so Back from a dish restores the filters. While
+  searching or filtering, the promo and photo row give way to `DishGrid`
+  (two-column photo cards → `?dish=` deep link, 12 at a time) and the
+  restaurants serving something in it; changing filters while scrolled
+  past the sticky chips scrolls the results up to meet them.
 - **Menu filters** (`MenuView`, `src/components/menu/menu-view.tsx`): one
   sticky row — search icon, then a scrolling rail of **Veg** / **Non-veg**
   (mutually exclusive, tap again to clear; red on light red for non-veg)
