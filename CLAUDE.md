@@ -78,8 +78,11 @@ author.
   under the page sky and over each Home mood — and fails if any pair is
   below its minimum. Run it after touching colours, and add a pair for any
   new text/surface combination.
-- **Themes (palettes)** — four, picked per device in Profile → Theme
-  (`PalettePicker`, `src/components/theme/palette-picker.tsx`), each a
+- **Themes (palettes)** — four, picked per device in Profile → Theme and
+  on the first-login form (`/welcome`, "Pick a theme" with the Light / Dark
+  / System switch, between the phone field and the Gate 3 note — not part
+  of the form data, it applies the moment it's tapped) (`PalettePicker`,
+  `src/components/theme/palette-picker.tsx`), each a
   complete light + dark token set in `globals.css`, independent of the
   Light / Dark / System switch: **Vice Dusk** (the default, `vice` — the
   palette described above; not called "GTA" in the UI, that's Rockstar's
@@ -381,7 +384,8 @@ author.
 - **Auth**: "Continue with Google" via Supabase Auth (Google OAuth
   provider). No email/password, no OTP. On first login (no matching
   `public.users` row yet), the app collects full name + mobile number
-  before continuing; returning users skip straight in.
+  (and offers the theme picker, saved on the device only) before
+  continuing; returning users skip straight in.
 - **Payments**: Pay on delivery only (the site says "Pay on delivery —
   cash or UPI") — there are no payment fields or
   payment provider anywhere in this codebase. Don't add any. The "About

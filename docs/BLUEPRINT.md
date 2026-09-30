@@ -117,7 +117,7 @@ verify, submit `sitemap.xml`.
 |---|---|---|
 | `/login` | Sunset-scene sign-in (sun, sea, palms, floating dishes), "Continue with Google" | public |
 | `/auth/callback` | Swaps Google's code for a session | public |
-| `/welcome` | First-login form (full name + phone), once | signed in, no profile yet |
+| `/welcome` | First-login form (full name + phone, plus a theme picker), once | signed in, no profile yet |
 | `/` | Home: sky header, search, food-type tiles + filter chips / sheet (URL state), sunset promo, popular / favourites photo row, restaurant cards | student |
 | `/restaurants/[id]` | Menu (`?dish=<id>` deep link) | student |
 | `/orders`, `/orders/[id]` | Order history; tracking ticket (`?rate=1` opens rating) | student |
@@ -271,7 +271,8 @@ light: things should look lit, not flat.
   night) and **Kaapi** (filter coffee, turmeric, rose milk; espresso at
   night). Each is a full light + dark token set, so every screen, the
   sign-in scene, the splash, confetti and glows change with it; the
-  contrast audit checks all eight sets. Added 1 Oct 2026.
+  contrast audit checks all eight sets. Also offered on the first-login
+  form. Added 1 Oct 2026.
 - **Lighting kit:** bloom shadows (`glow-neon`, `glow-cyan`, `glow-sun`),
   `rim-light`, `text-sunset` gradient headlines, and a two-glow sky over
   the top of every page. One bloom per screen region.
