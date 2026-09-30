@@ -11,13 +11,12 @@ export default function Loading() {
         <Skeleton className="size-11 rounded-full" />
       </div>
 
-      <div className="overflow-hidden rounded-3xl bg-hero">
-        <Skeleton className="m-2 mb-0 h-36 rounded-none rounded-t-[1.25rem] bg-hero-foreground/10" />
+      <div className="surface-hero overflow-hidden rounded-[2rem] bg-hero">
+        <Skeleton className="m-2 mb-0 h-36 rounded-none rounded-t-[1.5rem] bg-hero-foreground/10" />
         <div className="px-6 pt-4 pb-5">
           <Skeleton className="h-4 w-44 bg-hero-foreground/10" />
         </div>
-        <div className="border-t-2 border-dashed border-hero-foreground/20" />
-        <div className="px-6 pt-5 pb-6">
+        <div className="px-6 pb-6">
           <div className="flex items-end justify-between gap-4">
             <div>
               <Skeleton className="h-4 w-28 bg-hero-foreground/10" />
@@ -28,11 +27,16 @@ export default function Loading() {
               <Skeleton className="mt-1.5 h-6 w-20 bg-hero-foreground/10" />
             </div>
           </div>
-          <Skeleton className="mt-5 h-10 w-full rounded-xl bg-hero-foreground/10" />
+          <Skeleton className="mt-5 h-10 w-full rounded-full bg-hero-foreground/10" />
+        </div>
+        {/* The delivery road. */}
+        <div className="border-t border-hero-foreground/15 px-6 pt-4 pb-5">
+          <Skeleton className="h-4 w-52 bg-hero-foreground/10" />
+          <Skeleton className="mt-4 h-8 w-full rounded-full bg-hero-foreground/10" />
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col">
+      <div className="mt-4 flex flex-col rounded-[1.5rem] border bg-card px-5 pt-5 shadow-card">
         {[0, 1, 2].map((i) => (
           <div key={i} className="flex gap-4 pb-6">
             <Skeleton className="size-7 shrink-0 rounded-full" />

@@ -18,14 +18,15 @@ export function isActiveStatus(status: OrderStatus): boolean {
   return ACTIVE_STATUSES.includes(status);
 }
 
+/** Label + chip colours per status, in the brand sheet's scheme (gold waiting / preparing, cyan confirmed, pink out for delivery). */
 export function statusBadge(status: OrderStatus): { label: string; className: string } {
   switch (status) {
     case "pending":
-      return { label: "Placed", className: "bg-pink-soft text-pink-soft-foreground" };
+      return { label: "Placed", className: "bg-gold/35 text-foreground" };
     case "confirmed":
-      return { label: "Confirmed", className: "bg-pink-soft text-pink-soft-foreground" };
+      return { label: "Confirmed", className: "bg-chip-active/20 text-aqua" };
     case "preparing":
-      return { label: "Preparing", className: "bg-pink-soft text-pink-soft-foreground" };
+      return { label: "Preparing", className: "bg-gold/35 text-foreground" };
     case "out_for_delivery":
       return { label: "Out for delivery", className: "bg-pink-soft text-pink-soft-foreground" };
     case "delivered":

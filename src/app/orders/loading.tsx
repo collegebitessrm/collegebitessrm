@@ -14,7 +14,7 @@ export default function Loading() {
         <Skeleton className="mt-2 h-4 w-56" />
 
         <Skeleton className="mt-7 h-4 w-16" />
-        <div className="mt-2 divide-y rounded-3xl border bg-card shadow-card">
+        <div className="mt-2 divide-y rounded-[1.5rem] border bg-card shadow-card">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="flex items-center gap-3 py-3.5 pr-3 pl-4">
               <Skeleton className="size-14 shrink-0 rounded-xl" />

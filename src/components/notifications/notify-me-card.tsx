@@ -52,9 +52,9 @@ export function NotifyMeCard() {
   if (!show) return null;
 
   return (
-    <div className="mt-4 flex items-center gap-3 rounded-2xl border bg-card p-4 shadow-card">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-pink-soft text-pink-soft-foreground">
-        <Bell className="size-5" aria-hidden="true" />
+    <div className="animate-slide-up-in mt-4 flex items-center gap-3 rounded-[1.5rem] border bg-card p-4 shadow-card">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pink-soft text-pink-soft-foreground">
+        <Bell className="icon-tint-gold size-5" aria-hidden="true" />
       </span>
       <div className="min-w-0 flex-1">
         <p className="font-semibold">Get a ping when it&apos;s ready</p>
@@ -64,7 +64,7 @@ export function NotifyMeCard() {
         type="button"
         onClick={enable}
         disabled={pending}
-        className="flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
+        className="surface-primary flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
       >
         {pending && <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />}
         Turn on

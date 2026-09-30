@@ -88,10 +88,22 @@ author.
   golden-hour tangerine → magenta, neon-night violet), checked by the
   contrast audit at ≥6.7:1 for the plain greeting and ≥4.5:1 for every
   `text-sunset` stop on top — re-run it if you change them.
-- **Order tracking ticket**: the token card (`order-tracking.tsx`) is a
-  ticket stub — up to three distinct photos of the ordered dishes on top,
-  a dashed tear line with edge notches (`bg-background` circles), then the
-  token and the delivery window. `deliveryWindow(createdAt, minutes)`
+- **Order tracking — the pickup pass**: the token card
+  (`order-tracking.tsx`) is a sunset `surface-hero` pass (no tear line or
+  notches any more) — up to three distinct photos of the ordered dishes on
+  top, then the token (text-6xl, share button), the delivery window and a
+  "Collect at Gate 3 · pay on delivery" pill, and while the order is live
+  a footer strip with `DeliveryRoad` (`src/components/orders/delivery-road.tsx`):
+  the road from the kitchen (chef's hat) to Gate 3 (pin) with Phosphor's
+  `Moped` riding along it by status (`PROGRESS`: pending 10%, confirmed
+  42%, preparing 60%, out for delivery 80%, delivered 100% → a tick), the
+  covered stretch lit, a one-line status message (`aria-live`). Realtime
+  status updates move it live (CSS transition on `left` / `width` via a
+  `--p` custom property). The Orders list's in-progress card reuses it
+  (`tone="card"`, no message). The step list sits in a card below the
+  pass. `statusBadge()` (`src/lib/orders/status.ts`, shared with admin)
+  uses the brand sheet's colours: Placed / Preparing gold, Confirmed cyan,
+  Out for delivery pink, Delivered green, Cancelled red. `deliveryWindow(createdAt, minutes)`
   (`src/lib/date.ts`) returns `{ lead, time }` — "Delivery by" the placed
   time plus the restaurant's `delivery_minutes` (40 by default, Biryani
   Nation 60) — with no-break spaces inside `time`, so "8:15 PM" can never

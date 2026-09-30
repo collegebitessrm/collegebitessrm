@@ -59,6 +59,7 @@ import { Minus as PhMinus } from "@phosphor-icons/react/dist/ssr/Minus";
 import { Money as PhMoney } from "@phosphor-icons/react/dist/ssr/Money";
 import { Monitor as PhMonitor } from "@phosphor-icons/react/dist/ssr/Monitor";
 import { Moon as PhMoon } from "@phosphor-icons/react/dist/ssr/Moon";
+import { Moped as PhMoped } from "@phosphor-icons/react/dist/ssr/Moped";
 import { MoonStars as PhMoonStars } from "@phosphor-icons/react/dist/ssr/MoonStars";
 import { Orange as PhOrange } from "@phosphor-icons/react/dist/ssr/Orange";
 import { OrangeSlice as PhOrangeSlice } from "@phosphor-icons/react/dist/ssr/OrangeSlice";
@@ -190,6 +191,8 @@ export const Minus = make(PhMinus, "Minus", "bold");
 export const Monitor = make(PhMonitor, "Monitor");
 /** dark theme */
 export const Moon = make(PhMoon, "Moon");
+/** the delivery scooter on the order road (faces right) */
+export const Moped = make(PhMoped, "Moped");
 /** night greeting */
 export const MoonStars = make(PhMoonStars, "MoonStars");
 /** sold out */

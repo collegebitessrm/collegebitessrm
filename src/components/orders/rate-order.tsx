@@ -50,7 +50,7 @@ export function RateOrder({
   const windowOpen = !deliveredAt || now - new Date(deliveredAt).getTime() < REVIEW_WINDOW_MS;
   if (!windowOpen) {
     return (
-      <p className="mt-4 rounded-2xl bg-secondary px-5 py-3.5 text-sm text-muted-foreground">
+      <p className="mt-4 rounded-[1.5rem] bg-secondary px-5 py-3.5 text-sm text-muted-foreground">
         Ratings closed — they&apos;re open for 7 days after delivery.
       </p>
     );
@@ -58,7 +58,7 @@ export function RateOrder({
 
   return (
     <>
-      <div className="mt-4 rounded-2xl border bg-card p-5 shadow-card">
+      <div className="animate-slide-up-in mt-4 rounded-[1.5rem] border bg-card p-5 shadow-card">
         <p className="font-heading text-title font-bold">How was it?</p>
         <p className="mt-0.5 text-sm text-muted-foreground">
           Rate your food from {restaurantName} — only the College Bites team sees it.
@@ -71,7 +71,7 @@ export function RateOrder({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="surface-primary mt-4 flex h-12 w-full items-center justify-center rounded-2xl bg-primary font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
+          className="surface-primary glow-neon mt-4 flex h-12 w-full items-center justify-center rounded-full bg-primary font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
         >
           Rate your order
         </button>
@@ -93,7 +93,7 @@ export function RateOrder({
 
 function RatedSummary({ review, items }: { review: OrderReview; items: OrderItem[] }) {
   return (
-    <div className="mt-4 rounded-2xl border bg-card p-5 shadow-card">
+    <div className="mt-4 rounded-[1.5rem] border bg-card p-5 shadow-card">
       <p className="text-label text-muted-foreground">You rated this</p>
       <ul className="mt-2 flex flex-col gap-1.5">
         {items.map((item) => (
@@ -226,7 +226,7 @@ function RateSheet({
             type="button"
             onClick={submit}
             disabled={!allRated || pending}
-            className="surface-primary flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-50"
+            className="surface-primary glow-neon flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-50 disabled:shadow-none"
           >
             {pending && <Loader2 className="size-5 animate-spin" />}
             {pending ? "Sending…" : allRated ? "Submit rating" : "Rate every dish to submit"}

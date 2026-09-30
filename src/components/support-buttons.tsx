@@ -9,7 +9,7 @@ export function SupportButtons({ whatsappMessage }: { whatsappMessage: string })
       <a
         href={`tel:${SUPPORT_PHONE}`}
         aria-label="Call College Bites support"
-        className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/80"
+        className="pressable surface-primary flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
       >
         <Phone className="size-4" />
       </a>
@@ -18,7 +18,7 @@ export function SupportButtons({ whatsappMessage }: { whatsappMessage: string })
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Message College Bites on WhatsApp"
-        className="flex size-11 items-center justify-center rounded-xl bg-success text-success-foreground outline-none hover:bg-success/90 focus-visible:ring-3 focus-visible:ring-ring/80"
+        className="pressable flex size-11 items-center justify-center rounded-full bg-success text-success-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
       >
         <MessageCircle className="size-4" />
       </a>

@@ -17,6 +17,7 @@ import {
 import { BlurImage } from "@/components/blur-image";
 import { BrandLogo } from "@/components/brand-logo";
 import { CelebrationOverlay } from "@/components/celebration-overlay";
+import { DeliveryRoad } from "@/components/orders/delivery-road";
 import { NotifyMeCard } from "@/components/notifications/notify-me-card";
 import { RateOrder } from "@/components/orders/rate-order";
 import { SupportButtons } from "@/components/support-buttons";
@@ -151,7 +152,7 @@ export function OrderTracking({
               href="/orders"
               aria-label="Back to your orders"
               transitionTypes={["nav-back"]}
-              className="flex size-11 items-center justify-center rounded-full bg-secondary outline-none hover:bg-border focus-visible:ring-3 focus-visible:ring-ring/80"
+              className="flex size-11 items-center justify-center rounded-full border bg-card shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
             >
               <ArrowLeft className="size-5" />
             </Link>
@@ -160,9 +161,13 @@ export function OrderTracking({
           <h1 className="sr-only">
             Order {formatOrderNumber(initialOrder.dailyNumber)} from {initialOrder.restaurantName}
           </h1>
-          {/* The token as a ticket stub: what you ordered (photos) above
-              the tear line, what you show at the gate below it. */}
-          <div className="surface-hero glow-sun relative overflow-hidden rounded-3xl bg-hero text-hero-foreground">
+          {/* The pickup pass: what you ordered (photos), the token you show
+              at the gate and when it's due, and — while it's on its way — the
+              road from the kitchen to Gate 3 with the scooter riding along it. */}
+          <section
+            aria-label="Pickup pass"
+            className="surface-hero glow-sun relative overflow-hidden rounded-[2rem] bg-hero text-hero-foreground"
+          >
             {photos.length > 0 && (
               <div
                 className={cn("grid h-36 gap-1 p-2 pb-0", cancelled && "opacity-60 grayscale")}
@@ -173,8 +178,8 @@ export function OrderTracking({
                     key={src}
                     className={cn(
                       "relative overflow-hidden bg-hero-foreground/10",
-                      i === 0 && "rounded-tl-[1.25rem]",
-                      i === photos.length - 1 && "rounded-tr-[1.25rem]",
+                      i === 0 && "rounded-tl-[1.5rem]",
+                      i === photos.length - 1 && "rounded-tr-[1.5rem]",
                     )}
                   >
                     <BlurImage src={src} alt={dishName} sizes="(min-width: 448px) 400px, 90vw" className="object-cover" />
@@ -197,18 +202,17 @@ export function OrderTracking({
               </div>
             </div>
 
-            {/* Tear line: dashed rule with a notch cut out of each edge. */}
-            <div className="relative h-0 border-t-2 border-dashed border-hero-foreground/20" aria-hidden="true">
-              <span className="absolute top-1/2 -left-3 size-6 -translate-y-1/2 rounded-full bg-background" />
-              <span className="absolute top-1/2 -right-3 size-6 -translate-y-1/2 rounded-full bg-background" />
-            </div>
-
-            <div className="px-6 pt-5 pb-6">
+            <div className="px-6 pb-6">
               <div className="flex items-end justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-label text-hero-accent">{cancelled ? "Order token" : "Show this token"}</p>
                   <div className="mt-1 flex items-center gap-2">
-                    <p className={cn("font-heading text-5xl leading-none font-bold", cancelled && "line-through opacity-60")}>
+                    <p
+                      className={cn(
+                        "font-heading text-6xl leading-none font-bold tracking-tight",
+                        cancelled && "line-through opacity-60",
+                      )}
+                    >
                       {formatOrderNumber(initialOrder.dailyNumber)}
                     </p>
                     <button
@@ -228,18 +232,24 @@ export function OrderTracking({
                   </p>
                 )}
               </div>
-              <p className="mt-5 flex items-center gap-2 rounded-xl bg-hero-foreground/10 px-4 py-2.5 text-sm">
+              <p className="mt-5 flex items-center gap-2 rounded-full bg-hero-foreground/10 px-4 py-2.5 text-sm font-medium">
                 <MapPin className="size-4 shrink-0 text-hero-accent" aria-hidden="true" />
-                Collect at Gate 3
+                Collect at Gate 3 · pay on delivery
               </p>
             </div>
-          </div>
+
+            {!cancelled && (
+              <div className="border-t border-hero-foreground/15 bg-hero-foreground/[0.06] px-6 pt-4 pb-5">
+                <DeliveryRoad status={status} restaurantName={initialOrder.restaurantName} />
+              </div>
+            )}
+          </section>
 
           {/* Still on its way: offer notifications instead of watching this page. */}
           {!cancelled && status !== "delivered" && <NotifyMeCard />}
 
           {cancelled ? (
-            <div className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 px-5 py-4">
+            <div className="mt-6 rounded-[1.5rem] border border-destructive/30 bg-destructive/5 px-5 py-4">
               <p className="font-heading text-lg font-bold text-destructive">Order cancelled</p>
               <p className="mt-1 text-sm text-muted-foreground">
                 This order won&apos;t be delivered. If you were charged or have questions, call
@@ -247,14 +257,17 @@ export function OrderTracking({
               </p>
             </div>
           ) : (
-            <ol className="mt-6 flex flex-col">
+            <ol className="mt-4 flex flex-col rounded-[1.5rem] border bg-card px-5 pt-5 pb-0 shadow-card">
               {steps.map((step, i) => (
                 <li key={step.label} className="flex gap-4">
                   <div className="flex flex-col items-center">
                     <StepDot state={step.state} Icon={STEP_ICONS[i] ?? Check} />
                     {i < steps.length - 1 && (
                       <span
-                        className={cn("w-0.5 flex-1", step.state === "done" ? "bg-success" : "bg-border")}
+                        className={cn(
+                          "w-0.5 flex-1 rounded-full",
+                          step.state === "done" ? "bg-success" : "bg-[repeating-linear-gradient(to_bottom,var(--border)_0_4px,transparent_4px_8px)]",
+                        )}
                         aria-hidden="true"
                       />
                     )}
@@ -292,14 +305,14 @@ export function OrderTracking({
             />
           )}
 
-          <div className="mt-4 rounded-2xl border bg-card shadow-card p-5">
+          <div className="mt-4 rounded-[1.5rem] border bg-card p-5 shadow-card">
             <p className="text-label text-muted-foreground">Your order</p>
             <ul className="mt-2 divide-y">
               {initialOrder.items.map((item) => {
                 const photo = getDishPhoto(initialOrder.restaurantName, item.dishName);
                 return (
                   <li key={item.dishName} className="flex items-center gap-3 py-2.5">
-                    <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-pink-soft font-heading font-bold text-pink-soft-foreground/60">
+                    <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-pink-soft font-heading font-bold text-pink-soft-foreground/60 shadow-card">
                       {photo ? (
                         <BlurImage src={photo} alt="" sizes="44px" className="object-cover" />
                       ) : (
@@ -321,11 +334,11 @@ export function OrderTracking({
             )}
             <div className="mt-3 flex items-center justify-between border-t pt-3">
               <p className="font-semibold">To pay at pickup</p>
-              <p className="font-heading text-xl font-bold tabular-nums">{formatRupees(initialOrder.totalAmount)}</p>
+              <p className="font-heading text-2xl font-bold tabular-nums text-sunset">{formatRupees(initialOrder.totalAmount)}</p>
             </div>
           </div>
 
-          <div className="mt-4 flex items-center justify-between rounded-2xl border bg-card shadow-card px-5 py-4">
+          <div className="mt-4 flex items-center justify-between rounded-[1.5rem] border bg-card px-5 py-4 shadow-card">
             <div>
               <p className="text-sm text-muted-foreground">Something wrong?</p>
               <p className="font-semibold">Contact College Bites</p>
@@ -352,7 +365,7 @@ function StepDot({ state, Icon }: { state: TimelineStepState; Icon: AppIcon }) {
     return (
       <span className="relative flex size-9 shrink-0 items-center justify-center" aria-hidden="true">
         <span className="animate-ping-slow absolute inset-0 rounded-full bg-primary/50" />
-        <span className="relative flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
+        <span className="surface-primary glow-neon relative flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
           <Icon className="size-4" />
         </span>
       </span>

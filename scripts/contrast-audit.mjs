@@ -49,6 +49,9 @@ const checks = [
   ['selected chip text', 'chip-active-foreground', 1, [T('chip-active')], 4.5],
   ['Non-veg chip on (destructive on destructive/10 over the ground)', 'destructive', 1, [T('background'), T('destructive', 0.1)], 4.5],
   ['Filters count badge (chip-active text on its foreground)', 'chip-active', 1, [T('chip-active-foreground')], 4.5],
+  ['status chip: text on gold/35 over card (Placed, Preparing)', 'foreground', 1, [T('card'), T('gold', 0.35)], 4.5],
+  ['status chip: aqua on chip-active/20 over card (Confirmed)', 'aqua', 1, [T('card'), T('chip-active', 0.2)], 4.5],
+  ['"Rate your order" pill: dusk on gold', 'hero-foreground', 1, [T('gold')], 4.5],
   ['bottom-bar tab label (muted on card/85 over the ground)', 'muted-foreground', 1, [T('background'), T('card', 0.85)], 4.5],
   // Accent text
   ['aqua text (cuisines) on card', 'aqua', 1, [T('card')], 4.5],

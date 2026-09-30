@@ -624,6 +624,10 @@
   .animate-ping-slow {
     animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
+  /* The delivery scooter on the order road: a small bob while riding. */
+  .animate-scooter {
+    animation: scooter-bob 0.9s ease-in-out infinite alternate;
+  }
   .animate-ring-spin {
     animation: ring-spin 5s linear infinite;
   }
@@ -744,6 +748,15 @@
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes scooter-bob {
+  from {
+    transform: translateY(1px) rotate(-3deg);
+  }
+  to {
+    transform: translateY(-2px) rotate(2deg);
   }
 }
 
