@@ -17,7 +17,7 @@ migration, what went wrong along the way and what's still open.
 | Repo | https://github.com/collegebitessrm/collegebitessrm (private, branch `main`) |
 | Launch | 1 Oct 2026 |
 | Pickup | Everything is handed over at **Gate 3**. No room delivery. |
-| Payment | **Cash on delivery only.** The app never processes payments. |
+| Payment | **Cash on delivery only**, with UPI accepted informally at pickup (the app never processes payments). Delivery to Gate 3 is free. |
 | Sign-in | "Continue with Google" only |
 | Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (24) |
 | Delivery promise | 40 minutes from ordering; Biryani Nation 60 |
@@ -361,8 +361,6 @@ Never commit a secret; never paste one into chat.
 - **Switch the content policy to enforced** once a check of the `[csp]`
   logs after signed-in browsing comes back empty (one line in
   `next.config.ts`).
-- **Confirm with the client:** is UPI accepted at pickup (the cart and
-  About popup say so), and is delivery free (Home and the bill say so)?
 - **Publish the Google sign-in app** (out of "Testing") before real
   students sign in, if not done already.
 - Restaurant phone numbers are the support number; set real ones if
