@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Loader2 } from "@/components/icons";
-import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function GoogleSignInButton() {
@@ -29,20 +28,19 @@ export function GoogleSignInButton() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <Button
+      {/* Google's own "light" sign-in button — white, the four-colour G,
+          dark text, and Google's grey outline on a light page — lit by a
+          cyan glow so it still reads as the one action on the sheet. White
+          is Google's branding, so it stays white in dark mode too. */}
+      <button
+        type="button"
         onClick={signIn}
         disabled={pending}
-        className="surface-primary glow-neon h-14 w-full gap-3 rounded-2xl bg-primary text-base font-semibold text-primary-foreground hover:brightness-95"
+        className="glow-cyan flex h-14 w-full items-center justify-center gap-3 rounded-full border border-[#747775] bg-white text-base font-semibold text-night-900 outline-none hover:brightness-[0.97] focus-visible:ring-3 focus-visible:ring-ring/80 focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:opacity-80 dark:border-transparent"
       >
-        <span className="flex size-8 items-center justify-center rounded-full bg-white">
-          {pending ? (
-            <Loader2 className="size-4 animate-spin text-night-700" />
-          ) : (
-            <GoogleIcon />
-          )}
-        </span>
+        {pending ? <Loader2 className="size-5 animate-spin text-night-700" /> : <GoogleIcon />}
         {pending ? "Opening Google…" : "Continue with Google"}
-      </Button>
+      </button>
       {error && (
         <p role="alert" className="text-center text-sm text-destructive">
           {error}
@@ -54,7 +52,7 @@ export function GoogleSignInButton() {
 
 function GoogleIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="size-[18px]" aria-hidden="true">
+    <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
       <path
         fill="#4285F4"
         d="M23.52 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.46a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.58-5.17 3.58-8.81Z"

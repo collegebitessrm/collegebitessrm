@@ -115,7 +115,7 @@ verify, submit `sitemap.xml`.
 ### Routes
 | Route | What | Access |
 |---|---|---|
-| `/login` | Photo-mosaic sign-in, "Continue with Google" | public |
+| `/login` | Sunset-scene sign-in (sun, sea, palms, floating dishes), "Continue with Google" | public |
 | `/auth/callback` | Swaps Google's code for a session | public |
 | `/welcome` | First-login form (full name + phone), once | signed in, no profile yet |
 | `/` | Home: mood header, search, restaurant cards | student |
@@ -303,7 +303,8 @@ restaurant + dish name in `src/lib/data/dish-photos.ts` (not a database
 column). 107 of 137 dishes have a photo; the rest show a striped
 placeholder rather than a wrong photo. A replaced photo gets a **new
 filename** (an outside cache can keep serving old files by URL). The
-sign-in mosaic, empty states and share card reference files by path.
+sign-in scene's floating dishes, empty states and share card reference
+files by path.
 
 ---
 

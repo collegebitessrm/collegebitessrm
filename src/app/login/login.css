@@ -1,0 +1,236 @@
+/*
+ * The sign-in scene (LoginScene): a Vice City sunset over the sea, two palm
+ * silhouettes, and real dishes floating in the sky. Golden hour in light
+ * mode, neon dusk in dark. Purely decorative (aria-hidden in the markup).
+ *
+ * Layout, top to bottom inside .login-sky: the sky gradient, stars (dark
+ * only), a glow on the horizon, the striped retro sun (half set behind the
+ * horizon), the sea with its reflection, the palms, then the photo cards.
+ * The horizon sits at --horizon from the bottom.
+ *
+ * Motion only under `prefers-reduced-motion: no-preference`; everything is
+ * complete and still without it. While the startup splash still covers
+ * the page (data-splash play/run) the scene waits, so the sun rises as the
+ * splash fades rather than behind it.
+ */
+.login-sky {
+  --horizon: 30%;
+  --sky-a: #fff3e8;
+  --sky-b: #ffd9b8;
+  --sky-c: #ffae8c;
+  --sky-d: #ff8fb0;
+  --sea-a: #8a64e6;
+  --sea-b: #4a2f9e;
+  --reflect: rgb(255 214 150 / 70%);
+  --wave: rgb(255 255 255 / 22%);
+  --palm: #3a1b5e;
+  --glow: rgb(255 120 90 / 55%);
+  background: linear-gradient(
+    to bottom,
+    var(--sky-a) 0%,
+    var(--sky-b) 32%,
+    var(--sky-c) 56%,
+    var(--sky-d) calc(100% - var(--horizon))
+  );
+}
+.dark .login-sky {
+  --sky-a: #0e0a24;
+  --sky-b: #1f0f45;
+  --sky-c: #561a70;
+  --sky-d: #ff4f7a;
+  --sea-a: #2a1260;
+  --sea-b: #0e0a24;
+  --reflect: rgb(255 79 154 / 60%);
+  --wave: rgb(34 221 235 / 22%);
+  --palm: #07051a;
+  --glow: rgb(255 46 136 / 60%);
+}
+
+/* Stars — dark only. A handful of 1px lights as background layers. */
+.login-stars {
+  display: none;
+}
+.dark .login-stars {
+  display: block;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 14%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 28% 6%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 46% 20%, #ffd6ea 99%, transparent),
+    radial-gradient(1.5px 1.5px at 63% 9%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 78% 24%, #bdf6ff 99%, transparent),
+    radial-gradient(1px 1px at 90% 12%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 8% 34%, #fff 99%, transparent),
+    radial-gradient(1px 1px at 55% 36%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 86% 40%, #ffd6ea 99%, transparent);
+  opacity: 0.8;
+}
+
+/* Warm glow sitting on the horizon behind the sun. */
+.login-glow {
+  bottom: var(--horizon);
+  translate: -50% 50%;
+  background: radial-gradient(closest-side, var(--glow), transparent);
+}
+
+/* The retro sun: gold → coral → magenta, solid on top and cut into
+   stripes below its middle (a mask), set half behind the horizon. */
+.login-sun {
+  bottom: var(--horizon);
+  translate: -50% 44%;
+  background: linear-gradient(to bottom, #ffd66b 0%, #ffae57 30%, #ff6a5b 62%, #ff2e88 100%);
+  -webkit-mask-image:
+    linear-gradient(#000 0 50%, transparent 50%),
+    repeating-linear-gradient(to bottom, #000 0 9px, transparent 9px 14px);
+  mask-image:
+    linear-gradient(#000 0 50%, transparent 50%),
+    repeating-linear-gradient(to bottom, #000 0 9px, transparent 9px 14px);
+  -webkit-mask-composite: source-over;
+  mask-composite: add;
+}
+
+/* The sea: deep violet water, drifting wave lines, and a column of
+   reflected sunlight. Covers the lower part of the sun. */
+.login-sea {
+  height: var(--horizon);
+  background:
+    radial-gradient(18% 90% at 50% 0%, var(--reflect), transparent 75%),
+    repeating-linear-gradient(to bottom, transparent 0 7px, var(--wave) 7px 8px),
+    linear-gradient(to bottom, var(--sea-a), var(--sea-b));
+}
+.login-sea::before {
+  /* The bright line where the sun meets the water. */
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffd66b 30%, #ff2e88 70%, transparent);
+  opacity: 0.9;
+}
+
+.login-palm {
+  color: var(--palm);
+  transform-origin: 50% 100%;
+}
+.login-palm .login-fronds {
+  transform-box: view-box;
+  transform-origin: 78px 60px;
+}
+
+/* Real dishes floating in the sky: framed like photo prints. */
+.login-card {
+  box-shadow:
+    0 0 0 3px rgb(255 255 255 / 92%),
+    0 18px 36px -14px rgb(14 10 36 / 55%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .login-sun {
+    animation: login-sun-rise 1.4s var(--ease-out-expo) 0.15s both;
+  }
+  .login-glow {
+    animation: login-fade-in 1.6s var(--ease-out-expo) 0.2s both;
+  }
+  .login-sea {
+    animation: login-waves 9s linear infinite;
+  }
+  .dark .login-stars {
+    animation: login-twinkle 3.2s ease-in-out infinite alternate;
+  }
+  .login-palm {
+    animation: login-sway 6s ease-in-out infinite alternate;
+  }
+  .login-palm .login-fronds {
+    animation: login-sway-fronds 4.5s ease-in-out infinite alternate;
+  }
+  .login-palm-right {
+    animation-duration: 7s;
+    animation-delay: -2s;
+  }
+  .login-card {
+    animation:
+      login-card-in 0.9s var(--ease-spring) var(--card-delay, 0.4s) both,
+      login-drift var(--drift, 7s) ease-in-out calc(var(--card-delay, 0.4s) + 0.9s) infinite alternate;
+  }
+  .login-rise {
+    animation: slide-up-in var(--dur-slow) var(--ease-out-expo) var(--rise-delay, 0.3s) both;
+  }
+
+  /* Hold everything while the splash still covers the page. */
+  html:is([data-splash="play"], [data-splash="run"]) .login-scene * {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes login-sun-rise {
+  from {
+    translate: -50% 100%;
+  }
+  to {
+    translate: -50% 44%;
+  }
+}
+
+@keyframes login-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes login-waves {
+  from {
+    background-position: 0 0, 0 0, 0 0;
+  }
+  to {
+    background-position: 0 0, 0 32px, 0 0;
+  }
+}
+
+@keyframes login-twinkle {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+@keyframes login-sway {
+  from {
+    rotate: -1.2deg;
+  }
+  to {
+    rotate: 1.4deg;
+  }
+}
+
+@keyframes login-sway-fronds {
+  from {
+    rotate: -2.5deg;
+  }
+  to {
+    rotate: 3deg;
+  }
+}
+
+@keyframes login-card-in {
+  from {
+    opacity: 0;
+    scale: 0.7;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@keyframes login-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -10px;
+  }
+}

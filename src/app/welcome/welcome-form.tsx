@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Loader2 } from "@/components/icons";
+import { BrandLogo } from "@/components/brand-logo";
+import { Loader2, MapPin } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,13 +32,19 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
 
   return (
     <form action={formAction} className="flex flex-1 flex-col" noValidate>
-      <div className="flex-1 px-6 pt-10 pb-8">
-        <h1 className="font-heading text-display font-bold">
-          Almost there
-        </h1>
-        <p className="mt-2 text-lg leading-relaxed text-muted-foreground">
-          We only ask once. Shown once, then you go straight to the food.
-        </p>
+      <div className="flex-1 px-6 pt-6 pb-8">
+        {/* The same sunset as the sign-in sky, as one lit card. */}
+        <header className="animate-slide-up-in surface-hero glow-sun relative overflow-hidden rounded-[2rem] bg-hero p-5 text-hero-foreground">
+          <div
+            aria-hidden="true"
+            className="absolute -top-10 -right-8 size-36 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.45),transparent)]"
+          />
+          <BrandLogo className="relative size-14 rounded-2xl shadow-raised ring-2 ring-hero-foreground/15" />
+          <h1 className="relative mt-4 font-heading text-display font-bold">Almost there</h1>
+          <p className="relative mt-1.5 text-lg leading-snug text-hero-foreground/85">
+            We only ask once — then you go straight to the food.
+          </p>
+        </header>
 
         <div className="mt-8 flex flex-col gap-2.5">
           <Label htmlFor="fullName" className={eyebrow}>
@@ -51,7 +58,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
             onChange={(e) => setFullName(e.target.value)}
             aria-invalid={!!nameError || undefined}
             aria-describedby={nameError ? "fullName-error" : undefined}
-            className="h-14 rounded-2xl bg-card px-4 text-lg md:text-lg"
+            className="h-14 rounded-2xl bg-card px-4 text-lg shadow-card md:text-lg"
           />
           {nameError && (
             <p id="fullName-error" className="text-sm text-destructive">
@@ -66,7 +73,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
           </Label>
           <div
             className={cn(
-              "flex h-14 items-center rounded-2xl border border-input bg-card transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/80",
+              "flex h-14 items-center rounded-2xl border border-input bg-card shadow-card transition-[color,box-shadow,border-color] focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/80",
               phoneError &&
                 "border-destructive ring-3 ring-destructive/20 focus-within:border-destructive focus-within:ring-destructive/20",
             )}
@@ -96,10 +103,13 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
           </p>
         </div>
 
-        <p className="mt-8 rounded-2xl bg-secondary px-5 py-4 leading-relaxed text-muted-foreground">
-          All orders are handed over at{" "}
-          <strong className="font-semibold text-foreground">Gate 3</strong>, never
-          at your room. Pay on delivery — cash or UPI.
+        <p className="mt-8 flex gap-3 rounded-2xl border border-pink-soft-foreground/15 bg-pink-soft px-5 py-4 leading-relaxed text-pink-soft-foreground">
+          <MapPin className="icon-tint-primary mt-0.5 size-5 shrink-0" />
+          <span>
+            All orders are handed over at{" "}
+            <strong className="font-semibold">Gate 3</strong>, never at your room. Pay on
+            delivery — cash or UPI.
+          </span>
         </p>
       </div>
 
@@ -107,7 +117,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
         <Button
           type="submit"
           disabled={pending}
-          className="h-14 w-full rounded-2xl text-lg font-semibold"
+          className="glow-neon h-14 w-full rounded-full text-lg font-semibold"
         >
           {pending && <Loader2 className="size-5 animate-spin" />}
           {pending ? "Saving…" : "Save & start ordering"}

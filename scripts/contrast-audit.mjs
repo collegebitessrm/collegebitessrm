@@ -89,6 +89,14 @@ const checks = [
     [`${stop} headline on ground`, stop, 1, [T('background')], 4.5],
     [`${stop} headline under the page sky`, stop, 1, [T('background'), T('page-glow-b'), T('page-glow-a')], 4.5],
   ]),
+  // Sign-in sheet (card/85, frosted over the sky or the dark sea): the
+  // tagline in text-sunset and the muted lines. Dusk stands in for the sea.
+  ...['heading-a', 'heading-b', 'heading-c'].flatMap((stop) => [
+    [`${stop} tagline on the sign-in sheet (card)`, stop, 1, [T('card')], 4.5],
+    [`${stop} tagline on the sheet over the dark sea`, stop, 1, [T('hero-foreground'), T('card', 0.85)], 4.5],
+  ]),
+  ['muted text on the sign-in sheet over the dark sea', 'muted-foreground', 1, [T('hero-foreground'), T('card', 0.85)], 4.5],
+  ['muted text on the sign-in sheet over the bright sky', 'muted-foreground', 1, [T('hero-a'), T('card', 0.85)], 4.5],
   // Home header sky at its strongest point for each time of day — the plain
   // greeting and every stop of a gradient heading
   ...['morning', 'afternoon', 'evening', 'night'].flatMap((m) => [

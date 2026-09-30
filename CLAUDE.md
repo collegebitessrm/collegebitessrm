@@ -149,6 +149,20 @@ author.
   `weight="fill"`. No emoji anywhere in the UI (they render differently
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
+- **Sign-in page** (`src/app/login/`): `LoginScene` (`login-scene.tsx` +
+  `login.css`) is a Vice City sunset — golden hour in light mode, neon dusk
+  with stars in dark: a striped retro sun half set behind the horizon, a
+  violet sea with drifting wave lines and a sun reflection, two inline-SVG
+  palm silhouettes, and three real dish photos floating as tilted prints.
+  A frosted sheet (`bg-card/85`, blur) rises over the bottom of it with
+  the logo tile, the tagline h1 in `text-sunset`, two chips (free delivery
+  to Gate 3, pay on delivery — cash or UPI), Google's own white "Continue
+  with Google" button (grey `#747775` outline on light, cyan glow) and the
+  terms line. Motion (sun rise, sway, drift, twinkle, staggered
+  `login-rise`) is all under `no-preference`, and pauses while the startup
+  splash still covers the page (`html[data-splash=play|run]`), so the sun
+  rises as the splash fades. The `/welcome` form uses the same sunset as
+  one `surface-hero` header card.
 - **Bottom bar** (`TabBar`, `src/components/nav/tab-bar.tsx`): mounted once
   in the **root layout**, not per page, so it stays alive across tab
   changes and its lit pill (`surface-primary glow-neon`) slides — with a
@@ -401,8 +415,8 @@ silently re-enables the button.
   verified-fresh server responses and full dev-server restarts, so a
   changed photo should get a new filename, not overwrite the old one
   in place, to guarantee cache-safety.
-  The login screen's photo mosaic (`src/app/login/page.tsx`, `MOSAIC`)
-  and `EmptyState`'s plates also reference these files by path directly — renaming or
+  The sign-in scene's floating dishes (`src/app/login/login-scene.tsx`,
+  `CARDS`) and `EmptyState`'s plates also reference these files by path directly — renaming or
   removing a photo means updating that list too, or its tile goes blank.
   Home's restaurant cards slide through photos (`RestaurantPhotoSlides`,
   `src/components/home/restaurant-photo-slides.tsx`): the cover first,
