@@ -6,7 +6,7 @@ import type { OrderingState } from "@/lib/ordering";
  */
 export function OrderingPausedBanner({ ordering }: { ordering: OrderingState }) {
   return (
-    <div className="surface-hero mt-6 rounded-2xl bg-hero p-5 text-hero-foreground">
+    <div className="surface-hero glow-sun mt-6 rounded-[1.75rem] bg-hero p-5 text-hero-foreground">
       <p className="flex items-center gap-2 font-heading text-lg font-bold">
         <span className="relative flex size-4 shrink-0" aria-hidden="true">
           <span className="animate-ping-slow absolute inset-0 rounded-full bg-hero-accent/60" />

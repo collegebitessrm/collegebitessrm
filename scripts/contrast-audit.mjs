@@ -101,6 +101,7 @@ const checks = [
   // greeting and every stop of a gradient heading
   ...['morning', 'afternoon', 'evening', 'night'].flatMap((m) => [
     [`Home greeting on ${m} sky`, 'foreground', 1, [T('background'), T(`mood-${m}-b`), T(`mood-${m}-a`)], 6.7],
+    [`Home time-of-day line (muted) on ${m} sky`, 'muted-foreground', 1, [T('background'), T(`mood-${m}-b`), T(`mood-${m}-a`)], 4.5],
     ...['heading-a', 'heading-b', 'heading-c'].map((stop) => [
       `${stop} Home heading on ${m} sky`, stop, 1, [T('background'), T(`mood-${m}-b`), T(`mood-${m}-a`)], 4.5,
     ]),

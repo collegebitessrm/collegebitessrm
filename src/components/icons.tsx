@@ -83,6 +83,7 @@ import { StarHalf as PhStarHalf } from "@phosphor-icons/react/dist/ssr/StarHalf"
 import { Sun as PhSun } from "@phosphor-icons/react/dist/ssr/Sun";
 import { SunDim as PhSunDim } from "@phosphor-icons/react/dist/ssr/SunDim";
 import { SunHorizon as PhSunHorizon } from "@phosphor-icons/react/dist/ssr/SunHorizon";
+import { Timer as PhTimer } from "@phosphor-icons/react/dist/ssr/Timer";
 import { Trash as PhTrash } from "@phosphor-icons/react/dist/ssr/Trash";
 import { Tray as PhTray } from "@phosphor-icons/react/dist/ssr/Tray";
 import { Trophy as PhTrophy } from "@phosphor-icons/react/dist/ssr/Trophy";
@@ -231,6 +232,8 @@ export const Sun = make(PhSun, "Sun");
 export const Sunrise = make(PhSunHorizon, "Sunrise");
 /** evening greeting */
 export const Sunset = make(PhSunDim, "Sunset");
+/** delivery time */
+export const Timer = make(PhTimer, "Timer");
 /** remove from cart */
 export const Trash2 = make(PhTrash, "Trash2");
 /** weekly rank */

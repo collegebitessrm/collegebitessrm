@@ -149,6 +149,24 @@ author.
   `weight="fill"`. No emoji anywhere in the UI (they render differently
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
+- **Home layout** (`src/app/(home)/page.tsx`, `src/components/home/`): the
+  header over the time-of-day sky (logo → About, Trending flame; a small
+  gold-lit time-of-day line, "Hey, <first name>" as the h1 in
+  `text-sunset`, then that hour's question), the pill search, then —
+  hidden while searching — `PromoCard` (sunset `surface-hero` card: fast
+  delivery, free to Gate 3, pay on delivery, the logo tile floating over a
+  small striped `promo-sun`) and `PopularRail`: a snap-scrolling row of
+  photo cards that deep-link to the dish. `buildRail()` shows real
+  trending dishes ("Popular this week", #1/#2 badges) when at least 3 have
+  photos and are available, otherwise the restaurants' signature dishes
+  interleaved ("Campus favourites", `getSignatureDishes()` in
+  `dish-photos.ts`) — never signature dishes labelled as trending.
+  Then "Restaurants near campus" with `RestaurantCard`s: photo slides,
+  name (h3) and area with a pin, cuisine chips in aqua plus a
+  `delivery_minutes` chip ("40 min"), a glowing arrow, and a footer with
+  the dish count and "from ₹X" in pink. No star ratings (reviews are
+  admin-only). The first card's cover loads eagerly at high priority (it's
+  the page's biggest image).
 - **Sign-in page** (`src/app/login/`): `LoginScene` (`login-scene.tsx` +
   `login.css`) is a Vice City sunset — golden hour in light mode, neon dusk
   with stars in dark: a striped retro sun half set behind the horizon, a
@@ -409,7 +427,11 @@ silently re-enables the button.
   and `getDishPhoto()` look up by exact restaurant/dish name; anything
   without a confident match — a dish with no distinct photo, a restaurant
   with no cover yet — falls back to the existing flat placeholder
-  (`bg-stripes`) rather than showing a mismatched image. A photo that's
+  (`bg-stripes`) rather than showing a mismatched image. Keep source
+  photos at most ~1200px on the long side and a few hundred KB (four
+  1.3–2.6 MB originals were re-encoded to that in place, same pictures):
+  Vercel's optimiser resizes on first request, and a multi-MB source
+  makes that first load visibly slow. A photo that's
   replaced after publishing gets a new filename (e.g. a `-v2` suffix) — an intermediate cache (outside this app, never fully
   identified) kept re-serving an old file by its original URL even after
   verified-fresh server responses and full dev-server restarts, so a

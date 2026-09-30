@@ -2,16 +2,19 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, MapPin, Search, SearchX, X } from "@/components/icons";
+import { ChevronRight, Search, SearchX, X } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { EmptyState } from "@/components/empty-state";
 import { VegMark } from "@/components/veg-mark";
 import { getDishPhoto, getRestaurantCardSlides } from "@/lib/data/dish-photos";
 import type { RestaurantMenuStats, SearchableDish } from "@/lib/data/restaurants";
+import type { TrendingDish } from "@/lib/data/trending";
 import type { Restaurant } from "@/lib/data/types";
 import { formatRupees } from "@/lib/format";
 import { matchesAll, queryTokens, searchDishes } from "@/lib/search";
 import { cn } from "@/lib/utils";
+import { buildRail, PopularRail } from "./popular-rail";
+import { PromoCard } from "./promo-card";
 import { RestaurantCard } from "./restaurant-card";
 
 export function RestaurantList({
@@ -22,6 +25,7 @@ export function RestaurantList({
   menuStats,
   dishes,
   dishOrderCounts,
+  trendingDishes,
 }: {
   restaurants: Restaurant[];
   /** Every dish (getSearchableDishes) — searched on the client as the student types. */
@@ -34,6 +38,8 @@ export function RestaurantList({
   menuStats: Record<string, RestaurantMenuStats>;
   /** getDishOrderCounts() — the card photos lead with each restaurant's most-ordered dishes. */
   dishOrderCounts: Record<string, number>;
+  /** getTrendingDishes() — the photo row's "Popular this week" when there's enough of it. */
+  trendingDishes: TrendingDish[];
 }) {
   const [query, setQuery] = useState("");
 
@@ -54,6 +60,10 @@ export function RestaurantList({
       ),
     [restaurants, dishes, dishOrderCounts],
   );
+  const rail = useMemo(
+    () => buildRail(trendingDishes, dishes, restaurants),
+    [trendingDishes, dishes, restaurants],
+  );
   // Dishes first — that's what people usually type ("dum biryani", "juice").
   const dishResults = useMemo(() => searchDishes(dishes, restaurantNames, q), [dishes, restaurantNames, q]);
   // Restaurants match on their own text (every word, any order) or because
@@ -73,39 +83,39 @@ export function RestaurantList({
       <label className="relative mt-6 block">
         <span className="sr-only">Search dishes and restaurants</span>
         <Search
-          className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-muted-foreground"
+          className="pointer-events-none absolute top-1/2 left-5 size-5 -translate-y-1/2 text-primary"
           aria-hidden="true"
         />
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search dishes or restaurants…"
-          className="h-14 w-full rounded-2xl bg-secondary pr-12 pl-13 text-lg outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/80 [&::-webkit-search-cancel-button]:hidden"
+          placeholder="Search biryani, noodles, restaurants…"
+          className="h-14 w-full rounded-full border bg-card/90 pr-12 pl-13 text-base shadow-card backdrop-blur outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/80 [&::-webkit-search-cancel-button]:hidden"
         />
         {query && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute top-1/2 right-4 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-border text-foreground outline-none hover:bg-hero hover:text-hero-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
+            className="absolute top-1/2 right-3.5 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-secondary text-foreground outline-none hover:bg-primary hover:text-primary-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
           >
             <X className="size-4" />
           </button>
         )}
       </label>
 
-      <p className="mt-4 flex items-center gap-2 rounded-xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-2 text-sm text-pink-soft-foreground">
-        <MapPin className="icon-tint-primary size-4 shrink-0" aria-hidden="true" />
-        <span>
-          Free delivery to <strong className="font-semibold text-foreground">Gate 3</strong>
-        </span>
-      </p>
+      {!q && (
+        <>
+          <PromoCard />
+          <PopularRail rail={rail} />
+        </>
+      )}
 
       {q && dishResults.length > 0 && (
         <section aria-labelledby="dish-results" className="mt-8">
           <div className="flex items-baseline justify-between">
-            <h2 id="dish-results" className="text-label text-muted-foreground">
+            <h2 id="dish-results" className="font-heading text-title font-bold">
               Dishes
             </h2>
             <span className="text-muted-foreground tabular-nums">{dishResults.length}</span>
@@ -118,12 +128,10 @@ export function RestaurantList({
         </section>
       )}
 
-      <div className="mt-8 flex items-baseline justify-between">
-        <h2 className="text-label text-muted-foreground">
-          {q ? "Restaurants" : "Partner restaurants"}
-        </h2>
-        <span className="text-muted-foreground">
-          {q ? `${visible.length} of ${restaurants.length}` : `${restaurants.length} near campus`}
+      <div className="mt-8 flex items-end justify-between gap-3">
+        <h2 className="font-heading text-title font-bold">{q ? "Restaurants" : "Restaurants near campus"}</h2>
+        <span className="shrink-0 pb-0.5 text-sm text-muted-foreground tabular-nums">
+          {q ? `${visible.length} of ${restaurants.length}` : `${restaurants.length} kitchens`}
         </span>
       </div>
 
@@ -143,6 +151,7 @@ export function RestaurantList({
                 stats={menuStats[r.id]}
                 slides={slidesByRestaurant[r.id] ?? []}
                 slideDelay={i * 700}
+                eager={i === 0 && !q}
               />
             </li>
           ))}

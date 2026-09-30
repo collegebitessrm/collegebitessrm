@@ -63,6 +63,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             menuStats={menuStats}
             dishes={dishes}
             dishOrderCounts={dishOrderCounts}
+            trendingDishes={trendingDishes}
           />
         </ViewTransition>
       </ViewTransition>

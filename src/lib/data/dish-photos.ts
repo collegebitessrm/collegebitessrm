@@ -161,6 +161,12 @@ const SIGNATURE_DISHES: Record<string, string[]> = {
   "Clg Bites Biryani Nation": ["Chicken Dum Biryani (Single)", "All Mix Chicken Biryani (Single)"],
 };
 
+/** A restaurant's signature dishes, best first — Home's "Campus favourites" row
+ *  falls back to these while there's no trending data yet. */
+export function getSignatureDishes(restaurantName: string): string[] {
+  return SIGNATURE_DISHES[restaurantName] ?? [];
+}
+
 /** Most dish slides per card — each is another photo download on Home. */
 const MAX_DISH_SLIDES = 5;
 

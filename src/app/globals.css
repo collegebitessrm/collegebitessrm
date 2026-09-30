@@ -513,6 +513,17 @@
 /* An inset top highlight — the edge of a card catching the neon above it.
    Dark cards already carry one inside --elevation-card; this is for
    surfaces that don't use shadow-card (chips, the tab bar, sheets). */
+/* A small striped retro sun (the sign-in sun, as decoration) — used behind
+   the logo tile on Home's promo card. */
+@utility promo-sun {
+  background: linear-gradient(to bottom, #fff6d6 0%, #ffd66b 45%, rgb(255 255 255 / 0%) 100%);
+  opacity: 0.75;
+  mask-image:
+    linear-gradient(#000 0 45%, transparent 45%),
+    repeating-linear-gradient(to bottom, #000 0 7px, transparent 7px 11px);
+  mask-composite: add;
+}
+
 @utility rim-light {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 9%);
 }
@@ -606,6 +617,11 @@
   .animate-ping-slow {
     animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
   }
+  /* A gentle up-and-down hover for floating decoration (the promo card's
+     logo tile). transform only, so it never fights translate/rotate. */
+  .animate-float {
+    animation: float 4.8s ease-in-out infinite alternate;
+  }
   /* Bottom bar (TabBar): the new tab's icon pops in with a little twist,
      and the sliding pill squashes wide as it lands, then settles. */
   .animate-tab-pop {
@@ -668,7 +684,7 @@
      make hovers snap instead of fade. */
   button:not(:disabled):not([aria-haspopup]),
   .pressable {
-    transition-property: transform, color, background-color, border-color, box-shadow, opacity, filter;
+    transition-property: transform, translate, scale, rotate, color, background-color, border-color, box-shadow, opacity, filter;
     transition-duration: var(--dur-press);
     transition-timing-function: ease-out;
   }
@@ -709,6 +725,15 @@
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translateY(3px);
+  }
+  to {
+    transform: translateY(-5px);
   }
 }
 

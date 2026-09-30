@@ -118,7 +118,7 @@ verify, submit `sitemap.xml`.
 | `/login` | Sunset-scene sign-in (sun, sea, palms, floating dishes), "Continue with Google" | public |
 | `/auth/callback` | Swaps Google's code for a session | public |
 | `/welcome` | First-login form (full name + phone), once | signed in, no profile yet |
-| `/` | Home: mood header, search, restaurant cards | student |
+| `/` | Home: sky header, search, sunset promo, popular / favourites photo row, restaurant cards | student |
 | `/restaurants/[id]` | Menu (`?dish=<id>` deep link) | student |
 | `/orders`, `/orders/[id]` | Order history; tracking ticket (`?rate=1` opens rating) | student |
 | `/profile` | Member card, milestones, reward, details, settings | student |
@@ -300,7 +300,8 @@ light: things should look lit, not flat.
 ### Photos
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact
 restaurant + dish name in `src/lib/data/dish-photos.ts` (not a database
-column). 107 of 137 dishes have a photo; the rest show a striped
+column). Sources stay ≤ ~1200px and a few hundred KB (the optimiser's
+first resize of a multi-MB file is slow). 107 of 137 dishes have a photo; the rest show a striped
 placeholder rather than a wrong photo. A replaced photo gets a **new
 filename** (an outside cache can keep serving old files by URL). The
 sign-in scene's floating dishes, empty states and share card reference

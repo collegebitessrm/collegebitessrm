@@ -7,6 +7,8 @@ export type Restaurant = {
   description: string | null;
   cuisine_tags: string[];
   is_active: boolean;
+  /** Minutes from ordering to the promised delivery (40; Biryani Nation 60). */
+  delivery_minutes: number;
 };
 
 export type DishCategory = {
