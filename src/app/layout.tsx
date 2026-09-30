@@ -68,8 +68,8 @@ export const viewport: Viewport = {
   // Matches --background in globals.css. Follows the OS scheme only — an
   // in-app theme override can't retarget this meta tag before paint.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf3ec" },
-    { media: "(prefers-color-scheme: dark)", color: "#170f14" },
+    { media: "(prefers-color-scheme: light)", color: "#eff7f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a2540" },
   ],
 };
 

@@ -157,7 +157,7 @@ export function getDishPhoto(restaurantName: string, dishName: string): string |
  * exist in DISH_PHOTOS above.
  */
 const SIGNATURE_DISHES: Record<string, string[]> = {
-  "Triangle Food Court": ["Chicken Noodles", "Chilli Chicken", "Gongura Chicken Biryani"],
+  "Triangle Food Court": ["Chicken Noodles", "Chilli Chicken", "Chicken 65"],
   "Local Home Kitchen": ["Chicken Lollipop", "Chicken Dum Biryani", "Paneer Majestic"],
   "Clg Bites Biryani Nation": ["Chicken Dum Biryani (Single)", "All Mix Chicken Biryani (Single)"],
 };

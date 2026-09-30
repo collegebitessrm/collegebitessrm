@@ -11,8 +11,7 @@ popup footer, admin header, privacy/terms) — keep it that way. Live at
 https://collegebitessrm.vercel.app.
 
 > **Built from MuteBites (VIT-AP).** Launch 1 Oct 2026. Still MuteBites
-> until later steps: the colours, the logo / icons / splash (MuteBites
-> mascot), and the restaurants, menus and photos described below. What
+> until the logo step: the logo / icons / splash (MuteBites mascot). What
 > already differs:
 > - **No daily ordering schedule.** `app_settings.ordering_mode` is only
 >   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
@@ -36,29 +35,41 @@ https://collegebitessrm.vercel.app.
 
 - **Framework**: Next.js (App Router), TypeScript
 - **Styling**: Tailwind CSS v4 + shadcn/ui (`src/components/ui`)
-- **Design tokens** (`src/app/globals.css`): plum `#552C4A` is ink,
-  amber carries every action (`--primary` `#A25E1D` — a hair darker than
-  the approved `#A9631F`, which fails AA as text on the ivory ground),
-  rose `#914955` is the secondary accent, blush/lavender are tint surfaces
-  only, raw amber `#C07A35` is decorative only (3.5:1, never text). Fixed
-  5-step ramps (`plum-`/`rose-`/`amber-`/`ivory-`/`forest-`/`brick-`
+- **Design tokens** (`src/app/globals.css`): the client's College Bites
+  palette. Deep Navy `#0A2540` and Teal `#00C2A8` lead; Golden Yellow
+  `#F5C518` is highlights only (`--amber`, `--ink-accent`); pastels
+  (periwinkle, lavender, mauve, pink, aqua) are tints and decoration, never
+  small text. Light: mint ground `#EFF7F6`, white cards, warm-ivory
+  `#F4EBD9` wells, periwinkle `#BBD0FF` borders, navy `bg-ink` hero
+  surfaces. Dark: layered navy (`#0A2540` → `#123451` → `#183C55`),
+  dusty-purple borders, and `bg-ink` flips to soft periwinkle with navy
+  text. Primary buttons are navy/white (light) and teal/navy (dark), as the
+  brief asks — and since `--primary` is also the price/link colour,
+  light-mode prices and links are navy (brief teal is 2.2:1 on white).
+  Where a brief colour fails as text, the nearest passing shade is used:
+  teal text `#007A6B` (`--rose`, the secondary accent — the token keeps
+  its MuteBites name, like `--amber` and `--brand-soft`), light secondary
+  text `#5D4A66` (brief `#9D84A3`), light input borders `#6C7CA6`. Fixed
+  5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/`forest-`/`brick-`
   100–900) sit alongside semantic tokens that flip per theme — prefer the
   semantic ones. Surfaces step ground (`--background`) → card → raised
   (`--popover`), with `shadow-card` / `shadow-raised` / `shadow-overlay`
   elevation. Text on a coloured fill uses its `*-foreground` token
   (`text-success-foreground`, `text-destructive-foreground`, …), never
-  `text-white` — dark-mode fills are light, so white fails there. Don't
-  put `text-primary` on `bg-secondary`/`bg-brand-soft` (below 4.5:1). Use
-  `text-brand-soft-foreground` on blush instead. On the plum `bg-ink` surface
-  (token card, cart bar, banners) use `text-ink-accent` / `-ink-success` /
-  `-ink-danger` — regular amber/green/red are ~2:1 on plum.
-  Focus rings are `ring-ring/80` (3.5:1+ on card) and input borders use
-  `--input` (3.4:1+) — both chosen to meet WCAG's 3:1 for non-text UI;
-  don't drop them back to /40 or the old pale border. `npm run
-  audit:contrast` (`scripts/contrast-audit.mjs`) re-checks every token pair
-  the app uses in both themes and fails if any pair is below its minimum —
-  run it after touching colours, and add a pair when you introduce a new
-  text/surface combination.
+  `text-white` — dark-mode fills are light, so white fails there. Use
+  `text-brand-soft-foreground` on the pink `bg-brand-soft` tint. On the
+  `bg-ink` surface (token card, cart bar, banners) use `text-ink-accent` /
+  `-ink-success` / `-ink-danger` — the regular teal/green/red don't read
+  on it. Photos never get tints or overlays. Tapping the Appearance toggle
+  cross-fades the theme (a root view transition in `src/lib/theme/store.ts`;
+  instant under reduced motion).
+  Focus rings are `ring-ring/80` and input borders use `--input` — both
+  chosen to meet WCAG's 3:1 for non-text UI; don't drop them back to /40
+  or a pale border. `npm run audit:contrast` (`scripts/contrast-audit.mjs`)
+  re-checks every token pair the app uses in both themes, including the
+  Home heading over each mood field, and fails if any pair is below its
+  minimum — run it after touching colours, and add a pair when you
+  introduce a new text/surface combination.
 - **Typography**: Fraunces (`font-heading`, SOFT axis at 50 via a base
   rule in `globals.css`) for display text and big numerals; Plus Jakarta
   (`font-sans`) for body **and buttons** — buttons never use
@@ -71,8 +82,9 @@ https://collegebitessrm.vercel.app.
 - **Home header mood field**: `HomeHeader` bleeds to the screen edges over
   `.mood-field.mood-<morning|afternoon|evening|night>` (`globals.css`),
   driven by `getTimeOfDayIST()`. Each mood has three `--mood-<time>-a/b/c`
-  stops per theme, checked at ≥6.7:1 for the plum heading on top — re-check
-  contrast if you change them.
+  stops per theme (gold/pink mornings, aqua afternoons, the brief's
+  periwinkle → lavender for evenings and nights), checked at ≥6.7:1 for the
+  heading on top by the contrast audit — re-run it if you change them.
 - **Order tracking ticket**: the token card (`order-tracking.tsx`) is a
   ticket stub — up to three distinct photos of the ordered dishes on top,
   a dashed tear line with edge notches (`bg-background` circles), then the
@@ -83,7 +95,7 @@ https://collegebitessrm.vercel.app.
   wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
-- **Profile**: one plum `MemberCard` (`src/components/profile/member-card.tsx`)
+- **Profile**: one ink (navy) `MemberCard` (`src/components/profile/member-card.tsx`)
   holds identity, the weekly-rank pill and the three stats (cravings
   solved, day streak, no-shows). Milestones are data-driven in
   `MILESTONES` (`milestone-badges.tsx`) — six tiers, all computed from
@@ -100,7 +112,7 @@ https://collegebitessrm.vercel.app.
   earned" chip filters the list to them.
   A newly unlocked milestone (per device, `collegebites.milestones-seen`)
   plays the same full-screen celebration as "Order placed!" — both use
-  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: plum
+  `CelebrationOverlay` (`src/components/celebration-overlay.tsx`: ink
   overlay, confetti unless reduced motion, the chime, tap or ~2 s to
   dismiss); several at once share one overlay naming them all. Render it
   outside any `<ViewTransition>`.
@@ -244,7 +256,7 @@ dish still shows on the student menu — greyed, struck through and
 unorderable (`DishCard`'s `soldOut`) — and `place_order()` refuses it
 anyway, so the flag is never only a UI state.
 
-Visually, admin shares the student app's system: the dashboard's plum
+Visually, admin shares the student app's system: the dashboard's ink (navy)
 "Today" card (`StatCards`) carries today's counts with the campus ordering
 control (`OrderingKillSwitch` — a two-way Open / Closed switch for
 `app_settings.ordering_mode`, with a confirm dialog each way) as its

@@ -65,6 +65,20 @@ as it was; this log lists where College Bites deliberately differs.
   under new names; 107 of 137 dishes have one, the rest use the
   placeholder. Login mosaic and empty-state plates use the same files.
 
+**Colours** (replaces section 11's palette)
+- The client's system: navy `#0A2540` + teal `#00C2A8` lead, gold
+  `#F5C518` for highlights, pastels as tints. Light = mint ground, white
+  cards, ivory wells, periwinkle borders; dark = layered navy with
+  dusty-purple borders, and the `bg-ink` surface flips to periwinkle.
+- Same token names as MuteBites (`--rose` is now the teal accent,
+  `--amber` gold); ramps renamed `navy/teal/gold/mint/forest/brick`.
+- Brief colours that fail as text were darkened only where used as text
+  (teal text `#007A6B`, secondary text `#5D4A66`, input borders
+  `#6C7CA6`); light-mode prices/links are navy, since they share
+  `--primary` with the navy buttons.
+- The contrast audit now also checks the Home heading over every mood
+  field. The Appearance toggle cross-fades via a root view transition.
+
 ---
 
 ## Contents

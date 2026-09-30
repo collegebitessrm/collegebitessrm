@@ -87,7 +87,14 @@ export function setTheme(pref: ThemePreference) {
   } catch {
     // Storage unavailable (private mode) — the choice just won't persist.
   }
-  applyToDocument(pref);
+  // A short cross-fade between themes when the student taps the toggle
+  // (the browser's own root view transition; globals.css collapses it to
+  // instant under reduced motion). Falls back to an instant switch.
+  if (typeof document.startViewTransition === "function") {
+    document.startViewTransition(() => applyToDocument(pref));
+  } else {
+    applyToDocument(pref);
+  }
   watchSystemChanges(pref);
   listeners.forEach((l) => l());
 }

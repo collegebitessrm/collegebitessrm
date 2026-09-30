@@ -63,6 +63,10 @@ const checks = [
   ['amber button vs ground (non-text, 3:1)', 'primary', 1, [T('background')], 3.0],
   ['input border vs card (non-text, 3:1 — WCAG 1.4.11)', 'input', 1, [T('card')], 3.0],
   ['focus ring (ring/80) vs card (non-text, 3:1)', 'ring', 0.8, [T('card')], 3.0],
+  ['Home heading on morning mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-morning-b'), T('mood-morning-a')], 6.7],
+  ['Home heading on afternoon mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-afternoon-b'), T('mood-afternoon-a')], 6.7],
+  ['Home heading on evening mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-evening-b'), T('mood-evening-a')], 6.7],
+  ['Home heading on night mood (strongest stop)', 'foreground', 1, [T('background'), T('mood-night-b'), T('mood-night-a')], 6.7],
 ];
 
 let fails = 0;
