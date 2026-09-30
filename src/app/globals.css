@@ -657,6 +657,15 @@
       stroke-dashoffset: var(--ring-empty);
     }
   }
+  /* The menu's "tried N of M" sunset bar fills from empty on first paint. */
+  .progress-fill {
+    transition: width 900ms var(--ease-out-expo) 200ms;
+  }
+  @starting-style {
+    .progress-fill {
+      width: 0;
+    }
+  }
   .animate-shimmer {
     position: relative;
     overflow: hidden;

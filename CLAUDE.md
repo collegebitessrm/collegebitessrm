@@ -232,6 +232,21 @@ author.
   (mutually exclusive, tap again to clear; red on light red for non-veg)
   and the category chips. The diet toggles only appear on a menu that has
   both kinds of dish.
+- **Menu and cart look**: the menu's cover photo is untinted; the sheet
+  rising over it carries the name, area, chips (cuisines, "Delivery in N
+  min" from `delivery_minutes`, "Free to Gate 3") and `MenuProgress` — a
+  sunset bar that fills from empty on first paint (`.progress-fill`,
+  `@starting-style`) with "N to go". Section headings get their food icon
+  on a pink tile (`getCuisineIcon`, passed in as a prop — the React
+  compiler lint rejects components picked during render) and a count pill.
+  `DishCard`'s add control is ONE lit pill that widens from a round "+"
+  into the "− n +" stepper (`transition-[width]`, `ease-spring`) and
+  shrinks back; it only glows (`glow-neon`) once the dish is in the cart,
+  and keyboard focus follows it. Prices are pink (`text-primary`). In the
+  cart sheet: tinted icon tiles for Gate 3 and the contact number, a
+  "Free" chip, the total in `text-sunset`, and a pill "Place order" that
+  shimmers while placing. Main actions across the app are now rounded-full
+  pills (the brand sheet's buttons), not rounded-2xl blocks.
 - **Notifications** (web push, `src/lib/notifications/`): students get
   *confirmed*, *delivered* and *cancelled*; the address in
   `ADMIN_ALERT_EMAILS` (`send.ts`) gets *new order*. `public/sw.js` is a

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
-import { ArrowLeft } from "@/components/icons";
+import { ArrowLeft, MapPin, Timer } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { MenuProgress } from "@/components/menu/menu-progress";
 import { MenuView } from "@/components/menu/menu-view";
@@ -66,17 +66,19 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
         orderable ? "text-success" : "text-muted-foreground",
       )}
     >
-      <span
-        className={cn("size-1.5 rounded-full", orderable ? "bg-success" : "bg-muted-foreground")}
-        aria-hidden="true"
-      />
+      <span className="relative flex size-1.5" aria-hidden="true">
+        {orderable && <span className="animate-ping-slow absolute inset-0 rounded-full bg-success" />}
+        <span className={cn("relative size-1.5 rounded-full", orderable ? "bg-success" : "bg-muted-foreground")} />
+      </span>
       {!active ? "Closed" : paused ? ordering.short : "Open"}
     </span>
   );
 
   // Same anatomy as Home's restaurant card: the photo is just a photo (no
-  // black scrim, no name printed over it) and the page itself rises over
-  // its bottom edge as a rounded sheet carrying the name.
+  // scrim, no tint, no name printed over it) and the page itself rises over
+  // its bottom edge as a rounded sheet carrying the name, the facts that
+  // matter as chips (cuisines, the delivery promise, free delivery to Gate
+  // 3) and the "tried N of M" sunset bar.
   return (
     <main className="mx-auto w-full max-w-md">
       <ViewTransition {...NAV_TRANSITION}>
@@ -101,24 +103,39 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
             <div className="absolute top-5 right-4">{statusBadge}</div>
           </div>
 
-          <div className="relative -mt-7 rounded-t-[1.75rem] bg-background px-6">
+          <div className="relative -mt-7 rounded-t-[1.75rem] bg-background px-6 shadow-[0_-12px_30px_-18px_var(--glow-sun)]">
             <header className="pt-6 pb-3">
               <h1 className="font-heading text-headline font-bold">{restaurant.name}</h1>
-              {restaurant.cuisine_tags.length > 0 && (
-                <p className="mt-1 font-medium text-aqua">{restaurant.cuisine_tags.join(" · ")}</p>
-              )}
               {restaurant.description && (
-                <p className="mt-1 text-muted-foreground">{restaurant.description}</p>
+                <p className="mt-1 flex items-center gap-1 text-muted-foreground">
+                  <MapPin className="size-4 shrink-0" />
+                  {restaurant.description}
+                </p>
               )}
+              <ul className="mt-3 flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+                {restaurant.cuisine_tags.map((tag) => (
+                  <li key={tag} className="rounded-full bg-secondary px-2.5 py-1 text-aqua">
+                    {tag}
+                  </li>
+                ))}
+                <li className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1">
+                  <Timer className="icon-tint-gold size-3.5 shrink-0 text-muted-foreground" />
+                  Delivery in {restaurant.delivery_minutes} min
+                </li>
+                <li className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1">
+                  <MapPin className="icon-tint-primary size-3.5 shrink-0 text-muted-foreground" />
+                  Free to Gate 3
+                </li>
+              </ul>
               <MenuProgress restaurantName={restaurant.name} tried={dishesTried} total={totalDishes} />
               {!active && (
-                <p className="mt-4 rounded-2xl bg-secondary px-4 py-3 text-sm">
+                <p className="mt-4 rounded-2xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-3 text-sm text-pink-soft-foreground">
                   <strong className="font-semibold">Closed right now.</strong> You can browse the
                   menu — ordering opens when they&apos;re back.
                 </p>
               )}
               {paused && (
-                <p className="mt-4 rounded-2xl bg-secondary px-4 py-3 text-sm">
+                <p className="mt-4 rounded-2xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-3 text-sm text-pink-soft-foreground">
                   <strong className="font-semibold">{ordering.headline}.</strong> {ordering.detail}
                 </p>
               )}

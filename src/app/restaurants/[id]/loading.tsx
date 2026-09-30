@@ -15,10 +15,14 @@ export default function Loading() {
         <div className="relative -mt-7 rounded-t-[1.75rem] bg-background px-6">
           <div className="pt-6 pb-3">
             <Skeleton className="h-8 w-48" />
-            <Skeleton className="mt-2 h-4 w-40" />
-            <Skeleton className="mt-2 h-4 w-56" />
+            <Skeleton className="mt-2 h-4 w-28" />
+            <div className="mt-3 flex gap-1.5">
+              <Skeleton className="h-6 w-16 rounded-full" />
+              <Skeleton className="h-6 w-32 rounded-full" />
+              <Skeleton className="h-6 w-24 rounded-full" />
+            </div>
             <Skeleton className="mt-4 h-4 w-48" />
-            <Skeleton className="mt-1.5 h-1.5 w-full rounded-full" />
+            <Skeleton className="mt-1.5 h-2 w-full rounded-full" />
           </div>
 
           <div className="flex gap-2 overflow-hidden border-b py-2.5">
@@ -28,7 +32,10 @@ export default function Loading() {
             <Skeleton className="h-10 w-28 shrink-0 rounded-full" />
           </div>
 
-          <Skeleton className="mt-7 h-7 w-40" />
+          <div className="mt-7 flex items-center gap-2.5">
+            <Skeleton className="size-9 rounded-xl" />
+            <Skeleton className="h-7 w-40" />
+          </div>
           <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6">
             {[0, 1, 2, 3].map((i) => (
               <div key={i}>

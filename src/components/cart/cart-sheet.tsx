@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Banknote, Loader2, MapPin, Phone, QrCode, X } from "@/components/icons";
@@ -56,7 +56,7 @@ export function CartSheet({
             type="button"
             onClick={() => onOpenChange(false)}
             aria-label="Close cart"
-            className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary outline-none hover:bg-border focus-visible:ring-3 focus-visible:ring-ring/80"
+            className="flex size-12 shrink-0 items-center justify-center rounded-full border bg-card shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
           >
             <X className="size-5" />
           </button>
@@ -88,7 +88,7 @@ function EmptyCart({ onBrowse }: { onBrowse: () => void }) {
           <Link
             href="/"
             onClick={onBrowse}
-            className="pressable surface-primary flex h-14 items-center rounded-2xl bg-primary px-8 text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80"
+            className="pressable surface-primary glow-neon flex h-14 items-center rounded-full bg-primary px-8 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
           >
             Browse restaurants
           </Link>
@@ -165,13 +165,15 @@ function CartContents({
             maxLength={MAX_NOTES}
             rows={2}
             placeholder="Order notes — e.g. “less spicy”"
-            className="min-h-14 resize-none rounded-2xl border-0 bg-secondary px-5 py-4 text-base md:text-base"
+            className="min-h-14 resize-none rounded-2xl bg-card px-5 py-4 text-base shadow-card md:text-base"
           />
         </label>
 
         <div className="mt-4 divide-y rounded-2xl border bg-card shadow-card">
           <div className="flex items-center gap-4 px-5 py-4">
-            <MapPin className="icon-tint-primary size-5 shrink-0 text-aqua" aria-hidden="true" />
+            <IconTile>
+              <MapPin className="icon-tint-primary size-5" aria-hidden="true" />
+            </IconTile>
             <div>
               <p className={eyebrow}>Handover point</p>
               <p className="font-semibold">Gate 3</p>
@@ -186,13 +188,15 @@ function CartContents({
               <dt>Item total</dt>
               <dd className="tabular-nums">{formatRupees(amount)}</dd>
             </div>
-            <div className="flex justify-between text-muted-foreground">
-              <dt>Delivery</dt>
-              <dd className="font-semibold text-success">Free</dd>
+            <div className="flex items-center justify-between text-muted-foreground">
+              <dt>Delivery to Gate 3</dt>
+              <dd className="rounded-full bg-success-soft px-2.5 py-0.5 text-sm font-semibold text-success">Free</dd>
             </div>
             <div className="flex items-baseline justify-between border-t border-dashed pt-2.5">
               <dt className="font-semibold">To pay at pickup</dt>
-              <dd className="font-heading text-2xl font-bold tabular-nums">{formatRupees(amount)}</dd>
+              <dd key={amount} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-sunset">
+                {formatRupees(amount)}
+              </dd>
             </div>
           </dl>
           <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
@@ -210,7 +214,7 @@ function CartContents({
 
       <footer className="border-t bg-background px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {!orderingEnabled && (
-          <p className="mb-3 rounded-2xl bg-secondary px-4 py-3 text-center text-sm">
+          <p className="mb-3 rounded-2xl border border-pink-soft-foreground/15 bg-pink-soft px-4 py-3 text-center text-sm text-pink-soft-foreground">
             {closedNote ? `${closedNote}.` : "Ordering is paused campus-wide right now."} Your cart will
             wait.
           </p>
@@ -227,7 +231,10 @@ function CartContents({
           onClick={submit}
           disabled={placing || !orderingEnabled}
           aria-describedby={error ? "place-order-error" : undefined}
-          className="surface-primary flex h-14 w-full items-center justify-between gap-2 rounded-2xl bg-primary px-6 text-lg font-bold text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
+          className={cn(
+            "surface-primary glow-neon flex h-14 w-full items-center justify-between gap-2 rounded-full bg-primary px-6 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70 disabled:shadow-none",
+            placing && "animate-shimmer",
+          )}
         >
           <span className="flex items-center gap-2">
             {placing && <Loader2 className="size-5 animate-spin" />}
@@ -256,7 +263,9 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
   if (!editing) {
     return (
       <div className="flex items-center gap-4 px-5 py-4">
-        <Phone className="size-5 shrink-0 text-aqua" aria-hidden="true" />
+        <IconTile>
+          <Phone className="icon-tint-gold size-5" aria-hidden="true" />
+        </IconTile>
         <div className="min-w-0 flex-1">
           <p className={eyebrow}>Your number</p>
           <p className="font-semibold tabular-nums">{formatStoredMobile(value)}</p>
@@ -313,7 +322,7 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
         <button
           type="button"
           onClick={save}
-          className="h-12 rounded-xl bg-primary px-4 font-semibold text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/80"
+          className="surface-primary h-12 rounded-full bg-primary px-5 font-semibold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
         >
           Save
         </button>
@@ -329,5 +338,14 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
         Cancel
       </button>
     </div>
+  );
+}
+
+/** A small tinted square behind a row's icon (handover point, contact number). */
+function IconTile({ children }: { children: ReactNode }) {
+  return (
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pink-soft text-pink-soft-foreground">
+      {children}
+    </span>
   );
 }

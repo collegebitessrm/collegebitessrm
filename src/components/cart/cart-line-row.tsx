@@ -81,7 +81,7 @@ export function CartLineRow({ line, restaurantName }: { line: CartLine; restaura
         }}
         className="relative flex touch-pan-y items-center gap-3 bg-background py-3.5"
       >
-        <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-pink-soft">
+        <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-pink-soft shadow-card">
           {photo ? (
             <BlurImage src={photo} alt="" sizes="64px" className="object-cover" />
           ) : (
@@ -99,22 +99,24 @@ export function CartLineRow({ line, restaurantName }: { line: CartLine; restaura
             {line.name}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <div className="flex h-9 items-center gap-1 rounded-full bg-secondary p-1">
+            <div className="flex h-9 items-center gap-1 rounded-full border bg-card p-1 shadow-card">
               <button
                 type="button"
                 onClick={() => setQuantity(line.dishId, line.quantity - 1)}
                 aria-label={`Remove one ${line.name}`}
-                className="flex size-7 items-center justify-center rounded-full bg-card outline-none hover:bg-border focus-visible:ring-2 focus-visible:ring-ring/80"
+                className="flex size-7 items-center justify-center rounded-full bg-secondary outline-none hover:bg-border focus-visible:ring-2 focus-visible:ring-ring/80"
               >
                 <Minus className="size-3.5" />
               </button>
-              <span className="min-w-5 text-center text-sm font-bold tabular-nums">{line.quantity}</span>
+              <span key={line.quantity} className="animate-bounce-count min-w-5 text-center text-sm font-bold tabular-nums">
+                {line.quantity}
+              </span>
               <button
                 type="button"
                 onClick={() => setQuantity(line.dishId, line.quantity + 1)}
                 disabled={line.quantity >= MAX_QUANTITY}
                 aria-label={`Add one more ${line.name}`}
-                className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80 disabled:opacity-40"
+                className="surface-primary flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring/80 disabled:opacity-40"
               >
                 <Plus className="size-3.5" />
               </button>

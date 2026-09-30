@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Drumstick, Leaf, Search, SearchX, UtensilsCrossed, X } from "@/components/icons";
+import { Drumstick, Leaf, Search, SearchX, UtensilsCrossed, X, type AppIcon } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import { CartBar } from "@/components/cart/cart-bar";
 import {
@@ -130,7 +130,7 @@ export function MenuView({
         // a scrolling rail of Veg / Non-veg and the categories — so none of
         // them scroll away on a 40-dish menu. Search collapses to an icon
         // and expands in place over the rail.
-        <div className="sticky top-0 z-10 -mx-6 border-b bg-background/95 px-6 py-2.5 backdrop-blur">
+        <div className="sticky top-0 z-10 -mx-6 border-b bg-background/85 px-6 py-2.5 backdrop-blur-lg">
           <div className="flex items-center gap-2">
             {searchOpen ? (
               <label className="relative min-w-0 flex-1">
@@ -146,7 +146,7 @@ export function MenuView({
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Escape" && closeSearch()}
                   placeholder="Search this menu…"
-                  className="h-10 w-full rounded-full bg-secondary pr-3 pl-10 outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/80 [&::-webkit-search-cancel-button]:hidden"
+                  className="animate-pop-in h-10 w-full rounded-full border bg-card pr-3 pl-10 shadow-card outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/80 [&::-webkit-search-cancel-button]:hidden"
                 />
               </label>
             ) : (
@@ -154,7 +154,7 @@ export function MenuView({
                 type="button"
                 onClick={() => setSearchOpen(true)}
                 aria-label="Search this menu"
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary outline-none hover:bg-border focus-visible:ring-3 focus-visible:ring-ring/80"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border bg-card text-primary shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
               >
                 <Search className="size-4.5" />
               </button>
@@ -165,7 +165,7 @@ export function MenuView({
                 type="button"
                 onClick={closeSearch}
                 aria-label="Close search"
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary outline-none hover:bg-border focus-visible:ring-3 focus-visible:ring-ring/80"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full border bg-card shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
               >
                 <X className="size-4.5" />
               </button>
@@ -198,10 +198,10 @@ export function MenuView({
                           onClick={() => setFilter(chip.key)}
                           aria-pressed={filter === chip.key}
                           className={cn(
-                            "flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-semibold whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/80",
+                            "flex h-10 items-center gap-1.5 rounded-full border px-4 text-sm font-semibold whitespace-nowrap outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
                             filter === chip.key
-                              ? "bg-chip-active text-chip-active-foreground"
-                              : "bg-secondary text-secondary-foreground hover:bg-border",
+                              ? "glow-cyan border-transparent bg-chip-active text-chip-active-foreground"
+                              : "bg-card text-foreground shadow-card hover:border-ring/50",
                           )}
                         >
                           <Icon className="size-4" aria-hidden="true" />
@@ -235,12 +235,12 @@ export function MenuView({
 
       {visible.map((section) => (
         <section key={sectionKey(section)} aria-labelledby={`sec-${sectionKey(section)}`} className="pt-7">
-          <h2 id={`sec-${sectionKey(section)}`} className="flex items-baseline gap-2">
-            <span className="font-heading text-title font-bold">{sectionName(section)}</span>
-            <span className="text-sm font-semibold text-muted-foreground tabular-nums">
-              {section.dishes.length}
-            </span>
-          </h2>
+          <SectionHeading
+            id={`sec-${sectionKey(section)}`}
+            name={sectionName(section)}
+            count={section.dishes.length}
+            icon={getCuisineIcon(sectionName(section))}
+          />
           <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6">
             {section.dishes.map((dish) => (
               <DishCard
@@ -309,8 +309,8 @@ function DietToggle({ kind, active, onToggle }: { kind: "veg" | "nonveg"; active
       aria-pressed={active}
       aria-label={veg ? "Veg only" : "Non-veg only"}
       className={cn(
-        "flex h-10 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/80",
-        !active && "bg-card text-muted-foreground hover:bg-secondary",
+        "flex h-10 items-center gap-1.5 rounded-full border px-3 text-sm font-semibold whitespace-nowrap outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
+        !active && "bg-card text-foreground shadow-card hover:border-ring/50",
         active && veg && "border-success bg-success-soft text-success",
         active && !veg && "border-destructive bg-destructive/10 text-destructive",
       )}
@@ -318,5 +318,20 @@ function DietToggle({ kind, active, onToggle }: { kind: "veg" | "nonveg"; active
       <VegMark isVeg={veg} className="size-4" />
       {veg ? "Veg" : "Non-veg"}
     </button>
+  );
+}
+
+/** A menu section's heading: its food icon on a small lit tile, the name, and how many dishes. */
+function SectionHeading({ id, name, count, icon: Icon }: { id: string; name: string; count: number; icon: AppIcon }) {
+  return (
+    <h2 id={id} className="flex items-center gap-2.5">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-pink-soft text-pink-soft-foreground">
+        <Icon className="icon-tint-gold size-5" />
+      </span>
+      <span className="min-w-0 font-heading text-title font-bold">{name}</span>
+      <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-xs font-semibold text-muted-foreground tabular-nums">
+        {count}
+      </span>
+    </h2>
   );
 }
