@@ -1,7 +1,8 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Loader2 } from "@/components/icons";
+import { IconTile } from "@/components/icon-tile";
+import { Loader2, User } from "@/components/icons";
 import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 import { updateFullName, type FieldActionState } from "./actions";
@@ -29,10 +30,13 @@ export function EditableName({ initialValue }: { initialValue: string }) {
 
   if (!editing) {
     return (
-      <div className="flex items-center justify-between px-5 py-4">
-        <div>
+      <div className="flex items-center gap-3 px-5 py-4">
+        <IconTile>
+          <User className="icon-tint-primary size-5" />
+        </IconTile>
+        <div className="min-w-0 flex-1">
           <p className={eyebrow}>Full name</p>
-          <p className="mt-0.5 font-semibold">{value}</p>
+          <p className="mt-0.5 truncate font-semibold">{value}</p>
         </div>
         <button
           type="button"
@@ -40,7 +44,7 @@ export function EditableName({ initialValue }: { initialValue: string }) {
             setDraft(value);
             setEditing(true);
           }}
-          className="rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/80"
+          className="shrink-0 rounded-full bg-pink-soft px-3.5 py-1.5 text-sm font-semibold text-pink-soft-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
         >
           Edit
         </button>
@@ -60,14 +64,14 @@ export function EditableName({ initialValue }: { initialValue: string }) {
           aria-invalid={!!state.error || undefined}
           aria-describedby={state.error ? "name-error" : undefined}
           className={cn(
-            "h-11 min-w-0 flex-1 rounded-xl border bg-background px-3 outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/80",
+            "h-11 min-w-0 flex-1 rounded-full border border-input bg-card px-4 outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/80",
             state.error && "border-destructive",
           )}
         />
         <button
           type="submit"
           disabled={pending}
-          className="flex h-11 items-center gap-1.5 rounded-xl bg-primary px-4 font-semibold text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
+          className="surface-primary flex h-11 items-center gap-1.5 rounded-full bg-primary px-5 font-semibold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
         >
           {pending && <Loader2 className="size-4 animate-spin" />}
           Save

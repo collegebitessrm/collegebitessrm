@@ -25,8 +25,8 @@ export function WeeklyRankBadge({ rank }: { rank: WeeklyRank | null }) {
   if (!tier) return null;
 
   return (
-    <p className="inline-flex items-center gap-1.5 rounded-full bg-hero-foreground/10 px-3 py-1 text-sm font-semibold">
-      <tier.Icon className="size-4 text-hero-accent" aria-hidden="true" />
+    <p className="inline-flex items-center gap-1.5 rounded-full bg-hero-foreground px-3 py-1 text-sm font-semibold text-hero">
+      <tier.Icon className="icon-tint-gold size-4" aria-hidden="true" />
       {tier.label}
     </p>
   );

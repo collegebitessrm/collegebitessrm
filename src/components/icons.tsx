@@ -46,6 +46,7 @@ import { CookingPot as PhCookingPot } from "@phosphor-icons/react/dist/ssr/Cooki
 import { Copy as PhCopy } from "@phosphor-icons/react/dist/ssr/Copy";
 import { Crown as PhCrown } from "@phosphor-icons/react/dist/ssr/Crown";
 import { DownloadSimple as PhDownloadSimple } from "@phosphor-icons/react/dist/ssr/DownloadSimple";
+import { EnvelopeSimple as PhEnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
 import { Fire as PhFire } from "@phosphor-icons/react/dist/ssr/Fire";
 import { ForkKnife as PhForkKnife } from "@phosphor-icons/react/dist/ssr/ForkKnife";
 import { Gift as PhGift } from "@phosphor-icons/react/dist/ssr/Gift";
@@ -157,6 +158,8 @@ export const Copy = make(PhCopy, "Copy");
 export const Crown = make(PhCrown, "Crown");
 /** export */
 export const Download = make(PhDownloadSimple, "Download");
+/** email */
+export const Mail = make(PhEnvelopeSimple, "Mail");
 /** non-veg (chicken) */
 export const Drumstick = make(PhBird, "Drumstick");
 /** trending */

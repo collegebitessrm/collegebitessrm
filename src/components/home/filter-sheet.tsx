@@ -97,7 +97,7 @@ function SheetBody({
         <button
           type="button"
           onClick={() => setDraft({ ...EMPTY_FILTERS, type: draft.type })}
-          className="rounded-full px-3 py-2 text-sm font-semibold text-primary outline-none hover:bg-secondary focus-visible:ring-3 focus-visible:ring-ring/80"
+          className="rounded-full px-3 py-2 text-sm font-semibold text-primary underline-offset-2 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/80"
         >
           Clear all
         </button>

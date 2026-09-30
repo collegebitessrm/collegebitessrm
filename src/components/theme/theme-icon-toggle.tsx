@@ -15,7 +15,7 @@ export function ThemeIconToggle() {
   const active = useThemePreference();
 
   return (
-    <div role="radiogroup" aria-label="Appearance" className="inline-flex items-center gap-1 rounded-full bg-secondary p-1">
+    <div role="radiogroup" aria-label="Appearance" className="inline-flex shrink-0 items-center gap-1 rounded-full border bg-secondary p-1">
       {OPTIONS.map(({ value, label, Icon }) => {
         const selected = active === value;
         return (
@@ -27,13 +27,13 @@ export function ThemeIconToggle() {
             aria-label={label}
             onClick={() => setTheme(value)}
             className={cn(
-              "flex size-8 items-center justify-center rounded-full outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring/80",
+              "flex size-8 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/80",
               selected
-                ? "bg-chip-active text-chip-active-foreground"
+                ? "glow-cyan bg-chip-active text-chip-active-foreground"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
-            <Icon className="size-4" aria-hidden="true" />
+            <Icon key={selected ? "on" : "off"} className={cn("size-4", selected && "animate-pop-in")} aria-hidden="true" />
           </button>
         );
       })}

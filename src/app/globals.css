@@ -631,6 +631,20 @@
   .animate-ring-spin {
     animation: ring-spin 5s linear infinite;
   }
+  /* Unlocked milestone badges: a band of light sweeps across now and then,
+     like a medal catching the sun. The element needs overflow: hidden. */
+  .animate-shine {
+    position: relative;
+  }
+  .animate-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 55%) 50%, transparent 70%);
+    translate: -110% 0;
+    animation: shine-sweep 5.5s var(--ease-out-expo) 1s infinite;
+    pointer-events: none;
+  }
   /* A gentle up-and-down hover for floating decoration (the promo card's
      logo tile). transform only, so it never fights translate/rotate. */
   .animate-float {
@@ -748,6 +762,16 @@
   }
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes shine-sweep {
+  0%,
+  70% {
+    translate: -110% 0;
+  }
+  100% {
+    translate: 110% 0;
   }
 }
 

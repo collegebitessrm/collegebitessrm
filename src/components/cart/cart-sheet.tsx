@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition, type ReactNode } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Banknote, Loader2, MapPin, Phone, QrCode, X } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
+import { IconTile } from "@/components/icon-tile";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -338,14 +339,5 @@ function ContactPhone({ value, onChange }: { value: string; onChange: (v: string
         Cancel
       </button>
     </div>
-  );
-}
-
-/** A small tinted square behind a row's icon (handover point, contact number). */
-function IconTile({ children }: { children: ReactNode }) {
-  return (
-    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pink-soft text-pink-soft-foreground">
-      {children}
-    </span>
   );
 }

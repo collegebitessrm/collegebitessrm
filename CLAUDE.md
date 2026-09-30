@@ -110,6 +110,20 @@ author.
   wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
+- **Profile look**: `MemberCard` is the "campus pass" — a sunset
+  `surface-hero` card with a small striped `promo-sun`, the initials in a
+  dusk circle inside a turning `food-ring`, the rank pill (coral on dusk)
+  and three lit stat tiles (full-strength dusk text; /85 fails on the
+  magenta end). Milestone tiles: unlocked = a gradient circle with a gold
+  duotone icon and `animate-shine` (a light band sweeping across now and
+  then); locked = a sunset-gradient progress ring (SVG `linearGradient`
+  with a per-milestone id, `ring-<key>`). `MilestoneReward`: a pink card
+  with a sunset "N to go" bar until everything's unlocked, then a lit
+  sunset card with a "Claim it on WhatsApp" pill (until an admin marks it
+  claimed). Details and settings rows lead with `IconTile`
+  (`src/components/icon-tile.tsx`, shared with the cart); Edit buttons are
+  pink pills (primary text on the lilac well is just under 4.5:1, so it's
+  avoided).
 - **Profile**: one sunset `MemberCard` (`src/components/profile/member-card.tsx`)
   holds identity, the weekly-rank pill and the three stats (cravings
   solved, day streak, no-shows). Milestones are data-driven in

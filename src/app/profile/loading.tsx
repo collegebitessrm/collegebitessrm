@@ -11,17 +11,18 @@ export default function Loading() {
       <span className="sr-only">Loading your profile…</span>
 
       <ViewTransition {...REVEAL_EXIT}>
-        <div className="rounded-3xl bg-hero p-5">
-          <div className="flex items-center gap-4">
-            <Skeleton className="size-16 shrink-0 rounded-2xl bg-hero-foreground/10" />
+        <div className="surface-hero rounded-[2rem] bg-hero p-5">
+          <Skeleton className="h-3 w-36 bg-hero-foreground/10" />
+          <div className="mt-3 flex items-center gap-4">
+            <Skeleton className="size-[4.5rem] shrink-0 rounded-full bg-hero-foreground/10" />
             <div className="min-w-0 flex-1">
               <Skeleton className="h-6 w-40 bg-hero-foreground/10" />
               <Skeleton className="mt-2 h-4 w-32 bg-hero-foreground/10" />
             </div>
           </div>
-          <div className="mt-5 grid grid-cols-3 gap-3 border-t border-hero-foreground/15 pt-4">
+          <div className="mt-5 grid grid-cols-3 gap-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5">
+              <div key={i} className="flex flex-col items-center gap-1.5 rounded-2xl bg-hero-foreground/10 py-3">
                 <Skeleton className="h-7 w-8 bg-hero-foreground/10" />
                 <Skeleton className="h-3 w-16 bg-hero-foreground/10" />
               </div>
@@ -42,19 +43,22 @@ export default function Loading() {
         </div>
 
         <Skeleton className="mt-8 h-7 w-32" />
-        <div className="mt-3 divide-y rounded-2xl border bg-card shadow-card">
+        <div className="mt-3 divide-y rounded-[1.5rem] border bg-card shadow-card">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="px-5 py-4">
-              <Skeleton className="h-3 w-24" />
-              <Skeleton className="mt-2 h-5 w-40" />
+            <div key={i} className="flex items-center gap-3 px-5 py-4">
+              <Skeleton className="size-10 shrink-0 rounded-xl" />
+              <div>
+                <Skeleton className="h-3 w-24" />
+                <Skeleton className="mt-2 h-5 w-40" />
+              </div>
             </div>
           ))}
         </div>
 
         <Skeleton className="mt-8 h-7 w-24" />
-        <Skeleton className="mt-3 h-28 w-full rounded-2xl" />
-        <Skeleton className="mt-6 h-16 w-full rounded-2xl" />
-        <Skeleton className="mt-6 h-12 w-full rounded-2xl" />
+        <Skeleton className="mt-3 h-40 w-full rounded-[1.5rem]" />
+        <Skeleton className="mt-6 h-[4.5rem] w-full rounded-[1.5rem]" />
+        <Skeleton className="mt-6 h-12 w-full rounded-full" />
       </ViewTransition>
     </main>
   );

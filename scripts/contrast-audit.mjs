@@ -52,6 +52,8 @@ const checks = [
   ['status chip: text on gold/35 over card (Placed, Preparing)', 'foreground', 1, [T('card'), T('gold', 0.35)], 4.5],
   ['status chip: aqua on chip-active/20 over card (Confirmed)', 'aqua', 1, [T('card'), T('chip-active', 0.2)], 4.5],
   ['"Rate your order" pill: dusk on gold', 'hero-foreground', 1, [T('gold')], 4.5],
+  ['campus-pass stat label (hero text on its /10 tile over magenta)', 'hero-foreground', 1, [T('hero-c'), T('hero-foreground', 0.1)], 4.5],
+  ['campus-pass initials / rank pill (coral on dusk)', 'hero', 1, [T('hero-foreground')], 4.5],
   ['bottom-bar tab label (muted on card/85 over the ground)', 'muted-foreground', 1, [T('background'), T('card', 0.85)], 4.5],
   // Accent text
   ['aqua text (cuisines) on card', 'aqua', 1, [T('card')], 4.5],

@@ -21,7 +21,7 @@ export function SignOutButton() {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-destructive/30 font-semibold text-destructive outline-none hover:bg-destructive/5 focus-visible:ring-3 focus-visible:ring-destructive/30">
+      <AlertDialogTrigger className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-destructive/30 bg-card font-semibold text-destructive shadow-card outline-none hover:bg-destructive/5 focus-visible:ring-3 focus-visible:ring-destructive/30">
         <LogOut className="size-4.5" aria-hidden="true" />
         Sign out
       </AlertDialogTrigger>

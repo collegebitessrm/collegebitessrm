@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
-import { Lock, MapPin } from "@/components/icons";
+import { IconTile } from "@/components/icon-tile";
+import { Bell, Lock, Mail, MapPin, Sun, Volume2 } from "@/components/icons";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
 import { MilestoneUnlockWatcher } from "@/components/profile/milestone-unlock-watcher";
@@ -84,22 +85,27 @@ export default async function ProfilePage() {
 
           <h2 className="mt-8 font-heading text-title font-bold">Your details</h2>
           <p className="text-sm text-muted-foreground">Tap a field to edit it.</p>
-          <div className="mt-3 divide-y rounded-2xl border bg-card shadow-card">
+          <div className="mt-3 divide-y overflow-hidden rounded-[1.5rem] border bg-card shadow-card">
             <EditableName initialValue={profile.full_name} />
             <EditablePhone
               initialValue={profile.phone}
               lockedReason={phoneLockReason}
               banned={profile.is_banned}
             />
-            <div className="flex items-center justify-between gap-3 px-5 py-4">
-              <div className="min-w-0">
+            <div className="flex items-center gap-3 px-5 py-4">
+              <IconTile>
+                <Mail className="icon-tint-gold size-5" />
+              </IconTile>
+              <div className="min-w-0 flex-1">
                 <p className="text-label text-muted-foreground">Email · signed in with Google</p>
                 <p className="mt-0.5 truncate font-semibold">{profile.email}</p>
               </div>
               <Lock className="size-4 shrink-0 text-muted-foreground" aria-label="Can't be changed" />
             </div>
             <div className="flex items-center gap-3 px-5 py-4">
-              <MapPin className="icon-tint-primary size-5 shrink-0 text-aqua" aria-hidden="true" />
+              <IconTile>
+                <MapPin className="icon-tint-primary size-5" />
+              </IconTile>
               <div>
                 <p className="text-label text-muted-foreground">Handover point</p>
                 <p className="font-semibold">Gate 3</p>
@@ -108,20 +114,29 @@ export default async function ProfilePage() {
           </div>
 
           <h2 className="mt-8 font-heading text-title font-bold">Settings</h2>
-          <div className="mt-3 divide-y rounded-2xl border bg-card shadow-card">
-            <div className="flex items-center justify-between gap-3 px-5 py-3.5">
-              <p className="font-semibold">Appearance</p>
+          <div className="mt-3 divide-y overflow-hidden rounded-[1.5rem] border bg-card shadow-card">
+            <div className="flex items-center gap-3 px-5 py-3.5">
+              <IconTile>
+                <Sun className="icon-tint-gold size-5" />
+              </IconTile>
+              <p className="min-w-0 flex-1 font-semibold">Appearance</p>
               <ThemeIconToggle />
             </div>
-            <div className="flex items-center justify-between gap-3 px-5 py-3.5">
-              <div className="min-w-0">
+            <div className="flex items-center gap-3 px-5 py-3.5">
+              <IconTile>
+                <Bell className="icon-tint-gold size-5" />
+              </IconTile>
+              <div className="min-w-0 flex-1">
                 <p className="font-semibold">Order notifications</p>
                 <p className="text-sm text-muted-foreground">Confirmed, delivered and cancelled.</p>
               </div>
               <NotificationToggle />
             </div>
-            <div className="flex items-center justify-between gap-3 px-5 py-3.5">
-              <p className="font-semibold">Order placed sound</p>
+            <div className="flex items-center gap-3 px-5 py-3.5">
+              <IconTile>
+                <Volume2 className="icon-tint-primary size-5" />
+              </IconTile>
+              <p className="min-w-0 flex-1 font-semibold">Order placed sound</p>
               <SoundToggle />
             </div>
           </div>
