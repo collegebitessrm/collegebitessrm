@@ -36,9 +36,13 @@ const CARDS = [
  */
 export function LoginScene() {
   return (
-    <div aria-hidden="true" className="login-sky relative isolate min-h-60 flex-1 overflow-hidden">
+    <div aria-hidden="true" className="login-sky relative isolate min-h-48 flex-1 overflow-hidden">
       <div className="login-stars absolute inset-0" />
-      <div className="relative mx-auto h-full w-full max-w-md">
+      {/* The app column, so the sun, palms and dishes frame the sheet below
+          at any screen width while the sky and sea run edge to edge. No
+          transform here: that would make it its own layer, and the sea
+          (painted after it) would cover the palms and dishes. */}
+      <div className="absolute inset-0 mx-auto w-full max-w-md">
         <div className="login-glow absolute left-1/2 aspect-[2/1] w-[130%]" />
         <div className="login-sun absolute left-1/2 aspect-square w-[58%] rounded-full" />
         <Palm className="-left-[7%] h-[78%]" />
