@@ -1,17 +1,41 @@
 // Contrast audit over the token pairs the app actually uses, read straight
-// from src/app/globals.css (:root and .dark), with alpha compositing.
-// Run: npm run audit:contrast — exits non-zero if any pair fails.
+// from src/app/globals.css, with alpha compositing — for every palette
+// (Vice Dusk, Electric Sunrise, Innovation Hub, Kaapi) in light and dark.
+// Run: npm run audit:contrast — exits non-zero if any pair fails, or if a
+// palette block is missing a token the default one defines (a missing token
+// would leak another palette's value through the cascade).
 import fs from 'node:fs';
 const css = fs.readFileSync('src/app/globals.css', 'utf8');
-// Every top-level block for this selector (:root appears more than once).
+// Every top-level block whose selector list is exactly `sel` (a list may be
+// split over lines after its commas).
 const block = (sel) => {
-  const re = new RegExp(`\\n${sel.replace('.', '\\.')} \\{([\\s\\S]*?)\\n\\}`, 'g');
+  const head = sel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/, /g, ',\\s*');
+  const re = new RegExp(`\\n${head} \\{([\\s\\S]*?)\\n\\}`, 'g');
   const out = {};
   for (const m of css.matchAll(re))
     for (const x of m[1].matchAll(/--([a-z0-9-]+):\s*([^;]+);/g)) out[x[1]] = x[2].trim();
   return out;
 };
-const themes = { light: block(':root'), dark: { ...block(':root'), ...block('.dark') } };
+const viceLight = block(':root, [data-palette="vice"]');
+const viceDark = block('.dark, .dark [data-palette="vice"]');
+// Same order as the cascade in the browser: default light < default dark <
+// palette light < palette dark (see the comment above the palettes).
+const themes = { 'vice light': viceLight, 'vice dark': { ...viceLight, ...viceDark } };
+const required = Object.keys(viceLight).filter((k) => k !== 'radius');
+let missing = 0;
+for (const pal of ['sunrise', 'hub', 'kaapi']) {
+  const light = block(`[data-palette="${pal}"]`);
+  const dark = block(`.dark[data-palette="${pal}"], .dark [data-palette="${pal}"]`);
+  for (const [mode, b] of [['light', light], ['dark', dark]]) {
+    const gaps = required.filter((k) => !(k in b));
+    if (gaps.length) {
+      missing += gaps.length;
+      console.log(`MISSING in ${pal} ${mode}: ${gaps.join(', ')}`);
+    }
+  }
+  themes[`${pal} light`] = { ...viceLight, ...light };
+  themes[`${pal} dark`] = { ...viceLight, ...viceDark, ...light, ...dark };
+}
 
 const parse = (v) => {
   v = v.trim();
@@ -128,5 +152,5 @@ for (const [name, t] of Object.entries(themes)) {
     console.log(`${ok ? '  ok ' : 'FAIL '} ${r.toFixed(2).padStart(5)}  (min ${min})  ${label}`);
   }
 }
-console.log(`\n${fails} failing pair(s)`);
-process.exitCode = fails ? 1 : 0;
+console.log(`\n${fails} failing pair(s), ${missing} missing token(s)`);
+process.exitCode = fails || missing ? 1 : 0;

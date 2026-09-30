@@ -73,11 +73,47 @@ author.
   `src/lib/theme/store.ts`; instant under reduced motion). Focus rings are
   `ring-ring/80` and input borders use `--input` — both meet WCAG's 3:1
   for non-text UI. `npm run audit:contrast` (`scripts/contrast-audit.mjs`)
-  re-checks every token pair in both themes — both ends of the action
+  re-checks every token pair in both themes of every palette — both ends of the action
   gradient, every hero stop, every heading gradient stop on the ground,
   under the page sky and over each Home mood — and fails if any pair is
   below its minimum. Run it after touching colours, and add a pair for any
   new text/surface combination.
+- **Themes (palettes)** — four, picked per device in Profile → Theme
+  (`PalettePicker`, `src/components/theme/palette-picker.tsx`), each a
+  complete light + dark token set in `globals.css`, independent of the
+  Light / Dark / System switch: **Vice Dusk** (the default, `vice` — the
+  palette described above; not called "GTA" in the UI, that's Rockstar's
+  trademark), **Electric Sunrise** (`sunrise`: cream, purple `#6A0DAD`
+  actions, neon peach chips, a gold-dust → peach → lilac hero, tech-blue
+  info, midnight-green veg; dark is charcoal `#1A1A1D` with magenta-bloom
+  actions `#E264FF` — the brief's `#D500F9` lifted to pass as link text),
+  **Innovation Hub** (`hub`: mint-white `#F3F8F8`, purple actions, tech-blue
+  chips, a blue → lilac → coral hero; dark is navy `#122238` with electric
+  lime `#32CD32` → aqua actions) and **Kaapi** (`kaapi`: cream `#F6EEE3`,
+  coffee → cinnamon actions with cream text, rose-milk chips, a turmeric →
+  caramel → rose-milk hero, teal info; dark is espresso `#1C120D` with
+  turmeric → rose-milk actions). `data-palette` on `<html>` is set before
+  first paint by the theme-init script and kept by `setPalette()` /
+  `usePalette()` (`src/lib/theme/store.ts`, localStorage
+  `collegebites.palette`, same cross-fade as Light/Dark); names, blurbs and
+  each palette's ground live in `src/lib/theme/palettes.ts` (the ground
+  also drives the browser-bar `theme-color`, retargeted at runtime). The
+  palette blocks key on the attribute alone, so it works on ANY element —
+  the picker's preview cards set `data-palette` on themselves and render
+  with that palette's real tokens. Specificity: `[data-palette="x"]` ties
+  with `.dark`, so a palette's light block also overrides Vice dusk in dark
+  mode and its dark block (`.dark[data-palette="x"]`) then wins — so **every
+  palette block must define every token** Vice's `:root` block does; the
+  contrast audit fails on a missing one and checks all 8 sets. Everything
+  that used to be a fixed Vice colour is now a per-palette token:
+  `--scrim` (dialog backdrops, `bg-scrim/50`), `--shadow-ink` (an rgb
+  triplet inside the glow utilities), `--food-ring` (a colour list),
+  `--promo-sun-a/-b`, `--confetti-1…6`, `--splash-glow-a/-b`; the sign-in
+  scene's sky / sun / sea / palms are variables on `.login-sky`, set per
+  palette and mode in `login.css`. Adding a palette = a light and a dark
+  block in `globals.css`, a scene pair in `login.css`, an entry in
+  `palettes.ts`, and a row in the audit's palette list. The share card and
+  manifest stay Vice (they aren't per student).
 - **Typography**: Poppins (`font-heading`, weights 500/600/700 only — it
   isn't a variable font) for display text and big numerals (tabular
   figures via a base rule); Inter (`font-sans`, variable) for body **and
@@ -219,7 +255,7 @@ author.
   admin-only). The first card's cover loads eagerly at high priority (it's
   the page's biggest image).
 - **Sign-in page** (`src/app/login/`): `LoginScene` (`login-scene.tsx` +
-  `login.css`) is a Vice City sunset — golden hour in light mode, neon dusk
+  `login.css`) is a Vice City sunset (recoloured per palette — see Themes) — golden hour in light mode, neon dusk
   with stars in dark: a striped retro sun half set behind the horizon, a
   violet sea with drifting wave lines and a sun reflection, two inline-SVG
   palm silhouettes, and three real dish photos floating as tilted prints.
@@ -581,8 +617,9 @@ silently re-enables the button.
   session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
   open, never on route changes or reloads), never on `/admin`, `/auth`,
   `/privacy`, `/terms` or a tab opened in the background:
-  - A short logo fade-in on the sand ground (dusk with neon glows for
-    dark-mode users — the theme-init script has set `.dark` by then): the navy tile rises in and
+  - A short logo fade-in on the palette's ground with its two splash glows
+    (`--splash-glow-a/-b`; the theme-init script has set `.dark` and
+    `data-palette` by then): the navy tile rises in and
     settles, "College Bites" (Poppins) and the tagline follow, a hold,
     then the screen fades to the app. Timings in `config.ts`.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in

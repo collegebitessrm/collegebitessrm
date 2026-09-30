@@ -66,8 +66,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // Matches --background in globals.css. Follows the OS scheme only — an
-  // in-app theme override can't retarget this meta tag before paint.
+  // Vice Dusk's --background, keyed on the OS scheme. The theme-init
+  // script (and later src/lib/theme/store.ts) retargets both to the chosen
+  // palette and Light/Dark before first paint.
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fff5ee" },
     { media: "(prefers-color-scheme: dark)", color: "#0e0a24" },
@@ -78,8 +79,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      // The theme-init script (and later, useThemePreference) can add the
-      // "dark" class / colorScheme style, and the splash-init script
+      // The theme-init script (and later, the theme store) can add the
+      // "dark" class / colorScheme style and data-palette, and the splash-init script
       // data-splash, before React hydrates — expected, not a real mismatch.
       suppressHydrationWarning
       className={`${inter.variable} ${poppins.variable} h-full antialiased`}

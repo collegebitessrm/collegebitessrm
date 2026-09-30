@@ -11,8 +11,9 @@ type Piece = {
   color: string;
 };
 
-// Vice Dusk × Leonida Gold: neon magenta, cyan, gold, tangerine, violet, coral.
-const COLORS = ["#ff2e88", "#22ddeb", "#ffc857", "#ff7a2f", "#7a28e8", "#ff6a5b"];
+// The palette's six confetti colours (--confetti-1…6 in globals.css), so
+// the burst matches whichever theme the student picked.
+const COLORS = [1, 2, 3, 4, 5, 6].map((n) => `var(--confetti-${n})`);
 const PIECE_COUNT = 20;
 
 function makePieces(): Piece[] {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { IconTile } from "@/components/icon-tile";
-import { Bell, Lock, Mail, MapPin, Sun, Volume2 } from "@/components/icons";
+import { Bell, Lock, Mail, MapPin, Palette, Sun, Volume2 } from "@/components/icons";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
 import { MilestoneUnlockWatcher } from "@/components/profile/milestone-unlock-watcher";
@@ -9,6 +9,7 @@ import { NotificationToggle } from "@/components/notifications/notification-togg
 import { SoundToggle } from "@/components/profile/sound-toggle";
 import { SupportCard } from "@/components/profile/support-card";
 import { WeeklyRankBadge } from "@/components/profile/weekly-rank-badge";
+import { PalettePicker } from "@/components/theme/palette-picker";
 import { ThemeIconToggle } from "@/components/theme/theme-icon-toggle";
 import { getOrderStats, hasActiveOrder } from "@/lib/data/orders";
 import { getMyWeeklyRank } from "@/lib/data/rank";
@@ -115,6 +116,18 @@ export default async function ProfilePage() {
 
           <h2 className="mt-8 font-heading text-title font-bold">Settings</h2>
           <div className="mt-3 divide-y overflow-hidden rounded-[1.5rem] border bg-card shadow-card">
+            <div className="px-5 pt-3.5 pb-5">
+              <div className="flex items-center gap-3">
+                <IconTile>
+                  <Palette className="icon-tint-primary size-5" />
+                </IconTile>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">Theme</p>
+                  <p className="text-sm text-muted-foreground">Colours for the whole app, on this phone.</p>
+                </div>
+              </div>
+              <PalettePicker className="mt-4" />
+            </div>
             <div className="flex items-center gap-3 px-5 py-3.5">
               <IconTile>
                 <Sun className="icon-tint-gold size-5" />

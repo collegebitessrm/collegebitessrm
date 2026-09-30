@@ -8,6 +8,10 @@
  * horizon), the sea with its reflection, the palms, then the photo cards.
  * The horizon sits at --horizon from the bottom.
  *
+ * Every colour is a variable on .login-sky, set per palette (Vice Dusk
+ * below, then Electric Sunrise, Innovation Hub and Kaapi), light and dark —
+ * the same scene, lit in each palette's colours.
+ *
  * Motion only under `prefers-reduced-motion: no-preference`; everything is
  * complete and still without it. While the startup splash still covers
  * the page (data-splash play/run) the scene waits, so the sun rises as the
@@ -25,6 +29,12 @@
   --wave: rgb(255 255 255 / 22%);
   --palm: #3a1b5e;
   --glow: rgb(255 120 90 / 55%);
+  --sun-a: #ffd66b;
+  --sun-b: #ffae57;
+  --sun-c: #ff6a5b;
+  --sun-d: #ff2e88;
+  --line-a: #ffd66b;
+  --line-b: #ff2e88;
   background: linear-gradient(
     to bottom,
     var(--sky-a) 0%,
@@ -44,6 +54,129 @@
   --wave: rgb(34 221 235 / 22%);
   --palm: #07051a;
   --glow: rgb(255 46 136 / 60%);
+  --sun-a: #ffd66b;
+  --sun-b: #ffae57;
+  --sun-c: #ff6a5b;
+  --sun-d: #ff2e88;
+  --line-a: #ffd66b;
+  --line-b: #ff2e88;
+}
+
+/* Electric Sunrise: a peach dawn over a purple sea; at night a magenta
+   bloom on the charcoal horizon. */
+[data-palette="sunrise"] .login-sky {
+  --sky-a: #fff6ea;
+  --sky-b: #ffe0c4;
+  --sky-c: #ffb89e;
+  --sky-d: #e8b8ff;
+  --sea-a: #8a4fd6;
+  --sea-b: #4f1c8f;
+  --reflect: rgb(255 226 189 / 70%);
+  --wave: rgb(255 255 255 / 22%);
+  --palm: #2e1446;
+  --glow: rgb(255 158 128 / 55%);
+  --sun-a: #fff1c9;
+  --sun-b: #f5d1a0;
+  --sun-c: #ff9e80;
+  --sun-d: #d500f9;
+  --line-a: #f5d1a0;
+  --line-b: #d500f9;
+}
+.dark[data-palette="sunrise"] .login-sky {
+  --sky-a: #1a1a1d;
+  --sky-b: #2a1d33;
+  --sky-c: #5a2470;
+  --sky-d: #ff9e80;
+  --sea-a: #2e1745;
+  --sea-b: #1a1a1d;
+  --reflect: rgb(213 0 249 / 50%);
+  --wave: rgb(231 198 255 / 22%);
+  --palm: #0c0c0e;
+  --glow: rgb(213 0 249 / 55%);
+  --sun-a: #fff1c9;
+  --sun-b: #f5d1a0;
+  --sun-c: #ff9e80;
+  --sun-d: #d500f9;
+  --line-a: #f5d1a0;
+  --line-b: #d500f9;
+}
+
+/* Innovation Hub: a cool blue-lilac sky with a coral sun over a tech-blue
+   sea; at night navy, with lime light on the water. */
+[data-palette="hub"] .login-sky {
+  --sky-a: #f3f8f8;
+  --sky-b: #dfe9ff;
+  --sky-c: #cfc9ff;
+  --sky-d: #ffb89a;
+  --sea-a: #5a86e8;
+  --sea-b: #2c3f99;
+  --reflect: rgb(255 255 255 / 60%);
+  --wave: rgb(255 255 255 / 22%);
+  --palm: #1b2540;
+  --glow: rgb(255 127 80 / 45%);
+  --sun-a: #ffe6d6;
+  --sun-b: #ffb08f;
+  --sun-c: #ff7f50;
+  --sun-d: #6a0dad;
+  --line-a: #ffb08f;
+  --line-b: #6a0dad;
+}
+.dark[data-palette="hub"] .login-sky {
+  --sky-a: #122238;
+  --sky-b: #16305a;
+  --sky-c: #2d3f80;
+  --sky-d: #ff7f50;
+  --sea-a: #1c3462;
+  --sea-b: #0d1a2c;
+  --reflect: rgb(50 205 50 / 45%);
+  --wave: rgb(50 205 50 / 22%);
+  --palm: #070e1a;
+  --glow: rgb(255 127 80 / 50%);
+  --sun-a: #ffe6d6;
+  --sun-b: #ffb08f;
+  --sun-c: #ff7f50;
+  --sun-d: #6a0dad;
+  --line-a: #32cd32;
+  --line-b: #2ed3c5;
+}
+
+/* Kaapi: a turmeric-and-rose-milk sky over a coffee sea; at night an
+   espresso sky with a caramel horizon. */
+[data-palette="kaapi"] .login-sky {
+  --sky-a: #fbf4ea;
+  --sky-b: #f6dcbc;
+  --sky-c: #efb98e;
+  --sky-d: #e8a0b0;
+  --sea-a: #8a5a3f;
+  --sea-b: #4a2a1c;
+  --reflect: rgb(255 230 168 / 65%);
+  --wave: rgb(255 255 255 / 18%);
+  --palm: #3b2418;
+  --glow: rgb(242 193 78 / 55%);
+  --sun-a: #fff3c4;
+  --sun-b: #f2c14e;
+  --sun-c: #eba566;
+  --sun-d: #e98fa6;
+  --line-a: #f2c14e;
+  --line-b: #e98fa6;
+}
+.dark[data-palette="kaapi"] .login-sky {
+  --sky-a: #1c120d;
+  --sky-b: #2e1c14;
+  --sky-c: #5a3322;
+  --sky-d: #eba566;
+  --sea-a: #3a2419;
+  --sea-b: #1c120d;
+  --reflect: rgb(242 193 78 / 50%);
+  --wave: rgb(245 233 220 / 16%);
+  --palm: #0e0806;
+  --glow: rgb(242 193 78 / 50%);
+  --sun-a: #fff3c4;
+  --sun-b: #f2c14e;
+  --sun-c: #eba566;
+  --sun-d: #e98fa6;
+  --line-a: #f2c14e;
+  --line-b: #e98fa6;
 }
 
 /* Stars — dark only. A handful of 1px lights as background layers. */
@@ -72,13 +205,13 @@
   background: radial-gradient(closest-side, var(--glow), transparent);
 }
 
-/* The retro sun: gold → coral → magenta, solid on top and cut into
+/* The retro sun: --sun-a → -d (Vice: gold → coral → magenta), solid on top and cut into
    stripes from 38% down (a mask), set 40% behind the horizon so the
    stripes show above the water. */
 .login-sun {
   bottom: var(--horizon);
   translate: -50% 40%;
-  background: linear-gradient(to bottom, #ffd66b 0%, #ffae57 30%, #ff6a5b 62%, #ff2e88 100%);
+  background: linear-gradient(to bottom, var(--sun-a) 0%, var(--sun-b) 30%, var(--sun-c) 62%, var(--sun-d) 100%);
   -webkit-mask-image:
     linear-gradient(#000 0 38%, transparent 38%),
     repeating-linear-gradient(to bottom, #000 0 9px, transparent 9px 14px);
@@ -104,7 +237,7 @@
   position: absolute;
   inset: 0 0 auto;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #ffd66b 30%, #ff2e88 70%, transparent);
+  background: linear-gradient(90deg, transparent, var(--line-a) 30%, var(--line-b) 70%, transparent);
   opacity: 0.9;
 }
 
@@ -121,7 +254,7 @@
 .login-card {
   box-shadow:
     0 0 0 3px rgb(255 255 255 / 92%),
-    0 18px 36px -14px rgb(14 10 36 / 55%);
+    0 18px 36px -14px rgb(var(--shadow-ink) / 55%);
 }
 
 @media (prefers-reduced-motion: no-preference) {

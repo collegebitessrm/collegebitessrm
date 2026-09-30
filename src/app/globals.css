@@ -140,6 +140,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-heading: var(--font-poppins), var(--font-inter);
+  --color-scrim: var(--scrim);
   --color-hero: var(--hero);
   --color-hero-foreground: var(--hero-foreground);
   --color-hero-accent: var(--hero-accent);
@@ -224,8 +225,14 @@
  *
  * Every text/surface pair (and the Home heading over each sky) is checked
  * by `npm run audit:contrast`.
+ *
+ * This is the default palette (Vice Dusk, `data-palette="vice"` or none).
+ * Three more follow the .dark block — Electric Sunrise, Innovation Hub and
+ * Kaapi — each a complete light + dark token set; the student picks one in
+ * Profile (src/lib/theme/palettes.ts).
  */
-:root {
+:root,
+[data-palette="vice"] {
   --background: #fff5ee;
   --foreground: #1a0f3d;
   --card: #ffffff;
@@ -322,12 +329,30 @@
   --mood-night-a: #7a28e833;
   --mood-night-b: #f6eeff;
   --mood-night-c: #ff2e8833;
+
+  /* Scrim behind dialogs, the ink of every glow shadow (an rgb triplet),
+     the chosen food tile's ring, the promo card's striped sun, confetti and
+     the startup splash glows — all per palette. */
+  --scrim: #0e0a24;
+  --shadow-ink: 14 10 36;
+  --food-ring: #ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857;
+  --promo-sun-a: #fff6d6;
+  --promo-sun-b: #ffd66b;
+  --confetti-1: #ff2e88;
+  --confetti-2: #22ddeb;
+  --confetti-3: #ffc857;
+  --confetti-4: #ff7a2f;
+  --confetti-5: #7a28e8;
+  --confetti-6: #ff6a5b;
+  --splash-glow-a: rgb(255 181 87 / 45%);
+  --splash-glow-b: rgb(255 61 147 / 18%);
 }
 
 /* Dusk: a layered blue-violet night (not black, not an inverted light
    mode). Neon fills carry dusk text — they're far too bright for white.
    Cards get a 1px rim light on the top edge, baked into their elevation. */
-.dark {
+.dark,
+.dark [data-palette="vice"] {
   --background: #0e0a24;
   --foreground: #fff0f6;
   --card: #1a1238;
@@ -408,6 +433,614 @@
   --mood-night-a: #7a28e83a;
   --mood-night-b: #1a1238cc;
   --mood-night-c: #ff2e882a;
+  --scrim: #0e0a24;
+  --shadow-ink: 14 10 36;
+  --food-ring: #ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857;
+  --promo-sun-a: #fff6d6;
+  --promo-sun-b: #ffd66b;
+  --confetti-1: #ff2e88;
+  --confetti-2: #22ddeb;
+  --confetti-3: #ffc857;
+  --confetti-4: #ff7a2f;
+  --confetti-5: #7a28e8;
+  --confetti-6: #ff6a5b;
+  --splash-glow-a: rgb(255 46 136 / 30%);
+  --splash-glow-b: rgb(34 221 235 / 16%);
+}
+
+/*
+ * The other three palettes. Each one is a full token set for light and for
+ * dark — every token the Vice blocks above define (the contrast audit fails
+ * if one is missing), so nothing leaks from another palette. They key on
+ * data-palette, set on <html> by the theme-init script and
+ * src/lib/theme/store.ts; the same attribute on any element (the theme
+ * picker's preview cards) scopes that palette to it.
+ *
+ * Specificity: [data-palette="x"] ties with .dark, so the light block of a
+ * palette overrides Vice dusk in dark mode too — the palette's dark block
+ * (.dark[data-palette="x"], one step more specific) then wins. That's why
+ * both blocks must be complete.
+ */
+
+/*
+ * Electric Sunrise — cream ground, vibrant purple actions, neon peach,
+ * soft lilac, gold dust, tech blue for info and focus, midnight green for
+ * veg/success. The hero is a sunrise: gold dust → peach → lilac. Dark is a
+ * charcoal night with magenta-bloom actions (#E264FF — the brief's #D500F9
+ * lifted so it passes 4.5:1 as link text on the cards; #D500F9 itself stays
+ * in the glows, the food ring and confetti).
+ */
+[data-palette="sunrise"] {
+  --background: #fff8f0;
+  --foreground: #221433;
+  --card: #ffffff;
+  --card-foreground: #221433;
+  --popover: #ffffff;
+  --popover-foreground: #221433;
+  --primary: #6a0dad;
+  --primary-2: #a81f6c;
+  --primary-foreground: #ffffff;
+  --secondary: #f5ecff;
+  --secondary-foreground: #221433;
+  --muted: #f5ecff;
+  --muted-foreground: #5e5070;
+  --accent: #f5ecff;
+  --accent-foreground: #221433;
+  --destructive: #b42b1c;
+  --destructive-foreground: #ffffff;
+  --border: #f1e1d6;
+  --input: #9a88ab;
+  --ring: #2f5fc4;
+  --hero: #ff9e80;
+  --hero-a: #f5d1a0;
+  --hero-b: #ff9e80;
+  --hero-c: #e2b4ff;
+  --hero-foreground: #221433;
+  --hero-accent: #4a0b86;
+  --hero-success: #003b31;
+  --hero-danger: #4a0808;
+  --chip-active: #ff9e80;
+  --chip-active-foreground: #221433;
+  --pink-soft: #f5e6ff;
+  --pink-soft-foreground: #5f0f99;
+  --aqua: #2f5fc4;
+  --aqua-foreground: #ffffff;
+  --gold: #f5d1a0;
+  --gold-strong: #b0741c;
+  --success: #0a6b55;
+  --success-foreground: #ffffff;
+  --success-soft: #dff3ec;
+  --stripe-a: #fbe8da;
+  --stripe-b: #fff4ea;
+  --chart-1: #6a0dad;
+  --chart-2: #ff9e80;
+  --chart-3: #f5d1a0;
+  --chart-4: #4080f0;
+  --chart-5: #004d40;
+  --sidebar: #fff8f0;
+  --sidebar-foreground: #221433;
+  --sidebar-primary: #6a0dad;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5ecff;
+  --sidebar-accent-foreground: #221433;
+  --sidebar-border: #f1e1d6;
+  --sidebar-ring: #2f5fc4;
+  --glow-neon: rgb(106 13 173 / 38%);
+  --glow-cyan: rgb(255 158 128 / 50%);
+  --glow-sun: rgb(255 158 128 / 50%);
+  --page-glow-a: rgb(255 158 128 / 20%);
+  --page-glow-b: rgb(245 209 160 / 30%);
+  --heading-a: #6a0dad;
+  --heading-b: #8a1592;
+  --heading-c: #a01f66;
+  --elevation-card: 0 1px 2px rgb(34 20 51 / 5%), 0 8px 22px -10px rgb(255 158 128 / 32%);
+  --elevation-raised: 0 2px 4px rgb(34 20 51 / 5%), 0 16px 32px -12px rgb(255 158 128 / 38%);
+  --elevation-overlay: 0 4px 8px rgb(34 20 51 / 8%), 0 28px 56px -16px rgb(106 13 173 / 26%);
+  --mood-morning-a: #f5d1a0aa;
+  --mood-morning-b: #fff0e0;
+  --mood-morning-c: #ff9e8044;
+  --mood-afternoon-a: #4080f02e;
+  --mood-afternoon-b: #fff4ea;
+  --mood-afternoon-c: #f5d1a066;
+  --mood-evening-a: #ff9e8088;
+  --mood-evening-b: #ffece4;
+  --mood-evening-c: #e2b4ff66;
+  --mood-night-a: #6a0dad26;
+  --mood-night-b: #f5ecff;
+  --mood-night-c: #ff9e8033;
+  --scrim: #221433;
+  --shadow-ink: 34 20 51;
+  --food-ring: #f5d1a0, #ff9e80, #e2b4ff, #6a0dad, #4080f0, #f5d1a0;
+  --promo-sun-a: #ffffff;
+  --promo-sun-b: #ffe2bd;
+  --confetti-1: #6a0dad;
+  --confetti-2: #d500f9;
+  --confetti-3: #ff9e80;
+  --confetti-4: #f5d1a0;
+  --confetti-5: #4080f0;
+  --confetti-6: #e7c6ff;
+  --splash-glow-a: rgb(255 158 128 / 45%);
+  --splash-glow-b: rgb(106 13 173 / 14%);
+}
+
+.dark[data-palette="sunrise"],
+.dark [data-palette="sunrise"] {
+  --background: #1a1a1d;
+  --foreground: #f6efe8;
+  --card: #242428;
+  --card-foreground: #f6efe8;
+  --popover: #2e2d33;
+  --popover-foreground: #f6efe8;
+  --primary: #e264ff;
+  --primary-2: #ff9e80;
+  --primary-foreground: #0c0a1f;
+  --secondary: #2e2d33;
+  --secondary-foreground: #f6efe8;
+  --muted: #2e2d33;
+  --muted-foreground: #bdb5c8;
+  --accent: #2e2d33;
+  --accent-foreground: #f6efe8;
+  --destructive: #ff8a7a;
+  --destructive-foreground: #2a0e09;
+  --border: rgb(231 198 255 / 14%);
+  --input: #7a738d;
+  --ring: #86adff;
+  --hero: #ff9e80;
+  --hero-a: #f0c28a;
+  --hero-b: #ff9278;
+  --hero-c: #d9a6ff;
+  --hero-foreground: #1c1030;
+  --hero-accent: #43097a;
+  --hero-success: #00332a;
+  --hero-danger: #430707;
+  --chip-active: #ff9e80;
+  --chip-active-foreground: #1a1a1d;
+  --pink-soft: #33253f;
+  --pink-soft-foreground: #ecd0ff;
+  --aqua: #86adff;
+  --aqua-foreground: #0c0a1f;
+  --gold: #f5d1a0;
+  --gold-strong: #f5d1a0;
+  --success: #5fd9b0;
+  --success-foreground: #06281f;
+  --success-soft: #123a33;
+  --stripe-a: #26252b;
+  --stripe-b: #1f1f23;
+  --chart-1: #e264ff;
+  --chart-2: #ff9e80;
+  --chart-3: #f5d1a0;
+  --chart-4: #86adff;
+  --chart-5: #5fd9b0;
+  --sidebar: #242428;
+  --sidebar-foreground: #f6efe8;
+  --sidebar-primary: #e264ff;
+  --sidebar-primary-foreground: #0c0a1f;
+  --sidebar-accent: #2e2d33;
+  --sidebar-accent-foreground: #f6efe8;
+  --sidebar-border: rgb(231 198 255 / 14%);
+  --sidebar-ring: #86adff;
+  --glow-neon: rgb(213 0 249 / 50%);
+  --glow-cyan: rgb(255 158 128 / 42%);
+  --glow-sun: rgb(255 158 128 / 48%);
+  --page-glow-a: rgb(213 0 249 / 14%);
+  --page-glow-b: rgb(255 158 128 / 9%);
+  --heading-a: #f5d1a0;
+  --heading-b: #ffa98c;
+  --heading-c: #e6b3ff;
+  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(0 0 0 / 40%), 0 10px 26px -12px rgb(0 0 0 / 60%);
+  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(0 0 0 / 40%), 0 16px 34px -12px rgb(213 0 249 / 35%);
+  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(0 0 0 / 45%), 0 28px 56px -16px rgb(255 158 128 / 24%);
+  --mood-morning-a: #f5d1a022;
+  --mood-morning-b: #2a2228cc;
+  --mood-morning-c: #ff9e8022;
+  --mood-afternoon-a: #4080f026;
+  --mood-afternoon-b: #202026cc;
+  --mood-afternoon-c: #e7c6ff22;
+  --mood-evening-a: #ff9e8030;
+  --mood-evening-b: #2c2026cc;
+  --mood-evening-c: #d500f930;
+  --mood-night-a: #6a0dad40;
+  --mood-night-b: #1f1b26cc;
+  --mood-night-c: #d500f926;
+  --scrim: #0b0b0d;
+  --shadow-ink: 0 0 0;
+  --food-ring: #f5d1a0, #ff9e80, #e7c6ff, #d500f9, #4080f0, #f5d1a0;
+  --promo-sun-a: #ffffff;
+  --promo-sun-b: #ffe2bd;
+  --confetti-1: #d500f9;
+  --confetti-2: #ff9e80;
+  --confetti-3: #f5d1a0;
+  --confetti-4: #4080f0;
+  --confetti-5: #e7c6ff;
+  --confetti-6: #5fd9b0;
+  --splash-glow-a: rgb(213 0 249 / 26%);
+  --splash-glow-b: rgb(255 158 128 / 16%);
+}
+
+/*
+ * Innovation Hub — a cool mint-white ground, purple actions, coral, soft
+ * lilac, tech blue for selected chips and info, silver and pewter in the
+ * surfaces. The hero is tech blue → lilac → coral. Dark is a navy night
+ * with electric-lime actions (navy text) running into aqua.
+ */
+[data-palette="hub"] {
+  --background: #f3f8f8;
+  --foreground: #111c2e;
+  --card: #ffffff;
+  --card-foreground: #111c2e;
+  --popover: #ffffff;
+  --popover-foreground: #111c2e;
+  --primary: #6a0dad;
+  --primary-2: #8a1cc4;
+  --primary-foreground: #ffffff;
+  --secondary: #e6eff1;
+  --secondary-foreground: #111c2e;
+  --muted: #e6eff1;
+  --muted-foreground: #4c5a68;
+  --accent: #e6eff1;
+  --accent-foreground: #111c2e;
+  --destructive: #b42b1c;
+  --destructive-foreground: #ffffff;
+  --border: #d9e4e7;
+  --input: #86939e;
+  --ring: #2459c4;
+  --hero: #ff9a78;
+  --hero-a: #9dbcff;
+  --hero-b: #dcc4ff;
+  --hero-c: #ffa184;
+  --hero-foreground: #111c2e;
+  --hero-accent: #3d0a73;
+  --hero-success: #00361c;
+  --hero-danger: #470808;
+  --chip-active: #4080f0;
+  --chip-active-foreground: #0b1428;
+  --pink-soft: #efe3ff;
+  --pink-soft-foreground: #5a0f96;
+  --aqua: #2459c4;
+  --aqua-foreground: #ffffff;
+  --gold: #ffcf5c;
+  --gold-strong: #b7791f;
+  --success: #0e7556;
+  --success-foreground: #ffffff;
+  --success-soft: #dcf4ea;
+  --stripe-a: #e3edf0;
+  --stripe-b: #f0f6f7;
+  --chart-1: #6a0dad;
+  --chart-2: #ff7f50;
+  --chart-3: #4080f0;
+  --chart-4: #a9a9a9;
+  --chart-5: #e7c6ff;
+  --sidebar: #f3f8f8;
+  --sidebar-foreground: #111c2e;
+  --sidebar-primary: #6a0dad;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e6eff1;
+  --sidebar-accent-foreground: #111c2e;
+  --sidebar-border: #d9e4e7;
+  --sidebar-ring: #2459c4;
+  --glow-neon: rgb(106 13 173 / 36%);
+  --glow-cyan: rgb(64 128 240 / 40%);
+  --glow-sun: rgb(255 127 80 / 40%);
+  --page-glow-a: rgb(64 128 240 / 12%);
+  --page-glow-b: rgb(255 127 80 / 14%);
+  --heading-a: #5a0b94;
+  --heading-b: #7d2394;
+  --heading-c: #9a3615;
+  --elevation-card: 0 1px 2px rgb(17 28 46 / 6%), 0 8px 22px -10px rgb(64 128 240 / 22%);
+  --elevation-raised: 0 2px 4px rgb(17 28 46 / 6%), 0 16px 32px -12px rgb(64 128 240 / 28%);
+  --elevation-overlay: 0 4px 8px rgb(17 28 46 / 8%), 0 28px 56px -16px rgb(106 13 173 / 24%);
+  --mood-morning-a: #ff7f5033;
+  --mood-morning-b: #fff4ee;
+  --mood-morning-c: #ffcf5c44;
+  --mood-afternoon-a: #4080f033;
+  --mood-afternoon-b: #eef4ff;
+  --mood-afternoon-c: #c0c0c055;
+  --mood-evening-a: #ff7f5055;
+  --mood-evening-b: #fbeefa;
+  --mood-evening-c: #e7c6ff88;
+  --mood-night-a: #6a0dad22;
+  --mood-night-b: #efe8ff;
+  --mood-night-c: #4080f033;
+  --scrim: #0b1628;
+  --shadow-ink: 17 28 46;
+  --food-ring: #9dbcff, #e7c6ff, #ff7f50, #6a0dad, #4080f0, #9dbcff;
+  --promo-sun-a: #ffffff;
+  --promo-sun-b: #ffd9c8;
+  --confetti-1: #6a0dad;
+  --confetti-2: #32cd32;
+  --confetti-3: #ff7f50;
+  --confetti-4: #4080f0;
+  --confetti-5: #e7c6ff;
+  --confetti-6: #c0c0c0;
+  --splash-glow-a: rgb(64 128 240 / 28%);
+  --splash-glow-b: rgb(255 127 80 / 20%);
+}
+
+.dark[data-palette="hub"],
+.dark [data-palette="hub"] {
+  --background: #122238;
+  --foreground: #eef4ff;
+  --card: #1a2d47;
+  --card-foreground: #eef4ff;
+  --popover: #223757;
+  --popover-foreground: #eef4ff;
+  --primary: #32cd32;
+  --primary-2: #2ed3c5;
+  --primary-foreground: #0b1628;
+  --secondary: #223757;
+  --secondary-foreground: #eef4ff;
+  --muted: #223757;
+  --muted-foreground: #b0c0d8;
+  --accent: #223757;
+  --accent-foreground: #eef4ff;
+  --destructive: #ff8a7a;
+  --destructive-foreground: #2a0e09;
+  --border: rgb(176 192 216 / 16%);
+  --input: #6c80a0;
+  --ring: #8fb4ff;
+  --hero: #ff9a78;
+  --hero-a: #86aaf5;
+  --hero-b: #cdb0ff;
+  --hero-c: #ff9472;
+  --hero-foreground: #0b1628;
+  --hero-accent: #340a66;
+  --hero-success: #002e18;
+  --hero-danger: #3d0606;
+  --chip-active: #7aa6ff;
+  --chip-active-foreground: #0b1628;
+  --pink-soft: #2d2a55;
+  --pink-soft-foreground: #e2caff;
+  --aqua: #8fb4ff;
+  --aqua-foreground: #0b1628;
+  --gold: #ffcf5c;
+  --gold-strong: #ffcf5c;
+  --success: #5fe3b9;
+  --success-foreground: #06281f;
+  --success-soft: #0f3b3a;
+  --stripe-a: #1c3150;
+  --stripe-b: #172a44;
+  --chart-1: #32cd32;
+  --chart-2: #ff7f50;
+  --chart-3: #7aa6ff;
+  --chart-4: #c0c0c0;
+  --chart-5: #e7c6ff;
+  --sidebar: #1a2d47;
+  --sidebar-foreground: #eef4ff;
+  --sidebar-primary: #32cd32;
+  --sidebar-primary-foreground: #0b1628;
+  --sidebar-accent: #223757;
+  --sidebar-accent-foreground: #eef4ff;
+  --sidebar-border: rgb(176 192 216 / 16%);
+  --sidebar-ring: #8fb4ff;
+  --glow-neon: rgb(50 205 50 / 42%);
+  --glow-cyan: rgb(122 166 255 / 40%);
+  --glow-sun: rgb(255 127 80 / 40%);
+  --page-glow-a: rgb(50 205 50 / 9%);
+  --page-glow-b: rgb(64 128 240 / 14%);
+  --heading-a: #a6f28f;
+  --heading-b: #8fe0e0;
+  --heading-c: #d7b8ff;
+  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(3 8 18 / 45%), 0 10px 26px -12px rgb(3 8 18 / 65%);
+  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(3 8 18 / 45%), 0 16px 34px -12px rgb(64 128 240 / 35%);
+  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(3 8 18 / 50%), 0 28px 56px -16px rgb(50 205 50 / 20%);
+  --mood-morning-a: #ffcf5c22;
+  --mood-morning-b: #1a2d47cc;
+  --mood-morning-c: #ff7f5022;
+  --mood-afternoon-a: #4080f033;
+  --mood-afternoon-b: #16294acc;
+  --mood-afternoon-c: #32cd3218;
+  --mood-evening-a: #ff7f5030;
+  --mood-evening-b: #1f2a4acc;
+  --mood-evening-c: #e7c6ff26;
+  --mood-night-a: #6a0dad40;
+  --mood-night-b: #14223ccc;
+  --mood-night-c: #32cd321f;
+  --scrim: #050b16;
+  --shadow-ink: 3 8 18;
+  --food-ring: #7aa6ff, #e7c6ff, #ff7f50, #32cd32, #2ed3c5, #7aa6ff;
+  --promo-sun-a: #ffffff;
+  --promo-sun-b: #ffd9c8;
+  --confetti-1: #32cd32;
+  --confetti-2: #ff7f50;
+  --confetti-3: #7aa6ff;
+  --confetti-4: #e7c6ff;
+  --confetti-5: #2ed3c5;
+  --confetti-6: #c0c0c0;
+  --splash-glow-a: rgb(50 205 50 / 20%);
+  --splash-glow-b: rgb(64 128 240 / 22%);
+}
+
+/*
+ * Kaapi — filter coffee. Cream ground, espresso text, coffee → cinnamon
+ * actions (cream text), turmeric gold, rose-milk chips, a teal counterpoint
+ * for info and focus. The hero is turmeric → caramel → rose milk. Dark is
+ * an espresso night with turmeric → rose-milk actions (espresso text).
+ */
+[data-palette="kaapi"] {
+  --background: #f6eee3;
+  --foreground: #2b1a12;
+  --card: #fffaf4;
+  --card-foreground: #2b1a12;
+  --popover: #fffdf9;
+  --popover-foreground: #2b1a12;
+  --primary: #6f3b1f;
+  --primary-2: #9a4f2a;
+  --primary-foreground: #fff8f0;
+  --secondary: #f0e3d3;
+  --secondary-foreground: #2b1a12;
+  --muted: #f0e3d3;
+  --muted-foreground: #614a3b;
+  --accent: #f0e3d3;
+  --accent-foreground: #2b1a12;
+  --destructive: #a8321f;
+  --destructive-foreground: #ffffff;
+  --border: #e8d8c6;
+  --input: #9c8472;
+  --ring: #2e6b62;
+  --hero: #eba566;
+  --hero-a: #f2c14e;
+  --hero-b: #eba566;
+  --hero-c: #eba0b3;
+  --hero-foreground: #2b1a12;
+  --hero-accent: #5a1f10;
+  --hero-success: #0f3a1c;
+  --hero-danger: #4a0c08;
+  --chip-active: #e98fa6;
+  --chip-active-foreground: #2b1a12;
+  --pink-soft: #f7e0e6;
+  --pink-soft-foreground: #8a2945;
+  --aqua: #2e6b62;
+  --aqua-foreground: #ffffff;
+  --gold: #f2c14e;
+  --gold-strong: #a8740f;
+  --success: #1e6e3e;
+  --success-foreground: #ffffff;
+  --success-soft: #e0efdf;
+  --stripe-a: #efe0cf;
+  --stripe-b: #f8efe4;
+  --chart-1: #6f3b1f;
+  --chart-2: #f2c14e;
+  --chart-3: #e98fa6;
+  --chart-4: #2e6b62;
+  --chart-5: #eba566;
+  --sidebar: #f6eee3;
+  --sidebar-foreground: #2b1a12;
+  --sidebar-primary: #6f3b1f;
+  --sidebar-primary-foreground: #fff8f0;
+  --sidebar-accent: #f0e3d3;
+  --sidebar-accent-foreground: #2b1a12;
+  --sidebar-border: #e8d8c6;
+  --sidebar-ring: #2e6b62;
+  --glow-neon: rgb(111 59 31 / 35%);
+  --glow-cyan: rgb(233 143 166 / 45%);
+  --glow-sun: rgb(242 193 78 / 45%);
+  --page-glow-a: rgb(235 165 102 / 16%);
+  --page-glow-b: rgb(242 193 78 / 22%);
+  --heading-a: #6f3b1f;
+  --heading-b: #874020;
+  --heading-c: #8f3350;
+  --elevation-card: 0 1px 2px rgb(43 26 18 / 6%), 0 8px 22px -10px rgb(160 100 50 / 26%);
+  --elevation-raised: 0 2px 4px rgb(43 26 18 / 6%), 0 16px 32px -12px rgb(160 100 50 / 32%);
+  --elevation-overlay: 0 4px 8px rgb(43 26 18 / 8%), 0 28px 56px -16px rgb(111 59 31 / 28%);
+  --mood-morning-a: #f2c14e88;
+  --mood-morning-b: #fbeedb;
+  --mood-morning-c: #eba56633;
+  --mood-afternoon-a: #2e6b6222;
+  --mood-afternoon-b: #f9efe2;
+  --mood-afternoon-c: #f2c14e44;
+  --mood-evening-a: #eba56699;
+  --mood-evening-b: #f8e4e0;
+  --mood-evening-c: #e98fa655;
+  --mood-night-a: #6f3b1f22;
+  --mood-night-b: #f3e6da;
+  --mood-night-c: #e98fa633;
+  --scrim: #1c120d;
+  --shadow-ink: 43 26 18;
+  --food-ring: #f2c14e, #eba566, #e98fa6, #6f3b1f, #2e6b62, #f2c14e;
+  --promo-sun-a: #fffaf0;
+  --promo-sun-b: #ffe6a8;
+  --confetti-1: #f2c14e;
+  --confetti-2: #e98fa6;
+  --confetti-3: #eba566;
+  --confetti-4: #6f3b1f;
+  --confetti-5: #2e6b62;
+  --confetti-6: #fff1d6;
+  --splash-glow-a: rgb(242 193 78 / 42%);
+  --splash-glow-b: rgb(233 143 166 / 20%);
+}
+
+.dark[data-palette="kaapi"],
+.dark [data-palette="kaapi"] {
+  --background: #1c120d;
+  --foreground: #f5e9dc;
+  --card: #2a1c15;
+  --card-foreground: #f5e9dc;
+  --popover: #35251c;
+  --popover-foreground: #f5e9dc;
+  --primary: #f2c14e;
+  --primary-2: #e98fa6;
+  --primary-foreground: #1c120d;
+  --secondary: #35251c;
+  --secondary-foreground: #f5e9dc;
+  --muted: #35251c;
+  --muted-foreground: #c9b6a3;
+  --accent: #35251c;
+  --accent-foreground: #f5e9dc;
+  --destructive: #ff8a7a;
+  --destructive-foreground: #2a0e09;
+  --border: rgb(245 233 220 / 12%);
+  --input: #85705e;
+  --ring: #8fd3c6;
+  --hero: #eba566;
+  --hero-a: #f2c14e;
+  --hero-b: #e9a060;
+  --hero-c: #e893a9;
+  --hero-foreground: #1c120d;
+  --hero-accent: #4d1a0c;
+  --hero-success: #0c3018;
+  --hero-danger: #420b07;
+  --chip-active: #e98fa6;
+  --chip-active-foreground: #1c120d;
+  --pink-soft: #3b2228;
+  --pink-soft-foreground: #f4bccb;
+  --aqua: #8fd3c6;
+  --aqua-foreground: #1c120d;
+  --gold: #f2c14e;
+  --gold-strong: #f2c14e;
+  --success: #7fd4a0;
+  --success-foreground: #0b2614;
+  --success-soft: #173424;
+  --stripe-a: #2e2019;
+  --stripe-b: #261912;
+  --chart-1: #f2c14e;
+  --chart-2: #e98fa6;
+  --chart-3: #eba566;
+  --chart-4: #8fd3c6;
+  --chart-5: #f5e9dc;
+  --sidebar: #2a1c15;
+  --sidebar-foreground: #f5e9dc;
+  --sidebar-primary: #f2c14e;
+  --sidebar-primary-foreground: #1c120d;
+  --sidebar-accent: #35251c;
+  --sidebar-accent-foreground: #f5e9dc;
+  --sidebar-border: rgb(245 233 220 / 12%);
+  --sidebar-ring: #8fd3c6;
+  --glow-neon: rgb(242 193 78 / 42%);
+  --glow-cyan: rgb(233 143 166 / 40%);
+  --glow-sun: rgb(235 165 102 / 45%);
+  --page-glow-a: rgb(242 193 78 / 10%);
+  --page-glow-b: rgb(233 143 166 / 9%);
+  --heading-a: #f2c14e;
+  --heading-b: #efa877;
+  --heading-c: #f0a3b6;
+  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 45%), 0 10px 26px -12px rgb(0 0 0 / 65%);
+  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 8%), 0 2px 4px rgb(0 0 0 / 45%), 0 16px 34px -12px rgb(242 193 78 / 22%);
+  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 9%), 0 4px 8px rgb(0 0 0 / 50%), 0 28px 56px -16px rgb(233 143 166 / 20%);
+  --mood-morning-a: #f2c14e24;
+  --mood-morning-b: #2a1c15cc;
+  --mood-morning-c: #eba56620;
+  --mood-afternoon-a: #8fd3c61f;
+  --mood-afternoon-b: #241810cc;
+  --mood-afternoon-c: #f2c14e1a;
+  --mood-evening-a: #eba56630;
+  --mood-evening-b: #2c1a16cc;
+  --mood-evening-c: #e98fa62a;
+  --mood-night-a: #6f3b1f55;
+  --mood-night-b: #1f1510cc;
+  --mood-night-c: #e98fa620;
+  --scrim: #0e0806;
+  --shadow-ink: 0 0 0;
+  --food-ring: #f2c14e, #eba566, #e98fa6, #fff1d6, #8fd3c6, #f2c14e;
+  --promo-sun-a: #fffaf0;
+  --promo-sun-b: #ffe6a8;
+  --confetti-1: #f2c14e;
+  --confetti-2: #e98fa6;
+  --confetti-3: #eba566;
+  --confetti-4: #8fd3c6;
+  --confetti-5: #fff1d6;
+  --confetti-6: #c9b6a3;
+  --splash-glow-a: rgb(242 193 78 / 26%);
+  --splash-glow-b: rgb(233 143 166 / 16%);
 }
 
 /*
@@ -493,19 +1126,19 @@
 
 @utility glow-neon {
   box-shadow:
-    0 2px 6px -2px rgb(14 10 36 / 30%),
+    0 2px 6px -2px rgb(var(--shadow-ink) / 30%),
     0 14px 32px -12px var(--glow-neon);
 }
 
 @utility glow-cyan {
   box-shadow:
-    0 2px 6px -2px rgb(14 10 36 / 25%),
+    0 2px 6px -2px rgb(var(--shadow-ink) / 25%),
     0 10px 26px -10px var(--glow-cyan);
 }
 
 @utility glow-sun {
   box-shadow:
-    0 4px 10px -4px rgb(14 10 36 / 35%),
+    0 4px 10px -4px rgb(var(--shadow-ink) / 35%),
     0 22px 48px -18px var(--glow-neon),
     0 12px 30px -16px var(--glow-sun);
 }
@@ -516,7 +1149,7 @@
 /* A small striped retro sun (the sign-in sun, as decoration) — used behind
    the logo tile on Home's promo card. */
 @utility promo-sun {
-  background: linear-gradient(to bottom, #fff6d6 0%, #ffd66b 45%, rgb(255 255 255 / 0%) 100%);
+  background: linear-gradient(to bottom, var(--promo-sun-a) 0%, var(--promo-sun-b) 45%, rgb(255 255 255 / 0%) 100%);
   opacity: 0.75;
   mask-image:
     linear-gradient(#000 0 45%, transparent 45%),
@@ -524,11 +1157,11 @@
   mask-composite: add;
 }
 
-/* The ring around the chosen "What's on your mind?" tile: the whole sunset
-   run as a circle (gold → coral → magenta → violet → cyan). Decorative,
-   so fixed colours; it turns slowly (animate-ring-spin). */
+/* The ring around the chosen "What's on your mind?" tile: the palette's
+   whole light run as a circle (--food-ring, e.g. Vice's gold → coral →
+   magenta → violet → cyan). It turns slowly (animate-ring-spin). */
 @utility food-ring {
-  background: conic-gradient(#ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857);
+  background: conic-gradient(var(--food-ring));
 }
 
 /* Sun rays for the celebration overlay: soft light wedges fading out

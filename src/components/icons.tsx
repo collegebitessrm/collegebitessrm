@@ -64,6 +64,7 @@ import { Moped as PhMoped } from "@phosphor-icons/react/dist/ssr/Moped";
 import { MoonStars as PhMoonStars } from "@phosphor-icons/react/dist/ssr/MoonStars";
 import { Orange as PhOrange } from "@phosphor-icons/react/dist/ssr/Orange";
 import { OrangeSlice as PhOrangeSlice } from "@phosphor-icons/react/dist/ssr/OrangeSlice";
+import { Palette as PhPalette } from "@phosphor-icons/react/dist/ssr/Palette";
 import { Phone as PhPhone } from "@phosphor-icons/react/dist/ssr/Phone";
 import { PintGlass as PhPintGlass } from "@phosphor-icons/react/dist/ssr/PintGlass";
 import { Plus as PhPlus } from "@phosphor-icons/react/dist/ssr/Plus";
@@ -200,6 +201,8 @@ export const Moped = make(PhMoped, "Moped");
 export const MoonStars = make(PhMoonStars, "MoonStars");
 /** sold out */
 export const PackageX = make(PhProhibit, "PackageX");
+/** theme picker */
+export const Palette = make(PhPalette, "Palette");
 /** call */
 export const Phone = make(PhPhone, "Phone");
 /** add / stepper */

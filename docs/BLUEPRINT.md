@@ -146,7 +146,7 @@ finding the admin's devices for the new-order push. Push sends run in
 ### Browser-side state
 Stores on `useSyncExternalStore` for cart, theme, toasts and sound. Device
 keys, all prefixed `collegebites.`: `cart.v1`, `theme`, `sound-enabled`,
-`admin-alert-sound`, `confetti-shown`, `milestones-seen`, `notify-asked`,
+`palette` (the chosen theme), `admin-alert-sound`, `confetti-shown`, `milestones-seen`, `notify-asked`,
 `rate-prompted`, `splash-shown` (sessionStorage), `splash` (`"off"`
 disables it). Sign-out clears the cart first.
 
@@ -264,11 +264,19 @@ light: things should look lit, not flat.
   (pickup pass, campus pass, cart bar, promo, banners, celebration, admin
   Today card) the sunset gold → coral → magenta with dusk text in both
   themes. Main actions everywhere are fully rounded pills.
+- **Four themes** (Profile → Theme, per device, on top of Light / Dark /
+  System): **Vice Dusk** (the default, described above), **Electric
+  Sunrise** (purple, neon peach, gold dust; charcoal and magenta at night),
+  **Innovation Hub** (purple, coral, tech blue; navy and electric lime at
+  night) and **Kaapi** (filter coffee, turmeric, rose milk; espresso at
+  night). Each is a full light + dark token set, so every screen, the
+  sign-in scene, the splash, confetti and glows change with it; the
+  contrast audit checks all eight sets. Added 1 Oct 2026.
 - **Lighting kit:** bloom shadows (`glow-neon`, `glow-cyan`, `glow-sun`),
   `rim-light`, `text-sunset` gradient headlines, and a two-glow sky over
   the top of every page. One bloom per screen region.
 - **Contrast:** `npm run audit:contrast` checks every text/surface pair in
-  both themes — both ends of the action gradient, every hero stop, every
+  both modes of all four palettes (and that no palette is missing a token) — both ends of the action gradient, every hero stop, every
   headline-gradient stop on the ground, under the sky and over each Home
   mood — and fails below the minimum. Run it after any colour change.
 - **Type:** Poppins (500/600/700) for display and big numbers, Inter for
