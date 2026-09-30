@@ -99,7 +99,7 @@ export function WelcomeForm({ defaultName }: { defaultName: string }) {
         <p className="mt-8 rounded-2xl bg-secondary px-5 py-4 leading-relaxed text-muted-foreground">
           All orders are handed over at{" "}
           <strong className="font-semibold text-foreground">Gate 3</strong>, never
-          at your room. Payment is cash on delivery.
+          at your room. Pay on delivery — cash or UPI.
         </p>
       </div>
 

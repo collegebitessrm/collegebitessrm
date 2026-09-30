@@ -85,7 +85,7 @@ export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
           })}
         </ul>
         <div className="mt-2 flex items-center justify-between border-t pt-3">
-          <span className="font-semibold">Total · cash on delivery</span>
+          <span className="font-semibold">Total · pay on delivery</span>
           <span className="font-heading text-xl font-bold tabular-nums">{formatRupees(order.totalAmount)}</span>
         </div>
         {order.notes && (

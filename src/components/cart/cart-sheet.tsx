@@ -198,11 +198,11 @@ function CartContents({
           <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
             <li className="flex items-center gap-2.5">
               <Banknote className="size-4 shrink-0 text-rose" aria-hidden="true" />
-              Cash at the gate — exact change helps.
+              Pay on delivery — cash or UPI at the gate.
             </li>
             <li className="flex items-center gap-2.5">
               <QrCode className="size-4 shrink-0 text-rose" aria-hidden="true" />
-              UPI works too — scan and pay when you collect.
+              Paying cash? Exact change helps.
             </li>
           </ul>
         </div>

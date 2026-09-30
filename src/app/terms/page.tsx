@@ -19,7 +19,7 @@ export default function TermsPage() {
           College Bites is a food ordering platform for SRM University AP students, connecting
           students with local partner restaurants.
         </p>
-        <p>Payment is cash on delivery only. Orders are handed over at Gate 3, SRM University AP.</p>
+        <p>Payment is on delivery only — cash or UPI when you collect; nothing is paid in the app. Orders are handed over at Gate 3, SRM University AP.</p>
         <p>
           By using this service you agree to provide accurate contact information and be present
           for pickup at the agreed time.

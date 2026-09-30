@@ -173,7 +173,8 @@ author.
   provider). No email/password, no OTP. On first login (no matching
   `public.users` row yet), the app collects full name + mobile number
   before continuing; returning users skip straight in.
-- **Payments**: Cash on delivery only — there are no payment fields or
+- **Payments**: Pay on delivery only (the site says "Pay on delivery —
+  cash or UPI") — there are no payment fields or
   payment provider anywhere in this codebase. Don't add any. The "About
   College Bites" popup (see below) also mentions UPI as accepted at pickup —
   that's real, but purely physical, an informal option between the runner
@@ -784,9 +785,6 @@ Parked by the developer — do these only when asked.
   value itself (httpOnly, `/admin`-scoped). Store a signed token (HMAC of
   the passcode with a server secret) and compare in constant time
   (`src/lib/admin/passcode.ts` / `passcode-actions.ts`).
-- **`docs/CLIENT-GUIDE.md` payments line** says "Cash on delivery only";
-  UPI at pickup is confirmed fine, so it should read "cash, or UPI at
-  pickup".
 
 **When the client has time**
 - Real **restaurant phone numbers** (all three use the support number).

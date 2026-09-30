@@ -24,9 +24,9 @@ export function AboutDialog({ children }: { children: ReactNode }) {
           kitchens near SRM AP.
         </DialogDescription>
         <p className="mt-3 text-sm text-muted-foreground">
-          Cash on delivery · Pickup at Gate 3
+          Pay on delivery · Pickup at Gate 3
           <br />
-          Scan and pay through UPI too
+          Pay through cash or UPI
         </p>
         <p className="mt-4 text-label text-primary">
           Fast · Reliable · Affordable

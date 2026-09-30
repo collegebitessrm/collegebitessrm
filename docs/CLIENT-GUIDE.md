@@ -80,8 +80,8 @@ developer.
 
 ## Payments
 
-Cash on delivery only — the app never takes payments. Students pay when
-they collect at Gate 3.
+Pay on delivery — students pay by cash or UPI when they collect at Gate 3.
+The app itself never takes payments.
 
 ## Support details students see
 

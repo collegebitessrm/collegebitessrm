@@ -112,7 +112,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           style={{ animationDelay: "130ms" }}
         >
           Your campus food delivery partner. Multiple restaurants, one place — delivered to you
-          at Gate 3. Pay when you collect.
+          at Gate 3. Pay on delivery — cash or UPI.
         </p>
 
         <div

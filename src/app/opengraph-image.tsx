@@ -54,7 +54,7 @@ export default async function OpengraphImage() {
           <div style={{ marginTop: 28, fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>College Bites</div>
           <div style={{ marginTop: 6, fontSize: 34, color: TEAL_TEXT, fontWeight: 700 }}>Crave. Click. Campus.</div>
           <div style={{ marginTop: 22, fontSize: 28, lineHeight: 1.35, maxWidth: 560 }}>
-            Your campus food delivery partner at SRM University AP. Pickup at Gate 3, cash on delivery.
+            Your campus food delivery partner at SRM University AP. Pickup at Gate 3, pay on delivery (cash or UPI).
           </div>
           <div
             style={{
