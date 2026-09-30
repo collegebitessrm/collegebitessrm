@@ -10,25 +10,18 @@ Bites" everywhere; "SRM" only shows in small places (site title, About
 popup footer, admin header, privacy/terms) — keep it that way. Live at
 https://collegebitessrm.vercel.app.
 
-> **Built from MuteBites (VIT-AP).** Launch 1 Oct 2026. What differs from
-> MuteBites:
-> - **No daily ordering schedule.** `app_settings.ordering_mode` is only
->   `'open' | 'closed'`, set by the admin; `ordering_is_open()` just reads
->   it and `place_order()` raises `ordering_paused` when closed
->   (`20260929010000_ordering_switch_and_delivery_minutes.sql`). The app
->   side matches: `OrderingMode` is `"open" | "closed"`, the admin's
->   switch is two-way, closed wording is "Ordering is closed right now".
-> - **`restaurants.delivery_minutes`** (default 40; Biryani Nation 60) —
->   the ticket's "Delivery by" time counts from when the order was placed.
-> - **Migrations are applied through the Supabase connector** (project
->   `cpatbcisnrvyjztyqutq`, `ap-south-1`), still only after the SQL has
->   been shown in chat and approved. `supabase/migrations/` holds exactly
->   what's in the database, in the order it applies on a fresh project.
->   `20260915020000_google_oauth_and_ban.sql` was run by hand in the SQL
->   editor, so it's not in the database's migration history.
-> - Menus: College Bites' own three restaurants
->   (`20260929030000_seed_college_bites_menus.sql`); photos reused from
->   MuteBites where the dish matches, under `public/photos/`.
+Launched 1 Oct 2026. Three partner restaurants (Triangle Food Court,
+Local Home Kitchen, Clg Bites Biryani Nation), cash on delivery, Google
+sign-in only. Ordering is a plain **Open / Closed** switch the admin flips —
+there is no daily schedule — and each restaurant promises delivery within
+its own `delivery_minutes` (40, or 60 for Biryani Nation).
+
+Working rules: never change the database without showing the SQL first
+(see the hard rule at the bottom); migrations are applied through the
+Supabase connector (project `cpatbcisnrvyjztyqutq`, `ap-south-1`) after
+approval. Commit as `collegebitessrm <collegebitessrm@gmail.com>` (set
+repo-locally) — Vercel's Hobby plan refuses to build commits by any other
+author.
 
 ## Stack
 
@@ -49,8 +42,8 @@ https://collegebitessrm.vercel.app.
   cart, Call/WhatsApp) are the navy `bg-primary` pill (teal with navy
   text in dark); selected chips and tabs use `bg-chip-active
   text-chip-active-foreground` (teal). Teal as text is `#007A6B`
-  (`--rose` — the token keeps its MuteBites name, like `--amber` and
-  `--brand-soft`). Fixed 5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/
+  (`--rose` — token names are historical: `--rose` is the teal accent,
+  `--amber` the soft yellow, `--brand-soft` the pink tint). Fixed 5-step ramps (`navy-`/`teal-`/`gold-`/`mint-`/
   `forest-`/`brick-` 100–900) sit alongside semantic tokens that flip per
   theme — prefer the semantic ones. Text on a coloured fill uses its
   `*-foreground` token, never `text-white`. On `bg-ink` use
@@ -182,7 +175,7 @@ https://collegebitessrm.vercel.app.
   before continuing; returning users skip straight in.
 - **Payments**: Cash on delivery only — there are no payment fields or
   payment provider anywhere in this codebase. Don't add any. The "About
-  MuteBites" popup (see below) also mentions UPI as accepted at pickup —
+  College Bites" popup (see below) also mentions UPI as accepted at pickup —
   that's real, but purely physical, an informal option between the runner
   and student handled entirely outside the app, the same as cash; it's
   not tracked, processed, or reconciled by anything here, so it doesn't
@@ -192,17 +185,18 @@ https://collegebitessrm.vercel.app.
   deliberately doesn't have.
 - **Hosting**: Vercel. `vercel.json` pins the serverless function region to
   `bom1` (Mumbai) to match the Supabase project's `ap-south-1` region —
-  found (2026-09-17) that Vercel's default function region is US-East,
-  so every DB/auth call was crossing from Virginia to Mumbai and back on
-  every request, which was the actual cause of slow page loads (far
-  bigger than the redundant `auth.getUser()` call fixed alongside it in
-  `src/lib/profile.ts`). If Supabase's region ever changes, update this
-  to match.
+  Vercel's default function region is US-East, and without the pin every
+  DB/auth call crosses from Virginia to Mumbai and back (2–3 s pages).
+  Pages also read the session once per request (`src/lib/profile.ts`
+  uses `getSession()`; the proxy already verified it with `getUser()`).
+  If Supabase's region ever changes, update this to match.
   Every push to `main` auto-deploys (usually ~30 s). The Hobby plan
   allows 100 deployments a day and builds one at a time, so batch small
   follow-up fixes into one push rather than pushing each tweak. The Vercel
-  CLI works via `npx -y vercel@latest` (`ls mutebites`, `inspect <url>
-  --logs`, `redeploy <url>`) with the saved login. A deploy stuck on
+  CLI works via `npx -y vercel@latest` (`ls collegebitessrm`, `inspect <url>
+  --logs`, `redeploy <url>`) once logged in as the collegebitessrm Vercel
+  account (`npx -y vercel@latest login`). Hobby keeps runtime logs for
+  about an hour only. A deploy stuck on
   "Initializing" with no build logs has, so far, been a Vercel-side
   incident — check https://www.vercel-status.com before redeploying (a
   redeploy just queues behind it).
@@ -233,12 +227,9 @@ same `OrderList` component in a `groupByDate` mode rather than a separate
 one-off component. Every registered student is browsable (read-only, with
 a client-side search box) at `/admin/users`, reached via a "Users" button
 next to "Order history" (a third button, "Reviews", opens `/admin/reviews` —
-see `order_reviews` under Database schema) — this replaced a "Banned users" button that used
-to sit directly on the main dashboard. Banned Users management itself
-still lives on its own page, `/admin/banned` (unchanged), but is now one
-level deeper — reached via a "Banned users" button on `/admin/users`
-instead of straight from the dashboard, and its back-link points to
-`/admin/users` accordingly (`BackToDashboardLink` takes optional
+see `order_reviews` under Database schema). Banned users management lives
+on its own page, `/admin/banned`, reached via a "Banned users" button on
+`/admin/users`, and its back-link points to `/admin/users` (`BackToDashboardLink` takes optional
 `href`/`label` overrides for this).
 
 **Sold out** (`/admin/sold-out`, a "Sold out" pill on the dashboard) lists
@@ -297,10 +288,10 @@ silently re-enables the button.
   team (admin access, open/close ordering, handling orders, sold out,
   bans, rewards). Keep it in step when an admin flow or label changes.
 - `docs/design-reference.webp` — the client's brand sheet; the target look.
-- `docs/MUTEBITES-BLUEPRINT.md` — the whole project history (every
-  session, commit and migration), setup steps outside the code, lessons
-  learned, and a porting checklist for rebuilding at another university.
-  Update it alongside this file when something significant changes.
+- `docs/BLUEPRINT.md` — the whole project in one place: setup outside
+  the code (Supabase, Google, Vercel, GitHub), architecture, business
+  rules, every migration, lessons learned and what's still open. Update it
+  alongside this file when something significant changes.
 - `src/app` — routes (App Router)
 - `src/app/robots.ts` — generates `/robots.txt` (everything but `/admin`
   crawlable). Excluded from the `src/proxy.ts` matcher like `favicon.ico`,
@@ -354,7 +345,7 @@ silently re-enables the button.
 - `supabase/migrations/` — hand-written SQL migrations (see rule below)
 - `public/photos/dishes/` — dish photos (one file per dish kind, shared by
   every restaurant and size that serves it) and `public/photos/covers/` —
-  restaurant hero banners, all reused from MuteBites — matched to database rows by name
+  restaurant hero banners — matched to database rows by name
   in `src/lib/data/dish-photos.ts`, deliberately **not** a database column
   (no schema change needed to add or swap a photo). `getRestaurantCoverPhoto()`
   and `getDishPhoto()` look up by exact restaurant/dish name; anything
@@ -413,8 +404,7 @@ silently re-enables the button.
   `/privacy`, `/terms` or a tab opened in the background:
   - A short logo fade-in on the mint ground: the navy tile rises in and
     settles, "College Bites" (Fraunces) and the tagline follow, a hold,
-    then the screen fades to the app. Timings in `config.ts`. (MuteBites'
-    running-mascot splash was cut for its own mascot and was removed.)
+    then the screen fades to the app. Timings in `config.ts`.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
     `splash.css`). `engine.ts` is all the motion — Web Animations on
     transform/opacity — in one self-contained function that
@@ -507,8 +497,9 @@ free biryani was handed over (`user_id` primary key = once per student,
 row; admins select all, insert (with `marked_by = auth.uid()`) and delete
 (undo). No update policy. Whether a student *qualifies* is checked in the
 app (`getUnlockedMilestones()`), not the database — see **Profile** above.
-MuteBites' own menu migrations and one-off fixes were not carried over
-(see the blueprint's College Bites port log).
+The timestamps before 29 Sep are the schema's original design order; a
+few of those files mention VIT-AP / Main Gate in their SQL comments —
+left as they are, because applied migrations are never edited.
 Migrations are applied through the Supabase connector (project
 `cpatbcisnrvyjztyqutq`), only after the SQL has been shown in chat and
 approved.
@@ -539,8 +530,8 @@ on `orders`).
   first-time vs. returning users apart (row exists or not).
 - **`restaurants`** — `name`, `phone`, `description`, `cuisine_tags` (text
   array), `is_active`.
-- **`dish_categories`** — menu sections scoped to a restaurant (e.g. "VEG
-  STARTERS", "NON-VEG BIRYANI"), with `sort_order` for display.
+- **`dish_categories`** — menu sections scoped to a restaurant (e.g. "Veg
+  Starters (500ml)", "Chicken Biryani"), with `sort_order` for display.
 - **`dishes`** — belongs to a restaurant and (optionally) a category;
   `price`, `is_veg`, `note` (freeform, e.g. "Thursday Only"), `is_available`.
 - **`orders`** — `user_id`, `restaurant_id`, `status` (`order_status` enum:
@@ -561,13 +552,11 @@ on `orders`).
   `set_daily_order_number` trigger (`before insert on orders`) via the
   `daily_order_counters` table below — never derived by counting/ranking
   on read, so concurrent orders in the same second can't collide or show
-  differently to student vs. admin. `orderReference()` (the old
-  hash-of-uuid cosmetic token, e.g. "#4F2A") is gone; every display now
-  reads `daily_number` directly.
+  differently to student vs. admin. Every display reads `daily_number`
+  directly.
 - **`orders.delivered_at`** (nullable timestamptz) — set to `now()` by the
   `set_delivered_at` trigger whenever `status` becomes `delivered`
-  (single or bulk "Mark delivered"); backfilled from `updated_at` for
-  orders delivered before it existed. The 7-day review window counts from
+  (single or bulk "Mark delivered"). The 7-day review window counts from
   it.
 - **`order_reviews`** — one row per order (`order_id` primary key),
   `user_id`, optional `note` (≤ 300 chars), `created_at`. **`order_item_ratings`**
@@ -623,9 +612,9 @@ on `orders`).
   authenticated) just reads it and is the single source of truth —
   `place_order()` checks it, and the app reads it via `getOrderingState()`
   (`src/lib/data/settings.ts`), with the wording ("Ordering is closed right
-  now") from `describeOrdering()` in `src/lib/ordering.ts`. MuteBites'
-  `ordering_enabled` boolean was replaced in the same migration
-  (`20260929010000_ordering_switch_and_delivery_minutes.sql`).
+  now") from `describeOrdering()` in `src/lib/ordering.ts`. Defined in
+  `20260929010000_ordering_switch_and_delivery_minutes.sql`, which also
+  drops the earlier `ordering_enabled` boolean it replaced.
 - **`restaurants.delivery_minutes`** (`int not null default 40`, 5–240) —
   how long after placing an order it's promised by. The ticket, the admin
   order page and "Current orders" all compute from it (`src/lib/date.ts`).
@@ -649,8 +638,7 @@ RLS is enabled on every table:
   before anything else (raising `ordering_paused` while the admin has
   ordering closed) — enforced in the function itself, not just hidden in the UI,
   since a direct PostgREST call would otherwise bypass an app-level check.
-  Since [`20260922000000_place_order_rate_limit.sql`](supabase/migrations/20260922000000_place_order_rate_limit.sql)
-  it also rate-limits, right after the ban check: at most **5 orders per
+  It also rate-limits right after the ban check: at most **5 orders per
   student per minute** (`order_rate_limited`) and **8 unfinished orders**
   (not delivered/cancelled) at once (`too_many_open_orders`), under a
   per-student `pg_advisory_xact_lock` so simultaneous taps can't both slip
@@ -665,10 +653,10 @@ RLS is enabled on every table:
   violations POST to `/api/csp-report` (excluded from the proxy matcher)
   and land in Vercel logs as `[csp] …`. Switch the header key to
   `Content-Security-Policy` once the logs are clean; add any new external
-  origin to it. (College Bites launched with it still report-only: the
-  Vercel CLI on the dev machine is logged in to the MuteBites account, so
-  the College Bites project's `[csp]` logs haven't been read yet — check
-  them in the Vercel dashboard → Logs first.)
+  origin to it. (Launched still report-only; to switch, browse the
+  signed-in screens, then search the Vercel dashboard → Logs for `csp`
+  within the hour — Hobby keeps about an hour of logs. A real report
+  logs as a Warning.)
   It raises short error keys
   (`banned`, `restaurant_closed`, `dish_unavailable`, `ordering_paused`, …) that
   `src/lib/orders/actions.ts` maps to messages. Admins
@@ -722,7 +710,7 @@ RLS is enabled on every table:
   `place_order()`. Powers Home's "Trending this week" popup
   (`src/components/home/trending-dialog.tsx`, opened from a flame button in
   `home-header.tsx` — same trigger/dialog pattern as the logo's "About
-  MuteBites" popup): top ordered dishes campus-wide over a rolling window
+  College Bites" popup): top ordered dishes campus-wide over a rolling window
   (`orders.status <> 'cancelled'`, restaurant `is_active`, dish
   `is_available`). Needed because students can only read their *own*
   orders/order_items under RLS — there's no other way to compute a
@@ -730,10 +718,10 @@ RLS is enabled on every table:
   name + a number), never anything per-student, so nothing here leaks who
   ordered what. Since
   [`20260921020000_trending_skip_banned.sql`](supabase/migrations/20260921020000_trending_skip_banned.sql)
-  it also skips orders placed before launch (20 Sep 2026, IST) and orders
-  from any **banned phone number** — the pre-launch test accounts were
-  banned to keep them out, so unbanning one brings its orders back into
-  Trending (and into the Home card slide order, which uses the same RPC).
+  it also skips orders placed before launch (1 Oct 2026, IST) and orders
+  from any **banned phone number** — banning a test account keeps its
+  orders out, and unbanning brings them back into Trending (and into the
+  Home card slide order, which uses the same RPC).
   `highly_reordered_dishes()` / `my_weekly_rank()` deliberately don't
   filter either way.
 
@@ -754,8 +742,8 @@ once confirmed unused — it no longer exists in the database.
   `percentile <= 50` and at least 5 students participated that week — a
   UI-only choice (not a security one) so the badge stays flattering and
   the percentile stays statistically meaningful, not a database
-  restriction. The raw percentile is never shown directly — students found
-  "Top 40%" confusing, so the UI maps it to one of three tier labels
+  restriction. The raw percentile is never shown directly — "Top 40%"
+  reads as confusing, so the UI maps it to one of three tier labels
   instead (Top orderer `<=10%`, Frequent orderer `<=25%`, Active orderer
   `<=50%`); `percentile`/`rank`/`totalStudents` stay in the returned row
   for that mapping and are the only reason the raw numbers still exist.
@@ -775,46 +763,20 @@ once confirmed unused — it no longer exists in the database.
 No other open schema TODOs right now (see "Pending decisions" below for
 one that will eventually need its own migration, once approved).
 
-## Pending decisions
+## Ideas not started
 
-- **Fully automated WhatsApp order confirmation** — proposed
-  2026-09-18, not started. Today, the admin dashboard's WhatsApp button
-  (`src/components/admin/order-card.tsx`) just opens a `wa.me` link with
-  prefilled text that the admin has to manually send, then manually reads
-  the student's reply and clicks "Confirm" themselves. The plan is to
-  fully automate this end to end: the moment `placeOrder()`
-  (`src/lib/orders/actions.ts`) succeeds, the server sends the
-  confirmation message itself via the WhatsApp Business Platform (Cloud
-  API, directly or through a provider like Gupshup/AiSensy/Interakt), and
-  when the student replies "yes" a webhook auto-flips the order to
-  `confirmed` — no admin click at all for that step. The manual WhatsApp
-  button gets removed once this is live and verified working.
-
-  **Blocked on client confirmation before any implementation**, because
-  it has real, ongoing implications beyond this codebase:
-  - A recurring cost: Meta's current utility-message rate is ~₹0.115 +
-    18% GST per message (negligible at today's order volume — roughly
-    ₹100-200/month — but it's real money the client needs to knowingly
-    take on, plus a possible BSP markup/subscription if going through a
-    third-party provider instead of Meta directly).
-  - The number used (currently `9989955833`, see `src/lib/support.ts`)
-    would need to be dedicated to the WhatsApp Business Platform —
-    it can no longer double as a number someone checks in the normal
-    WhatsApp app; replies get read via the provider's web inbox instead.
-  - Meta business verification and message-template pre-approval, which
-    has its own turnaround time (hours to a few days) and requires the
-    client to sign off on the exact wording before it's submitted.
-  - A new webhook endpoint (security-sensitive — needs signature
-    verification) to receive replies and match them back to the right
-    pending order; a student with more than one pending order at once
-    needs a disambiguation rule that doesn't exist yet.
-
-  Next step: the dev asks the client about the three bullets above (cost,
-  giving up normal app access on that number, and template wording) and
-  confirms before any code or schema work starts. Once approved, this
-  will need its own migration (e.g. tracking a sent message's id/status
-  against an order) — subject to the schema-change hard rule below like
-  everything else.
+- **Automated WhatsApp order confirmation** — not discussed with the client
+  yet. Today the admin's WhatsApp button (`src/components/admin/order-card.tsx`)
+  opens a `wa.me` link with prefilled text; the admin sends it, reads the
+  reply and taps Confirm. Automating it (the server sends the message via
+  the WhatsApp Business Platform the moment `placeOrder()` succeeds, and a
+  webhook confirms on "yes") would need the client to agree first to: a
+  per-message cost (~₹0.115 + GST from Meta, plus any provider fee), the
+  support number (`9989955833`, `src/lib/support.ts`) moving to the
+  Business Platform so it can't be used in the normal WhatsApp app, and
+  Meta's business verification and template approval. It would also need
+  a signature-verified webhook, a rule for students with more than one
+  pending order, and its own migration — subject to the hard rule below.
 
 ## Hard rule: schema changes
 

@@ -6,8 +6,8 @@ payments.
 
 Live: https://collegebitessrm.vercel.app
 
-Built from MuteBites (VIT-AP); see [`docs/MUTEBITES-BLUEPRINT.md`](docs/MUTEBITES-BLUEPRINT.md)
-and its College Bites port log.
+Project overview, setup and history: [`docs/BLUEPRINT.md`](docs/BLUEPRINT.md).
+Running the app day to day: [`docs/CLIENT-GUIDE.md`](docs/CLIENT-GUIDE.md).
 
 **Detailed project notes — design system, database schema, admin access,
 the ordering switch, ratings and every non-obvious decision — live in
@@ -35,7 +35,9 @@ Create `.env.local` with:
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon (public) key |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only; used only to send the admin's new-order push |
 | `ADMIN_PASSCODE` | Second gate for `/admin` — no value means nobody gets in |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Web push keys (`npx web-push generate-vapid-keys`) |
 
 The same variables are set in the Vercel project for production.
 
@@ -50,10 +52,13 @@ The same variables are set in the Vercel project for production.
 
 ## Database
 
-Migrations are hand-written SQL in `supabase/migrations/`, applied by hand in
-the Supabase SQL editor (no CLI). Never edit one that's already applied — add
-a new timestamped file. Schema changes get reviewed as SQL before they're run.
+Migrations are hand-written SQL in `supabase/migrations/`, applied through the
+Supabase connector after the SQL has been reviewed and approved. The folder
+holds exactly what the database has. Never edit one that's already applied —
+add a new timestamped file.
 
 ## Deploying
 
-Pushing to `main` deploys to production on Vercel automatically.
+Pushing to `main` deploys to production on Vercel automatically. Commits must
+be authored by `collegebitessrm <collegebitessrm@gmail.com>` (set in this
+repo's git config) — Vercel's Hobby plan won't build anyone else's commits.

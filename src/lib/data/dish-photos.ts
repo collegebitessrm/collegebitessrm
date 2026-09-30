@@ -7,9 +7,8 @@
 // Several dishes share one file on purpose: the same dish at another
 // restaurant, a "(White)" version, a Single / Full size.
 //
-// The photos come from MuteBites (the app this one was built from). A
-// changed photo gets a NEW filename rather than overwriting the old one —
-// an outside cache kept serving MuteBites' old files by URL.
+// A changed photo gets a NEW filename rather than overwriting the old one —
+// an outside cache can keep serving an old file by its URL.
 
 const COVERS = "/photos/covers";
 const D = "/photos/dishes";
