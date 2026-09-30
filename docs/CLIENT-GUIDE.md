@@ -20,7 +20,7 @@ A new admin account can only be added by the developer.
 
 ### Open or close ordering
 
-The pastel **Today** card at the top of admin has an
+The sunset **Today** card at the top of admin has an
 **Open / Closed** switch.
 
 - **Open** — students can order from every restaurant that's turned on.
@@ -91,6 +91,7 @@ The app itself never takes payments.
 ## If something looks wrong
 
 - Pull down to refresh, or tap **Reload** in the admin header.
-- A page that says "Token #404" is just a wrong link.
+- A page that says "Token #404" (with a little scooter lost on the road) is
+  just a wrong link.
 - Anything else: contact the developer with a screenshot and what you
   tapped.

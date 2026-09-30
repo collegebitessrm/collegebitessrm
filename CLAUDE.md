@@ -16,6 +16,12 @@ sign-in only. Ordering is a plain **Open / Closed** switch the admin flips —
 there is no daily schedule — and each restaurant promises delivery within
 its own `delivery_minutes` (40, or 60 for Biryani Nation).
 
+Redesigned on 30 Sep 2026 in 11 steps: the Vice Dusk × Leonida Gold
+palette and lighting kit, Poppins + Inter, Phosphor duotone icons, the
+floating bottom bar, the sunset sign-in scene, the Home filter, and new
+menu / cart / pickup pass / campus pass / overlay designs. Summary in
+`docs/BLUEPRINT.md` §7; the details are in the sections below.
+
 Working rules: never change the database without showing the SQL first
 (see the hard rule at the bottom); migrations are applied through the
 Supabase connector (project `cpatbcisnrvyjztyqutq`, `ap-south-1`) after
@@ -46,9 +52,10 @@ author.
   text-chip-active-foreground` (cyan); `text-aqua` for cuisines/info,
   `text-primary` for links, `--gold` / `--gold-strong` for stars and
   highlights (gold is never text on light). The hero surfaces (`bg-hero` +
-  `surface-hero`: ticket, member card, cart bar, banners, admin Today card,
-  celebration) are the sunset gradient with **dusk text in both themes** —
-  secondary lines at `text-hero-foreground/85` or stronger (fainter fails
+  `surface-hero`: pickup pass, campus pass, cart bar, promo, banners, admin
+  Today card, celebration) are the sunset gradient with **dusk text in both
+  themes** — secondary lines at `text-hero-foreground/85` or stronger, and
+  full strength for small text on a /10 tile (fainter fails
   on the magenta end), accents `text-hero-accent` / `-hero-success` /
   `-hero-danger`. **Lighting kit** (use it, so nothing looks flat):
   `glow-neon` / `glow-cyan` / `glow-sun` bloom shadows, `rim-light`,

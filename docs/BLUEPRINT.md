@@ -261,8 +261,9 @@ light: things should look lit, not flat.
   lilac wells, deep text `#1A0F3D`. Dark: dusk → `#1A1238` → `#251A4E`
   with a rim light on cards. Actions are a gradient pill (magenta → violet
   in light, neon → tangerine in dark); selected chips cyan; hero surfaces
-  (ticket, member card, cart bar, banners, admin Today card) the sunset
-  gold → coral → magenta with dusk text in both themes.
+  (pickup pass, campus pass, cart bar, promo, banners, celebration, admin
+  Today card) the sunset gold → coral → magenta with dusk text in both
+  themes. Main actions everywhere are fully rounded pills.
 - **Lighting kit:** bloom shadows (`glow-neon`, `glow-cyan`, `glow-sun`),
   `rim-light`, `text-sunset` gradient headlines, and a two-glow sky over
   the top of every page. One bloom per screen region.
@@ -281,6 +282,30 @@ light: things should look lit, not flat.
   `icon-tint-primary` colour it like the brand sheet's two-tone icons.
 - **Motion:** CSS and Web Animations only; everything respects reduced
   motion. The theme toggle cross-fades.
+- **The screens (30 Sep 2026 redesign, 11 steps):**
+  - *Sign-in:* a Vice City sunset scene — striped retro sun on the horizon,
+    violet sea, two palm silhouettes, three real dishes floating as prints —
+    under a frosted sheet with the tagline in the sunset gradient and
+    Google's white sign-in button. Golden hour in light mode, neon dusk
+    with stars in dark; the sun rises as the startup splash fades.
+  - *Home:* sky header ("Hey, <name>" in the gradient), pill search,
+    "What's on your mind?" food-type tiles, sticky filter chips and a
+    filter sheet (Swiggy / Zomato style, state in the URL), a sunset promo,
+    a "Popular this week" / "Campus favourites" photo row, and restaurant
+    cards with cuisine and delivery-time chips.
+  - *Menu and cart:* chips header, a sunset "tried N of M" bar, section
+    headings with food icons, a "+" that grows into the stepper, pink
+    prices; the cart total in the gradient and a shimmering "Place order".
+  - *Orders:* the pickup pass (token, delivery time, Gate 3) with a road
+    where a scooter rides from the kitchen to Gate 3 as the status changes
+    live; status chips in the brand sheet's colours.
+  - *Profile:* the campus pass (initials in a turning neon ring, stat
+    tiles), shining unlocked milestones and sunset progress rings, the
+    free-biryani card with a progress bar, icon rows.
+  - *Everything else:* dusk-backed dialogs, a "wrong turn" 404 / error card
+    (the scooter lost on the road), plates that pop in on empty states, a
+    celebration with turning light rays, pill toasts, coral-shimmer
+    skeletons.
 - **Every page has exactly one `<h1>`.** Check changes at 320 px, light
   and dark.
 
@@ -345,11 +370,17 @@ the admin taps "Tap to arm sound" each visit.
 | Security revoke didn't take | The function's access came through PUBLIC, not `anon` | Revoke from `public, anon`, grant to `authenticated` |
 | Several migrations sent at once ran out of order | Parallel tool calls | Apply migrations strictly one at a time |
 | Logo tile bounds wrong | Glow specks and the navy wordmark counted as "tile" | Detect by rows/columns with a real run of navy; stop at the first gap |
-| Navy read as black, yellow too loud | Brief's exact values on phone screens | Lift navy to `#173F6B`, soften yellow to `#F6DC8A`, more pastel surfaces |
+| Navy read as black, yellow too loud | Brief's exact values on phone screens | Lift navy to `#173F6B`, soften yellow to `#F6DC8A`, more pastel surfaces (palette since replaced by the 30 Sep redesign) |
 | Pastel mood washes too strong for the heading | Alpha too high | Contrast audit now checks the heading over each mood |
 | First GTA-inspired palette read as "AI-picked" and bland | Evenly spaced swatches on flat surfaces | Design around light: glows, rim light, gradients that bleed into each other; hand-tune hues off the obvious values |
 | Neon magenta can't carry white text (3.5:1) | Bright fills | Dusk text on every neon/sunset fill; in light mode the action gradient is deep magenta → violet with white text |
 | Gradient headlines failed over the Home sky | The sky brightens the dark ground | The audit checks every gradient stop over every mood; the dark heading stops are lifted |
+| Sign-in sea covered the palms and dishes | Centring the sky column with a transform made it its own layer | Centre with `inset-0 mx-auto`; no transform on a container whose children must stack against siblings |
+| Photos "never loaded" while checking the site | The in-app browser pane was hidden, so lazy images never started | Not a site bug; judge image loading on a phone or a visible pane |
+| First view of some photos was slow | Four 1.3–2.6 MB source photos; the image optimiser resizes on first request | Keep sources ≤ ~1200px and a few hundred KB; load the first card's cover eagerly |
+| Lint: "Cannot create components during render" | Picking an icon component inside a component body | Choose it in the parent and pass it in as a prop |
+| A flipped scooter icon un-flipped while bobbing | The icon's own mirrored transform is overridden by a CSS transform animation | Flip with the separate CSS `scale` property and animate a wrapper |
+| Faded (/75, /85) text failed on the magenta end of the sunset | The hero's brightest stop | Full-strength dusk text for anything small on the hero; the audit checks every stop |
 | Share card build failed | It read photos that weren't in the repo | Literal photo paths; update them if photos change |
 | Disabled button still clickable | Base UI's trigger overrides `disabled` from `render` | Put `disabled` on the trigger itself |
 | `loading.tsx` at the app root flashed everywhere | Root loading is every route's fallback | Home lives in a `(home)` route group |
