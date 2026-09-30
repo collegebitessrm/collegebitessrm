@@ -293,6 +293,10 @@ silently re-enables the button.
 
 ## Project structure
 
+- `docs/CLIENT-GUIDE.md` — the plain-English guide for the College Bites
+  team (admin access, open/close ordering, handling orders, sold out,
+  bans, rewards). Keep it in step when an admin flow or label changes.
+- `docs/design-reference.webp` — the client's brand sheet; the target look.
 - `docs/MUTEBITES-BLUEPRINT.md` — the whole project history (every
   session, commit and migration), setup steps outside the code, lessons
   learned, and a porting checklist for rebuilding at another university.
@@ -661,7 +665,10 @@ RLS is enabled on every table:
   violations POST to `/api/csp-report` (excluded from the proxy matcher)
   and land in Vercel logs as `[csp] …`. Switch the header key to
   `Content-Security-Policy` once the logs are clean; add any new external
-  origin to it.
+  origin to it. (College Bites launched with it still report-only: the
+  Vercel CLI on the dev machine is logged in to the MuteBites account, so
+  the College Bites project's `[csp]` logs haven't been read yet — check
+  them in the Vercel dashboard → Logs first.)
   It raises short error keys
   (`banned`, `restaurant_closed`, `dish_unavailable`, `ordering_paused`, …) that
   `src/lib/orders/actions.ts` maps to messages. Admins

@@ -100,6 +100,13 @@ as it was; this log lists where College Bites deliberately differs.
   tagline on mint, keeping the same safety rules (once per session, skip
   paths, tap to skip, reduced motion, 9 s failsafe).
 
+**Launch check (30 Sep, for 1 Oct)**
+- Database clean for launch: 0 orders, 2 admins, ordering open, all 3
+  restaurants on, nothing sold out. Security advisor: expected notices only.
+- Content policy kept report-only (the dev machine's Vercel CLI is the
+  MuteBites account, so College Bites' logs weren't readable from here).
+- Client guide written: `docs/CLIENT-GUIDE.md`.
+
 ---
 
 ## Contents
