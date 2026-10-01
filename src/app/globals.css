@@ -1194,13 +1194,31 @@
   background-image: var(--hero-surface);
 }
 
-/* Home promo speed lines (PromoCard). Static at rest; they streak under
-   no-preference (promo-streak). */
+/* Home promo (PromoCard). The resting state — what reduced motion shows:
+   the rider parked at the foot of the road (route point A, scene
+   percentages), sitting on the road by its wheels; speed lines, dust and
+   the arrival burst hidden. The 9 s delivery run is under no-preference. */
+.promo-route {
+  translate: 33% 93%;
+  pointer-events: none;
+}
+.promo-rider {
+  translate: -50% -100%;
+  transform-origin: 50% 100%;
+}
+.promo-trail,
+.promo-dust,
+.promo-burst {
+  opacity: 0;
+}
 .promo-streak {
   stroke: currentColor;
   stroke-width: 2.4;
   stroke-linecap: round;
-  opacity: 0.5;
+}
+.promo-burst {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 /* Each palette's own decoration (ThemeMotif, the sign-in scene): shown
@@ -1416,24 +1434,42 @@
   .animate-float {
     animation: float 4.8s ease-in-out infinite alternate;
   }
-  /* Home promo (PromoCard): the rider rides in along the road and keeps a
-     gentle bob, speed lines streak behind, then the Gate 3 pin drops by
-     the tower and its shadow ring pulses. Held while the splash is up. */
+  /* Home promo (PromoCard): one 9 s delivery run on a loop, every part on
+     the same clock (same duration and delay) so they stay in step — pull
+     in (0–9%), idle (9–18%), ride the S-bend to the gate (18–70%), ride in
+     (70–74%), pin pops / rings / bursts (72–88%), rest, repeat. */
+  .promo-route {
+    animation: promo-route 9s linear 0.3s infinite both;
+  }
   .promo-rider {
-    animation: promo-ride-in 1.1s var(--ease-out-expo) 0.2s both;
+    animation: promo-rider 9s linear 0.3s infinite both;
   }
-  .promo-bob {
-    animation: promo-bob 0.7s ease-in-out 1.3s infinite alternate;
+  .promo-trail {
+    animation: promo-trail 9s linear 0.3s infinite both;
   }
-  .promo-streak {
-    animation: promo-streak 0.9s linear infinite;
-    transform-box: fill-box;
+  .promo-dust {
+    animation: promo-dust 9s ease-out 0.3s infinite both;
+  }
+  .promo-dust-2 {
+    animation-name: promo-dust-2;
   }
   .promo-pin {
-    animation: promo-pin-drop 0.75s var(--ease-out-expo) 1.25s both;
+    animation: promo-pin 9s ease-in-out 0.3s infinite both;
+    transform-origin: 50% 85%;
   }
   .promo-pin-ring {
-    animation: promo-pin-ring 1.8s ease-out 2s infinite;
+    animation: promo-ring 9s ease-out 0.3s infinite both;
+  }
+  .promo-burst {
+    animation: promo-burst 9s ease-out 0.3s infinite both;
+  }
+  /* Engine buzz, always on (even idling). */
+  .promo-bob {
+    animation: promo-bob 0.32s ease-in-out infinite alternate;
+  }
+  .promo-streak {
+    animation: promo-streak 0.6s linear infinite;
+    transform-box: fill-box;
   }
   html:is([data-splash="play"], [data-splash="run"]) :is(.promo-scene, .promo-scene *) {
     animation-play-state: paused;
@@ -1632,28 +1668,247 @@
   }
 }
 
-@keyframes promo-ride-in {
-  from {
+/* The route: the road's lane dashes, measured on the four scenes (scene
+   percentages, the rider's wheels on the lane). Segment times follow the
+   on-screen distance, slowing a little with distance (perspective). */
+@keyframes promo-route {
+  0% {
+    translate: 22% 110%;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  9% {
+    translate: 33% 93%;
+  }
+  18% {
+    translate: 33% 93%;
+    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  }
+  24% {
+    translate: 45% 90%;
+  }
+  29.7% {
+    translate: 56% 87%;
+  }
+  35.1% {
+    translate: 66% 84%;
+  }
+  40.3% {
+    translate: 75% 79.5%;
+  }
+  45.5% {
+    translate: 83% 73.5%;
+  }
+  48.8% {
+    translate: 85.5% 66.5%;
+  }
+  52.7% {
+    translate: 81.5% 61.3%;
+  }
+  58.2% {
+    translate: 75.3% 58.5%;
+  }
+  64.7% {
+    translate: 68.5% 56.5%;
+  }
+  70% {
+    translate: 63.5% 54%;
+    animation-timing-function: ease-out;
+  }
+  74%,
+  100% {
+    translate: 63% 52.5%;
+  }
+}
+
+/* Size with distance, and the turn at the bend (x flips through 0, which
+   reads as the scooter swinging round). */
+@keyframes promo-rider {
+  0% {
     opacity: 0;
-    translate: -70% 24%;
-    scale: 0.78;
+    scale: 1.08;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
-  45% {
+  4% {
     opacity: 1;
   }
-  to {
-    opacity: 1;
-    translate: 0 0;
+  9%,
+  18% {
     scale: 1;
+  }
+  24% {
+    scale: 0.97;
+  }
+  29.7% {
+    scale: 0.92;
+  }
+  35.1% {
+    scale: 0.86;
+  }
+  40.3% {
+    scale: 0.79;
+  }
+  45.5% {
+    scale: 0.68;
+  }
+  48.8% {
+    scale: 0.56;
+  }
+  52.7% {
+    scale: -0.46 0.46;
+  }
+  58.2% {
+    scale: -0.39 0.39;
+  }
+  64.7% {
+    scale: -0.33 0.33;
+  }
+  70% {
+    opacity: 1;
+    scale: -0.27 0.27;
+    animation-timing-function: ease-in;
+  }
+  74%,
+  100% {
+    opacity: 0;
+    scale: -0.1 0.1;
+  }
+}
+
+/* Speed lines only while moving. */
+@keyframes promo-trail {
+  0% {
+    opacity: 0;
+  }
+  2%,
+  7% {
+    opacity: 0.85;
+  }
+  10%,
+  18% {
+    opacity: 0;
+  }
+  21%,
+  68% {
+    opacity: 0.85;
+  }
+  71%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A puff of dust as it pulls away from idle. */
+@keyframes promo-dust {
+  0%,
+  17% {
+    opacity: 0;
+    scale: 0.4;
+    translate: 0 0;
+  }
+  19% {
+    opacity: 0.8;
+    scale: 1;
+  }
+  26%,
+  100% {
+    opacity: 0;
+    scale: 1.9;
+    translate: -60% -30%;
+  }
+}
+
+@keyframes promo-dust-2 {
+  0%,
+  18% {
+    opacity: 0;
+    scale: 0.4;
+    translate: 0 0;
+  }
+  20.5% {
+    opacity: 0.7;
+    scale: 1;
+  }
+  28%,
+  100% {
+    opacity: 0;
+    scale: 2;
+    translate: -80% -50%;
+  }
+}
+
+@keyframes promo-pin {
+  0%,
+  70% {
+    scale: 1;
+    translate: 0 0;
+  }
+  72.5% {
+    scale: 1.32;
+    translate: 0 -14%;
+  }
+  76% {
+    scale: 0.94;
+    translate: 0 0;
+  }
+  79% {
+    scale: 1.04;
+  }
+  82%,
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes promo-ring {
+  0%,
+  70% {
+    opacity: 0.6;
+    scale: 1;
+  }
+  72% {
+    opacity: 1;
+    scale: 0.8;
+  }
+  88% {
+    opacity: 0;
+    scale: 2.6;
+  }
+  94% {
+    opacity: 0;
+    scale: 1;
+  }
+  100% {
+    opacity: 0.6;
+    scale: 1;
+  }
+}
+
+@keyframes promo-burst {
+  0%,
+  71% {
+    opacity: 0;
+    scale: 0.5;
+    translate: 0 0;
+  }
+  73% {
+    opacity: 1;
+    scale: 1.2;
+  }
+  86%,
+  100% {
+    opacity: 0;
+    scale: 0.6;
+    translate: var(--dx) var(--dy);
   }
 }
 
 @keyframes promo-bob {
   from {
-    transform: translateY(1.5%) rotate(-1deg);
+    transform: translateY(0) rotate(-0.6deg);
   }
   to {
-    transform: translateY(-1.5%) rotate(1deg);
+    transform: translateY(-1.8%) rotate(0.6deg);
   }
 }
 
@@ -1663,40 +1918,11 @@
     translate: 35% 0;
   }
   30% {
-    opacity: 0.9;
+    opacity: 1;
   }
   100% {
     opacity: 0;
-    translate: -40% 0;
-  }
-}
-
-@keyframes promo-pin-drop {
-  from {
-    opacity: 0;
-    translate: 0 -140%;
-  }
-  55% {
-    opacity: 1;
-    translate: 0 6%;
-  }
-  78% {
-    translate: 0 -5%;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
-
-@keyframes promo-pin-ring {
-  from {
-    opacity: 0.9;
-    scale: 0.6;
-  }
-  to {
-    opacity: 0;
-    scale: 1.7;
+    translate: -45% 0;
   }
 }
 

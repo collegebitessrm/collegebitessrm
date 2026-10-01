@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import { MapPin } from "@/components/icons";
 
@@ -18,12 +19,16 @@ const SCENES = [
 /**
  * Home's promo: the campus promise in one short line and one plain
  * sentence on the lit hero card, with the brand sheet's scene on the right
- * — the palette's own campus, and the delivery rider riding in along the
- * road (speed lines streaking behind), then a Gate 3 pin dropping by the
- * tower. One small touch per palette: Vice's stars and Sunrise's sparkles
- * twinkle, Hub's node pulses, Kaapi's food box steams. All CSS
- * (`promo-*` in globals.css, inside no-preference — reduced motion shows
- * the finished scene, still), and it holds while the splash is up.
+ * — the palette's own campus and a delivery run that loops every 9 s: the
+ * rider pulls in, idles, rides the road's S-bend up to the campus
+ * (shrinking with distance, turning at the bend, speed lines and a puff of
+ * dust while moving), rides into the gate, and the Gate 3 pin pops with a
+ * ring and a burst. One small touch per palette: Vice's stars and
+ * Sunrise's sparkles twinkle, Hub's node pulses, Kaapi's food box steams.
+ * All CSS (`promo-*` in globals.css): the route is the road's lane dashes,
+ * measured in scene percentages (the same on all four scenes). Reduced
+ * motion shows the rider parked at the foot of the road, still; it holds
+ * while the splash is up.
  */
 export function PromoCard() {
   return (
@@ -36,6 +41,16 @@ export function PromoCard() {
     </div>
   );
 }
+
+/* Arrival burst around the pin's head (scene viewBox 100 × 61). */
+const BURST = [
+  [0, -7],
+  [6, -4],
+  [7, 2],
+  [-6, -4],
+  [-7, 2],
+  [0, 6],
+] as const;
 
 function PromoScene() {
   return (
@@ -69,8 +84,9 @@ function PromoScene() {
         <circle cx="93" cy="5" r="0.8" fill="currentColor" />
       </svg>
 
-      {/* Gate 3: a pin drops onto the tower's door once the rider has arrived,
-          with a white halo so it reads on the dark doorway in every scene. */}
+      {/* Gate 3: the pin on the tower's door (white halo so it reads on the
+          dark doorway in every scene). It pops, rings and bursts the moment
+          the rider rides in under it. */}
       <span className="promo-pin absolute top-[35%] left-[60%] flex w-[10%] flex-col items-center">
         <MapPin
           weight="fill"
@@ -78,29 +94,52 @@ function PromoScene() {
         />
         <span className="promo-pin-ring -mt-[18%] h-[14%] w-[70%] rounded-[50%] bg-hero-foreground/30" />
       </span>
-
-      {/* The rider rides in along the road, then keeps a gentle bob. */}
-      <div className="promo-rider absolute top-[42%] left-[17.5%] w-[31%]">
-        <div className="promo-bob relative">
-          <svg viewBox="0 0 40 30" className="absolute top-[38%] -left-[42%] w-[55%] overflow-visible text-hero-foreground">
-            <line x1="6" y1="6" x2="34" y2="6" className="promo-streak" style={{ animationDelay: "0s" }} />
-            <line x1="0" y1="14" x2="30" y2="14" className="promo-streak" style={{ animationDelay: "0.35s" }} />
-            <line x1="10" y1="22" x2="36" y2="22" className="promo-streak" style={{ animationDelay: "0.7s" }} />
-          </svg>
-          <Image
-            src="/photos/promo/rider.webp"
-            alt=""
-            width={520}
-            height={505}
-            sizes="(max-width: 448px) 26vw, 120px"
-            loading="eager"
-            className="relative h-auto w-full"
+      <svg viewBox="0 0 100 61" className="absolute inset-0 size-full overflow-visible text-white">
+        {BURST.map(([dx, dy], i) => (
+          <circle
+            key={i}
+            cx="65"
+            cy="25.3"
+            r="0.9"
+            fill="currentColor"
+            className="promo-burst"
+            style={{ "--dx": `${dx}px`, "--dy": `${dy}px` } as CSSProperties}
           />
-          {/* Kaapi: steam off the food box. */}
-          <svg viewBox="0 0 24 24" className="only-kaapi absolute -top-[18%] left-[6%] w-[30%] text-white">
-            <path d="M8 20c-2-3 2-5 0-8s2-5 0-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="motif-steam" />
-            <path d="M15 20c-2-3 2-5 0-8s2-5 0-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="motif-steam" style={{ animationDelay: "1.2s" }} />
-          </svg>
+        ))}
+      </svg>
+
+      {/* The delivery run: .promo-route moves along the road (percentages of
+          the scene); .promo-rider sits on it by its wheels and scales with
+          distance, flipping to face the way it rides after the bend. */}
+      <div className="promo-route absolute inset-0">
+        <div className="promo-rider absolute top-0 left-0 w-[31%]">
+          <div className="promo-bob relative">
+            {/* Ground shadow, under the wheels. */}
+            <span className="absolute -bottom-[3%] left-[14%] h-[9%] w-[74%] rounded-[50%] bg-black/25 blur-[2px]" />
+            {/* Speed lines behind, while it's moving. */}
+            <svg viewBox="0 0 40 30" className="promo-trail absolute top-[42%] -left-[40%] w-[52%] overflow-visible text-hero-foreground">
+              <line x1="6" y1="6" x2="34" y2="6" className="promo-streak" style={{ animationDelay: "0s" }} />
+              <line x1="0" y1="14" x2="30" y2="14" className="promo-streak" style={{ animationDelay: "0.3s" }} />
+              <line x1="10" y1="22" x2="36" y2="22" className="promo-streak" style={{ animationDelay: "0.6s" }} />
+            </svg>
+            {/* Dust kicked up by the back wheel as it pulls away. */}
+            <span className="promo-dust absolute bottom-[2%] left-[4%] size-[16%] rounded-full bg-white/70" />
+            <span className="promo-dust promo-dust-2 absolute bottom-[8%] -left-[6%] size-[11%] rounded-full bg-white/60" />
+            <Image
+              src="/photos/promo/rider.webp"
+              alt=""
+              width={520}
+              height={505}
+              sizes="(max-width: 448px) 26vw, 120px"
+              loading="eager"
+              className="relative h-auto w-full"
+            />
+            {/* Kaapi: steam off the food box. */}
+            <svg viewBox="0 0 24 24" className="only-kaapi absolute -top-[18%] left-[6%] w-[30%] text-white">
+              <path d="M8 20c-2-3 2-5 0-8s2-5 0-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="motif-steam" />
+              <path d="M15 20c-2-3 2-5 0-8s2-5 0-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="motif-steam" style={{ animationDelay: "1.2s" }} />
+            </svg>
+          </div>
         </div>
       </div>
     </div>
