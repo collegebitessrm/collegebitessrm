@@ -159,6 +159,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
 
   "Clg Bites Biryani Nation": {
     ...sizes("Chicken Dum Biryani", "chicken-dum-biryani"),
+    "Chicken Dum Biryani (Half)": photo("chicken-dum-biryani"),
     ...sizes("Chicken Fry Biryani", "chicken-fry-biryani"),
     ...sizes("Chicken Boneless Biryani", "boneless-biryani-v2"),
     ...sizes("Chicken Lollipop Biryani", "chicken-lollipop-biryani"),
@@ -170,6 +171,8 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     ...sizes("Paneer Biryani", "paneer-biryani"),
     ...sizes("Cashew Biryani", "kaju-biryani"),
     ...sizes("Cashew Paneer Mixed Biryani", "kaju-paneer-biryani"),
+    "Paneer Fried Rice": photo("paneer-fried-rice"),
+    "Kaju Fried Rice": photo("kaju-rice"),
     // Starters and Chinese (added 1 Oct 2026).
     "Chicken 65": photo("chicken-65"),
     "Chilli Chicken": photo("chilli-chicken"),

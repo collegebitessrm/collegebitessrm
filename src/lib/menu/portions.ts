@@ -5,13 +5,13 @@ import type { Dish } from "@/lib/data/types";
 // near-identical cards side by side. Nothing changes underneath: each
 // option is still its own dish (id, price, cart line, order item).
 //
-//   Sizes   "Chicken Dum Biryani (Single)" + "Chicken Dum Biryani (Full)"
-//           (Biryani Nation) → Single / Full
+//   Sizes   "Chicken Dum Biryani (Half)" / "(Single)" / "(Full)"
+//           (Biryani Nation) → Half / Single / Full
 //   Styles  "Veg Fried Rice" + "Veg Fried Rice (White)" (Local Home
 //           Kitchen) → Regular / White — the plain dish is the "Regular".
 
-const TAGGED = /^(.*\S)\s+\((Single|Full|White)\)$/;
-const ORDER = ["Single", "Full", "Regular", "White"];
+const TAGGED = /^(.*\S)\s+\((Half|Single|Full|White)\)$/;
+const ORDER = ["Half", "Single", "Full", "Regular", "White"];
 /** Tags whose untagged twin is the dish's other option. */
 const PAIRS_WITH_PLAIN: Record<string, string> = { White: "Regular" };
 

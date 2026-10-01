@@ -78,7 +78,10 @@ export function PortionSheet({
                 return (
                   <li key={dish.id} className={cn("flex items-center gap-3 py-4", soldOut && "opacity-55")}>
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold">{label}</p>
+                      <p className="font-semibold">
+                        {label}
+                        {dish.note && <span className="ml-1.5 text-xs font-semibold text-aqua">{dish.note}</span>}
+                      </p>
                       <p className="font-heading text-lg font-bold text-primary">{formatRupees(dish.price)}</p>
                     </div>
                     {soldOut ? (

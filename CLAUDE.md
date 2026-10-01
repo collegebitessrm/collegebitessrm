@@ -819,6 +819,12 @@ biryanis, plus a Starters section (9) and a Chinese section (4), and
 "Chinese" in its cuisine tags; 37 dishes now, 150 in all. Names stay as
 before — "Veg Dum Biryani", "Cashew Paneer Mixed Biryani" — so photos keep
 matching; "Noodles" is veg, Egg Fried Rice non-veg).
+[`supabase/migrations/20261001030000_biryani_nation_menu_update.sql`](supabase/migrations/20261001030000_biryani_nation_menu_update.sql)
+(data only — Biryani Nation's second price list: new biryani prices,
+Chicken Fry ₹230, "Chicken Dum Biryani (Half)" ₹170 with note "7x9 cover"
+(the portion picker knows Half: Half / Single / Full), and a Fried Rice
+section — Paneer Fried Rice ₹140, Kaju Fried Rice ₹150; 40 dishes now,
+153 in all).
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:

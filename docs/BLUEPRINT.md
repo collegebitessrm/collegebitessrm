@@ -19,7 +19,7 @@ migration, what went wrong along the way and what's still open.
 | Pickup | Everything is handed over at **Gate 3**. No room delivery. |
 | Payment | **Cash on delivery only**, with UPI accepted informally at pickup (the app never processes payments). Delivery to Gate 3 is free. |
 | Sign-in | "Continue with Google" only |
-| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (37: biryanis, starters, Chinese) |
+| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (40: biryanis incl. a Half portion, starters, Chinese, fried rice) |
 | Delivery promise | 40 minutes from ordering; Biryani Nation 60 |
 | Ordering | An **Open / Closed** switch the admin flips — no daily schedule |
 | Support | +91 99899 55833 (call + WhatsApp) · collegebitessrm@gmail.com |
@@ -220,6 +220,7 @@ SQL editor (so it's missing from the database's migration history).
 | 25 | `20261001000000_taste_profiles` | Taste profile + avatar per student, own-row RLS (history name `taste_profiles`) |
 | 26 | `20261001010000_favorite_dishes` | Hearted dishes per student, own-row RLS |
 | 27 | `20261001020000_biryani_nation_prices_and_new_dishes` | Data: Biryani Nation price rise, Starters + Chinese sections (37 dishes; 150 in all) |
+| 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied
