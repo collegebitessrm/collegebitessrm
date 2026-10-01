@@ -118,7 +118,7 @@ function TasteForm({ taste }: { taste: TasteProfile }) {
                 aria-label={a.label}
                 onClick={() => setDraft((d) => ({ ...d, avatar: a.id }))}
                 className={cn(
-                  "relative mx-auto flex size-[3.75rem] items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
+                  "relative mx-auto flex size-14 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80",
                   selected && "ring-3 ring-chip-active ring-offset-2 ring-offset-background",
                 )}
               >
