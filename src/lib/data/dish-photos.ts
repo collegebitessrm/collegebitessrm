@@ -94,7 +94,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Egg Manchurian Rice": photo("egg-manchurian-fried-rice"),
     "Chicken Fried Rice": photo("chicken-fried-rice"),
     "Chicken Fried Rice (White)": photo("chicken-fried-rice"),
-    "Chicken Manchurian Rice": photo("chicken-manchurian-rice"),
+    "Chicken Manchurian Rice": photo("chicken-manchurian-rice-lhk"),
     "Double Egg Chicken Fried Rice": photo("double-egg-chicken-fried-rice"),
     "Double Egg Chicken Fried Rice (White)": photo("double-egg-chicken-fried-rice"),
 
