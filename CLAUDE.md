@@ -187,6 +187,13 @@ author.
   wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
+- **Campus pass details per palette** (`PassArt`,
+  `src/components/theme/pass-art.tsx`): Vice keeps its striped sun in the
+  card's corner; the other three get a small animated detail at the top
+  right (beside the "campus pass" label, above the name, never behind text)
+  with a soft glow — Kaapi a tumbler with rising steam, Sunrise a small sun
+  with breathing rays and twinkling sparkles, Hub satellites orbiting a
+  pulsing node (`motif-rays` / `motif-orbit` in the reduced-motion-safe block).
 - **Profile look**: `MemberCard` is the "campus pass" — a sunset
   `surface-hero` card with the palette's `ThemeMotif` in the corner, the student's avatar
   (`tone="ink"`) in a dusk circle inside a turning `food-ring` (tapping it
