@@ -7,7 +7,8 @@ import { BlurImage } from "@/components/blur-image";
 import { MenuProgress } from "@/components/menu/menu-progress";
 import { MenuView } from "@/components/menu/menu-view";
 import { getRestaurantCoverPhoto } from "@/lib/data/dish-photos";
-import { getDishesTried, getUsualDishId } from "@/lib/data/orders";
+import { getTriedDishIds, getUsualDishId } from "@/lib/data/orders";
+import { groupPortions } from "@/lib/menu/portions";
 import { getTasteProfile } from "@/lib/data/taste";
 import { getLikedDishes } from "@/lib/data/favorites";
 import { getHighlyReorderedDishIds } from "@/lib/data/reorders";
@@ -45,10 +46,10 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   const focusDishId = typeof dish === "string" && isUuid(dish) ? dish : null;
 
   const profile = await profilePromise;
-  const [menu, ordering, dishesTried, usualDishId, highlyReorderedDishIds, taste, liked] = await Promise.all([
+  const [menu, ordering, triedDishIds, usualDishId, highlyReorderedDishIds, taste, liked] = await Promise.all([
     menuPromise,
     orderingPromise,
-    getDishesTried(profile.id, id),
+    getTriedDishIds(profile.id, id),
     getUsualDishId(profile.id, id),
     highlyReorderedPromise,
     getTasteProfile(profile.id),
@@ -61,7 +62,13 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   const orderingEnabled = ordering.open;
   const orderable = active && orderingEnabled;
   const paused = active && !orderingEnabled;
-  const totalDishes = sections.reduce((sum, s) => sum + s.dishes.length, 0);
+  // Counted in menu cards, like the menu shows them: a dish's portions
+  // (Half / Single / Full, Regular / White) are one card, tried if any is.
+  const cards = sections.flatMap((s) => groupPortions(s.dishes));
+  const totalDishes = cards.length;
+  const dishesTried = cards.filter((c) =>
+    c.kind === "dish" ? triedDishIds.has(c.dish.id) : c.portions.some((p) => triedDishIds.has(p.dish.id)),
+  ).length;
   const cover = getRestaurantCoverPhoto(restaurant.name);
   const statusBadge = (
     <span

@@ -247,11 +247,12 @@ export async function getOrderStats(userId: string): Promise<{
 
 /**
  * Distinct dishes the student has been delivered at one restaurant — the
- * menu page's "You've tried N of M" progress bar. Dishes ordered but
+ * menu page counts menu cards from these for "You've tried N of M"
+ * (a dish's portions — Single / Full, Regular / White — are one card). Dishes ordered but
  * later removed from the menu (`dish_id` goes null on delete) don't
  * count, since they're not part of the current total either.
  */
-export async function getDishesTried(userId: string, restaurantId: string): Promise<number> {
+export async function getTriedDishIds(userId: string, restaurantId: string): Promise<Set<string>> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("orders")
@@ -263,7 +264,7 @@ export async function getDishesTried(userId: string, restaurantId: string): Prom
 
   if (error) throw error;
   const dishIds = (data ?? []).flatMap((o) => o.order_items.map((i) => i.dish_id));
-  return new Set(dishIds.filter((id): id is string => id !== null)).size;
+  return new Set(dishIds.filter((id): id is string => id !== null));
 }
 
 /**

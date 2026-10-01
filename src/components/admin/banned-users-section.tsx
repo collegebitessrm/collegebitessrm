@@ -87,7 +87,6 @@ function BanStudentSearch({ onBanned }: { onBanned: (user: StudentSearchResult) 
   const [results, setResults] = useState<StudentSearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [target, setTarget] = useState<StudentSearchResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [banPending, startBan] = useTransition();
 
   useEffect(() => {
@@ -114,9 +113,7 @@ function BanStudentSearch({ onBanned }: { onBanned: (user: StudentSearchResult) 
         setResults((list) => list.filter((u) => u.id !== target.id));
         toast.success(`${target.fullName} banned.`);
         setTarget(null);
-        setError(null);
       } else {
-        setError(result.error);
         toast.error(result.error);
       }
     });
