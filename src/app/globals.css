@@ -1716,16 +1716,17 @@
   }
   74%,
   100% {
-    translate: 63% 52.5%;
+    translate: 65% 51%;
   }
 }
 
-/* Size with distance, and the turn at the bend (x flips through 0, which
-   reads as the scooter swinging round). */
+/* Size with distance — linear in the road's depth (it narrows to a
+   horizon at ~45% of the scene) — and the turn at the bend (x flips
+   through 0, which reads as the scooter swinging round). */
 @keyframes promo-rider {
   0% {
     opacity: 0;
-    scale: 1.08;
+    scale: 1.06;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
   4% {
@@ -1736,41 +1737,41 @@
     scale: 1;
   }
   24% {
-    scale: 0.97;
+    scale: 0.94;
   }
   29.7% {
-    scale: 0.92;
+    scale: 0.875;
   }
   35.1% {
-    scale: 0.86;
+    scale: 0.81;
   }
   40.3% {
-    scale: 0.79;
+    scale: 0.72;
   }
   45.5% {
-    scale: 0.68;
+    scale: 0.59;
   }
   48.8% {
-    scale: 0.56;
+    scale: 0.45;
   }
   52.7% {
-    scale: -0.46 0.46;
+    scale: -0.34 0.34;
   }
   58.2% {
-    scale: -0.39 0.39;
+    scale: -0.28 0.28;
   }
   64.7% {
-    scale: -0.33 0.33;
+    scale: -0.24 0.24;
   }
   70% {
     opacity: 1;
-    scale: -0.27 0.27;
+    scale: -0.19 0.19;
     animation-timing-function: ease-in;
   }
   74%,
   100% {
     opacity: 0;
-    scale: -0.1 0.1;
+    scale: -0.07 0.07;
   }
 }
 

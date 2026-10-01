@@ -112,7 +112,7 @@ function PromoScene() {
           the scene); .promo-rider sits on it by its wheels and scales with
           distance, flipping to face the way it rides after the bend. */}
       <div className="promo-route absolute inset-0">
-        <div className="promo-rider absolute top-0 left-0 w-[31%]">
+        <div className="promo-rider absolute top-0 left-0 w-[26%]">
           <div className="promo-bob relative">
             {/* Ground shadow, under the wheels. */}
             <span className="absolute -bottom-[3%] left-[14%] h-[9%] w-[74%] rounded-[50%] bg-black/25 blur-[2px]" />
