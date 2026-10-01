@@ -357,7 +357,7 @@ light: things should look lit, not flat.
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact
 restaurant + dish name in `src/lib/data/dish-photos.ts` (not a database
 column). Sources stay ≤ ~1200px and a few hundred KB (the optimiser's
-first resize of a multi-MB file is slow). 147 of 150 dishes have a photo (28 openly licensed photos added 1 Oct 2026, credited on `/terms` via `photo-credits.ts`; only the three Mushroom Noodles are left); the rest show a striped
+first resize of a multi-MB file is slow). All 150 dishes have a photo (9 developer-supplied photos added later on 1 Oct 2026, two with a source watermark); earlier 147 of 150 (28 openly licensed photos added 1 Oct 2026, credited on `/terms` via `photo-credits.ts`; only the three Mushroom Noodles are left); the rest show a striped
 placeholder rather than a wrong photo. A replaced photo gets a **new
 filename** (an outside cache can keep serving old files by URL). The
 sign-in scene's floating dishes, empty states and share card reference
@@ -449,7 +449,7 @@ Never commit a secret; never paste one into chat.
   students sign in, if not done already.
 - Restaurant phone numbers are the support number; set real ones if
   admins should call restaurants from the app.
-- 3 dishes (Mushroom Noodles) have no photo; 28 are openly licensed stock photos, some near matches, to swap for client photos when they come; covers are stock photos until the client
+- Every dish has a photo, but 28 are openly licensed stock photos (some near matches) and 9 are developer-supplied web photos (two watermarked) — swap for client photos when they come; covers are stock photos until the client
   sends real ones.
 - Supabase performance suggestions (wrap `auth.uid()` in `select` inside
   policies, a few foreign-key indexes) — worth doing if order volume grows;

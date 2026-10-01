@@ -1133,7 +1133,12 @@ Parked by the developer — do these only when asked.
 
 **When the client has time**
 - Real **restaurant phone numbers** (all three use the support number).
-- **Photos**: since 1 Oct 2026, 147 of 150 dishes have a photo — 28 openly
+- **Photos**: since 1 Oct 2026, all 150 dishes have a photo. Nine Local
+  Home Kitchen ones (Kaju rice / Kaju Manchurian, mushroom, egg and
+  Manchurian Schezwan noodles; also Triangle's Mushroom Noodles) are photos
+  the developer supplied — not openly licensed, two carry the source's
+  watermark / stock ID (Kaju Paneer Manchurian, Manchurian Schezwan
+  Noodles); swap them for the client's own photos when possible. Earlier: 28 openly
   licensed ones were added from Openverse (Wikimedia / Flickr, CC0, CC BY,
   CC BY-SA, public domain), resized to ≤1200px, credited on `/terms` from
   `src/lib/data/photo-credits.ts` (add a line there for any new photo with
