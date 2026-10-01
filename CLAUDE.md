@@ -868,7 +868,7 @@ exact OR — e.g. "Users read own orders; admins read all"); policies scoped
 Access unchanged — verified with rolled-back student / admin / signed-out
 tests. New policies should follow the same `(select auth.uid())` pattern.)
 [`supabase/migrations/20261001050000_discount_offers.sql`](supabase/migrations/20261001050000_discount_offers.sql)
-(discount offers: `app_settings.offer_pct10 / offer_pct20 / offer_biryani`
+(named `discount_offers` in the database's migration history; discount offers: `app_settings.offer_pct10 / offer_pct20 / offer_biryani`
 booleans, default off; `orders.discount_offer` (`'pct10' | 'pct20' |
 'biryani'` or null) and `orders.discount_amount` (≥ 0); `order_items.is_free`;
 and `place_order()` with two optional arguments, `p_offer` and
