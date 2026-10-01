@@ -136,6 +136,17 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     ...sizes("Paneer Biryani", "paneer-biryani"),
     ...sizes("Cashew Biryani", "kaju-biryani"),
     ...sizes("Cashew Paneer Mixed Biryani", "kaju-biryani"),
+    // Starters and Chinese (added 1 Oct 2026). Dragon Chicken, Chicken Fry,
+    // Crispy Chicken and Gobi Manchurian have no matching photo yet.
+    "Chicken 65": photo("chicken-65"),
+    "Chilli Chicken": photo("chilli-chicken"),
+    "Chicken Manchurian": photo("chicken-manchurian"),
+    "Chicken Lollipop": photo("chicken-lollipop"),
+    "Veg Manchurian": photo("veg-manchurian"),
+    "Veg Fried Rice": photo("veg-fried-rice"),
+    "Egg Fried Rice": photo("egg-fried-rice"),
+    "Chicken Fried Rice": photo("chicken-fried-rice"),
+    "Noodles": photo("veg-noodles"),
   },
 };
 

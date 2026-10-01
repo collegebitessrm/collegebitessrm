@@ -789,7 +789,8 @@ and `place_order()` in its final form with the rate limits — see
 (data only — the three partner restaurants, **Triangle Food Court**
 (Kuragallu, 41 dishes), **Local Home Kitchen** (Neerukonda, 72) and **Clg
 Bites Biryani Nation** (24: Single / Full are separate dishes; 60-minute
-delivery), 137 dishes in all). Note the shape: the `values` list comes
+delivery), 137 dishes in all; Biryani Nation since has 37 and the total is
+150 — see `20261001020000` below). Note the shape: the `values` list comes
 first and the restaurant/section are joined onto it by name. A new
 restaurant or dish follows the same pattern, plus photo entries in
 `src/lib/data/dish-photos.ts`.
@@ -800,6 +801,12 @@ notifications on (`user_id`, unique `endpoint`, `p256dh`, `auth`,
 phone) and `delete` stale ones. The *new order* send can't use any
 student's session, so it goes through the service-role client — see
 **Notifications** above.
+[`supabase/migrations/20261001020000_biryani_nation_prices_and_new_dishes.sql`](supabase/migrations/20261001020000_biryani_nation_prices_and_new_dishes.sql)
+(data only — Biryani Nation's new prices, Single +₹20 / Full +₹40 on all 24
+biryanis, plus a Starters section (9) and a Chinese section (4), and
+"Chinese" in its cuisine tags; 37 dishes now, 150 in all. Names stay as
+before — "Veg Dum Biryani", "Cashew Paneer Mixed Biryani" — so photos keep
+matching; "Noodles" is veg, Egg Fried Rice non-veg).
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:
@@ -1114,7 +1121,8 @@ Parked by the developer — do these only when asked.
 
 **When the client has time**
 - Real **restaurant phone numbers** (all three use the support number).
-- **Photos**: 30 of 137 dishes use the placeholder (Schezwan items,
+- **Photos**: 34 of 150 dishes use the placeholder (Biryani Nation's Dragon
+  Chicken, Chicken Fry, Crispy Chicken and Gobi Manchurian, Schezwan items,
   Pepper/Lemon/Garlic/555 Chicken, some rice/noodle variants); the three
   covers are reused photos, not the real restaurants. New photos need no
   database change — new filename + an entry in `dish-photos.ts`.

@@ -19,7 +19,7 @@ migration, what went wrong along the way and what's still open.
 | Pickup | Everything is handed over at **Gate 3**. No room delivery. |
 | Payment | **Cash on delivery only**, with UPI accepted informally at pickup (the app never processes payments). Delivery to Gate 3 is free. |
 | Sign-in | "Continue with Google" only |
-| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (24) |
+| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (37: biryanis, starters, Chinese) |
 | Delivery promise | 40 minutes from ordering; Biryani Nation 60 |
 | Ordering | An **Open / Closed** switch the admin flips — no daily schedule |
 | Support | +91 99899 55833 (call + WhatsApp) · collegebitessrm@gmail.com |
@@ -219,6 +219,7 @@ SQL editor (so it's missing from the database's migration history).
 | 24 | `20260929030000_seed_college_bites_menus` | Data: the three restaurants and 137 dishes |
 | 25 | `20261001000000_taste_profiles` | Taste profile + avatar per student, own-row RLS (history name `taste_profiles`) |
 | 26 | `20261001010000_favorite_dishes` | Hearted dishes per student, own-row RLS |
+| 27 | `20261001020000_biryani_nation_prices_and_new_dishes` | Data: Biryani Nation price rise, Starters + Chinese sections (37 dishes; 150 in all) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied
@@ -356,7 +357,7 @@ light: things should look lit, not flat.
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact
 restaurant + dish name in `src/lib/data/dish-photos.ts` (not a database
 column). Sources stay ≤ ~1200px and a few hundred KB (the optimiser's
-first resize of a multi-MB file is slow). 107 of 137 dishes have a photo; the rest show a striped
+first resize of a multi-MB file is slow). 116 of 150 dishes have a photo; the rest show a striped
 placeholder rather than a wrong photo. A replaced photo gets a **new
 filename** (an outside cache can keep serving old files by URL). The
 sign-in scene's floating dishes, empty states and share card reference
@@ -448,7 +449,7 @@ Never commit a secret; never paste one into chat.
   students sign in, if not done already.
 - Restaurant phone numbers are the support number; set real ones if
   admins should call restaurants from the app.
-- 30 dishes have no photo yet; covers are stock photos until the client
+- 34 dishes have no photo yet (incl. 4 new Biryani Nation starters); covers are stock photos until the client
   sends real ones.
 - Supabase performance suggestions (wrap `auth.uid()` in `select` inside
   policies, a few foreign-key indexes) — worth doing if order volume grows;
