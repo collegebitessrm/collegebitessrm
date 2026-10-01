@@ -2,19 +2,16 @@ import { SPLASH } from "./config";
 import { runSplash, type SplashRuntime } from "./engine";
 
 const runtime: SplashRuntime = {
-  pace: SPLASH.pace,
-  exitAt: SPLASH.exitAt,
+  enterMs: SPLASH.enterMs,
+  textDelayMs: SPLASH.textDelayMs,
+  holdMs: SPLASH.holdMs,
   exitMs: SPLASH.exitMs,
   reducedHoldMs: SPLASH.reducedHoldMs,
   loadTimeoutMs: SPLASH.loadTimeoutMs,
-  goldenOdds: SPLASH.goldenOdds,
-  midnight: SPLASH.midnight,
   sessionKey: SPLASH.sessionKey,
   disableKey: SPLASH.disableKey,
   skipPaths: SPLASH.skipPaths,
-  riderImage: SPLASH.riderImage,
-  markImage: SPLASH.markImage,
-  dishes: SPLASH.dishes,
+  image: "/brand/mark-v2-1.webp",
 };
 
 /**

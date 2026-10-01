@@ -365,16 +365,10 @@ light: things should look lit, not flat.
   rim and glow in dark mode). The wordmark is
   never an image (glow fringe from background removal; unreadable small) —
   it's set in the app's fonts on the splash and share card.
-- Splash, "The Drop" (1 Oct 2026): ~2.4 s (`pace` 1.3 in its config slows
-  every timing evenly), once per session, no
-  tap-to-skip. Night in the theme's ink, a neon road whips across, the
-  side-on rider rips along it, wheelie + glitch freeze while a random real
-  dish flies at the camera, the logo tile slams in and gets bitten,
-  "College Bites" punches in, the night wipes away and the tile docks into
-  the page's logo. Rare Golden Run (1 in 15) and Midnight Cravings (10 PM–
-  5 AM) variants. Reduced motion: a plain logo fade; never on admin/auth/
-  legal pages or a background tab; slow images = no splash; any error ends
-  it; CSS hides it after 9 s whatever happens.
+- Splash: ~1.6 s, once per session: the tile rises in, "College Bites" and
+  the tagline follow, then a fade to the app. Tap skips; reduced motion
+  fades only; never on admin/auth/legal pages or a background tab; CSS
+  hides it after 9 s whatever happens.
 
 ### Photos
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact
@@ -425,6 +419,7 @@ the admin taps "Tap to arm sound" each visit.
 | Security revoke didn't take | The function's access came through PUBLIC, not `anon` | Revoke from `public, anon`, grant to `authenticated` |
 | Several migrations sent at once ran out of order | Parallel tool calls | Apply migrations strictly one at a time |
 | Logo v2's mark came out 512×539, not square | sharp keeps only the LAST `resize()` in a pipeline, so "pad to square, then scale" dropped the padding (v1's tile was nearly square, so it never showed) | Pad to a square buffer first, then scale that; a re-cut image gets a new name (`mark-v2-1`) |
+| "The Drop" startup splash (1 Oct 2026: neon road, side-on rider, glitch freeze, flying dish, bitten tile, punch-in type) was rejected and reverted to the logo fade | Too busy for under 2.5 s, flat art sliding around read as cheap and cartoony, and nothing in it came from the brand's own look | A splash should be ONE idea, built on the real logo, premium over playful; agree a storyboard (or a reference) before building |
 | Logo tile bounds wrong | Glow specks and the navy wordmark counted as "tile" | Detect by rows/columns with a real run of navy; stop at the first gap |
 | Navy read as black, yellow too loud | Brief's exact values on phone screens | Lift navy to `#173F6B`, soften yellow to `#F6DC8A`, more pastel surfaces (palette since replaced by the 30 Sep redesign) |
 | Pastel mood washes too strong for the heading | Alpha too high | Contrast audit now checks the heading over each mood |

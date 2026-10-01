@@ -44,7 +44,7 @@ export function HomeHeader({
       />
       <div className="relative flex items-center justify-between">
         <AboutDialog>
-          <BrandLogo splashTarget className="size-12 rounded-2xl shadow-card" />
+          <BrandLogo className="size-12 rounded-2xl shadow-card" />
         </AboutDialog>
         <OpenTasteSheetButton
           aria-label="Your avatar and taste"

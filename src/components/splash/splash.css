@@ -1,25 +1,13 @@
 /*
- * Startup splash, "The Drop" (./app-splash.tsx, storyboard in ./config.ts).
- * Static layout and resting states only: all motion is Web Animations from
- * ./engine.ts, which also sets data-splash on <html> — the overlay stays
- * hidden unless this load plays it — and data-variant on the overlay.
- *
- * Colours come from the palette's hero stops (the theme-init script has
- * set data-palette and .dark by then): the night is the palette's own deep
- * ink (--hero-foreground), the trail and the type its hero gradient. A
- * Golden Run and Midnight Cravings swap the three stops.
+ * Startup splash (./app-splash.tsx). Static layout and resting states only:
+ * all motion is Web Animations from ./engine.ts, which also sets
+ * data-splash on <html> — the overlay stays hidden unless this load plays
+ * it. The chosen palette's ground with its two splash glows, light or dark
+ * (the theme-init script has set .dark and data-palette by then), with the
+ * logo's indigo tile.
  */
-/* The run's three colours and its ink (a Golden Run / Midnight Cravings
-   swap them below — those rules must out-rank this one, so it stays a plain
-   class selector). */
 .app-splash {
   display: none;
-  --sp-a: var(--hero-a);
-  --sp-b: var(--hero-b);
-  --sp-c: var(--hero-c);
-  --sp-ink: var(--hero-foreground);
-  --sp-tile: min(40vw, 10.5rem);
-  --sp-rider: min(48vw, 15rem);
 }
 html[data-splash="play"] .app-splash,
 html[data-splash="run"] .app-splash,
@@ -27,23 +15,21 @@ html[data-splash="out"] .app-splash {
   position: fixed;
   inset: 0;
   z-index: 200;
-  display: block;
+  display: grid;
+  place-items: center;
   overflow: hidden;
+  /* A warm glow behind the mark and a second light up high, over the
+     palette's ground (--splash-glow-a/-b, --background). */
+  background:
+    radial-gradient(70% 45% at 50% 36%, var(--splash-glow-a) 0%, transparent 70%),
+    radial-gradient(90% 60% at 80% 10%, var(--splash-glow-b) 0%, transparent 70%),
+    var(--background);
+  cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-.app-splash[data-variant="golden"] {
-  --sp-a: #fff1c2;
-  --sp-b: #ffd166;
-  --sp-c: #ffa630;
-}
-.app-splash[data-variant="midnight"] {
-  --sp-a: #b9f3ff;
-  --sp-b: #22ddeb;
-  --sp-c: #a77bff;
-}
 /* Last resort if the engine dies mid-way: never cover the app for good.
-   (Not on "out", where the engine's own exit runs.) */
+   (Not on "out", where the engine's own exit animation runs.) */
 html[data-splash="play"] .app-splash,
 html[data-splash="run"] .app-splash {
   animation: sp-failsafe 1ms linear 9s both;
@@ -56,310 +42,61 @@ html[data-splash="out"] .app-splash {
   pointer-events: none;
 }
 
-/* ---- The night (everything the exit wipe takes away) ---------------------- */
-.sp-night {
-  position: absolute;
-  inset: 0;
-  background: var(--sp-ink);
-  background:
-    radial-gradient(110% 60% at 50% 38%, color-mix(in srgb, var(--sp-c) 26%, transparent) 0%, transparent 70%),
-    radial-gradient(90% 45% at 0% 100%, color-mix(in srgb, var(--sp-a) 16%, transparent) 0%, transparent 70%),
-    var(--sp-ink);
-}
-.app-splash[data-variant="midnight"] .sp-night {
-  background:
-    radial-gradient(110% 60% at 50% 38%, color-mix(in srgb, var(--sp-c) 22%, transparent) 0%, transparent 70%),
-    radial-gradient(60% 40% at 80% 10%, color-mix(in srgb, var(--sp-b) 14%, transparent) 0%, transparent 70%),
-    color-mix(in srgb, var(--sp-ink) 80%, #000);
-}
-.sp-cam {
-  position: absolute;
-  inset: 0;
-}
-
-/* Everything that moves starts invisible; the engine animates it in (with
-   fill: both), and reduced motion shows only the finished logo. */
-.sp-road,
-.sp-headlight,
-.sp-rider,
-.sp-dish,
-.sp-flash,
-.sp-letter,
-.sp-bites,
-.sp-sticker,
-.sp-tile,
-.sp-crumb {
-  opacity: 0;
-}
-
-.sp-road {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  clip-path: inset(0 100% 0 0);
-}
-.sp-road path {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-  stroke-linecap: round;
-}
-.sp-road-glow {
-  stroke: url(#sp-trail);
-  stroke-width: 34px;
-  opacity: 0.32;
-  filter: blur(10px);
-}
-.sp-road-core {
-  stroke: url(#sp-trail);
-  stroke-width: 12px;
-}
-.sp-road-lane {
-  stroke: var(--sp-ink);
-  stroke-width: 2px;
-  stroke-dasharray: 10 12;
-  opacity: 0.55;
-}
-
-.sp-headlight {
-  position: absolute;
-  width: 0.9rem;
-  height: 0.9rem;
-  margin: -0.45rem 0 0 -0.45rem;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow:
-    0 0 12px 4px var(--sp-a),
-    0 0 40px 14px color-mix(in srgb, var(--sp-a) 50%, transparent);
-}
-
-/* The rider: positioned by the engine (top-left at 0,0, moved with
-   transform), sitting on the road by its wheels. */
-.sp-rider {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: var(--sp-rider);
-  transform-origin: 50% 100%;
-  will-change: transform;
-}
-.sp-rider img {
-  display: block;
-  width: 100%;
-  height: auto;
-  -webkit-user-drag: none;
-}
-.sp-ghost {
-  filter: blur(1.5px) saturate(1.4);
-}
-/* Wheelie pivots on the rear wheel's contact point (measured on the art). */
-.sp-wheelie {
-  position: relative;
-  transform-origin: 19% 100%;
-  filter: drop-shadow(0 6px 14px rgb(0 0 0 / 35%));
-}
-.sp-glitch {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  mix-blend-mode: screen;
-}
-.sp-glitch-a {
-  filter: hue-rotate(150deg) saturate(3);
-}
-.sp-glitch-b {
-  filter: hue-rotate(-90deg) saturate(3);
-}
-
-.sp-dish {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: min(34vw, 9.5rem);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--sp-a);
-  border: 4px solid #fff;
-  box-shadow: 0 12px 30px -8px rgb(0 0 0 / 55%), 0 0 0 2px var(--sp-c);
-  -webkit-user-drag: none;
-}
-
-.sp-flash {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  pointer-events: none;
-}
-
-/* ---- Midnight Cravings sky ------------------------------------------------ */
-.sp-sky {
-  display: none;
-}
-.app-splash[data-variant="midnight"] .sp-sky {
-  display: block;
-}
-.sp-moon {
-  position: absolute;
-  top: 9%;
-  right: 12%;
-  width: 3.4rem;
-  height: 3.4rem;
-  border-radius: 50%;
-  box-shadow: -0.75rem 0.4rem 0 0 #f4ecff;
-  filter: drop-shadow(0 0 14px rgb(185 243 255 / 55%));
-}
-.sp-star {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 6px 1px rgb(255 255 255 / 70%);
-}
-
-/* ---- The logo tile (outside the wipe, so it can dock into the page) ------- */
-.sp-tile {
-  position: absolute;
-  left: 50%;
-  top: 38%;
-  width: var(--sp-tile);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 22%;
-  transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 0 1px rgb(255 255 255 / 16%),
-    0 0 48px -6px var(--sp-c),
-    0 20px 44px -16px rgb(0 0 0 / 60%);
-}
-.sp-tile img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  -webkit-user-drag: none;
-}
-/* CHOMP: three overlapping bites out of the top-right corner, like the bite
-   in the logo's "COLLEGE". Switched on in one frame (a bite isn't gradual). */
-.sp-tile[data-bitten] {
-  -webkit-mask:
-    radial-gradient(circle at 97% 6%, #0000 15%, #000 15.6%),
-    radial-gradient(circle at 80% 1%, #0000 8.5%, #000 9.1%),
-    radial-gradient(circle at 100% 24%, #0000 8.5%, #000 9.1%);
-  -webkit-mask-composite: source-in;
-  mask:
-    radial-gradient(circle at 97% 6%, #0000 15%, #000 15.6%),
-    radial-gradient(circle at 80% 1%, #0000 8.5%, #000 9.1%),
-    radial-gradient(circle at 100% 24%, #0000 8.5%, #000 9.1%);
-  mask-composite: intersect;
-}
-.sp-crumb {
-  position: absolute;
-  left: calc(50% + var(--sp-tile) * 0.42);
-  top: calc(38% - var(--sp-tile) * 0.42);
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 30%;
-  background: var(--sp-a);
-}
-.sp-crumb:nth-of-type(3n) {
-  background: var(--sp-b);
-  width: 0.4rem;
-  height: 0.4rem;
-}
-.sp-crumb:nth-of-type(3n + 1) {
-  background: #141049;
-}
-
-/* ---- Type ------------------------------------------------------------------ */
-.sp-type {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(38% + var(--sp-tile) / 2 + 1.1rem);
+.sp-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  visibility: hidden;
 }
-/* "College" letter by letter on one row, "Bites" on the row below. */
-.sp-word {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
+html[data-splash-ran] .sp-stage {
+  visibility: visible;
 }
-.sp-row {
-  display: flex;
+.sp-mark {
+  width: min(44vw, 11rem);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 22%;
+  box-shadow: 0 18px 44px -14px var(--glow-neon);
 }
-.sp-letter {
-  display: inline-block;
-  font-size: clamp(2.4rem, 11vw, 3.1rem);
-  color: var(--sp-a);
-  text-shadow: 0 0 22px color-mix(in srgb, var(--sp-a) 45%, transparent);
-}
-.sp-bites {
-  display: inline-block;
-  margin-top: 0.1em;
-  padding: 0 0.12em 0.08em;
-  font-size: clamp(3rem, 15vw, 4.2rem);
-  font-style: italic;
-  background: linear-gradient(100deg, var(--sp-b), var(--sp-c));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  transform: skewX(-6deg);
-  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--sp-c) 45%, transparent));
-}
-.sp-sticker {
-  display: none;
-  margin-top: 1rem;
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  background: var(--sp-a);
-  color: var(--sp-ink);
-  font-size: 0.95rem;
-  font-weight: 700;
-  box-shadow: 0 0 0 2px var(--sp-ink), 0 0 0 4px var(--sp-a), 0 10px 24px -8px rgb(0 0 0 / 55%);
-}
-.app-splash:not([data-variant]) .sp-sticker[data-for="default"],
-.app-splash[data-variant="default"] .sp-sticker[data-for="default"],
-.app-splash[data-variant="golden"] .sp-sticker[data-for="golden"],
-.app-splash[data-variant="midnight"] .sp-sticker[data-for="midnight"] {
+.sp-mark img {
   display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+}
+.sp-word {
+  margin-top: 1.5rem;
+  color: var(--foreground);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.sp-tagline {
+  margin-top: 0.5rem;
+  color: var(--aqua);
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
-/* ---- Reduced motion: just the finished logo, faded in and out ------------- */
-.app-splash[data-reduced] .sp-tile,
-.app-splash[data-reduced] .sp-letter,
-.app-splash[data-reduced] .sp-bites,
-.app-splash[data-reduced] .sp-sticker {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .sp-star {
-    animation: sp-twinkle 0.9s ease-in-out infinite alternate;
-  }
-}
-@keyframes sp-twinkle {
-  from {
-    opacity: 0.25;
-    scale: 0.6;
-  }
-  to {
-    opacity: 1;
-    scale: 1.2;
-  }
-}
 @keyframes sp-failsafe {
   to {
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
   }
+}
+
+/* Dark: the same scene at night — the second light moves to the top left. */
+html.dark[data-splash="play"] .app-splash,
+html.dark[data-splash="run"] .app-splash,
+html.dark[data-splash="out"] .app-splash {
+  background:
+    radial-gradient(70% 45% at 50% 36%, var(--splash-glow-a) 0%, transparent 70%),
+    radial-gradient(80% 50% at 15% 5%, var(--splash-glow-b) 0%, transparent 70%),
+    var(--background);
+}
+html.dark .sp-mark {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 14%), 0 18px 48px -12px var(--glow-neon);
 }

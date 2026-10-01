@@ -754,7 +754,7 @@ silently re-enables the button.
   scripts/build-brand-assets.mjs` regenerates everything below from v2-1 —
   rerun it whenever the logo changes, and bump its `MARK` name (`mark-v3`, …)
   so no image is overwritten in place (the cache rule under photos); the
-  name is a literal in four files the script lists:
+  name is a literal in five files the script lists:
   - `public/brand/mark-v2-1.webp` / `mark-v2-1.png` — the logo's indigo
     rounded-square icon tile only (scooter, campus, grad cap), found by its
     fill (`isTileFill`, which matches v1's navy too). v2's tile is slightly
@@ -775,57 +775,28 @@ silently re-enables the button.
   - `src/app/favicon.ico` — the tile, 16/32/48/64 RGBA PNG frames (Next
     can't generate `favicon` from code, and its ico decoder rejects
     non-RGBA frames), written by the same script.
-- **Startup splash — "The Drop"** (`src/components/splash/`, since 1 Oct
-  2026), ~2.4 s (the storyboard's 1.85 s × `pace` 1.3 — slowed by request;
-  one knob in `config.ts` stretches every timing evenly), once per browser session (sessionStorage
-  `collegebites.splash-shown` — every fresh app/PWA open, never on route
-  changes or reloads), never on `/admin`, `/auth`, `/privacy`, `/terms` or
-  a tab opened in the background. **No tap-to-skip** (by decision — it's
-  shorter than a skip would be). Storyboard and every knob in `config.ts`:
-  - Night in the palette's own ink (`--hero-foreground`, glows from its
-    hero stops); a headlight flickers on; a neon road / light trail in the
-    palette's hero gradient whips across (`clip-path`); the side-profile
-    rider (`public/photos/splash/rider-side-v1.webp`) rips along the same
-    cubic with three speed ghosts, the camera shudders; wheelie off the end
-    (pivot: the rear wheel's contact point, measured on the art); a
-    freeze-frame with colour-split glitch copies and a flash while **a
-    random real dish** (12 small round crops in `public/photos/splash/`)
-    bursts out of the food box at the camera; he tears off, the logo tile
-    slams in with a squash, a **bite** switches on (a three-circle CSS mask
-    on the corner, like the logo's "COLLEGE") with crumbs flying;
-    "College" punches in letter by letter, "Bites" brushes on in the hero
-    gradient, a tilted tagline sticker pops; then the night wipes away
-    left-to-right (`clip-path` polygon) while the tile — outside the wipe —
-    flies into the page's own logo: the `BrandLogo` with `splashTarget`
-    (Home header, sign-in page), or shrinks away if there's none on screen.
-  - Rewatch hooks: the random dish; about 1 in 15 opens is a **Golden Run**
-    (gold trail, gold crumbs, "Golden run · 1 in 15" sticker); 10 PM–5 AM
-    local time is **Midnight Cravings** (moon, twinkling stars, cool neon,
-    "Midnight cravings" sticker). `?intro=golden` / `?intro=midnight`
-    force them. The type colours are in the contrast audit (hero stops on
-    the ink, 3:1 for the display sizes).
-  - Assets: `node scripts/build-splash-assets.mjs` trims the generated
-    side-profile rider (`public/photos/promo/rider-side.png`, not
-    committed) and crops the dishes (~50 KB rider, 6–12 KB per dish; only
-    the picked dish downloads). A changed image gets a new name.
+- **Startup splash** (`src/components/splash/`), ~1.6 s, once per browser
+  session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
+  open, never on route changes or reloads), never on `/admin`, `/auth`,
+  `/privacy`, `/terms` or a tab opened in the background:
+  - A short logo fade-in on the palette's ground with its two splash glows
+    (`--splash-glow-a/-b`; the theme-init script has set `.dark` and
+    `data-palette` by then): the indigo tile rises in and
+    settles, "College Bites" (Poppins) and the tagline follow, a hold,
+    then the screen fades to the app. Timings in `config.ts`.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
-    `splash.css`): a `night` layer (wiped at the end) and the `tile` on top
-    of it. `engine.ts` is all the motion — Web Animations on
-    transform / opacity / clip-path — in one self-contained function that
+    `splash.css`). `engine.ts` is all the motion — Web Animations on
+    transform/opacity — in one self-contained function that
     `init-script.ts` serialises (`runSplash.toString()`) into a raw inline
     `<script>` in the root layout — **not** `next/script`
     `beforeInteractive`, which is queued until Next's JS loads and would let
     the app paint first (the theme-init script, `src/lib/theme/init-script.ts`,
     is inline for the same reason — no light flash for dark users). Keep
-    `engine.ts` free of imports and module-scope helpers. Gotcha: every
-    animation is `fill: "both"` (shows its first frame during its delay)
-    EXCEPT ones that take over an element an earlier animation already
-    moved — those must be `"forwards"`, or their first frame freezes the
-    element from time zero.
-  - Reduced motion: no run — the finished logo and wordmark fade in, hold
-    ~0.65 s, fade out. Safety valves: the rider or logo image not ready
-    within 1.5 s means it doesn't play; any error mid-run ends it at once;
-    CSS hides the overlay after 9 s whatever happens.
+    `engine.ts` free of imports and module-scope helpers.
+  - Reduced motion: no rise — the logo fades in, holds ~0.65 s, fades out.
+    Safety valves: tap skips, a logo image that hasn't loaded within 2.5 s
+    means it doesn't play, and CSS hides the overlay after 9 s whatever
+    happens.
   - Replay / disable: `?intro` (or `?splash`) forces it, `?nosplash`
     skips one load, localStorage `collegebites.splash = "off"` disables it on
     one device, `NEXT_PUBLIC_DISABLE_SPLASH=1` removes it from the build.
