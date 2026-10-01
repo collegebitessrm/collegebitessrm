@@ -87,12 +87,12 @@ export function PopularRail({ rail }: { rail: Rail }) {
 
   return (
     <section aria-labelledby="popular-heading" className="mt-9">
-      <div className="flex items-end justify-between gap-3">
-        <h2 id="popular-heading" className="flex items-center gap-2 font-heading text-title font-bold">
+      <div className="flex flex-wrap items-end justify-between gap-x-3">
+        <h2 id="popular-heading" className="flex items-center gap-2 font-heading text-title font-bold whitespace-nowrap">
           <Flame className="icon-tint-gold size-5.5 text-primary" />
           Campus favourites
         </h2>
-        <p className="shrink-0 pb-0.5 text-sm text-muted-foreground">
+        <p className="pb-0.5 text-sm text-muted-foreground">
           {hasTrending ? "Most ordered first" : "Signature dishes"}
         </p>
       </div>

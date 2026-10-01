@@ -412,6 +412,7 @@ the admin taps "Tap to arm sound" each visit.
 | A flipped scooter icon un-flipped while bobbing | The icon's own mirrored transform is overridden by a CSS transform animation | Flip with the separate CSS `scale` property and animate a wrapper |
 | Faded (/75, /85) text failed on the magenta end of the sunset | The hero's brightest stop | Full-strength dusk text for anything small on the hero; the audit checks every stop |
 | Share card build failed | It read photos that weren't in the repo | Literal photo paths; update them if photos change |
+| A caption came out body-sized | `cn()` (tailwind-merge) didn't know `text-label` etc. were sizes and dropped them next to a text colour | Register the named sizes in `src/lib/utils.ts` (`createCn`); add any new named size there |
 | Disabled button still clickable | Base UI's trigger overrides `disabled` from `render` | Put `disabled` on the trigger itself |
 | `loading.tsx` at the app root flashed everywhere | Root loading is every route's fallback | Home lives in a `(home)` route group |
 | "use server" file broke | It exported a constant | Server-action files export async functions only |

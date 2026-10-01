@@ -148,6 +148,8 @@ author.
   `src/app/layout.tsx`. Sizes above body come from the named scale in
   `globals.css` — `text-display` (hero), `text-headline` (page titles),
   `text-title` (card/section titles) — not one-off `text-[2.5rem]`s.
+  They're registered as font sizes in `cn` (`src/lib/utils.ts`); add any
+  new named size there too, or `cn()` drops it next to a text colour.
   Small captions above fields/sections use `text-label`: sentence case,
   sans, no letter-spacing. No mono font is loaded; don't bring back the
   mono-uppercase eyebrow style, and no `uppercase` anywhere.
