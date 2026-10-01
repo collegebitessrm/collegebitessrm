@@ -94,6 +94,10 @@ export function runSplash(C: SplashRuntime): void {
     if (started || !overlay) return;
     started = true;
     const root = overlay;
+    // The layers have just been decoded, so these come straight from cache.
+    root.querySelectorAll<HTMLImageElement>("img[data-src]").forEach((img) => {
+      img.src = img.dataset.src!;
+    });
     html.setAttribute("data-splash-ran", "");
     setState("run");
     const one = (k: string) => root.querySelector<HTMLElement>(`[data-sp="${k}"]`)!;
