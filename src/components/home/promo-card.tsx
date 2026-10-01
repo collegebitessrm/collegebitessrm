@@ -29,8 +29,8 @@ export function PromoCard() {
   return (
     <div className="surface-hero glow-sun relative mt-5 min-h-44 overflow-hidden rounded-[1.75rem] bg-hero p-5 text-hero-foreground">
       <div className="relative z-10 max-w-[62%]">
-        <p className="font-heading text-title leading-tight font-bold">Hot food, at Gate 3</p>
-        <p className="mt-1.5 max-w-[11rem] text-sm font-medium">Order here, pay when you collect.</p>
+        <p className="font-heading text-title leading-tight font-bold">Hot food, at Gate&nbsp;3</p>
+        <p className="mt-1.5 max-w-[7.5rem] text-sm font-medium">Order here, pay when you collect.</p>
       </div>
       <PromoScene />
     </div>
@@ -69,14 +69,18 @@ function PromoScene() {
         <circle cx="93" cy="5" r="0.8" fill="currentColor" />
       </svg>
 
-      {/* Gate 3: a pin drops in at the foot of the tower once the rider has arrived. */}
-      <span className="promo-pin absolute top-[29%] left-[56.5%] flex w-[11%] flex-col items-center">
-        <MapPin weight="fill" className="size-full text-hero-foreground drop-shadow-sm" />
+      {/* Gate 3: a pin drops onto the tower's door once the rider has arrived,
+          with a white halo so it reads on the dark doorway in every scene. */}
+      <span className="promo-pin absolute top-[35%] left-[60%] flex w-[10%] flex-col items-center">
+        <MapPin
+          weight="fill"
+          className="size-full text-hero-foreground [filter:drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_2px_2px_rgb(0_0_0/0.25))]"
+        />
         <span className="promo-pin-ring -mt-[18%] h-[14%] w-[70%] rounded-[50%] bg-hero-foreground/30" />
       </span>
 
       {/* The rider rides in along the road, then keeps a gentle bob. */}
-      <div className="promo-rider absolute top-[40%] left-[13%] w-[35%]">
+      <div className="promo-rider absolute top-[42%] left-[17.5%] w-[31%]">
         <div className="promo-bob relative">
           <svg viewBox="0 0 40 30" className="absolute top-[38%] -left-[42%] w-[55%] overflow-visible text-hero-foreground">
             <line x1="6" y1="6" x2="34" y2="6" className="promo-streak" style={{ animationDelay: "0s" }} />
