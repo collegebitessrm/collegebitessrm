@@ -450,7 +450,6 @@ Never commit a secret; never paste one into chat.
   students sign in, if not done already.
 - Restaurant phone numbers are the support number; set real ones if
   admins should call restaurants from the app.
-- Every dish has a photo, but 28 are openly licensed stock photos (some near matches) and 9 are developer-supplied web photos (two watermarked) — swap for client photos when they come; covers are stock photos until the client
   sends real ones.
 - Supabase performance suggestions (wrap `auth.uid()` in `select` inside
   policies, a few foreign-key indexes) — worth doing if order volume grows;

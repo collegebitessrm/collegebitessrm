@@ -1139,23 +1139,11 @@ Parked by the developer — do these only when asked.
 
 **When the client has time**
 - Real **restaurant phone numbers** (all three use the support number).
-- **Photos**: since 1 Oct 2026, all 150 dishes have a photo. Nine Local
-  Home Kitchen ones (Kaju rice / Kaju Manchurian, mushroom, egg and
-  Manchurian Schezwan noodles; also Triangle's Mushroom Noodles) are photos
-  the developer supplied — not openly licensed, two carry the source's
-  watermark / stock ID (Kaju Paneer Manchurian, Manchurian Schezwan
-  Noodles); swap them for the client's own photos when possible. Earlier: 28 openly
-  licensed ones were added from Openverse (Wikimedia / Flickr, CC0, CC BY,
-  CC BY-SA, public domain), resized to ≤1200px, credited on `/terms` from
-  `src/lib/data/photo-credits.ts` (add a line there for any new photo with
-  such a licence). Some are near matches (Dragon Chicken, Chicken 555, Kaju
-  noodles / rice variants, Baby Corn Fried Rice uses corn fried rice). Only
-  the three Mushroom Noodles still use the placeholder. Client photos can
-  replace any of them (new filename). Was: (Biryani Nation's Dragon
-  Chicken, Chicken Fry, Crispy Chicken and Gobi Manchurian, Schezwan items,
-  Pepper/Lemon/Garlic/555 Chicken, some rice/noodle variants); the three
-  covers are reused photos, not the real restaurants. New photos need no
-  database change — new filename + an entry in `dish-photos.ts`.
+- **Photos** — done: every dish has a photo (no follow-up planned). Openly
+  licensed ones are credited on `/terms` from `src/lib/data/photo-credits.ts`
+  (add a line there for any new photo with such a licence); the rest are
+  developer-supplied. A new or replaced photo = new filename + an entry in
+  `dish-photos.ts`, no database change.
 
 **Optional, later**
 - **Google Search Console** (`GOOGLE_SITE_VERIFICATION`, see
