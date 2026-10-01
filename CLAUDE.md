@@ -1121,7 +1121,14 @@ Parked by the developer — do these only when asked.
 
 **When the client has time**
 - Real **restaurant phone numbers** (all three use the support number).
-- **Photos**: 34 of 150 dishes use the placeholder (Biryani Nation's Dragon
+- **Photos**: since 1 Oct 2026, 147 of 150 dishes have a photo — 28 openly
+  licensed ones were added from Openverse (Wikimedia / Flickr, CC0, CC BY,
+  CC BY-SA, public domain), resized to ≤1200px, credited on `/terms` from
+  `src/lib/data/photo-credits.ts` (add a line there for any new photo with
+  such a licence). Some are near matches (Dragon Chicken, Chicken 555, Kaju
+  noodles / rice variants, Baby Corn Fried Rice uses corn fried rice). Only
+  the three Mushroom Noodles still use the placeholder. Client photos can
+  replace any of them (new filename). Was: (Biryani Nation's Dragon
   Chicken, Chicken Fry, Crispy Chicken and Gobi Manchurian, Schezwan items,
   Pepper/Lemon/Garlic/555 Chicken, some rice/noodle variants); the three
   covers are reused photos, not the real restaurants. New photos need no
