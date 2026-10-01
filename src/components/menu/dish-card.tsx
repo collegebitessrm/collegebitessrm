@@ -252,7 +252,7 @@ export function DishCard({
           ) : (
             <span className="font-heading text-lg font-bold text-primary">{formatRupees(dish.price)}</span>
           )}
-          {dish.note && <span className="text-xs font-semibold text-aqua">{dish.note}</span>}
+          {!portioned && dish.note && <span className="text-xs font-semibold text-aqua">{dish.note}</span>}
         </p>
       </div>
     </article>
