@@ -278,13 +278,20 @@ light: things should look lit, not flat.
   (pickup pass, campus pass, cart bar, promo, banners, celebration, admin
   Today card) the sunset gold → coral → magenta with dusk text in both
   themes. Main actions everywhere are fully rounded pills.
-- **Four themes** (Profile → Theme, per device, on top of Light / Dark /
-  System): **Vice Dusk** (the default, described above), **Electric
-  Sunrise** (purple, neon peach, gold dust; charcoal and magenta at night),
+- **Four themes** (Profile → Theme and the first-login form, per device, on
+  top of Light / Dark / System): **Electric Sunrise** (the default for new
+  students: purple, neon peach, gold dust; charcoal and magenta at night),
+  **Vice Dusk** (the GTA VI theme, "GTA VI themed · Gamers special",
+  described above),
   **Innovation Hub** (purple, coral, tech blue; navy and electric lime at
   night) and **Kaapi** (filter coffee, turmeric, rose milk; espresso at
-  night). Each is a full light + dark token set, so every screen, the
-  sign-in scene, the splash, confetti and glows change with it; the
+  night). Each is a full light + dark token set with **its own look**, not
+  just recoloured: the sunset (striped sun, sea, palms, rays) is Vice's
+  alone; Sunrise has a dawn glow with ribbons and a line-art rising sun with
+  sparkles, Hub a grid with glows, orbits and a node network, Kaapi a coffee
+  wash with a filter-coffee tumbler, steam and beans — on every hero card,
+  the sign-in scene and the celebration. Every screen, the splash, confetti
+  and glows change with it; the
   contrast audit checks all eight sets. Also offered on the first-login
   form. Added 1 Oct 2026.
 - **Lighting kit:** bloom shadows (`glow-neon`, `glow-cyan`, `glow-sun`),

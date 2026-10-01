@@ -6,11 +6,13 @@
 
 export type PaletteId = "vice" | "sunrise" | "hub" | "kaapi";
 
-export const DEFAULT_PALETTE: PaletteId = "vice";
+// New students (and any device that hasn't picked one) start on Electric
+// Sunrise; Vice Dusk is the GTA VI theme, for those who choose it.
+export const DEFAULT_PALETTE: PaletteId = "sunrise";
 
 export const PALETTES: { id: PaletteId; name: string; blurb: string }[] = [
-  { id: "vice", name: "Vice Dusk", blurb: "Neon magenta, cyan and a gold sunset" },
   { id: "sunrise", name: "Electric Sunrise", blurb: "Purple, neon peach and gold dust" },
+  { id: "vice", name: "Vice Dusk", blurb: "GTA VI themed · Gamers special" },
   { id: "hub", name: "Innovation Hub", blurb: "Purple, coral and tech blue, lime at night" },
   { id: "kaapi", name: "Kaapi", blurb: "Filter coffee, turmeric and rose milk" },
 ];

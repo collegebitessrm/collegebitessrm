@@ -13,6 +13,7 @@ import {
 } from "@/components/icons";
 import { SUPPORT_PHONE } from "@/lib/support";
 import { cn } from "@/lib/utils";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /** "21 Sep", in IST. */
 export function formatDayMonth(iso: string) {
@@ -179,7 +180,7 @@ function MilestoneReward({ unlocked, total, claimedAt }: { unlocked: number; tot
   if (done && !claimedAt) {
     return (
       <div className="surface-hero glow-sun relative mt-3 overflow-hidden rounded-[1.5rem] bg-hero p-5 text-hero-foreground">
-        <div aria-hidden="true" className="promo-sun absolute -right-8 -bottom-14 size-36 rounded-full" />
+        <ThemeMotif className="-right-8 -bottom-14 size-36" />
         <span className="relative flex size-11 items-center justify-center rounded-2xl bg-hero-foreground text-hero">
           <Gift className="icon-tint-gold size-6" aria-hidden="true" />
         </span>

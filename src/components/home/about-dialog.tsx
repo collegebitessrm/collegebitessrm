@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /** Tapping the Home logo pops up a short "what is this app" card — mostly for first-time visitors poking around. */
 export function AboutDialog({ children }: { children: ReactNode }) {
@@ -15,9 +16,9 @@ export function AboutDialog({ children }: { children: ReactNode }) {
         {children}
       </DialogTrigger>
       <DialogContent className="flex flex-col items-center overflow-hidden text-center">
-        {/* A strip of the sign-in sunset, with the logo rising out of it. */}
+        {/* A strip of the palette's hero with its motif, the logo rising out of it. */}
         <div aria-hidden="true" className="surface-hero relative -mx-6 -mt-6 h-24 self-stretch overflow-hidden">
-          <div className="promo-sun absolute -bottom-16 left-1/2 size-40 -translate-x-1/2 rounded-full" />
+          <ThemeMotif className="-bottom-16 left-1/2 size-40 -translate-x-1/2" />
         </div>
         <BrandLogo className="relative -mt-10 size-18 rounded-[1.4rem] shadow-raised ring-4 ring-popover" />
         <DialogTitle className="mt-3 text-title">College Bites</DialogTitle>

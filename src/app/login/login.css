@@ -1,16 +1,18 @@
 /*
- * The sign-in scene (LoginScene): a Vice City sunset over the sea, two palm
- * silhouettes, and real dishes floating in the sky. Golden hour in light
- * mode, neon dusk in dark. Purely decorative (aria-hidden in the markup).
+ * The sign-in scene (LoginScene): real dishes floating in the sky over a
+ * scene that belongs to the palette — Vice Dusk's Vice City sunset (sea,
+ * palms, striped sun), Electric Sunrise's line-art sun over ribbons,
+ * Innovation Hub's node network and orbits, Kaapi's tumbler on a table.
+ * Purely decorative (aria-hidden in the markup).
  *
- * Layout, top to bottom inside .login-sky: the sky gradient, stars (dark
+ * Vice Dusk's layout, top to bottom inside .login-sky: the sky, stars (dark
  * only), a glow on the horizon, the striped retro sun (half set behind the
  * horizon), the sea with its reflection, the palms, then the photo cards.
  * The horizon sits at --horizon from the bottom.
  *
- * Every colour is a variable on .login-sky, set per palette (Vice Dusk
- * below, then Electric Sunrise, Innovation Hub and Kaapi), light and dark —
- * the same scene, lit in each palette's colours.
+ * Every colour is a variable on .login-sky, set per palette and mode (Vice
+ * Dusk first, then the others). The sky gradient is shared; each palette's
+ * own layers are switched by the only-* utilities in the markup.
  *
  * Motion only under `prefers-reduced-motion: no-preference`; everything is
  * complete and still without it. While the startup splash still covers
@@ -62,121 +64,98 @@
   --line-b: #ff2e88;
 }
 
-/* Electric Sunrise: a peach dawn over a purple sea; at night a magenta
-   bloom on the charcoal horizon. */
+/* Electric Sunrise: a cream-to-peach dawn; the line-art sun rises in
+   purple over gold, peach and lilac ribbons. At night, charcoal with a
+   magenta bloom and a peach sun. */
 [data-palette="sunrise"] .login-sky {
   --sky-a: #fff6ea;
-  --sky-b: #ffe0c4;
-  --sky-c: #ffb89e;
-  --sky-d: #e8b8ff;
-  --sea-a: #8a4fd6;
-  --sea-b: #4f1c8f;
-  --reflect: rgb(255 226 189 / 70%);
-  --wave: rgb(255 255 255 / 22%);
-  --palm: #2e1446;
+  --sky-b: #ffe6d0;
+  --sky-c: #ffc9b0;
+  --sky-d: #f0c8ff;
   --glow: rgb(255 158 128 / 55%);
-  --sun-a: #fff1c9;
-  --sun-b: #f5d1a0;
-  --sun-c: #ff9e80;
-  --sun-d: #d500f9;
-  --line-a: #f5d1a0;
-  --line-b: #d500f9;
+  --art: rgb(106 13 173 / 62%);
+  --sparkle: #d500f9;
+  --band-a: #f5d1a0;
+  --band-b: #ffb59c;
+  --band-c: #e7c6ff;
+  --band-edge: rgb(255 255 255 / 85%);
 }
 .dark[data-palette="sunrise"] .login-sky {
   --sky-a: #1a1a1d;
-  --sky-b: #2a1d33;
-  --sky-c: #5a2470;
-  --sky-d: #ff9e80;
-  --sea-a: #2e1745;
-  --sea-b: #1a1a1d;
-  --reflect: rgb(213 0 249 / 50%);
-  --wave: rgb(231 198 255 / 22%);
-  --palm: #0c0c0e;
+  --sky-b: #241d2b;
+  --sky-c: #4a2260;
+  --sky-d: #8a3a8a;
   --glow: rgb(213 0 249 / 55%);
-  --sun-a: #fff1c9;
-  --sun-b: #f5d1a0;
-  --sun-c: #ff9e80;
-  --sun-d: #d500f9;
-  --line-a: #f5d1a0;
-  --line-b: #d500f9;
+  --art: #ff9e80;
+  --sparkle: #f5d1a0;
+  --band-a: #2e1745;
+  --band-b: #4a1f63;
+  --band-c: #3a1a3f;
+  --band-edge: rgb(213 0 249 / 75%);
 }
 
-/* Innovation Hub: a cool blue-lilac sky with a coral sun over a tech-blue
-   sea; at night navy, with lime light on the water. */
+/* Innovation Hub: a cool sky under a dot grid, a network of nodes, orbit
+   rings on the horizon and coral / violet bands below. At night, navy
+   with electric-lime nodes. */
 [data-palette="hub"] .login-sky {
   --sky-a: #f3f8f8;
-  --sky-b: #dfe9ff;
-  --sky-c: #cfc9ff;
-  --sky-d: #ffb89a;
-  --sea-a: #5a86e8;
-  --sea-b: #2c3f99;
-  --reflect: rgb(255 255 255 / 60%);
-  --wave: rgb(255 255 255 / 22%);
-  --palm: #1b2540;
-  --glow: rgb(255 127 80 / 45%);
-  --sun-a: #ffe6d6;
-  --sun-b: #ffb08f;
-  --sun-c: #ff7f50;
-  --sun-d: #6a0dad;
-  --line-a: #ffb08f;
-  --line-b: #6a0dad;
+  --sky-b: #e4ecff;
+  --sky-c: #d6d2ff;
+  --sky-d: #ffc2aa;
+  --grid-dot: rgb(64 128 240 / 32%);
+  --net: rgb(106 13 173 / 45%);
+  --node: #ff7f50;
+  --band-a: #ff9a78;
+  --band-b: #a77bf0;
+  --band-edge: rgb(255 255 255 / 85%);
 }
 .dark[data-palette="hub"] .login-sky {
   --sky-a: #122238;
-  --sky-b: #16305a;
-  --sky-c: #2d3f80;
-  --sky-d: #ff7f50;
-  --sea-a: #1c3462;
-  --sea-b: #0d1a2c;
-  --reflect: rgb(50 205 50 / 45%);
-  --wave: rgb(50 205 50 / 22%);
-  --palm: #070e1a;
-  --glow: rgb(255 127 80 / 50%);
-  --sun-a: #ffe6d6;
-  --sun-b: #ffb08f;
-  --sun-c: #ff7f50;
-  --sun-d: #6a0dad;
-  --line-a: #32cd32;
-  --line-b: #2ed3c5;
+  --sky-b: #142a4a;
+  --sky-c: #1f3a6e;
+  --sky-d: #2d4f8f;
+  --grid-dot: rgb(122 166 255 / 26%);
+  --net: rgb(122 166 255 / 55%);
+  --node: #32cd32;
+  --band-a: #1c3462;
+  --band-b: #223f78;
+  --band-edge: #32cd32;
 }
 
-/* Kaapi: a turmeric-and-rose-milk sky over a coffee sea; at night an
-   espresso sky with a caramel horizon. */
+/* Kaapi: a cream-to-caramel morning with a hint of rose; a tumbler of
+   filter coffee in its davara on a wooden table, steam rising, beans in
+   the air. At night, espresso with a caramel horizon. */
 [data-palette="kaapi"] .login-sky {
   --sky-a: #fbf4ea;
-  --sky-b: #f6dcbc;
-  --sky-c: #efb98e;
-  --sky-d: #e8a0b0;
-  --sea-a: #8a5a3f;
-  --sea-b: #4a2a1c;
-  --reflect: rgb(255 230 168 / 65%);
-  --wave: rgb(255 255 255 / 18%);
-  --palm: #3b2418;
+  --sky-b: #f6dfc2;
+  --sky-c: #efc39a;
+  --sky-d: #e8a8b4;
   --glow: rgb(242 193 78 / 55%);
-  --sun-a: #fff3c4;
-  --sun-b: #f2c14e;
-  --sun-c: #eba566;
-  --sun-d: #e98fa6;
-  --line-a: #f2c14e;
-  --line-b: #e98fa6;
+  --art: #4a2a1c;
+  --art-light: rgb(255 230 168 / 55%);
+  --steam: rgb(255 255 255 / 85%);
+  --bean: #6f3b1f;
+  --bean-line: rgb(255 230 168 / 60%);
+  --table-a: #a06a46;
+  --table-b: #5a3322;
+  --table-edge: #c48a5c;
+  --grain: rgb(0 0 0 / 9%);
 }
 .dark[data-palette="kaapi"] .login-sky {
   --sky-a: #1c120d;
-  --sky-b: #2e1c14;
-  --sky-c: #5a3322;
-  --sky-d: #eba566;
-  --sea-a: #3a2419;
-  --sea-b: #1c120d;
-  --reflect: rgb(242 193 78 / 50%);
-  --wave: rgb(245 233 220 / 16%);
-  --palm: #0e0806;
+  --sky-b: #2a1a12;
+  --sky-c: #4e2d1e;
+  --sky-d: #b0703f;
   --glow: rgb(242 193 78 / 50%);
-  --sun-a: #fff3c4;
-  --sun-b: #f2c14e;
-  --sun-c: #eba566;
-  --sun-d: #e98fa6;
-  --line-a: #f2c14e;
-  --line-b: #e98fa6;
+  --art: #0e0806;
+  --art-light: rgb(242 193 78 / 45%);
+  --steam: rgb(245 233 220 / 50%);
+  --bean: #c98a5a;
+  --bean-line: rgb(28 18 13 / 60%);
+  --table-a: #3a2419;
+  --table-b: #1c120d;
+  --table-edge: #6f4a33;
+  --grain: rgb(255 255 255 / 5%);
 }
 
 /* Stars — dark only. A handful of 1px lights as background layers. */
@@ -250,6 +229,59 @@
   transform-origin: 78px 60px;
 }
 
+/* Electric Sunrise — the line-art sun stands on the horizon; ribbons run
+   below it in place of a sea. */
+.login-rising {
+  bottom: var(--horizon);
+  translate: -50% 0;
+}
+.login-ribbons {
+  height: var(--horizon);
+  background:
+    linear-gradient(to bottom, var(--band-edge) 0 2px, transparent 2px),
+    repeating-linear-gradient(-14deg, var(--band-a) 0 26px, var(--band-b) 26px 52px, var(--band-c) 52px 78px);
+}
+
+/* Innovation Hub — the dot grid fades out before the horizon; nodes glow;
+   the orbit rings stand on the horizon; bands below. */
+.login-grid {
+  background-image: radial-gradient(circle, var(--grid-dot) 1.2px, transparent 1.7px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, #000 35%, transparent calc(100% - var(--horizon)));
+}
+.login-node {
+  background: var(--node);
+  translate: -50% -50%;
+  box-shadow: 0 0 10px var(--node);
+}
+.login-orbits {
+  bottom: var(--horizon);
+  translate: -50% 0;
+}
+.login-bands {
+  height: var(--horizon);
+  background:
+    linear-gradient(to bottom, var(--band-edge) 0 2px, transparent 2px),
+    repeating-linear-gradient(135deg, var(--band-a) 0 22px, var(--band-b) 22px 44px);
+}
+
+/* Kaapi — the tumbler sits on the table's edge (sized by the sky's height,
+   like the dishes, so a short phone doesn't push it into them). */
+.login-tumbler {
+  bottom: calc(var(--horizon) - 3%);
+  height: 40%;
+  width: auto;
+  aspect-ratio: 1;
+  translate: -50% 0;
+}
+.login-table {
+  height: var(--horizon);
+  background:
+    linear-gradient(to bottom, var(--table-edge) 0 3px, transparent 3px),
+    repeating-linear-gradient(to bottom, transparent 0 9px, var(--grain) 9px 10px),
+    linear-gradient(to bottom, var(--table-a), var(--table-b));
+}
+
 /* Real dishes floating in the sky: framed like photo prints. */
 .login-card {
   box-shadow:
@@ -280,6 +312,22 @@
     animation-duration: 7s;
     animation-delay: -2s;
   }
+  .login-rising,
+  .login-orbits {
+    animation: login-art-rise 1.4s var(--ease-out-expo) 0.15s both;
+  }
+  .login-tumbler {
+    animation: login-art-rise 1.2s var(--ease-out-expo) 0.2s both;
+  }
+  .login-ribbons {
+    animation: login-ribbons 14s linear infinite;
+  }
+  .login-bands {
+    animation: login-ribbons 18s linear infinite;
+  }
+  .login-bean {
+    animation: login-drift 5.5s ease-in-out infinite alternate;
+  }
   .login-card {
     animation:
       login-card-in 0.9s var(--ease-spring) var(--card-delay, 0.4s) both,
@@ -292,6 +340,26 @@
   /* Hold everything while the splash still covers the page. */
   html:is([data-splash="play"], [data-splash="run"]) .login-scene * {
     animation-play-state: paused;
+  }
+}
+
+@keyframes login-art-rise {
+  from {
+    opacity: 0;
+    translate: -50% 30%;
+  }
+  to {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+@keyframes login-ribbons {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 0 0, 160px 0;
   }
 }
 

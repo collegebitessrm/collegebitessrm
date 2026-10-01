@@ -84,9 +84,14 @@ author.
   of the form data, it applies the moment it's tapped) (`PalettePicker`,
   `src/components/theme/palette-picker.tsx`), each a
   complete light + dark token set in `globals.css`, independent of the
-  Light / Dark / System switch: **Vice Dusk** (the default, `vice` — the
-  palette described above; not called "GTA" in the UI, that's Rockstar's
-  trademark), **Electric Sunrise** (`sunrise`: cream, purple `#6A0DAD`
+  Light / Dark / System switch, listed in this order in the picker:
+  **Electric Sunrise** — **the default** for new students and any device
+  that hasn't picked one (`DEFAULT_PALETTE` in `palettes.ts`, interpolated
+  into the theme-init script; the viewport `theme-color` and the manifest
+  use its cream `#FFF8F0` / charcoal `#1A1A1D`) — then **Vice Dusk** (`vice`
+  — the palette described above, the GTA VI theme: its picker caption is
+  "GTA VI themed · Gamers special"; the theme's name stays Vice Dusk),
+  **Innovation Hub** and **Kaapi**. In detail: **Electric Sunrise** (`sunrise`: cream, purple `#6A0DAD`
   actions, neon peach chips, a gold-dust → peach → lilac hero, tech-blue
   info, midnight-green veg; dark is charcoal `#1A1A1D` with magenta-bloom
   actions `#E264FF` — the brief's `#D500F9` lifted to pass as link text),
@@ -117,6 +122,25 @@ author.
   block in `globals.css`, a scene pair in `login.css`, an entry in
   `palettes.ts`, and a row in the audit's palette list. The share card and
   manifest stay Vice (they aren't per student).
+  **Each palette has its own look, not just its own colours** — the sunset
+  is Vice's alone. `--hero-surface` (read by `surface-hero`) gives each hero
+  card its own light: Vice a 135° sunset lit top-left; Sunrise a dawn glow
+  rising from the bottom edge crossed by two light ribbons; Hub two glows
+  (blue top-left, coral bottom-right) over lilac on a fine white grid;
+  Kaapi a warm top-to-bottom coffee wash with crema light. Decoration comes
+  from `ThemeMotif` (`src/components/theme/theme-motif.tsx`) wherever the
+  striped sun used to be (promo card, campus pass, free-biryani card, admin
+  Today card, About strip, 404 card, celebration, the picker's previews):
+  Vice the striped retro sun (`promo-sun`); Sunrise a line-art sun rising
+  with rays and twinkling sparkles; Hub orbit rings, a triangle of linked
+  nodes (one pulsing) and chevrons; Kaapi a filter-coffee tumbler in its
+  davara with rising steam and two beans. All four are in the markup; the
+  nearest `data-palette` shows one through the `only-vice` / `only-sunrise`
+  / `only-hub` / `only-kaapi` utilities (`display: var(--show-<id>)` — a
+  custom property, so it follows the NEAREST palette, which a plain
+  `[data-palette] .x` selector can't). The celebration's rotating rays
+  (`sunburst`) are `only-vice`. Motion (`motif-twinkle`, `motif-steam`,
+  `motif-pulse`) lives in the reduced-motion-safe block.
 - **Typography**: Poppins (`font-heading`, weights 500/600/700 only — it
   isn't a variable font) for display text and big numerals (tabular
   figures via a base rule); Inter (`font-sans`, variable) for body **and
@@ -161,7 +185,7 @@ author.
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
 - **Profile look**: `MemberCard` is the "campus pass" — a sunset
-  `surface-hero` card with a small striped `promo-sun`, the student's avatar
+  `surface-hero` card with the palette's `ThemeMotif` in the corner, the student's avatar
   (`tone="ink"`) in a dusk circle inside a turning `food-ring` (tapping it
   opens "Your taste"), the rank pill (coral on dusk)
   and three lit stat tiles (full-strength dusk text; /85 fails on the
@@ -241,7 +265,7 @@ author.
 - **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
   `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`. The
   first two use `WrongTurn` (`src/components/wrong-turn.tsx`): a small
-  tilted sunset card — the big label (#404 / Oops), a note, and the order
+  tilted hero card (with the palette's motif) — the big label (#404 / Oops), a note, and the order
   road's scooter stopped facing back with a "?" over it (flipped with CSS
   `scale`, since the bob animation would override the icon's own
   `mirrored` transform). It replaced the MuteBites-era `LostTicket` stub.
@@ -255,9 +279,10 @@ author.
 - **Overlays and toasts**: dialogs and alert dialogs sit over a dusk
   (`bg-night-900/50`) blurred backdrop, rounded 2rem / 1.75rem with a
   border, alert buttons are pills. The About dialog has a strip of the
-  sunset with the logo rising out of it. `CelebrationOverlay` is the
-  sunset (`surface-hero`) with slowly turning light rays (`sunburst`
-  utility) and the striped sun. Toasts are popover pills with a green /
+  palette's hero with its motif and the logo rising out of it.
+  `CelebrationOverlay` is the palette's hero (`surface-hero`) with its
+  motif rising from the bottom — plus slowly turning light rays
+  (`sunburst`) for Vice Dusk only. Toasts are popover pills with a green /
   red icon disc. Skeletons shimmer with a warm coral band.
 - **Icons**: Phosphor, **duotone** by default (outline + a soft fill
   layer, like the brand sheet's two-tone icons), always imported from
@@ -287,7 +312,7 @@ author.
   `text-sunset`, then that hour's question), the pill search, then —
   hidden while searching — `PromoCard` (sunset `surface-hero` card: fast
   delivery, free to Gate 3, pay on delivery, the logo tile floating over a
-  small striped `promo-sun`) and `PopularRail`: a snap-scrolling row of
+  `ThemeMotif`) and `PopularRail`: a snap-scrolling row of
   photo cards that deep-link to the dish, titled "Campus favourites".
   `buildRail()` puts the week's real trending dishes first (#1/#2 badges,
   available and with a photo), then fills the row to 8 with the
@@ -302,7 +327,15 @@ author.
   admin-only). The first card's cover loads eagerly at high priority (it's
   the page's biggest image).
 - **Sign-in page** (`src/app/login/`): `LoginScene` (`login-scene.tsx` +
-  `login.css`) is a Vice City sunset (recoloured per palette — see Themes) — golden hour in light mode, neon dusk
+  `login.css`): real dishes floating in a sky over the palette's own scene
+  (`only-*` layers): **Vice Dusk** keeps the Vice City sunset described
+  here; **Electric Sunrise** a line-art sun rising on the horizon with rays,
+  twinkling sparkles and drifting gold / peach / lilac ribbons in place of
+  the sea; **Innovation Hub** a dot grid fading down the sky, a network of
+  glowing nodes, orbit rings on the horizon and drifting coral / violet
+  bands (lime nodes and edge at night); **Kaapi** a filter-coffee tumbler in
+  its davara on a wooden table (sized by the sky's height, like the dishes),
+  steam rising, coffee beans drifting. Vice Dusk's scene is — golden hour in light mode, neon dusk
   with stars in dark: a striped retro sun half set behind the horizon, a
   violet sea with drifting wave lines and a sun reflection, two inline-SVG
   palm silhouettes, and three real dish photos floating as tilted prints.
@@ -666,7 +699,7 @@ silently re-enables the button.
   - App icons: `src/lib/app-icon.tsx` puts the tile on `MARK_NAVY` for
     `apple-icon.tsx` and `icons/icon-192|512|512-maskable` (maskable at
     `markScale: 0.8` to stay inside the ~80% safe circle). The manifest's
-    `background_color` is the sand ground `#FFF5EE`.
+    `background_color` is Electric Sunrise's cream `#FFF8F0` (the default palette).
   - `src/app/favicon.ico` — the tile, 16/32/48/64 RGBA PNG frames (Next
     can't generate `favicon` from code, and its ico decoder rejects
     non-RGBA frames), written by the same script.

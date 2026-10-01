@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { MapPin, Moped } from "@/components/icons";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /**
- * The art for the 404 and error pages: a small sunset card where the
+ * The art for the 404 and error pages: a small hero card where the
  * delivery scooter from the order road has taken a wrong turn — stopped,
  * facing back the way it came, with a "?" over it, and Gate 3 somewhere
  * off the end of the road. A big label (#404, Oops) and a short note sit
@@ -14,7 +15,7 @@ export function WrongTurn({ label, token, note }: { label: string; token: string
       className="surface-hero glow-sun relative w-full max-w-xs -rotate-2 overflow-hidden rounded-[2rem] bg-hero px-6 pt-5 pb-6 text-left text-hero-foreground"
       aria-hidden="true"
     >
-      <div className="promo-sun absolute -top-12 -right-10 size-40 rounded-full" />
+      <ThemeMotif className="-top-12 -right-10 size-40" />
       <p className="relative text-sm font-medium">College Bites · Gate 3</p>
       <p className="relative mt-4 text-label text-hero-accent">{label}</p>
       <p className="relative mt-1 font-heading text-6xl leading-none font-bold tracking-tight">{token}</p>

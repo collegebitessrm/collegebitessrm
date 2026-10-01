@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import { Avatar } from "@/components/taste/avatar";
 import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
 import { cn } from "@/lib/utils";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /*
  * The profile's campus pass: one sunset hero block holding who you are and
  * how you order — the student's avatar inside a slowly turning neon ring
  * (the food-ring from Home's tiles; tapping it opens "Your taste"), name and member-since, the weekly-rank
- * pill, and three lit stat tiles. A small striped retro sun sits in the
- * corner. Numbers use the display face; the no-show count turns
+ * pill, and three lit stat tiles. The palette's motif (ThemeMotif) sits in
+ * the corner. Numbers use the display face; the no-show count turns
  * hero-danger once it isn't zero, since that's the stat the ban system
  * actually cares about.
  */
@@ -33,7 +34,7 @@ export function MemberCard({
 }) {
   return (
     <section className="surface-hero glow-sun relative overflow-hidden rounded-[2rem] bg-hero p-5 text-hero-foreground">
-      <div aria-hidden="true" className="promo-sun absolute -top-14 -right-12 size-44 rounded-full" />
+      <ThemeMotif className="-top-14 -right-12 size-44" />
       <p className="relative text-xs font-semibold">College Bites · campus pass</p>
 
       <div className="relative mt-3 flex items-center gap-4">

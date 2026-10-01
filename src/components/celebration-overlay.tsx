@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ConfettiBurst } from "@/components/orders/confetti-burst";
 import { playOrderPlacedSound } from "@/lib/sound/play";
 import { cn } from "@/lib/utils";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 // animate-overlay-out runs --dur-base (240ms); unmount just before it ends.
 const FADE_OUT_MS = 220;
@@ -87,9 +88,11 @@ export function CelebrationOverlay({
         phase === "out" ? "animate-overlay-out" : "animate-overlay-in",
       )}
     >
-      {/* Rays of light turning slowly behind the moment, and the retro sun. */}
-      <span aria-hidden="true" className="sunburst animate-ring-spin pointer-events-none absolute size-[150vmax] [animation-duration:40s]" />
-      <span aria-hidden="true" className="promo-sun pointer-events-none absolute -bottom-24 size-80 rounded-full" />
+      {/* Vice's rays of light turning slowly behind the moment; then the
+          palette's own motif rising from the bottom (the retro sun for
+          Vice, the line-art sunrise, Hub's orbits, Kaapi's tumbler). */}
+      <span aria-hidden="true" className="only-vice sunburst animate-ring-spin pointer-events-none absolute size-[150vmax] [animation-duration:40s]" />
+      <ThemeMotif className="-bottom-24 size-80" />
       <span
         aria-hidden="true"
         className="animate-ping-slow pointer-events-none absolute size-56 rounded-full bg-hero-accent/25 blur-3xl"

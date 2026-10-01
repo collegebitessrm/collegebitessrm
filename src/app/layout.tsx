@@ -66,12 +66,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  // Vice Dusk's --background, keyed on the OS scheme. The theme-init
-  // script (and later src/lib/theme/store.ts) retargets both to the chosen
-  // palette and Light/Dark before first paint.
+  // The default palette's (Electric Sunrise) --background, keyed on the OS
+  // scheme. The theme-init script (and later src/lib/theme/store.ts)
+  // retargets both to the chosen palette and Light/Dark before first paint.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fff5ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e0a24" },
+    { media: "(prefers-color-scheme: light)", color: "#fff8f0" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a1a1d" },
   ],
 };
 

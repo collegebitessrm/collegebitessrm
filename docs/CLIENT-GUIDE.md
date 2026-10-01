@@ -20,7 +20,7 @@ A new admin account can only be added by the developer.
 
 ### Open or close ordering
 
-The sunset **Today** card at the top of admin has an
+The big coloured **Today** card at the top of admin has an
 **Open / Closed** switch.
 
 - **Open** — students can order from every restaurant that's turned on.

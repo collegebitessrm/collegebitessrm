@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /*
  * The dashboard's one sunset hero block — the same member-card treatment as the
@@ -29,7 +30,7 @@ export function StatCards({
 }) {
   return (
     <section className="surface-hero glow-sun relative overflow-hidden rounded-[2rem] bg-hero text-hero-foreground">
-      <div aria-hidden="true" className="promo-sun absolute -top-14 -right-12 size-44 rounded-full" />
+      <ThemeMotif className="-top-14 -right-12 size-44" />
       <div className="relative px-5 pt-5 sm:px-6">
         <h2 className="font-heading text-title font-bold">Today</h2>
         <p className="text-sm text-hero-foreground/85">{todayLabel} · Gate 3</p>
