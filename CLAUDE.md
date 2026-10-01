@@ -223,7 +223,17 @@ author.
   after the splash plus ~1.8 s; "Later" hides it for 3 days, × for good,
   and saving in the sheet also snoozes it (localStorage
   `collegebites.taste-nudge`); it hides while the cart bar or the sheet is
-  showing. It sits on `z-30` like the cart bar and the bottom bar: Home's
+  showing.
+  **Hearts** (`favorite_dishes`, see the menu's `DishCard`) build on it:
+  `getLikedDishes()` (`src/lib/data/favorites.ts`, request-cached, newest
+  first) → `heartCravings()` (food types the hearted dishes match, most
+  first). Home's tiles go `cravingOrder()` — stated cravings, then those;
+  the sheet marks them with a small heart ("From your hearts") while no
+  cravings are picked — never selected for them. Profile shows a
+  **"Liked dishes"** row (`LikedDishes`,
+  `src/components/profile/liked-dishes.tsx`: photo cards → `?dish=` deep
+  link, sold-out greyed, an empty hint) between the milestones and "Your
+  details". The Campus favourites row ignores hearts on purpose. It sits on `z-30` like the cart bar and the bottom bar: Home's
   sticky filter chips are `z-20` and come later in the page, so a floating
   layer on `z-20` gets painted under them (it did, on 1 Oct). Floating bars
   `z-30`, sticky bars `z-10`/`z-20`, dialogs and sheets `z-50`, toasts
@@ -371,7 +381,16 @@ author.
   `@starting-style`) with "N to go". Section headings get their food icon
   on a pink tile (`getCuisineIcon`, passed in as a prop — the React
   compiler lint rejects components picked during render) and a count pill.
-  `DishCard`'s add control is ONE lit pill that widens from a round "+"
+  `DishCard` has a heart in the photo's top-right corner (`HeartButton`,
+  `src/components/menu/heart-button.tsx`): fills at once with a pop and a
+  10 ms buzz, saves through `setDishLiked()` (`src/lib/favorites/actions.ts`)
+  in the background, reverts with a toast if that fails. The action does
+  **not** `revalidatePath` — in this Next.js a revalidating action re-renders
+  the current page in the same round trip, i.e. the whole menu per tap —
+  so the button remembers taps for the session (module-level `TAPPED`)
+  and a Back to a cached menu still shows the right heart; Profile and Home
+  are dynamic and read fresh. The top-left tag is capped short of the
+  heart. `DishCard`'s add control is ONE lit pill that widens from a round "+"
   into the "− n +" stepper (`transition-[width]`, `ease-spring`) and
   shrinks back; it only glows (`glow-neon`) once the dish is in the cart,
   and keyboard focus follows it. Prices are pink (`text-primary`). In the
@@ -757,6 +776,13 @@ type to Home needs this check widened in a migration), `updated_at`
 (`set_updated_at` trigger). No row = the defaults. RLS: a student selects,
 inserts and updates only their own row; no delete policy, no admin access —
 nobody else ever sees it.
+**`favorite_dishes`** ([`supabase/migrations/20261001010000_favorite_dishes.sql`](supabase/migrations/20261001010000_favorite_dishes.sql))
+— the dishes a student hearted: `user_id` → `users` and `dish_id` →
+`dishes` (both cascade), `created_at`, primary key `(user_id, dish_id)` —
+one heart per dish per student, so it's naturally bounded. Indexes on
+`(user_id, created_at desc)` (Profile's list) and `dish_id`. RLS: a student
+selects, inserts and deletes only their own rows; no update policy, no
+admin access, and no counts shown to anyone — hearts are private.
 **`milestone_rewards`** — one row per student whose all-milestones
 free biryani was handed over (`user_id` primary key = once per student,
 `claimed_at`, `marked_by` admin). RLS: a student selects only their own
@@ -1020,8 +1046,10 @@ once confirmed unused — it no longer exists in the database.
   genuine repeat-purchase signal, deliberately different from
   `trending_dishes()`'s raw order-volume popularity. Powers the menu's
   "Highly re-ordered" tag (`src/components/menu/dish-card.tsx`, alongside
-  the existing "Your favorite" tag — the card shows one of the two, with
-  "Your favorite" winning if a dish is both), fetched via
+  the existing "Your usual" tag (the student's most-ordered dish there,
+  `getUsualDishId()` — called "Your favorite" until 1 Oct 2026, renamed so
+  it isn't confused with hearts) — the card shows one of the two, with
+  "Your usual" winning if a dish is both), fetched via
   `getHighlyReorderedDishIds()` in `src/lib/data/reorders.ts`.
 
 No other open schema TODOs right now (see "Pending decisions" below for

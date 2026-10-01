@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 import { BlurImage } from "@/components/blur-image";
-import { Check, Loader2, Pepper, X } from "@/components/icons";
+import { Check, Heart, Loader2, Pepper, X } from "@/components/icons";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { saveTasteProfile } from "@/lib/taste/actions";
 import { AVATARS, CRAVINGS, DIETS, SPICE_LEVELS, type TasteProfile } from "@/lib/taste/options";
@@ -35,7 +35,7 @@ export function OpenTasteSheetButton({
  * saved in one go (saveTasteProfile). One per page — Home and Profile —
  * opened through the sheet store. Every open starts from what's saved.
  */
-export function TasteSheetHost({ taste }: { taste: TasteProfile }) {
+export function TasteSheetHost({ taste, fromHearts = [] }: { taste: TasteProfile; fromHearts?: string[] }) {
   const open = useTasteSheetOpen();
   // A fresh form each time it opens (adjusting state during render, so the
   // closing animation still shows the old content).
@@ -53,14 +53,17 @@ export function TasteSheetHost({ taste }: { taste: TasteProfile }) {
         showCloseButton={false}
         className="mx-auto max-h-[92dvh] w-full max-w-md gap-0 rounded-t-[2rem] border-t-0 bg-background p-0 text-base"
       >
-        <TasteForm key={session} taste={taste} />
+        <TasteForm key={session} taste={taste} fromHearts={fromHearts} />
       </SheetContent>
     </Sheet>
   );
 }
 
-function TasteForm({ taste }: { taste: TasteProfile }) {
+function TasteForm({ taste, fromHearts }: { taste: TasteProfile; fromHearts: string[] }) {
   const [draft, setDraft] = useState<TasteProfile>(taste);
+  // Until they've picked cravings, mark the food types their hearted dishes
+  // point to — a hint only, nothing is selected for them.
+  const hinted = taste.cravings.length === 0 ? fromHearts : [];
   const [pending, startTransition] = useTransition();
   const spice = SPICE_LEVELS.find((s) => s.level === draft.spiceLevel);
 
@@ -186,6 +189,7 @@ function TasteForm({ taste }: { taste: TasteProfile }) {
         <ul className="mt-2.5 grid grid-cols-4 gap-x-2 gap-y-3">
           {CRAVINGS.map((c) => {
             const selected = draft.cravings.includes(c.key);
+            const fromHeart = !selected && hinted.includes(c.key);
             return (
               <li key={c.key}>
                 <button
@@ -204,13 +208,27 @@ function TasteForm({ taste }: { taste: TasteProfile }) {
                       <BlurImage src={c.photo} alt="" sizes="56px" className="object-cover" />
                     </span>
                     {selected && <SelectedTick />}
+                    {fromHeart && (
+                      <span className="absolute -right-1 -bottom-1 flex size-5 items-center justify-center rounded-full bg-card text-primary shadow-card ring-2 ring-background">
+                        <Heart weight="fill" className="size-3" />
+                      </span>
+                    )}
                   </span>
-                  <span className={cn("text-xs leading-tight font-semibold", selected && "text-primary")}>{c.label}</span>
+                  <span className={cn("text-xs leading-tight font-semibold", selected && "text-primary")}>
+                    {c.label}
+                    {fromHeart && <span className="sr-only">, from your hearts</span>}
+                  </span>
                 </button>
               </li>
             );
           })}
         </ul>
+        {hinted.length > 0 && (
+          <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Heart weight="fill" className="size-3.5 shrink-0 text-primary" />
+            From your hearts: dishes you liked point to these.
+          </p>
+        )}
       </div>
 
       <footer className="border-t bg-background px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">

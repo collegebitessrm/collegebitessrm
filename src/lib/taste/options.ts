@@ -13,7 +13,8 @@ import {
   Soup,
   type AppIcon,
 } from "@/components/icons";
-import { FOOD_TYPES } from "@/lib/home-filters";
+import type { SearchableDish } from "@/lib/data/restaurants";
+import { FOOD_TYPES, isFoodType } from "@/lib/home-filters";
 
 // The taste profile's choices (public.taste_profiles). Client-safe — the
 // sheet, the avatar and the server action all read these lists. The
@@ -103,4 +104,22 @@ export function tasteSummary(t: TasteProfile): string {
     );
   }
   return parts.join(" · ");
+}
+
+/**
+ * The food types a student's hearted dishes belong to, most-hearted
+ * first — e.g. three hearted noodle dishes put "noodles" ahead. Builds on
+ * the stated cravings: Home's tiles go cravings first, then these, and the
+ * taste sheet marks these "From your hearts" while cravings are empty.
+ */
+export function heartCravings(liked: SearchableDish[]): string[] {
+  return FOOD_TYPES.map((t) => ({ key: t.key, n: liked.filter((d) => isFoodType(d, t)).length }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .map((x) => x.key);
+}
+
+/** Home's tile order: what they said they crave, then what their hearts say. */
+export function cravingOrder(t: TasteProfile, fromHearts: string[]): string[] {
+  return [...t.cravings, ...fromHearts.filter((k) => !t.cravings.includes(k))];
 }

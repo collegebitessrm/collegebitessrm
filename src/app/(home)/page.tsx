@@ -14,8 +14,9 @@ import { getRatePromptOrder } from "@/lib/data/orders";
 import { RatePrompt } from "@/components/home/rate-prompt";
 import { FinishProfileNudge } from "@/components/taste/finish-profile-nudge";
 import { TasteSheetHost } from "@/components/taste/taste-sheet";
+import { getLikedDishes } from "@/lib/data/favorites";
 import { getTasteProfile, hasPlacedOrder } from "@/lib/data/taste";
-import { answeredCount } from "@/lib/taste/options";
+import { answeredCount, cravingOrder, heartCravings } from "@/lib/taste/options";
 import { getTimeOfDayIST, isThursdayIST } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
@@ -35,7 +36,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const thursdaySpecialPromise = isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null);
 
   const profile = await profilePromise;
-  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder] = await Promise.all([
+  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked] = await Promise.all([
     restaurantsPromise,
     menuStatsPromise,
     dishesPromise,
@@ -47,7 +48,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     dishOrderCountsPromise,
     getTasteProfile(profile.id),
     hasPlacedOrder(profile.id),
+    getLikedDishes(profile.id),
   ]);
+  const fromHearts = heartCravings(liked);
   const timeOfDay = getTimeOfDayIST();
   const orderingEnabled = ordering.open;
 
@@ -55,7 +58,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
       <SignInWelcomeToast justSignedIn={signedIn === "1"} />
       {ratePrompt && <RatePrompt order={ratePrompt} />}
-      <TasteSheetHost taste={taste} />
+      <TasteSheetHost taste={taste} fromHearts={fromHearts} />
       {placedOrder && answeredCount(taste) < 3 && <FinishProfileNudge taste={taste} />}
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
@@ -72,7 +75,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             dishes={dishes}
             dishOrderCounts={dishOrderCounts}
             trendingDishes={trendingDishes}
-            cravings={taste.cravings}
+            cravings={cravingOrder(taste, fromHearts)}
           />
         </ViewTransition>
       </ViewTransition>

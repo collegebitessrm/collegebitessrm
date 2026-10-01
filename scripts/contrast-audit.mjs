@@ -91,6 +91,10 @@ const checks = [
   ['avatar icon on the gold tile', 'hero-foreground', 1, [T('gold')], 4.5],
   ['avatar icon (coral) on the campus-pass dusk circle', 'hero', 1, [T('hero-foreground')], 4.5],
   ['progress ring (primary) on popover (non-text, 3:1)', 'primary', 1, [T('popover')], 3.0],
+  // The heart on a dish photo: a frosted card/90 chip over a dark or a bright photo
+  ['heart, filled (primary) on its chip over a dark photo (non-text, 3:1)', 'primary', 1, [T('hero-foreground'), T('card', 0.9)], 3.0],
+  ['heart, filled (primary) on its chip over a bright photo (non-text, 3:1)', 'primary', 1, [T('hero-a'), T('card', 0.9)], 3.0],
+  ['heart, empty (muted) on its chip over a bright photo (non-text, 3:1)', 'muted-foreground', 1, [T('hero-a'), T('card', 0.9)], 3.0],
   // Status
   ['success text on success-soft chip', 'success', 1, [T('success-soft')], 4.5],
   ['success text on card', 'success', 1, [T('card')], 4.5],

@@ -56,6 +56,7 @@ import { ForkKnife as PhForkKnife } from "@phosphor-icons/react/dist/ssr/ForkKni
 import { Gift as PhGift } from "@phosphor-icons/react/dist/ssr/Gift";
 import { Grains as PhGrains } from "@phosphor-icons/react/dist/ssr/Grains";
 import { Hamburger as PhHamburger } from "@phosphor-icons/react/dist/ssr/Hamburger";
+import { Heart as PhHeart } from "@phosphor-icons/react/dist/ssr/Heart";
 import { IceCream as PhIceCream } from "@phosphor-icons/react/dist/ssr/IceCream";
 import { Leaf as PhLeaf } from "@phosphor-icons/react/dist/ssr/Leaf";
 import { LockSimple as PhLockSimple } from "@phosphor-icons/react/dist/ssr/LockSimple";
@@ -293,5 +294,7 @@ export const IceCream = make(PhIceCream, "IceCream");
 export const Pepper = make(PhPepper, "Pepper");
 export const Pizza = make(PhPizza, "Pizza");
 export const Popcorn = make(PhPopcorn, "Popcorn");
+/** like a dish (hearts) */
+export const Heart = make(PhHeart, "Heart");
 /** edit taste profile */
 export const PencilSimple = make(PhPencilSimple, "PencilSimple");

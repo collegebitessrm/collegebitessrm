@@ -268,11 +268,11 @@ export async function getDishesTried(userId: string, restaurantId: string): Prom
 
 /**
  * This student's most-ordered dish (by total quantity) at a restaurant,
- * among delivered orders — powers the menu's "Your favorite" tag. Ties
+ * among delivered orders — powers the menu's "Your usual" tag. Ties
  * keep whichever dish happens to sort first; not worth a tiebreak rule
  * for a cosmetic badge.
  */
-export async function getFavoriteDishId(userId: string, restaurantId: string): Promise<string | null> {
+export async function getUsualDishId(userId: string, restaurantId: string): Promise<string | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("orders")

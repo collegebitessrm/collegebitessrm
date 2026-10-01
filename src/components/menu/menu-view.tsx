@@ -32,10 +32,11 @@ export function MenuView({
   orderingEnabled,
   closedChip = "Paused",
   closedNote,
-  favoriteDishId,
+  usualDishId,
   highlyReorderedDishIds,
   focusDishId = null,
   spiceLevel = null,
+  likedDishIds = [],
 }: {
   restaurant: Restaurant;
   sections: MenuSection[];
@@ -46,14 +47,16 @@ export function MenuView({
   closedChip?: string;
   /** "Ordering is closed right now" — shown in the cart while ordering is shut. */
   closedNote?: string;
-  /** This student's most-ordered dish at this restaurant, or null — tags it "Your favorite". */
-  favoriteDishId: string | null;
+  /** This student's most-ordered dish at this restaurant, or null — tags it "Your usual". */
+  usualDishId: string | null;
   /** Dishes campus-wide with a strong repeat-purchase signal — tags them "Highly re-ordered". */
   highlyReorderedDishIds: Set<string>;
   /** Dish to scroll to and briefly highlight on arrival (from ?dish=). */
   focusDishId?: string | null;
   /** The taste profile's spice level, for the cart's one-tap note. */
   spiceLevel?: number | null;
+  /** Dishes this student has hearted — their hearts start filled. */
+  likedDishIds?: string[];
 }) {
   const cart = useCart();
   const [filter, setFilter] = useState(ALL);
@@ -254,7 +257,8 @@ export function MenuView({
                 orderable={restaurant.is_active && orderingEnabled}
                 pausedOnly={restaurant.is_active && !orderingEnabled}
                 pausedLabel={closedChip}
-                isFavorite={dish.id === favoriteDishId}
+                isUsual={dish.id === usualDishId}
+                liked={likedDishIds.includes(dish.id)}
                 isHighlyReordered={highlyReorderedDishIds.has(dish.id)}
                 highlighted={highlighted === dish.id}
                 onAdd={() => handleAdd(dish)}

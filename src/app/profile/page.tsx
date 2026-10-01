@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { IconTile } from "@/components/icon-tile";
 import { Bell, Lock, Mail, MapPin, Palette, Pepper, Sun, Volume2 } from "@/components/icons";
+import { LikedDishes } from "@/components/profile/liked-dishes";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
 import { MilestoneUnlockWatcher } from "@/components/profile/milestone-unlock-watcher";
@@ -16,8 +17,9 @@ import { getOrderStats, hasActiveOrder } from "@/lib/data/orders";
 import { getMyWeeklyRank } from "@/lib/data/rank";
 import { getRestaurantCount } from "@/lib/data/restaurants";
 import { getMilestoneRewardClaimedAt } from "@/lib/data/rewards";
+import { getLikedDishes } from "@/lib/data/favorites";
 import { getTasteProfile } from "@/lib/data/taste";
-import { tasteSummary } from "@/lib/taste/options";
+import { heartCravings, tasteSummary } from "@/lib/taste/options";
 import { formatMonthYear } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
@@ -37,13 +39,14 @@ export default async function ProfilePage() {
   const weeklyRankPromise = getMyWeeklyRank();
 
   const profile = await profilePromise;
-  const [orderInProgress, orderStats, totalRestaurants, weeklyRank, rewardClaimedAt, taste] = await Promise.all([
+  const [orderInProgress, orderStats, totalRestaurants, weeklyRank, rewardClaimedAt, taste, liked] = await Promise.all([
     hasActiveOrder(profile.id),
     getOrderStats(profile.id),
     totalRestaurantsPromise,
     weeklyRankPromise,
     getMilestoneRewardClaimedAt(profile.id),
     getTasteProfile(profile.id),
+    getLikedDishes(profile.id),
   ]);
 
   // Mirrors the precedence in profile/actions.ts's updatePhone — that
@@ -64,7 +67,7 @@ export default async function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
       <MilestoneUnlockWatcher unlockedCsv={unlockedMilestones.join(",")} />
-      <TasteSheetHost taste={taste} />
+      <TasteSheetHost taste={taste} fromHearts={heartCravings(liked)} />
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
           <MemberCard
@@ -83,6 +86,8 @@ export default async function ProfilePage() {
             totalRestaurants={totalRestaurants}
             rewardClaimedAt={rewardClaimedAt}
           />
+
+          <LikedDishes dishes={liked} />
 
           <h2 className="mt-8 font-heading text-title font-bold">Your details</h2>
           <p className="text-sm text-muted-foreground">Tap a field to edit it.</p>

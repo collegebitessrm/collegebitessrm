@@ -64,7 +64,8 @@ export function RestaurantList({
   dishOrderCounts: Record<string, number>;
   /** getTrendingDishes() — ranked first in the "Campus favourites" photo row. */
   trendingDishes: TrendingDish[];
-  /** The taste profile's cravings (food-type keys) — those tiles come first. */
+  /** Food-type keys to lead "What's on your mind?": the taste profile's cravings, then
+   *  what the student's hearted dishes point to (cravingOrder()). */
   cravings?: string[];
 }) {
   const [query, setQuery] = useState("");
@@ -109,7 +110,8 @@ export function RestaurantList({
     const orderable = FOOD_TYPES.filter((t) =>
       dishes.some((d) => d.isAvailable && open.has(d.restaurantId) && isFoodType(d, t)),
     );
-    // What they said they crave goes first, in the order they picked it.
+    // What they said they crave first (in the order they picked), then what
+    // their hearts point to, then the rest as before.
     const rank = (key: string) => (cravings.includes(key) ? cravings.indexOf(key) : cravings.length);
     return [...orderable].sort((a, b) => rank(a.key) - rank(b.key));
   }, [restaurants, dishes, cravings]);

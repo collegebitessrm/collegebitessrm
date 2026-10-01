@@ -7,8 +7,9 @@ import { BlurImage } from "@/components/blur-image";
 import { MenuProgress } from "@/components/menu/menu-progress";
 import { MenuView } from "@/components/menu/menu-view";
 import { getRestaurantCoverPhoto } from "@/lib/data/dish-photos";
-import { getDishesTried, getFavoriteDishId } from "@/lib/data/orders";
+import { getDishesTried, getUsualDishId } from "@/lib/data/orders";
 import { getTasteProfile } from "@/lib/data/taste";
+import { getLikedDishes } from "@/lib/data/favorites";
 import { getHighlyReorderedDishIds } from "@/lib/data/reorders";
 import { getRestaurantMenu } from "@/lib/data/restaurants";
 import { isUuid } from "@/lib/ids";
@@ -44,13 +45,14 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   const focusDishId = typeof dish === "string" && isUuid(dish) ? dish : null;
 
   const profile = await profilePromise;
-  const [menu, ordering, dishesTried, favoriteDishId, highlyReorderedDishIds, taste] = await Promise.all([
+  const [menu, ordering, dishesTried, usualDishId, highlyReorderedDishIds, taste, liked] = await Promise.all([
     menuPromise,
     orderingPromise,
     getDishesTried(profile.id, id),
-    getFavoriteDishId(profile.id, id),
+    getUsualDishId(profile.id, id),
     highlyReorderedPromise,
     getTasteProfile(profile.id),
+    getLikedDishes(profile.id),
   ]);
   if (!menu) notFound();
 
@@ -150,10 +152,11 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
               orderingEnabled={orderingEnabled}
               closedChip={ordering.short}
               closedNote={ordering.headline}
-              favoriteDishId={favoriteDishId}
+              usualDishId={usualDishId}
               highlyReorderedDishIds={highlyReorderedDishIds}
               focusDishId={focusDishId}
               spiceLevel={taste.spiceLevel}
+              likedDishIds={liked.filter((d) => d.restaurantId === id).map((d) => d.id)}
             />
           </div>
         </ViewTransition>

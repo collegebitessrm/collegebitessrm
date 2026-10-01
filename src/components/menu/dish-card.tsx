@@ -9,6 +9,7 @@ import { getDishPhoto } from "@/lib/data/dish-photos";
 import type { Dish } from "@/lib/data/types";
 import { formatRupees } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { HeartButton } from "./heart-button";
 
 /*
  * One dish in the menu's two-column photo grid: a big square photo with
@@ -19,7 +20,8 @@ import { cn } from "@/lib/utils";
  * it leaves), while the photo picks up a ring; keyboard focus follows it
  * from "+" to the stepper's "+" and back. Dishes without a photo get a
  * typographic tile (their initial in the display face) instead of a
- * mismatched image.
+ * mismatched image. A heart in the top corner saves it to the student's
+ * liked dishes (HeartButton).
  */
 export function DishCard({
   dish,
@@ -28,8 +30,9 @@ export function DishCard({
   orderable,
   pausedOnly = false,
   pausedLabel = "Paused",
-  isFavorite = false,
+  isUsual = false,
   isHighlyReordered = false,
+  liked = false,
   highlighted = false,
   onAdd,
   onChangeQuantity,
@@ -44,9 +47,11 @@ export function DishCard({
   /** Chip text when pausedOnly, e.g. "Closed". */
   pausedLabel?: string;
   /** This student's most-ordered dish at this restaurant. */
-  isFavorite?: boolean;
+  isUsual?: boolean;
   /** Campus-wide: several students have each reordered this dish 3+ times. */
   isHighlyReordered?: boolean;
+  /** The student has hearted this dish (favorite_dishes). */
+  liked?: boolean;
   /** Just arrived here from a deep link (Trending, Thursday banner) — flash a ring. */
   highlighted?: boolean;
   onAdd: () => void;
@@ -159,12 +164,12 @@ export function DishCard({
           </div>
         )}
 
-        {(isFavorite || isHighlyReordered) && (
-          <span className="absolute top-2 left-2 inline-flex max-w-[calc(100%-1rem)] items-center gap-1 rounded-full bg-card/90 px-2 py-0.5 text-xs font-semibold backdrop-blur-sm">
-            {isFavorite ? (
+        {(isUsual || isHighlyReordered) && (
+          <span className="absolute top-2 left-2 inline-flex max-w-[calc(100%-3.75rem)] items-center gap-1 rounded-full bg-card/90 px-2 py-0.5 text-xs font-semibold backdrop-blur-sm">
+            {isUsual ? (
               <>
                 <Star className="size-3 shrink-0 icon-solid text-gold-strong" aria-hidden="true" />
-                <span className="truncate">Your favorite</span>
+                <span className="truncate">Your usual</span>
               </>
             ) : (
               <>
@@ -174,6 +179,10 @@ export function DishCard({
             )}
           </span>
         )}
+
+        <div className="absolute top-2 right-2">
+          <HeartButton dishId={dish.id} dishName={dish.name} initialLiked={liked} />
+        </div>
 
         {soldOut && (
           <span className="absolute inset-x-0 bottom-3 mx-auto w-fit rounded-full bg-card/90 px-3 py-1 text-xs font-semibold text-muted-foreground backdrop-blur-sm">
