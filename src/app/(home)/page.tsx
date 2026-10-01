@@ -12,6 +12,10 @@ import { getDishOrderCounts, getTrendingDishes } from "@/lib/data/trending";
 import { getUsualCart } from "@/lib/data/usual";
 import { getRatePromptOrder } from "@/lib/data/orders";
 import { RatePrompt } from "@/components/home/rate-prompt";
+import { FinishProfileNudge } from "@/components/taste/finish-profile-nudge";
+import { TasteSheetHost } from "@/components/taste/taste-sheet";
+import { getTasteProfile, hasPlacedOrder } from "@/lib/data/taste";
+import { answeredCount } from "@/lib/taste/options";
 import { getTimeOfDayIST, isThursdayIST } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
@@ -31,7 +35,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const thursdaySpecialPromise = isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null);
 
   const profile = await profilePromise;
-  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts] = await Promise.all([
+  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder] = await Promise.all([
     restaurantsPromise,
     menuStatsPromise,
     dishesPromise,
@@ -41,6 +45,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     trendingDishesPromise,
     getRatePromptOrder(profile.id),
     dishOrderCountsPromise,
+    getTasteProfile(profile.id),
+    hasPlacedOrder(profile.id),
   ]);
   const timeOfDay = getTimeOfDayIST();
   const orderingEnabled = ordering.open;
@@ -49,9 +55,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
       <SignInWelcomeToast justSignedIn={signedIn === "1"} />
       {ratePrompt && <RatePrompt order={ratePrompt} />}
+      <TasteSheetHost taste={taste} />
+      {placedOrder && answeredCount(taste) < 3 && <FinishProfileNudge taste={taste} />}
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
-          <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} />
+          <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} avatar={taste.avatar} />
           {usual && orderingEnabled && <YourUsualChip usual={usual} />}
           {thursdaySpecial && <ThursdayNudge special={thursdaySpecial} />}
           {!orderingEnabled && <OrderingPausedBanner ordering={ordering} />}
@@ -64,10 +72,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             dishes={dishes}
             dishOrderCounts={dishOrderCounts}
             trendingDishes={trendingDishes}
+            cravings={taste.cravings}
           />
         </ViewTransition>
       </ViewTransition>
-      <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} hasTabBar />
+      <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} spiceLevel={taste.spiceLevel} hasTabBar />
     </main>
   );
 }

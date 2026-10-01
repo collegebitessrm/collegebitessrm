@@ -161,8 +161,9 @@ author.
   promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
 - **Profile look**: `MemberCard` is the "campus pass" — a sunset
-  `surface-hero` card with a small striped `promo-sun`, the initials in a
-  dusk circle inside a turning `food-ring`, the rank pill (coral on dusk)
+  `surface-hero` card with a small striped `promo-sun`, the student's avatar
+  (`tone="ink"`) in a dusk circle inside a turning `food-ring` (tapping it
+  opens "Your taste"), the rank pill (coral on dusk)
   and three lit stat tiles (full-strength dusk text; /85 fails on the
   magenta end). Milestone tiles: unlocked = a gradient circle with a gold
   duotone icon and `animate-shine` (a light band sweeping across now and
@@ -195,6 +196,34 @@ author.
   hero overlay, confetti unless reduced motion, the chime, tap or ~2 s to
   dismiss); several at once share one overlay naming them all. Render it
   outside any `<ViewTransition>`.
+- **Taste profile and avatars** (`public.taste_profiles`, see the schema
+  below; `src/lib/taste/`, `src/components/taste/`): every student has an
+  avatar — one of 12 preset Phosphor food icons (`AVATARS` in
+  `src/lib/taste/options.ts`: biryani pot (the default, `pot`), noodle bowl,
+  chilli, egg, pizza, burger, chai, ice cream, cookie, carrot, orange,
+  popcorn) on a round tile lit in a palette tone (`Avatar`,
+  `src/components/taste/avatar.tsx`), no uploads — plus three questions:
+  spice 1–5 (Mild … Extra spicy), diet (Veg / Egg is fine / Non-veg; no
+  vegan or Jain — the menus can't honour them) and cravings (any of Home's
+  `FOOD_TYPES`). One "Your taste" bottom sheet per page (`TasteSheetHost`
+  on Home and Profile) is opened through `src/lib/taste/sheet-store.ts` by
+  the Home header avatar, the campus-pass avatar, Profile's "Your taste"
+  row (`tasteSummary()`, e.g. "Medium · Veg · Biryani, Noodles") and the
+  nudge; it saves everything in one `saveTasteProfile()` upsert
+  (`src/lib/taste/actions.ts`, `revalidatePath("/", "layout")`).
+  `getTasteProfile()` (`src/lib/data/taste.ts`, request-cached) returns the
+  defaults when there's no row. What the answers do: cravings come first in
+  "What's on your mind?" (`RestaurantList`'s `cravings`); spice 1–2 / 5
+  offers a one-tap "Less spicy please" / "Extra spicy please" chip under
+  the cart's notes box (`spiceNote()`, passed from Home and the menu
+  through `CartBar` → `CartSheet`) — never typed in for them. The
+  **"Finish your profile"** card (`FinishProfileNudge`) floats above the
+  bottom bar on Home once the student has placed an order
+  (`hasPlacedOrder()`) and hasn't answered all three (`answeredCount()`),
+  after the splash plus ~1.8 s; "Later" hides it for 3 days, × for good,
+  and saving in the sheet also snoozes it (localStorage
+  `collegebites.taste-nudge`); it hides while the cart bar or the sheet is
+  showing.
 - **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
   `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`. The
   first two use `WrongTurn` (`src/components/wrong-turn.tsx`): a small
@@ -238,7 +267,8 @@ author.
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
 - **Home layout** (`src/app/(home)/page.tsx`, `src/components/home/`): the
-  header over the time-of-day sky (logo → About; a small
+  header over the time-of-day sky (logo → About, the student's avatar →
+  the "Your taste" sheet; a small
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —
   hidden while searching — `PromoCard` (sunset `surface-hero` card: fast
@@ -712,6 +742,17 @@ notifications on (`user_id`, unique `endpoint`, `p256dh`, `auth`,
 phone) and `delete` stale ones. The *new order* send can't use any
 student's session, so it goes through the service-role client — see
 **Notifications** above.
+**`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
+named `taste_profiles` in the database's migration history) — one row per
+student, created the first time they save the "Your taste" sheet:
+`user_id` (primary key → `users`, cascade), `avatar` (text, default
+`'pot'`, `^[a-z0-9-]{1,32}$` — the app holds the list), `spice_level`
+(1–5, null = not answered), `diet` (`'veg' | 'egg' | 'nonveg'`, null = not
+answered), `cravings` (text array, only `FOOD_TYPES` keys — adding a food
+type to Home needs this check widened in a migration), `updated_at`
+(`set_updated_at` trigger). No row = the defaults. RLS: a student selects,
+inserts and updates only their own row; no delete policy, no admin access —
+nobody else ever sees it.
 **`milestone_rewards`** — one row per student whose all-milestones
 free biryani was handed over (`user_id` primary key = once per student,
 `claimed_at`, `marked_by` admin). RLS: a student selects only their own

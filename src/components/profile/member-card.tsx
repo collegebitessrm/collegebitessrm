@@ -1,17 +1,19 @@
 import type { ReactNode } from "react";
+import { Avatar } from "@/components/taste/avatar";
+import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
 import { cn } from "@/lib/utils";
 
 /*
  * The profile's campus pass: one sunset hero block holding who you are and
- * how you order — the initials inside a slowly turning neon ring (the
- * food-ring from Home's tiles), name and member-since, the weekly-rank
+ * how you order — the student's avatar inside a slowly turning neon ring
+ * (the food-ring from Home's tiles; tapping it opens "Your taste"), name and member-since, the weekly-rank
  * pill, and three lit stat tiles. A small striped retro sun sits in the
  * corner. Numbers use the display face; the no-show count turns
  * hero-danger once it isn't zero, since that's the stat the ban system
  * actually cares about.
  */
 export function MemberCard({
-  initials,
+  avatar,
   name,
   memberSince,
   rankBadge,
@@ -19,7 +21,8 @@ export function MemberCard({
   streakDays,
   noShows,
 }: {
-  initials: string;
+  /** The taste profile's avatar id. */
+  avatar: string;
   name: string;
   memberSince: string;
   /** <WeeklyRankBadge/>, which renders nothing when it has nothing flattering to say. */
@@ -34,12 +37,13 @@ export function MemberCard({
       <p className="relative text-xs font-semibold">College Bites · campus pass</p>
 
       <div className="relative mt-3 flex items-center gap-4">
-        <span className="relative flex size-[4.5rem] shrink-0 items-center justify-center">
+        <OpenTasteSheetButton
+          aria-label="Change your avatar"
+          className="pressable relative flex size-[4.5rem] shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-hero-foreground/80"
+        >
           <span aria-hidden="true" className="food-ring animate-ring-spin absolute inset-0 rounded-full" />
-          <span className="relative flex size-[3.9rem] items-center justify-center rounded-full bg-hero-foreground font-heading text-2xl font-bold text-hero">
-            {initials}
-          </span>
-        </span>
+          <Avatar id={avatar} tone="ink" className="relative size-[3.9rem]" />
+        </OpenTasteSheetButton>
         <div className="min-w-0">
           <h1 className="truncate font-heading text-title font-bold">{name}</h1>
           <p className="text-sm text-hero-foreground/85">Member since {memberSince}</p>

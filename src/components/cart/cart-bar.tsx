@@ -19,6 +19,7 @@ export function CartBar({
   orderingEnabled,
   closedNote,
   hasTabBar = false,
+  spiceLevel = null,
 }: {
   profilePhone: string;
   /** On a menu page: names the cart's restaurant when it's a different one. */
@@ -30,6 +31,8 @@ export function CartBar({
   /** True on the tab screens, where the floating <TabBar/> (root layout) sits
    *  below — stacks the cart bar just above it. */
   hasTabBar?: boolean;
+  /** The taste profile's spice level — offers a one-tap "less / extra spicy" note. */
+  spiceLevel?: number | null;
 }) {
   const cart = useCart();
   const [open, setOpen] = useState(false);
@@ -99,6 +102,7 @@ export function CartBar({
         profilePhone={profilePhone}
         orderingEnabled={orderingEnabled}
         closedNote={closedNote}
+        spiceLevel={spiceLevel}
       />
     </>
   );

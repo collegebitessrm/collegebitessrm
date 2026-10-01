@@ -49,6 +49,7 @@ export function RestaurantList({
   dishes,
   dishOrderCounts,
   trendingDishes,
+  cravings = [],
 }: {
   restaurants: Restaurant[];
   /** Every dish (getSearchableDishes) — searched and filtered on the client. */
@@ -63,6 +64,8 @@ export function RestaurantList({
   dishOrderCounts: Record<string, number>;
   /** getTrendingDishes() — ranked first in the "Campus favourites" photo row. */
   trendingDishes: TrendingDish[];
+  /** The taste profile's cravings (food-type keys) — those tiles come first. */
+  cravings?: string[];
 }) {
   const [query, setQuery] = useState("");
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -103,8 +106,13 @@ export function RestaurantList({
   // Tiles only for food types there's something to order in right now.
   const foodTypes = useMemo(() => {
     const open = new Set(restaurants.filter((r) => r.is_active).map((r) => r.id));
-    return FOOD_TYPES.filter((t) => dishes.some((d) => d.isAvailable && open.has(d.restaurantId) && isFoodType(d, t)));
-  }, [restaurants, dishes]);
+    const orderable = FOOD_TYPES.filter((t) =>
+      dishes.some((d) => d.isAvailable && open.has(d.restaurantId) && isFoodType(d, t)),
+    );
+    // What they said they crave goes first, in the order they picked it.
+    const rank = (key: string) => (cravings.includes(key) ? cravings.indexOf(key) : cravings.length);
+    return [...orderable].sort((a, b) => rank(a.key) - rank(b.key));
+  }, [restaurants, dishes, cravings]);
   const showPopular = useMemo(() => popularCount(dishes, dishOrderCounts) >= POPULAR_MIN, [dishes, dishOrderCounts]);
 
   // Search first (every typed word must start a word in the dish, its

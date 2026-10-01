@@ -85,6 +85,12 @@ const checks = [
   ['aqua text on secondary well', 'aqua', 1, [T('secondary')], 4.5],
   ['pink-soft chip text', 'pink-soft-foreground', 1, [T('pink-soft')], 4.5],
   ['gold-strong marks (stars) vs card (non-text, 3:1)', 'gold-strong', 1, [T('card')], 3.0],
+  // Taste profile: avatar tiles (the other tones reuse pairs checked here) and
+  // the "Finish your profile" card's progress ring
+  ['avatar icon on the aqua tile', 'aqua-foreground', 1, [T('aqua')], 4.5],
+  ['avatar icon on the gold tile', 'hero-foreground', 1, [T('gold')], 4.5],
+  ['avatar icon (coral) on the campus-pass dusk circle', 'hero', 1, [T('hero-foreground')], 4.5],
+  ['progress ring (primary) on popover (non-text, 3:1)', 'primary', 1, [T('popover')], 3.0],
   // Status
   ['success text on success-soft chip', 'success', 1, [T('success-soft')], 4.5],
   ['success text on card', 'success', 1, [T('card')], 4.5],

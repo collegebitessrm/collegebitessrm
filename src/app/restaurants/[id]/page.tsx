@@ -8,6 +8,7 @@ import { MenuProgress } from "@/components/menu/menu-progress";
 import { MenuView } from "@/components/menu/menu-view";
 import { getRestaurantCoverPhoto } from "@/lib/data/dish-photos";
 import { getDishesTried, getFavoriteDishId } from "@/lib/data/orders";
+import { getTasteProfile } from "@/lib/data/taste";
 import { getHighlyReorderedDishIds } from "@/lib/data/reorders";
 import { getRestaurantMenu } from "@/lib/data/restaurants";
 import { isUuid } from "@/lib/ids";
@@ -43,12 +44,13 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   const focusDishId = typeof dish === "string" && isUuid(dish) ? dish : null;
 
   const profile = await profilePromise;
-  const [menu, ordering, dishesTried, favoriteDishId, highlyReorderedDishIds] = await Promise.all([
+  const [menu, ordering, dishesTried, favoriteDishId, highlyReorderedDishIds, taste] = await Promise.all([
     menuPromise,
     orderingPromise,
     getDishesTried(profile.id, id),
     getFavoriteDishId(profile.id, id),
     highlyReorderedPromise,
+    getTasteProfile(profile.id),
   ]);
   if (!menu) notFound();
 
@@ -151,6 +153,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
               favoriteDishId={favoriteDishId}
               highlyReorderedDishIds={highlyReorderedDishIds}
               focusDishId={focusDishId}
+              spiceLevel={taste.spiceLevel}
             />
           </div>
         </ViewTransition>

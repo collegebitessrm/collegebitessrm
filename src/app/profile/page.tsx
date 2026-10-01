@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
 import { IconTile } from "@/components/icon-tile";
-import { Bell, Lock, Mail, MapPin, Palette, Sun, Volume2 } from "@/components/icons";
+import { Bell, Lock, Mail, MapPin, Palette, Pepper, Sun, Volume2 } from "@/components/icons";
 import { MemberCard } from "@/components/profile/member-card";
 import { getUnlockedMilestones, MilestoneBadges } from "@/components/profile/milestone-badges";
 import { MilestoneUnlockWatcher } from "@/components/profile/milestone-unlock-watcher";
@@ -9,12 +9,15 @@ import { NotificationToggle } from "@/components/notifications/notification-togg
 import { SoundToggle } from "@/components/profile/sound-toggle";
 import { SupportCard } from "@/components/profile/support-card";
 import { WeeklyRankBadge } from "@/components/profile/weekly-rank-badge";
+import { OpenTasteSheetButton, TasteSheetHost } from "@/components/taste/taste-sheet";
 import { PalettePicker } from "@/components/theme/palette-picker";
 import { ThemeIconToggle } from "@/components/theme/theme-icon-toggle";
 import { getOrderStats, hasActiveOrder } from "@/lib/data/orders";
 import { getMyWeeklyRank } from "@/lib/data/rank";
 import { getRestaurantCount } from "@/lib/data/restaurants";
 import { getMilestoneRewardClaimedAt } from "@/lib/data/rewards";
+import { getTasteProfile } from "@/lib/data/taste";
+import { tasteSummary } from "@/lib/taste/options";
 import { formatMonthYear } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
@@ -25,11 +28,6 @@ import { SignOutButton } from "./sign-out-button";
 
 export const metadata: Metadata = { title: "Profile · College Bites", robots: { index: false, follow: false } };
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/);
-  return ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts.at(-1)![0] : "")).toUpperCase();
-}
-
 export default async function ProfilePage() {
   // Kicked off up front rather than after requireProfile() resolves —
   // neither needs the profile, so there's no reason to make them wait
@@ -39,12 +37,13 @@ export default async function ProfilePage() {
   const weeklyRankPromise = getMyWeeklyRank();
 
   const profile = await profilePromise;
-  const [orderInProgress, orderStats, totalRestaurants, weeklyRank, rewardClaimedAt] = await Promise.all([
+  const [orderInProgress, orderStats, totalRestaurants, weeklyRank, rewardClaimedAt, taste] = await Promise.all([
     hasActiveOrder(profile.id),
     getOrderStats(profile.id),
     totalRestaurantsPromise,
     weeklyRankPromise,
     getMilestoneRewardClaimedAt(profile.id),
+    getTasteProfile(profile.id),
   ]);
 
   // Mirrors the precedence in profile/actions.ts's updatePhone — that
@@ -65,10 +64,11 @@ export default async function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
       <MilestoneUnlockWatcher unlockedCsv={unlockedMilestones.join(",")} />
+      <TasteSheetHost taste={taste} />
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
           <MemberCard
-            initials={initials(profile.full_name)}
+            avatar={taste.avatar}
             name={profile.full_name}
             memberSince={formatMonthYear(profile.created_at)}
             rankBadge={<WeeklyRankBadge rank={weeklyRank} />}
@@ -93,6 +93,21 @@ export default async function ProfilePage() {
               lockedReason={phoneLockReason}
               banned={profile.is_banned}
             />
+            <div className="flex items-center gap-3 px-5 py-4">
+              <IconTile>
+                <Pepper className="icon-tint-primary size-5" />
+              </IconTile>
+              <div className="min-w-0 flex-1">
+                <p className="text-label text-muted-foreground">Your taste</p>
+                <p className="mt-0.5 font-semibold">{tasteSummary(taste) || "Not set yet"}</p>
+              </div>
+              <OpenTasteSheetButton
+                aria-label="Edit your taste and avatar"
+                className="shrink-0 rounded-full bg-pink-soft px-3.5 py-1.5 text-sm font-semibold text-pink-soft-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
+              >
+                Edit
+              </OpenTasteSheetButton>
+            </div>
             <div className="flex items-center gap-3 px-5 py-4">
               <IconTile>
                 <Mail className="icon-tint-gold size-5" />

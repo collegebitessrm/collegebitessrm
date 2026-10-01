@@ -35,6 +35,7 @@ export function MenuView({
   favoriteDishId,
   highlyReorderedDishIds,
   focusDishId = null,
+  spiceLevel = null,
 }: {
   restaurant: Restaurant;
   sections: MenuSection[];
@@ -51,6 +52,8 @@ export function MenuView({
   highlyReorderedDishIds: Set<string>;
   /** Dish to scroll to and briefly highlight on arrival (from ?dish=). */
   focusDishId?: string | null;
+  /** The taste profile's spice level, for the cart's one-tap note. */
+  spiceLevel?: number | null;
 }) {
   const cart = useCart();
   const [filter, setFilter] = useState(ALL);
@@ -269,6 +272,7 @@ export function MenuView({
         currentRestaurantId={restaurant.id}
         orderingEnabled={orderingEnabled}
         closedNote={closedNote}
+        spiceLevel={spiceLevel}
       />
 
       <AlertDialog open={pendingDish !== null} onOpenChange={(open) => !open && setPendingDish(null)}>

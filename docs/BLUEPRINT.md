@@ -146,7 +146,7 @@ finding the admin's devices for the new-order push. Push sends run in
 ### Browser-side state
 Stores on `useSyncExternalStore` for cart, theme, toasts and sound. Device
 keys, all prefixed `collegebites.`: `cart.v1`, `theme`, `sound-enabled`,
-`palette` (the chosen theme), `admin-alert-sound`, `confetti-shown`, `milestones-seen`, `notify-asked`,
+`palette` (the chosen theme), `taste-nudge` ("Finish your profile" card: snoozed-until or `never`), `admin-alert-sound`, `confetti-shown`, `milestones-seen`, `notify-asked`,
 `rate-prompted`, `splash-shown` (sessionStorage), `splash` (`"off"`
 disables it). Sign-out clears the cart first.
 
@@ -165,7 +165,8 @@ every rule lives in the database.
 `order_items` (name and price snapshotted), `daily_order_counters`,
 `app_settings` (one row, `ordering_mode` `'open' | 'closed'`),
 `order_reviews` + `order_item_ratings`, `push_subscriptions`,
-`milestone_rewards`.
+`milestone_rewards`, `taste_profiles` (avatar, spice, diet, cravings —
+private to the student).
 
 **Functions:** `is_admin()`, `current_user_is_banned()` (any account with
 the caller's **phone** banned), `ordering_is_open()`, `place_order()` (the
@@ -216,6 +217,7 @@ SQL editor (so it's missing from the database's migration history).
 | 22 | `20260929010000_ordering_switch_and_delivery_minutes` | Open/Closed switch, `delivery_minutes`, final `place_order()` with rate limits |
 | 23 | `20260929020000_revoke_banned_check_from_public` | Completes #21 (the grant came through PUBLIC) |
 | 24 | `20260929030000_seed_college_bites_menus` | Data: the three restaurants and 137 dishes |
+| 25 | `20261001000000_taste_profiles` | Taste profile + avatar per student, own-row RLS (history name `taste_profiles`) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied
@@ -235,6 +237,12 @@ migrations are never edited, so they stay.
   the database; student and admin always see the same number.
 - **Bans:** by phone number — any account with that number is blocked; a
   banned account can't change its number.
+- **Taste profile:** every student has an avatar (12 preset food icons, the
+  biryani pot by default) and can answer spice 1–5, diet (Veg / Egg / Non-veg)
+  and cravings in a "Your taste" sheet (Home avatar, campus pass, Profile
+  row). Cravings reorder Home's food tiles; a mild or extra-spicy answer
+  offers a one-tap note in the cart. A "Finish your profile" card nudges
+  after the first order. Private to the student. Added 1 Oct 2026.
 - **Milestones** (never re-lock): First Bite (1 delivered), Regular (10),
   Campus Explorer (every active restaurant), Campus Foodie (25), Gate
   Legend (50), Centurion (100). All six → one free biryani, claimed on
@@ -308,7 +316,7 @@ light: things should look lit, not flat.
   - *Orders:* the pickup pass (token, delivery time, Gate 3) with a road
     where a scooter rides from the kitchen to Gate 3 as the status changes
     live; status chips in the brand sheet's colours.
-  - *Profile:* the campus pass (initials in a turning neon ring, stat
+  - *Profile:* the campus pass (the student's avatar in a turning neon ring, stat
     tiles), shining unlocked milestones and sunset progress rings, the
     free-biryani card with a progress bar, icon rows.
   - *Everything else:* dusk-backed dialogs, a "wrong turn" 404 / error card

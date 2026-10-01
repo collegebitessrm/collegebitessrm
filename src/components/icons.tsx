@@ -24,8 +24,8 @@ import type { Icon as PhosphorIcon, IconProps } from "@phosphor-icons/react/dist
 import { ArrowClockwise as PhArrowClockwise } from "@phosphor-icons/react/dist/ssr/ArrowClockwise";
 import { ArrowCounterClockwise as PhArrowCounterClockwise } from "@phosphor-icons/react/dist/ssr/ArrowCounterClockwise";
 import { ArrowLeft as PhArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
-import { ArrowsDownUp as PhArrowsDownUp } from "@phosphor-icons/react/dist/ssr/ArrowsDownUp";
 import { ArrowRight as PhArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { ArrowsDownUp as PhArrowsDownUp } from "@phosphor-icons/react/dist/ssr/ArrowsDownUp";
 import { Bell as PhBell } from "@phosphor-icons/react/dist/ssr/Bell";
 import { BellRinging as PhBellRinging } from "@phosphor-icons/react/dist/ssr/BellRinging";
 import { BellSlash as PhBellSlash } from "@phosphor-icons/react/dist/ssr/BellSlash";
@@ -35,22 +35,28 @@ import { BowlSteam as PhBowlSteam } from "@phosphor-icons/react/dist/ssr/BowlSte
 import { CalendarHeart as PhCalendarHeart } from "@phosphor-icons/react/dist/ssr/CalendarHeart";
 import { CaretDown as PhCaretDown } from "@phosphor-icons/react/dist/ssr/CaretDown";
 import { CaretRight as PhCaretRight } from "@phosphor-icons/react/dist/ssr/CaretRight";
+import { Carrot as PhCarrot } from "@phosphor-icons/react/dist/ssr/Carrot";
 import { ChatCenteredText as PhChatCenteredText } from "@phosphor-icons/react/dist/ssr/ChatCenteredText";
 import { Check as PhCheck } from "@phosphor-icons/react/dist/ssr/Check";
 import { CheckCircle as PhCheckCircle } from "@phosphor-icons/react/dist/ssr/CheckCircle";
 import { ChefHat as PhChefHat } from "@phosphor-icons/react/dist/ssr/ChefHat";
 import { CircleNotch as PhCircleNotch } from "@phosphor-icons/react/dist/ssr/CircleNotch";
 import { ClockCounterClockwise as PhClockCounterClockwise } from "@phosphor-icons/react/dist/ssr/ClockCounterClockwise";
+import { Coffee as PhCoffee } from "@phosphor-icons/react/dist/ssr/Coffee";
 import { Compass as PhCompass } from "@phosphor-icons/react/dist/ssr/Compass";
+import { Cookie as PhCookie } from "@phosphor-icons/react/dist/ssr/Cookie";
 import { CookingPot as PhCookingPot } from "@phosphor-icons/react/dist/ssr/CookingPot";
 import { Copy as PhCopy } from "@phosphor-icons/react/dist/ssr/Copy";
 import { Crown as PhCrown } from "@phosphor-icons/react/dist/ssr/Crown";
 import { DownloadSimple as PhDownloadSimple } from "@phosphor-icons/react/dist/ssr/DownloadSimple";
+import { Egg as PhEgg } from "@phosphor-icons/react/dist/ssr/Egg";
 import { EnvelopeSimple as PhEnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
 import { Fire as PhFire } from "@phosphor-icons/react/dist/ssr/Fire";
 import { ForkKnife as PhForkKnife } from "@phosphor-icons/react/dist/ssr/ForkKnife";
 import { Gift as PhGift } from "@phosphor-icons/react/dist/ssr/Gift";
 import { Grains as PhGrains } from "@phosphor-icons/react/dist/ssr/Grains";
+import { Hamburger as PhHamburger } from "@phosphor-icons/react/dist/ssr/Hamburger";
+import { IceCream as PhIceCream } from "@phosphor-icons/react/dist/ssr/IceCream";
 import { Leaf as PhLeaf } from "@phosphor-icons/react/dist/ssr/Leaf";
 import { LockSimple as PhLockSimple } from "@phosphor-icons/react/dist/ssr/LockSimple";
 import { MagnifyingGlass as PhMagnifyingGlass } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
@@ -60,14 +66,18 @@ import { Minus as PhMinus } from "@phosphor-icons/react/dist/ssr/Minus";
 import { Money as PhMoney } from "@phosphor-icons/react/dist/ssr/Money";
 import { Monitor as PhMonitor } from "@phosphor-icons/react/dist/ssr/Monitor";
 import { Moon as PhMoon } from "@phosphor-icons/react/dist/ssr/Moon";
-import { Moped as PhMoped } from "@phosphor-icons/react/dist/ssr/Moped";
 import { MoonStars as PhMoonStars } from "@phosphor-icons/react/dist/ssr/MoonStars";
+import { Moped as PhMoped } from "@phosphor-icons/react/dist/ssr/Moped";
 import { Orange as PhOrange } from "@phosphor-icons/react/dist/ssr/Orange";
 import { OrangeSlice as PhOrangeSlice } from "@phosphor-icons/react/dist/ssr/OrangeSlice";
 import { Palette as PhPalette } from "@phosphor-icons/react/dist/ssr/Palette";
+import { PencilSimple as PhPencilSimple } from "@phosphor-icons/react/dist/ssr/PencilSimple";
+import { Pepper as PhPepper } from "@phosphor-icons/react/dist/ssr/Pepper";
 import { Phone as PhPhone } from "@phosphor-icons/react/dist/ssr/Phone";
 import { PintGlass as PhPintGlass } from "@phosphor-icons/react/dist/ssr/PintGlass";
+import { Pizza as PhPizza } from "@phosphor-icons/react/dist/ssr/Pizza";
 import { Plus as PhPlus } from "@phosphor-icons/react/dist/ssr/Plus";
+import { Popcorn as PhPopcorn } from "@phosphor-icons/react/dist/ssr/Popcorn";
 import { Power as PhPower } from "@phosphor-icons/react/dist/ssr/Power";
 import { Prohibit as PhProhibit } from "@phosphor-icons/react/dist/ssr/Prohibit";
 import { QrCode as PhQrCode } from "@phosphor-icons/react/dist/ssr/QrCode";
@@ -271,3 +281,17 @@ export const Wheat = make(PhGrains, "Wheat");
 export const X = make(PhX, "X", "bold");
 /** shadcn close */
 export const XIcon = make(PhX, "XIcon", "bold");
+
+/** avatars (taste profile) */
+export const Carrot = make(PhCarrot, "Carrot");
+export const Coffee = make(PhCoffee, "Coffee");
+export const Cookie = make(PhCookie, "Cookie");
+export const Egg = make(PhEgg, "Egg");
+export const Hamburger = make(PhHamburger, "Hamburger");
+export const IceCream = make(PhIceCream, "IceCream");
+/** spice level, avatars */
+export const Pepper = make(PhPepper, "Pepper");
+export const Pizza = make(PhPizza, "Pizza");
+export const Popcorn = make(PhPopcorn, "Popcorn");
+/** edit taste profile */
+export const PencilSimple = make(PhPencilSimple, "PencilSimple");

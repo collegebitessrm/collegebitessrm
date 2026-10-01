@@ -1,6 +1,8 @@
 import { MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
 import { BrandLogo } from "@/components/brand-logo";
+import { Avatar } from "@/components/taste/avatar";
+import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
 import type { TimeOfDay } from "@/lib/date";
 
 // Each time of day gets its own sky (.mood-field.mood-<time> in
@@ -14,16 +16,19 @@ const MOOD: Record<TimeOfDay, { greeting: string; Icon: AppIcon; question: strin
 };
 
 /**
- * Home's header, over the time-of-day sky: the logo (opens About) on top,
- * then a small time-of-day line, "Hey, <name>" in
+ * Home's header, over the time-of-day sky: the logo (opens About) and the
+ * student's avatar (opens the "Your taste" sheet) on top, then a small time-of-day line, "Hey, <name>" in
  * the sunset gradient, and the question of the hour.
  */
 export function HomeHeader({
   fullName,
   timeOfDay,
+  avatar,
 }: {
   fullName: string;
   timeOfDay: TimeOfDay;
+  /** The taste profile's avatar id (the default pot until they pick one). */
+  avatar: string;
 }) {
   const { greeting, Icon, question } = MOOD[timeOfDay];
   const firstName = fullName.trim().split(/\s+/)[0];
@@ -41,6 +46,12 @@ export function HomeHeader({
         <AboutDialog>
           <BrandLogo className="size-12 rounded-2xl shadow-card" />
         </AboutDialog>
+        <OpenTasteSheetButton
+          aria-label="Your avatar and taste"
+          className="pressable rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+        >
+          <Avatar id={avatar} className="size-12 shadow-card ring-2 ring-card" />
+        </OpenTasteSheetButton>
       </div>
       <p className="relative mt-7 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
         <Icon className="icon-tint-gold size-4.5 shrink-0" />
