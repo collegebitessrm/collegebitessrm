@@ -425,7 +425,17 @@ author.
   so the button remembers taps for the session (module-level `TAPPED`)
   and a Back to a cached menu still shows the right heart; Profile and Home
   are dynamic and read fresh. The top-left tag is capped short of the
-  heart. `DishCard`'s add control is ONE lit pill that widens from a round "+"
+  heart. **Portions** (`src/lib/menu/portions.ts`): dishes named
+  "<name> (Single)" / "<name> (Full)" (Biryani Nation) are grouped by
+  `groupPortions()` into ONE card — base name, both prices ("Single ₹220 ·
+  Full ₹310"), one photo, one heart (the first portion's) — whose "+" (or
+  the in-cart count with a chevron) opens `PortionSheet`
+  (`portion-sheet.tsx`): a row per portion with its own Add / stepper, sold-out
+  rows disabled, "Done". Each portion is still its own dish underneath (id,
+  price, cart line, order item, `place_order()`), so nothing server-side
+  changed; the cart line shows the base name plus a "Single" / "Full" chip
+  (`splitPortion()`); `?dish=` links to either portion land on the card;
+  section counts count cards. A new sized dish just needs that naming. `DishCard`'s add control is ONE lit pill that widens from a round "+"
   into the "− n +" stepper (`transition-[width]`, `ease-spring`) and
   shrinks back; it only glows (`glow-neon`) once the dish is in the cart,
   and keyboard focus follows it. Prices are pink (`text-primary`). In the

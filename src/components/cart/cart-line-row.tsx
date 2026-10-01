@@ -8,6 +8,7 @@ import { getDishPhoto } from "@/lib/data/dish-photos";
 import { formatRupees } from "@/lib/format";
 import { BlurImage } from "@/components/blur-image";
 import { VegMark } from "@/components/veg-mark";
+import { splitPortion } from "@/lib/menu/portions";
 
 const SWIPE_THRESHOLD = 88;
 const MAX_DRAG = 132;
@@ -96,7 +97,12 @@ export function CartLineRow({ line, restaurantName }: { line: CartLine; restaura
         <div className="min-w-0 flex-1">
           <p className="leading-snug font-semibold">
             <VegMark isVeg={line.isVeg} className="mr-1.5 inline-flex size-4 -translate-y-px align-middle" />
-            {line.name}
+            {splitPortion(line.name).base}
+            {splitPortion(line.name).portion && (
+              <span className="ml-1.5 inline-block rounded-full bg-chip-active px-2 py-0.5 align-middle text-xs font-bold text-chip-active-foreground">
+                {splitPortion(line.name).portion}
+              </span>
+            )}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
             <div className="flex h-9 items-center gap-1 rounded-full border bg-card p-1 shadow-card">

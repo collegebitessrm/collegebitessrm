@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Minus, Plus, Repeat, Star } from "@/components/icons";
+import { ChevronRight, Minus, Plus, Repeat, Star } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
 import { VegMark } from "@/components/veg-mark";
 import { MAX_QUANTITY } from "@/lib/cart/store";
@@ -9,6 +9,7 @@ import { getDishPhoto } from "@/lib/data/dish-photos";
 import type { Dish } from "@/lib/data/types";
 import { formatRupees } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { splitPortion } from "@/lib/menu/portions";
 import { HeartButton } from "./heart-button";
 
 /*
@@ -22,6 +23,11 @@ import { HeartButton } from "./heart-button";
  * typographic tile (their initial in the display face) instead of a
  * mismatched image. A heart in the top corner saves it to the student's
  * liked dishes (HeartButton).
+ *
+ * Portion mode (`portions`, e.g. a biryani's Single and Full): one card for
+ * the dish — base name, every portion's price, the photo — whose "+" opens
+ * the menu's portion picker instead of adding straight away; once any
+ * portion is in the cart the control shows the total and reopens it.
  */
 export function DishCard({
   dish,
@@ -34,6 +40,8 @@ export function DishCard({
   isHighlyReordered = false,
   liked = false,
   highlighted = false,
+  portions,
+  onChoosePortion,
   onAdd,
   onChangeQuantity,
 }: {
@@ -54,11 +62,17 @@ export function DishCard({
   liked?: boolean;
   /** Just arrived here from a deep link (Trending, Thursday banner) — flash a ring. */
   highlighted?: boolean;
+  /** Portion mode: the dish's sizes (`dish` is the first) with what's in the cart of each. */
+  portions?: { label: string; dish: Dish; quantity: number }[];
+  /** Portion mode: open the portion picker for this dish. */
+  onChoosePortion?: () => void;
   onAdd: () => void;
   onChangeQuantity: (quantity: number) => void;
 }) {
-  const soldOut = !dish.is_available;
+  const portioned = (portions?.length ?? 0) > 1;
+  const soldOut = portioned ? portions!.every((p) => !p.dish.is_available) : !dish.is_available;
   const photo = getDishPhoto(restaurantName, dish.name);
+  const displayName = portioned ? splitPortion(dish.name).base : dish.name;
   const inCart = quantity > 0;
 
   // Keyboard focus follows the control as it grows and shrinks: "+" →
@@ -76,6 +90,27 @@ export function DishCard({
     <span className="rounded-full bg-card/90 px-2.5 py-1 text-xs font-semibold text-muted-foreground backdrop-blur-sm">
       {pausedOnly ? pausedLabel : "Closed"}
     </span>
+  ) : portioned ? (
+    // Portion mode: "+" (or the count, once something's in) opens the picker.
+    <button
+      type="button"
+      onClick={onChoosePortion}
+      aria-haspopup="dialog"
+      aria-label={inCart ? `Change portions of ${displayName}, ${quantity} in cart` : `Choose a portion of ${displayName}`}
+      className={cn(
+        "surface-primary flex h-11 items-center justify-center gap-1 rounded-full bg-primary font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80",
+        inCart ? "glow-neon min-w-11 pr-2.5 pl-3.5" : "w-11 shadow-raised",
+      )}
+    >
+      {inCart ? (
+        <>
+          <span key={quantity} className="animate-bounce-count tabular-nums">{quantity}</span>
+          <ChevronRight className="size-4" />
+        </>
+      ) : (
+        <Plus className="size-5" />
+      )}
+    </button>
   ) : (
     <div
       className={cn(
@@ -135,6 +170,9 @@ export function DishCard({
 
   return (
     <article id={`dish-${dish.id}`} className="min-w-0 scroll-mt-24">
+      {/* Deep links (?dish=) to another portion land on this card too. */}
+      {portioned &&
+        portions!.slice(1).map((p) => <span key={p.dish.id} id={`dish-${p.dish.id}`} className="block scroll-mt-24" aria-hidden="true" />)}
       <div
         className={cn(
           "group/photo relative aspect-square rounded-3xl bg-secondary shadow-card transition-shadow",
@@ -201,10 +239,19 @@ export function DishCard({
           )}
         >
           <VegMark isVeg={dish.is_veg} className="mr-1.5 inline-flex size-4 -translate-y-px align-middle" />
-          {dish.name}
+          {displayName}
         </h3>
         <p className="mt-1 flex flex-wrap items-baseline gap-x-2">
-          <span className="font-heading text-lg font-bold text-primary">{formatRupees(dish.price)}</span>
+          {portioned ? (
+            portions!.map((p) => (
+              <span key={p.dish.id} className="text-sm whitespace-nowrap">
+                <span className="text-muted-foreground">{p.label}</span>{" "}
+                <span className="font-heading text-lg font-bold text-primary">{formatRupees(p.dish.price)}</span>
+              </span>
+            ))
+          ) : (
+            <span className="font-heading text-lg font-bold text-primary">{formatRupees(dish.price)}</span>
+          )}
           {dish.note && <span className="text-xs font-semibold text-aqua">{dish.note}</span>}
         </p>
       </div>

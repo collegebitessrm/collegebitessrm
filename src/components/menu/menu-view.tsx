@@ -19,7 +19,9 @@ import { addToCart, conflictsWithCart, setQuantity, useCart } from "@/lib/cart/s
 import { AllCategoriesIcon, getCuisineIcon } from "@/lib/cuisine-icons";
 import type { Dish, MenuSection, Restaurant } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
+import { groupPortions } from "@/lib/menu/portions";
 import { DishCard } from "./dish-card";
+import { PortionSheet, type PortionPick } from "./portion-sheet";
 
 const ALL = "all";
 const sectionKey = (s: MenuSection) => s.category?.id ?? "uncategorized";
@@ -88,6 +90,8 @@ export function MenuView({
   }, [focusDishId]);
   // Dish waiting on "replace your cart?" confirmation.
   const [pendingDish, setPendingDish] = useState<Dish | null>(null);
+  // Portion-mode dish whose "Choose a portion" sheet is open.
+  const [portionPick, setPortionPick] = useState<PortionPick | null>(null);
 
   const cartRestaurant = { id: restaurant.id, name: restaurant.name };
   const quantityOf = (dishId: string) =>
@@ -101,8 +105,11 @@ export function MenuView({
   }
 
   function handleAdd(dish: Dish) {
-    if (conflictsWithCart(restaurant.id)) setPendingDish(dish);
-    else addToCart(cartRestaurant, dish);
+    if (conflictsWithCart(restaurant.id)) {
+      // One modal at a time: the portion sheet gives way to "Start a new cart?".
+      setPortionPick(null);
+      setPendingDish(dish);
+    } else addToCart(cartRestaurant, dish);
   }
 
   const q = query.trim().toLowerCase();
@@ -244,32 +251,61 @@ export function MenuView({
           <SectionHeading
             id={`sec-${sectionKey(section)}`}
             name={sectionName(section)}
-            count={section.dishes.length}
+            count={groupPortions(section.dishes).length}
             icon={getCuisineIcon(sectionName(section))}
           />
           <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6">
-            {section.dishes.map((dish) => (
-              <DishCard
-                key={dish.id}
-                dish={dish}
-                restaurantName={restaurant.name}
-                quantity={quantityOf(dish.id)}
-                orderable={restaurant.is_active && orderingEnabled}
-                pausedOnly={restaurant.is_active && !orderingEnabled}
-                pausedLabel={closedChip}
-                isUsual={dish.id === usualDishId}
-                liked={likedDishIds.includes(dish.id)}
-                isHighlyReordered={highlyReorderedDishIds.has(dish.id)}
-                highlighted={highlighted === dish.id}
-                onAdd={() => handleAdd(dish)}
-                onChangeQuantity={(q) => setQuantity(dish.id, q)}
-              />
-            ))}
+            {groupPortions(section.dishes).map((item) =>
+              item.kind === "portions" ? (
+                <DishCard
+                  key={item.portions[0].dish.id}
+                  dish={item.portions[0].dish}
+                  restaurantName={restaurant.name}
+                  quantity={item.portions.reduce((n, p) => n + quantityOf(p.dish.id), 0)}
+                  portions={item.portions.map((p) => ({ ...p, quantity: quantityOf(p.dish.id) }))}
+                  onChoosePortion={() => setPortionPick({ base: item.base, portions: item.portions })}
+                  orderable={restaurant.is_active && orderingEnabled}
+                  pausedOnly={restaurant.is_active && !orderingEnabled}
+                  pausedLabel={closedChip}
+                  isUsual={item.portions.some((p) => p.dish.id === usualDishId)}
+                  liked={item.portions.some((p) => likedDishIds.includes(p.dish.id))}
+                  isHighlyReordered={item.portions.some((p) => highlyReorderedDishIds.has(p.dish.id))}
+                  highlighted={item.portions.some((p) => p.dish.id === highlighted)}
+                  onAdd={() => setPortionPick({ base: item.base, portions: item.portions })}
+                  onChangeQuantity={() => setPortionPick({ base: item.base, portions: item.portions })}
+                />
+              ) : (
+                <DishCard
+                  key={item.dish.id}
+                  dish={item.dish}
+                  restaurantName={restaurant.name}
+                  quantity={quantityOf(item.dish.id)}
+                  orderable={restaurant.is_active && orderingEnabled}
+                  pausedOnly={restaurant.is_active && !orderingEnabled}
+                  pausedLabel={closedChip}
+                  isUsual={item.dish.id === usualDishId}
+                  liked={likedDishIds.includes(item.dish.id)}
+                  isHighlyReordered={highlyReorderedDishIds.has(item.dish.id)}
+                  highlighted={highlighted === item.dish.id}
+                  onAdd={() => handleAdd(item.dish)}
+                  onChangeQuantity={(q) => setQuantity(item.dish.id, q)}
+                />
+              ),
+            )}
           </div>
         </section>
       ))}
 
       <div className="h-8" aria-hidden="true" />
+
+      <PortionSheet
+        pick={portionPick}
+        restaurantName={restaurant.name}
+        quantityOf={quantityOf}
+        onAdd={handleAdd}
+        onChangeQuantity={setQuantity}
+        onClose={() => setPortionPick(null)}
+      />
 
       <CartBar
         profilePhone={profilePhone}
