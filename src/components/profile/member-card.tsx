@@ -34,7 +34,8 @@ export function MemberCard({
 }) {
   return (
     <section className="surface-hero glow-sun relative overflow-hidden rounded-[2rem] bg-hero p-5 text-hero-foreground">
-      <ThemeMotif className="-top-14 -right-12 size-44" />
+      {/* Tucked into the corner, clear of the name and member-since line. */}
+      <ThemeMotif className="-top-16 -right-16 size-36" />
       <p className="relative text-xs font-semibold">College Bites · campus pass</p>
 
       <div className="relative mt-3 flex items-center gap-4">

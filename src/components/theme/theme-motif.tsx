@@ -17,13 +17,13 @@ export function ThemeMotif({ className }: { className?: string }) {
   return (
     <span aria-hidden="true" className={cn("pointer-events-none absolute", className)}>
       <span className="only-vice promo-sun absolute inset-0 rounded-full" />
-      <svg viewBox="0 0 100 100" className="only-sunrise absolute inset-0 size-full text-hero-accent/45">
+      <svg viewBox="0 0 100 100" className="only-sunrise absolute inset-0 size-full text-hero-accent/30">
         <SunriseArt />
       </svg>
-      <svg viewBox="0 0 100 100" className="only-hub absolute inset-0 size-full text-white/55">
+      <svg viewBox="0 0 100 100" className="only-hub absolute inset-0 size-full text-white/45">
         <HubArt />
       </svg>
-      <svg viewBox="0 0 100 100" className="only-kaapi absolute inset-0 size-full text-hero-foreground/30">
+      <svg viewBox="0 0 100 100" className="only-kaapi absolute inset-0 size-full text-hero-foreground/20">
         <KaapiArt />
       </svg>
     </span>
