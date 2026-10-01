@@ -153,7 +153,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Manchurian Schezwan Fried Rice": photo("schezwan-fried-rice"),
     "Schezwan Chicken Fried Rice": photo("schezwan-chicken-fried-rice"),
     // Photos from the developer (1 Oct 2026).
-    "SP Mushroom Noodles": photo("mushroom-noodles"),
+    "SP Mushroom Noodles": photo("sp-mushroom-noodles"),
     "Mushroom Noodles": photo("mushroom-noodles"),
   },
 
