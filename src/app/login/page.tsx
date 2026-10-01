@@ -61,10 +61,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             </div>
           </div>
 
-          <h1
-            className="login-rise mt-5 font-heading text-display font-bold text-primary"
-            style={{ "--rise-delay": "0.46s" } as CSSProperties}
-          >
+          <h1 className="login-settle mt-5 font-heading text-display font-bold text-primary">
             Crave. Click.
             <br />
             Campus.

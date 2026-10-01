@@ -369,7 +369,10 @@ author.
   to Gate 3, pay on delivery — cash or UPI), Google's own white "Continue
   with Google" button (grey `#747775` outline on light, cyan glow) and the
   terms line. Motion (sun rise, sway, drift, twinkle, staggered
-  `login-rise`) is all under `no-preference`, and pauses while the startup
+  `login-rise`) is all under `no-preference`; the h1 is `login-settle` (a
+  10 px rise, never invisible) because an element first painted at opacity
+  0 isn't counted as Largest Contentful Paint — with everything fading in,
+  Lighthouse / Search Console found no LCP on this page at all, and pauses while the startup
   splash still covers the page (`html[data-splash=play|run]`), so the sun
   rises as the splash fades. The `/welcome` form uses the same sunset as
   one `surface-hero` header card.
@@ -670,7 +673,10 @@ silently re-enables the button.
   Google Search Console verification (`GOOGLE_SITE_VERIFICATION` env var,
   nothing emitted while unset). `src/app/opengraph-image.tsx` renders the
   link-preview card (mark, name, tagline, four dish photos — literal
-  paths, update them if a photo is renamed). `/login` carries the full
+  paths, update them if a photo is renamed) with `ImageResponse`, then
+  re-encodes it as a JPEG with `sharp` (~106 KB; the PNG was ~930 KB, too
+  big for WhatsApp to preview reliably). `sharp` is a declared dependency
+  for this. `/login` carries the full
   search title, a canonical URL and Organization/WebSite JSON-LD.
   `src/app/sitemap.ts` lists the three public pages; `robots.ts` points
   to it and disallows `/admin`, `/auth`, `/orders`, `/profile`,

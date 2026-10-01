@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import sharp from "sharp";
+import { MARK_TILE } from "@/lib/brand-mark";
 import { SITE_URL } from "@/lib/site";
 
 /*
@@ -11,11 +13,15 @@ import { SITE_URL } from "@/lib/site";
  * on the right. Built once at build time — nothing here depends on the
  * request. Served at /opengraph-image, which src/proxy.ts lets through
  * signed out (link-preview bots never sign in).
+ *
+ * Drawn with ImageResponse (always a PNG), then re-encoded as a JPEG: the
+ * PNG of this photo-heavy card was ~930 KB, too big for WhatsApp to show
+ * reliably (it often drops previews that large); the JPEG is ~100 KB.
  */
 
 export const alt = "College Bites: food delivery for SRM University AP students, pickup at Gate 3";
 export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const contentType = "image/jpeg";
 
 // Electric Sunrise (see globals.css, [data-palette="sunrise"]).
 const CREAM = "#fff8f0";
@@ -40,7 +46,7 @@ export default async function OpengraphImage() {
     <img src={dataUri(data, "image/jpeg")} alt="" width={w} height={h} style={{ objectFit: "cover", borderRadius: 32 }} />
   );
 
-  return new ImageResponse(
+  const card = new ImageResponse(
     (
       <div
         style={{
@@ -53,7 +59,7 @@ export default async function OpengraphImage() {
       >
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 56px", width: 640 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={mark} alt="" width={140} height={140} style={{ borderRadius: 32, background: "#012141", boxShadow: "0 24px 60px -16px rgba(106,13,173,0.45)" }} />
+          <img src={mark} alt="" width={140} height={140} style={{ borderRadius: 32, background: MARK_TILE, boxShadow: "0 24px 60px -16px rgba(106,13,173,0.45)" }} />
           <div style={{ marginTop: 28, fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>College Bites</div>
           <div style={{ marginTop: 6, fontSize: 34, color: PURPLE, fontWeight: 700 }}>Crave. Click. Campus.</div>
           <div style={{ marginTop: 22, fontSize: 28, lineHeight: 1.35, maxWidth: 560, color: MUTED }}>
@@ -86,4 +92,7 @@ export default async function OpengraphImage() {
     ),
     size,
   );
+  const png = Buffer.from(await card.arrayBuffer());
+  const jpeg = await sharp(png).jpeg({ quality: 82, mozjpeg: true, progressive: true }).toBuffer();
+  return new Response(new Uint8Array(jpeg), { headers: { "Content-Type": contentType } });
 }

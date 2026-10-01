@@ -336,10 +336,27 @@
   .login-rise {
     animation: slide-up-in var(--dur-slow) var(--ease-out-expo) var(--rise-delay, 0.3s) both;
   }
+  /* The headline only settles into place — it is never invisible. An
+     element first painted at opacity 0 isn't counted as the page's Largest
+     Contentful Paint (Chrome doesn't revisit it once it fades in), so with
+     everything fading in the page had no LCP at all for Lighthouse /
+     Search Console to measure. */
+  .login-settle {
+    animation: login-settle var(--dur-slow) var(--ease-out-expo) both;
+  }
 
   /* Hold everything while the splash still covers the page. */
   html:is([data-splash="play"], [data-splash="run"]) .login-scene * {
     animation-play-state: paused;
+  }
+}
+
+@keyframes login-settle {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
