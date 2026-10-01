@@ -2,6 +2,7 @@ import { SPLASH } from "./config";
 import { runSplash, type SplashRuntime } from "./engine";
 
 const runtime: SplashRuntime = {
+  pace: SPLASH.pace,
   exitAt: SPLASH.exitAt,
   exitMs: SPLASH.exitMs,
   reducedHoldMs: SPLASH.reducedHoldMs,

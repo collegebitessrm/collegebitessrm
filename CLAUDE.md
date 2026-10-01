@@ -776,7 +776,8 @@ silently re-enables the button.
     can't generate `favicon` from code, and its ico decoder rejects
     non-RGBA frames), written by the same script.
 - **Startup splash — "The Drop"** (`src/components/splash/`, since 1 Oct
-  2026), 1.88 s, once per browser session (sessionStorage
+  2026), ~2.4 s (the storyboard's 1.85 s × `pace` 1.3 — slowed by request;
+  one knob in `config.ts` stretches every timing evenly), once per browser session (sessionStorage
   `collegebites.splash-shown` — every fresh app/PWA open, never on route
   changes or reloads), never on `/admin`, `/auth`, `/privacy`, `/terms` or
   a tab opened in the background. **No tap-to-skip** (by decision — it's

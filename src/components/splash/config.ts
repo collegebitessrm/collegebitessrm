@@ -2,7 +2,8 @@
  * Every knob for the startup splash, "The Drop" (the motion is in
  * ./engine.ts). Times are milliseconds from the moment it starts.
  *
- * Storyboard (1.85 s, no tap-to-skip — it's shorter than a skip would be):
+ * Storyboard at pace 1 (no tap-to-skip). Every time below is multiplied by
+ * `pace` — 1.3 since 1 Oct 2026 ("too fast"), so the whole run is ~2.4 s:
  *   0–150      night, in the palette's own ink; a headlight flickers on
  *   120–620    the neon road whips across; the side-on rider rips along it
  *              with speed ghosts behind, the camera shudders as it passes
@@ -22,7 +23,10 @@
  * each palette's hero stops, so the four themes each get their own run.
  */
 export const SPLASH = {
-  /** Total length; the exit wipe starts at exitAt and lasts exitMs. */
+  /** Slows (> 1) or speeds up (< 1) the whole run evenly — every delay and
+   *  duration, rhythm unchanged. Reduced motion's plain fade isn't paced. */
+  pace: 1.3,
+  /** Total length; the exit wipe starts at exitAt and lasts exitMs (both × pace). */
   exitAt: 1460,
   exitMs: 390,
   /** Reduced motion: no run — the finished logo fades in, holds, fades out. */

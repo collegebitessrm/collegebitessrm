@@ -365,7 +365,8 @@ light: things should look lit, not flat.
   rim and glow in dark mode). The wordmark is
   never an image (glow fringe from background removal; unreadable small) —
   it's set in the app's fonts on the splash and share card.
-- Splash, "The Drop" (1 Oct 2026): 1.88 s, once per session, no
+- Splash, "The Drop" (1 Oct 2026): ~2.4 s (`pace` 1.3 in its config slows
+  every timing evenly), once per session, no
   tap-to-skip. Night in the theme's ink, a neon road whips across, the
   side-on rider rips along it, wheelie + glitch freeze while a random real
   dish flies at the camera, the logo tile slams in and gets bitten,

@@ -19,6 +19,7 @@
  */
 
 export type SplashRuntime = {
+  pace: number;
   exitAt: number;
   exitMs: number;
   reducedHoldMs: number;
@@ -131,6 +132,8 @@ export function runSplash(C: SplashRuntime): void {
 
     const W = innerWidth;
     const H = innerHeight;
+    // Every storyboard time below is at pace 1; this stretches them all evenly.
+    const PACE = C.pace > 0 ? C.pace : 1;
     const OUT = "cubic-bezier(0.16, 1, 0.3, 1)";
     const SPRING = "cubic-bezier(0.34, 1.56, 0.64, 1)";
     // fill "both" shows an animation's first frame during its delay — right
@@ -144,7 +147,7 @@ export function runSplash(C: SplashRuntime): void {
       duration: number,
       easing = "linear",
       fill: FillMode = "both",
-    ) => (el ? el.animate(frames, { delay, duration, easing, fill }) : null);
+    ) => (el ? el.animate(frames, { delay: delay * PACE, duration: duration * PACE, easing, fill }) : null);
 
     // The road: a cubic in screen percentages (same as the SVG path).
     const P = [
@@ -197,8 +200,8 @@ export function runSplash(C: SplashRuntime): void {
     all("ghost").forEach((g, i) => {
       go(g, run, 150 + 40 * (i + 1), 470, runEase);
       g.animate([{ opacity: 0.5 - i * 0.14 }, { opacity: 0.5 - i * 0.14, offset: 0.8 }, { opacity: 0 }], {
-        delay: 150 + 40 * (i + 1),
-        duration: 520,
+        delay: (150 + 40 * (i + 1)) * PACE,
+        duration: 520 * PACE,
         fill: "both",
       });
     });
@@ -291,7 +294,7 @@ export function runSplash(C: SplashRuntime): void {
     );
 
     // 1040: CHOMP. The bite switches on in one frame; the tile flinches; crumbs fly.
-    setTimeout(() => tile.setAttribute("data-bitten", ""), 1040);
+    setTimeout(() => tile.setAttribute("data-bitten", ""), 1040 * PACE);
     go(
       tile,
       [
@@ -368,7 +371,7 @@ export function runSplash(C: SplashRuntime): void {
     );
 
     // 1500: the night wipes away the way he rode; the tile docks into the page.
-    setTimeout(exit, C.exitAt);
+    setTimeout(exit, C.exitAt * PACE);
 
     function exit() {
       setState("out");
@@ -378,7 +381,7 @@ export function runSplash(C: SplashRuntime): void {
           { clipPath: "polygon(-30% 0%, 130% 0%, 130% 100%, -10% 100%)" },
           { clipPath: "polygon(110% 0%, 130% 0%, 130% 100%, 130% 100%)" },
         ],
-        { duration: C.exitMs, easing: "cubic-bezier(0.7, 0, 0.25, 1)", fill: "both" },
+        { duration: C.exitMs * PACE, easing: "cubic-bezier(0.7, 0, 0.25, 1)", fill: "both" },
       );
       all("crumb").forEach((c) => c.animate([{ opacity: 0 }, { opacity: 0 }], { duration: 1, fill: "both" }));
 
@@ -398,7 +401,7 @@ export function runSplash(C: SplashRuntime): void {
             { opacity: 1, transform: `${base} translate(${dx}px, ${dy}px) scale(${k})`, offset: 0.88 },
             { opacity: 0, transform: `${base} translate(${dx}px, ${dy}px) scale(${k})` },
           ],
-          { duration: C.exitMs, fill: "both" },
+          { duration: C.exitMs * PACE, fill: "both" },
         );
       } else {
         done = tile.animate(
@@ -406,7 +409,7 @@ export function runSplash(C: SplashRuntime): void {
             { opacity: 1, transform: `${base} scale(1)` },
             { opacity: 0, transform: `${base} scale(0.6)` },
           ],
-          { duration: C.exitMs, easing: "ease-in", fill: "both" },
+          { duration: C.exitMs * PACE, easing: "ease-in", fill: "both" },
         );
       }
       done.finished.then(
