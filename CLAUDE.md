@@ -130,7 +130,7 @@ author.
   (blue top-left, coral bottom-right) over lilac on a fine white grid;
   Kaapi a warm top-to-bottom coffee wash with crema light. Decoration comes
   from `ThemeMotif` (`src/components/theme/theme-motif.tsx`) wherever the
-  striped sun used to be (promo card, campus pass, free-biryani card, admin
+  striped sun used to be (campus pass, free-biryani card, admin
   Today card, About strip, 404 card, celebration, the picker's previews):
   Vice the striped retro sun (`promo-sun`); Sunrise a line-art sun rising
   with rays and twinkling sparkles; Hub orbit rings, a triangle of linked
@@ -321,8 +321,16 @@ author.
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —
   hidden while searching — `PromoCard` (hero card: "Hot food, at Gate 3" + "Order here, pay when
-  you collect.", the logo tile floating over a
-  `ThemeMotif`) and `PopularRail`: a snap-scrolling row of
+  you collect." on the left; on the right the brand sheet's scene — the
+  palette's own campus (`public/photos/promo/scene-<palette>.webp`, all four
+  cropped to the same 1476×906 box so the overlays line up) with the shared
+  rider (`rider.webp`) riding in along the road, code-drawn speed lines, a
+  Gate 3 pin dropping by the tower, and one touch per palette: Vice stars and
+  Sunrise sparkles twinkle, Hub's node pulses, Kaapi's food box steams. CSS
+  only (`promo-*` in `globals.css`, reduced-motion safe, paused while the
+  splash is up); hidden palettes' scenes are never fetched (lazy +
+  `only-*`). Sources were 1536×1024 ChatGPT PNGs, converted to ~50 KB WebP)
+  and `PopularRail`: a snap-scrolling row of
   photo cards that deep-link to the dish, titled "Campus favourites".
   `buildRail()` puts the week's real trending dishes first (#1/#2 badges,
   available and with a photo), then fills the row to 8 with the

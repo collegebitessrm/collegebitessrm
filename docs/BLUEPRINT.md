@@ -118,7 +118,7 @@ verify, submit `sitemap.xml`.
 | `/login` | Sunset-scene sign-in (sun, sea, palms, floating dishes), "Continue with Google" | public |
 | `/auth/callback` | Swaps Google's code for a session | public |
 | `/welcome` | First-login form (full name + phone, plus a theme picker), once | signed in, no profile yet |
-| `/` | Home: sky header, search, food-type tiles + filter chips / sheet (URL state), sunset promo, popular / favourites photo row, restaurant cards | student |
+| `/` | Home: sky header, search, food-type tiles + filter chips / sheet (URL state), promo card with an animated campus scene per theme, popular / favourites photo row, restaurant cards | student |
 | `/restaurants/[id]` | Menu (`?dish=<id>` deep link) | student |
 | `/orders`, `/orders/[id]` | Order history; tracking ticket (`?rate=1` opens rating) | student |
 | `/profile` | Member card, milestones, reward, details, settings | student |
@@ -332,7 +332,9 @@ light: things should look lit, not flat.
     with stars in dark; the sun rises as the startup splash fades.
   - *Home:* sky header ("Hey, <name>" in the gradient), pill search,
     "What's on your mind?" food-type tiles, sticky filter chips and a
-    filter sheet (Swiggy / Zomato style, state in the URL), a sunset promo,
+    filter sheet (Swiggy / Zomato style, state in the URL), a promo card where
+    the delivery rider rides into the palette's own campus scene (added 1 Oct
+    2026),
     a "Campus favourites" photo row (trending dishes ranked first, then signature dishes), and restaurant
     cards with cuisine and delivery-time chips.
   - *Menu and cart:* chips header, a sunset "tried N of M" bar, section
