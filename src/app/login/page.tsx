@@ -48,7 +48,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       <LoginScene />
 
       <section className="relative z-10 -mt-10 w-full sm:px-4">
-        <div className="mx-auto w-full max-w-md rounded-t-[2rem] border border-b-0 bg-card/85 px-6 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-overlay backdrop-blur-xl sm:mb-8 sm:rounded-[2rem] sm:border-b">
+        <div className="mx-auto w-full max-w-md rounded-t-[2rem] border border-b-0 bg-card px-6 pb-[max(1.75rem,env(safe-area-inset-bottom))] shadow-overlay sm:mb-8 sm:rounded-[2rem] sm:border-b">
           <div className="flex items-end gap-3.5">
             <BrandLogo
               preload
@@ -61,7 +61,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           </div>
 
           <h1
-            className="login-rise mt-5 font-heading text-display font-bold text-sunset"
+            className="login-rise mt-5 font-heading text-display font-bold text-primary"
             style={{ "--rise-delay": "0.46s" } as CSSProperties}
           >
             Crave. Click.

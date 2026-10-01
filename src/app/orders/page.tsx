@@ -41,7 +41,7 @@ export default async function OrdersPage() {
     <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
       <ViewTransition {...NAV_TRANSITION}>
         <ViewTransition {...REVEAL_ENTER}>
-          <h1 className="font-heading text-headline font-bold text-sunset">Your orders</h1>
+          <h1 className="font-heading text-headline font-bold">Your orders</h1>
           <p className="mt-1 text-muted-foreground">
             {orders.length === 0
               ? "No orders yet"

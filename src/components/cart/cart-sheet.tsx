@@ -217,7 +217,7 @@ function CartContents({
             </div>
             <div className="flex items-baseline justify-between border-t border-dashed pt-2.5">
               <dt className="font-semibold">To pay at pickup</dt>
-              <dd key={amount} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-sunset">
+              <dd key={amount} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-primary">
                 {formatRupees(amount)}
               </dd>
             </div>

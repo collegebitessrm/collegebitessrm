@@ -59,7 +59,8 @@ author.
   on the magenta end), accents `text-hero-accent` / `-hero-success` /
   `-hero-danger`. **Lighting kit** (use it, so nothing looks flat):
   `glow-neon` / `glow-cyan` / `glow-sun` bloom shadows, `rim-light`,
-  `text-sunset` gradient headline text (every stop checked on its ground,
+  `text-sunset` gradient headline text (used ONLY on the Home greeting —
+  everywhere else headings and totals are solid, by decision 1 Oct 2026) (every stop checked on its ground,
   `--heading-a|b|c`), and a two-glow sky over the top of every page (body
   background, `--page-glow-*`). Restraint: one bloom per screen region —
   the main action or the hero; everything else gets rim light and tinted
@@ -121,7 +122,7 @@ author.
   palette and mode in `login.css`. Adding a palette = a light and a dark
   block in `globals.css`, a scene pair in `login.css`, an entry in
   `palettes.ts`, and a row in the audit's palette list. The share card and
-  manifest stay Vice (they aren't per student).
+  manifest use Electric Sunrise, the default (they aren't per student).
   **Each palette has its own look, not just its own colours** — the sunset
   is Vice's alone. `--hero-surface` (read by `surface-hero`) gives each hero
   card its own light: Vice a 135° sunset lit top-left; Sunrise a dawn glow
@@ -312,8 +313,8 @@ author.
   the "Your taste" sheet; a small
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —
-  hidden while searching — `PromoCard` (sunset `surface-hero` card: fast
-  delivery, free to Gate 3, pay on delivery, the logo tile floating over a
+  hidden while searching — `PromoCard` (hero card: "Hot food, at Gate 3" + "Order here, pay when
+  you collect.", the logo tile floating over a
   `ThemeMotif`) and `PopularRail`: a snap-scrolling row of
   photo cards that deep-link to the dish, titled "Campus favourites".
   `buildRail()` puts the week's real trending dishes first (#1/#2 badges,
@@ -341,8 +342,8 @@ author.
   with stars in dark: a striped retro sun half set behind the horizon, a
   violet sea with drifting wave lines and a sun reflection, two inline-SVG
   palm silhouettes, and three real dish photos floating as tilted prints.
-  A frosted sheet (`bg-card/85`, blur) rises over the bottom of it with
-  the logo tile, the tagline h1 in `text-sunset`, two chips (free delivery
+  A solid sheet (`bg-card`, no frosted glass since 1 Oct 2026) rises over the bottom of it with
+  the logo tile, the tagline h1 in `text-primary`, two chips (free delivery
   to Gate 3, pay on delivery — cash or UPI), Google's own white "Continue
   with Google" button (grey `#747775` outline on light, cyan glow) and the
   terms line. Motion (sun rise, sway, drift, twinkle, staggered
@@ -1143,7 +1144,6 @@ Parked by the developer — do these only when asked.
   (`src/lib/admin/passcode.ts` / `passcode-actions.ts`).
 
 **When the client has time**
-- Real **restaurant phone numbers** (all three use the support number).
 - **Photos** — done: every dish has a photo (no follow-up planned). Openly
   licensed ones are credited on `/terms` from `src/lib/data/photo-credits.ts`
   (add a line there for any new photo with such a licence); the rest are

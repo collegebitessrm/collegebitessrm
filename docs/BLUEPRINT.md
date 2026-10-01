@@ -446,8 +446,6 @@ Never commit a secret; never paste one into chat.
 
 - **Publish the Google sign-in app** (out of "Testing") before real
   students sign in, if not done already.
-- Restaurant phone numbers are the support number; set real ones if
-  admins should call restaurants from the app.
   sends real ones.
 - Supabase performance suggestions (wrap `auth.uid()` in `select` inside
   policies, a few foreign-key indexes) — worth doing if order volume grows;

@@ -4,8 +4,9 @@ import { join } from "node:path";
 import { SITE_URL } from "@/lib/site";
 
 /*
- * The link-preview card for every page (WhatsApp, Instagram, Google): on
- * the Vice dusk ground with neon magenta and cyan glows, the navy logo tile
+ * The link-preview card for every page (WhatsApp, Instagram, Google), in
+ * Electric Sunrise (the default palette): cream ground with a peach dawn
+ * glow and a lilac one, the navy logo tile
  * on the left, then the name, tagline and pitch, with a few real dishes
  * on the right. Built once at build time — nothing here depends on the
  * request. Served at /opengraph-image, which src/proxy.ts lets through
@@ -16,11 +17,11 @@ export const alt = "College Bites: food delivery for SRM University AP students,
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Vice Dusk × Leonida Gold (see globals.css).
-const DUSK = "#0e0a24";
-const TEXT = "#fff0f6";
-const GOLD = "#ffc857";
-const MUTED = "#bfb4e8";
+// Electric Sunrise (see globals.css, [data-palette="sunrise"]).
+const CREAM = "#fff8f0";
+const INK = "#221433";
+const PURPLE = "#6a0dad";
+const MUTED = "#5e5070";
 
 const dataUri = (data: Buffer, type: string) => `data:${type};base64,${data.toString("base64")}`;
 
@@ -46,25 +47,25 @@ export default async function OpengraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          color: TEXT,
-          background: `radial-gradient(60% 80% at 100% 0%, rgba(255,46,136,0.38) 0%, rgba(255,46,136,0) 70%), radial-gradient(50% 70% at 0% 0%, rgba(34,221,235,0.22) 0%, rgba(34,221,235,0) 70%), radial-gradient(70% 50% at 40% 100%, rgba(255,122,47,0.22) 0%, rgba(255,122,47,0) 70%), ${DUSK}`,
+          color: INK,
+          background: `radial-gradient(70% 90% at 100% 100%, rgba(255,158,128,0.55) 0%, rgba(255,158,128,0) 70%), radial-gradient(55% 75% at 0% 0%, rgba(231,198,255,0.6) 0%, rgba(231,198,255,0) 70%), radial-gradient(60% 50% at 45% 100%, rgba(245,209,160,0.5) 0%, rgba(245,209,160,0) 70%), ${CREAM}`,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 56px", width: 640 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={mark} alt="" width={140} height={140} style={{ borderRadius: 32, background: "#012141", boxShadow: "0 0 0 2px rgba(255,255,255,0.14), 0 24px 60px -16px rgba(255,46,136,0.7)" }} />
+          <img src={mark} alt="" width={140} height={140} style={{ borderRadius: 32, background: "#012141", boxShadow: "0 24px 60px -16px rgba(106,13,173,0.45)" }} />
           <div style={{ marginTop: 28, fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>College Bites</div>
-          <div style={{ marginTop: 6, fontSize: 34, color: GOLD, fontWeight: 700 }}>Crave. Click. Campus.</div>
+          <div style={{ marginTop: 6, fontSize: 34, color: PURPLE, fontWeight: 700 }}>Crave. Click. Campus.</div>
           <div style={{ marginTop: 22, fontSize: 28, lineHeight: 1.35, maxWidth: 560, color: MUTED }}>
-            Your campus food delivery partner at SRM University AP. Pickup at Gate 3, pay on delivery (cash or UPI).
+            Biryani, fried rice, noodles and starters from kitchens near SRM University AP. Collect at Gate 3, pay on delivery.
           </div>
           <div
             style={{
               marginTop: 28,
               display: "flex",
               alignSelf: "flex-start",
-              background: "linear-gradient(90deg, #ff2e88, #ff7a2f)",
-              color: DUSK,
+              background: `linear-gradient(115deg, ${PURPLE}, #a81f6c)`,
+              color: "#ffffff",
               fontSize: 26,
               fontWeight: 700,
               padding: "12px 28px",

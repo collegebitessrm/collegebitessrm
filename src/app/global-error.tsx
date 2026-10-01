@@ -17,7 +17,7 @@ export default function GlobalError({ retry }: { error: Error & { digest?: strin
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="flex min-h-dvh flex-col items-center justify-center bg-background px-6 text-center text-foreground">
-        <p className="text-sunset text-6xl font-bold">Oops.</p>
+        <p className="text-6xl font-bold text-primary">Oops.</p>
         <h1 className="mt-4 text-2xl font-bold">College Bites didn&apos;t load</h1>
         <p className="mt-2 max-w-[20rem] text-muted-foreground">
           Something broke on our side. Try again in a moment.

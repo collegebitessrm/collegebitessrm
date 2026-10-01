@@ -339,7 +339,7 @@ export function OrderTracking({
             )}
             <div className="mt-3 flex items-center justify-between border-t pt-3">
               <p className="font-semibold">To pay at pickup</p>
-              <p className="font-heading text-2xl font-bold tabular-nums text-sunset">{formatRupees(initialOrder.totalAmount)}</p>
+              <p className="font-heading text-2xl font-bold tabular-nums text-primary">{formatRupees(initialOrder.totalAmount)}</p>
             </div>
           </div>
 

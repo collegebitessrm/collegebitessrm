@@ -22,7 +22,7 @@ export function AboutDialog({ children }: { children: ReactNode }) {
         </div>
         <BrandLogo className="relative -mt-10 size-18 rounded-[1.4rem] shadow-raised ring-4 ring-popover" />
         <DialogTitle className="mt-3 text-title">College Bites</DialogTitle>
-        <p className="text-sm font-bold text-sunset">Crave. Click. Campus.</p>
+        <p className="text-sm font-bold text-primary">Crave. Click. Campus.</p>
         <DialogDescription className="mt-3 leading-relaxed">
           Biryani, fried rice, noodles and starters, veg and non-veg, from partner kitchens
           near SRM AP. Order here, collect at Gate 3.
