@@ -40,7 +40,7 @@ export function FinishProfileNudge({ taste }: { taste: TasteProfile }) {
   return (
     <aside
       aria-label="Finish your profile"
-      className="animate-slide-up-in fixed inset-x-0 bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.75rem)] z-20 mx-auto w-full max-w-md px-4"
+      className="animate-slide-up-in fixed inset-x-0 bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.75rem)] z-30 mx-auto w-full max-w-md px-4"
     >
       <div className="rounded-[1.5rem] border bg-popover p-3.5 text-popover-foreground shadow-raised">
         <div className="flex items-start gap-3">

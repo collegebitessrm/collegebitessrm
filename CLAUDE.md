@@ -223,7 +223,11 @@ author.
   after the splash plus ~1.8 s; "Later" hides it for 3 days, × for good,
   and saving in the sheet also snoozes it (localStorage
   `collegebites.taste-nudge`); it hides while the cart bar or the sheet is
-  showing.
+  showing. It sits on `z-30` like the cart bar and the bottom bar: Home's
+  sticky filter chips are `z-20` and come later in the page, so a floating
+  layer on `z-20` gets painted under them (it did, on 1 Oct). Floating bars
+  `z-30`, sticky bars `z-10`/`z-20`, dialogs and sheets `z-50`, toasts
+  `z-[100]`.
 - **404 / error pages**: `src/app/not-found.tsx` ("Token #404"),
   `src/app/error.tsx` and a self-contained `src/app/global-error.tsx`. The
   first two use `WrongTurn` (`src/components/wrong-turn.tsx`): a small

@@ -47,7 +47,7 @@ export function CartBar({
           <div className="h-28" aria-hidden="true" />
           <div
             className={cn(
-              "animate-slide-up-in fixed inset-x-0 z-20 mx-auto w-full max-w-md px-4",
+              "animate-slide-up-in fixed inset-x-0 z-30 mx-auto w-full max-w-md px-4",
               hasTabBar
                 ? "bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))+4.5rem)] pb-0"
                 : "bottom-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
