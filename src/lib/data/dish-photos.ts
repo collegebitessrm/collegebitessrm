@@ -77,7 +77,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
   "Local Home Kitchen": {
     "Chicken Dum Biryani": photo("chicken-dum-biryani"),
     "Chicken Fry Biryani": photo("chicken-fry-biryani"),
-    "Chicken Boneless Biryani": photo("boneless-biryani"),
+    "Chicken Boneless Biryani": photo("boneless-biryani-v2"),
     "Chicken 65 Biryani": photo("chicken-65-biryani-v2"),
     "Chicken Lollipop Biryani": photo("chicken-lollipop-biryani"),
     "Mughlai Biryani": photo("mughlai-biryani"),
@@ -160,7 +160,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
   "Clg Bites Biryani Nation": {
     ...sizes("Chicken Dum Biryani", "chicken-dum-biryani"),
     ...sizes("Chicken Fry Biryani", "chicken-fry-biryani"),
-    ...sizes("Chicken Boneless Biryani", "boneless-biryani"),
+    ...sizes("Chicken Boneless Biryani", "boneless-biryani-v2"),
     ...sizes("Chicken Lollipop Biryani", "chicken-lollipop-biryani"),
     ...sizes("Chicken Moghalai Biryani", "mughlai-biryani"),
     ...sizes("Chicken 65 Biryani", "chicken-65-biryani-v2"),
