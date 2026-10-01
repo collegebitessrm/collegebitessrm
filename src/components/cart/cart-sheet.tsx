@@ -7,6 +7,7 @@ import { Banknote, Loader2, MapPin, Phone, Plus, QrCode, X } from "@/components/
 import { EmptyState } from "@/components/empty-state";
 import { IconTile } from "@/components/icon-tile";
 import { CartLineRow } from "@/components/cart/cart-line-row";
+import { DiscountPicker, type OfferOption } from "@/components/cart/discount-picker";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { MAX_NOTES } from "@/lib/cart/limits";
@@ -16,6 +17,7 @@ import { placeOrder } from "@/lib/orders/actions";
 import { formatLocalMobile, formatStoredMobile, normalizeIndianMobile } from "@/lib/phone";
 import { toast } from "@/lib/toast/store";
 import { spiceNote } from "@/lib/taste/options";
+import { discountAmount, freeAllowance, fullsToNextFree, NO_OFFERS, OFFERS, type OfferKey, type OffersState } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 
 const eyebrow = "text-label text-muted-foreground";
@@ -27,6 +29,7 @@ export function CartSheet({
   orderingEnabled,
   closedNote,
   spiceLevel = null,
+  offers = NO_OFFERS,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -36,6 +39,8 @@ export function CartSheet({
   orderingEnabled: boolean;
   closedNote?: string;
   spiceLevel?: number | null;
+  /** Discount offers the admin has on — the "Apply discount" bar. */
+  offers?: OffersState;
 }) {
   const cart = useCart();
   const empty = cart.lines.length === 0;
@@ -75,6 +80,7 @@ export function CartSheet({
             orderingEnabled={orderingEnabled}
             closedNote={closedNote}
             spiceLevel={spiceLevel}
+            offers={offers}
             onPlaced={() => onOpenChange(false)}
           />
         )}
@@ -111,6 +117,7 @@ function CartContents({
   orderingEnabled,
   closedNote,
   spiceLevel,
+  offers,
   onPlaced,
 }: {
   cart: Cart;
@@ -118,6 +125,7 @@ function CartContents({
   orderingEnabled: boolean;
   closedNote?: string;
   spiceLevel: number | null;
+  offers: OffersState;
   onPlaced: () => void;
 }) {
   const router = useRouter();
@@ -125,7 +133,40 @@ function CartContents({
   const [contactPhone, setContactPhone] = useState(profilePhone);
   const [error, setError] = useState<string | null>(null);
   const [placing, startPlacing] = useTransition();
+  const [offer, setOffer] = useState<OfferKey | null>(null);
+  const [rawPicks, setRawPicks] = useState<Record<string, number>>({});
   const { amount } = cartTotals(cart);
+
+  // Offers. Everything below is derived from the cart, so changing the cart
+  // can never leave a discount it no longer earns (place_order() re-checks).
+  const freeChoices = offers.freeChoices.filter((c) => c.restaurantId === cart.restaurantId && c.isAvailable);
+  const allowance = freeAllowance(cart.lines);
+  const picks: Record<string, number> = {};
+  let pickedCount = 0;
+  for (const c of freeChoices) {
+    const q = Math.min(rawPicks[c.id] ?? 0, allowance - pickedCount);
+    if (q > 0) {
+      picks[c.id] = q;
+      pickedCount += q;
+    }
+  }
+  const freeItems = freeChoices.filter((c) => picks[c.id]).map((c) => ({ ...c, quantity: picks[c.id] }));
+  const biryaniHome = offers.freeChoices[0]?.restaurantName;
+  const offerOptions: OfferOption[] = offers.active.map((key) => {
+    if (key !== "biryani") return { key, saving: discountAmount(key, amount), blocked: null };
+    if (freeChoices.length === 0) {
+      return { key, saving: 0, blocked: biryaniHome ? `Only at ${biryaniHome}` : "Not on this menu" };
+    }
+    if (allowance === 0) {
+      const more = fullsToNextFree(cart.lines);
+      return { key, saving: 0, blocked: `Add ${more} more Full ${more === 1 ? "biryani" : "biryanis"} to unlock` };
+    }
+    return { key, saving: discountAmount("biryani", amount, freeItems), blocked: null };
+  });
+  const appliedOffer = offerOptions.find((o) => o.key === offer && !o.blocked)?.key ?? null;
+  const discount = discountAmount(appliedOffer, amount, freeItems);
+  const needsPick = appliedOffer === "biryani" && pickedCount === 0;
+  const toPay = amount - discount;
   // From the taste profile: a one-tap note, offered until it's in the box.
   const suggestedNote = spiceNote(spiceLevel);
   const showSuggestion =
@@ -141,12 +182,18 @@ function CartContents({
         lines: cart.lines.map((l) => ({ dishId: l.dishId, quantity: l.quantity, price: l.price })),
         notes,
         contactPhone,
+        offer: appliedOffer,
+        freeItems: appliedOffer === "biryani" ? freeItems.map((f) => ({ dishId: f.id, quantity: f.quantity })) : [],
       });
       if (result.ok) {
         clearCart();
         onPlaced();
         router.push(`/orders/${result.orderId}?placed=1`, { transitionTypes: ["nav-forward"] });
         return;
+      }
+      if (result.offerEnded) {
+        setOffer(null);
+        router.refresh();
       }
       if (result.removedDishIds || result.updatedPrices) {
         reconcileCart(result.removedDishIds ?? [], result.updatedPrices ?? []);
@@ -205,20 +252,42 @@ function CartContents({
           <ContactPhone value={contactPhone} onChange={setContactPhone} />
         </div>
 
+        {offerOptions.length > 0 && (
+          <DiscountPicker
+            options={offerOptions}
+            selected={offer}
+            onSelect={setOffer}
+            freeChoices={freeChoices}
+            allowance={allowance}
+            picks={picks}
+            onPick={(dishId, quantity) => setRawPicks({ ...picks, [dishId]: quantity })}
+          />
+        )}
+
         <div className="mt-4 rounded-2xl border bg-card px-5 py-4 shadow-card">
           <dl className="space-y-1.5">
             <div className="flex justify-between text-muted-foreground">
               <dt>Item total</dt>
               <dd className="tabular-nums">{formatRupees(amount)}</dd>
             </div>
+            {discount > 0 && (
+              <div className="flex justify-between gap-3 font-semibold text-success">
+                <dt className="min-w-0">
+                  {appliedOffer === "biryani"
+                    ? `Free: ${freeItems.map((f) => (f.quantity > 1 ? `${f.name} × ${f.quantity}` : f.name)).join(", ")}`
+                    : OFFERS[appliedOffer!].short}
+                </dt>
+                <dd className="shrink-0 tabular-nums">−{formatRupees(discount)}</dd>
+              </div>
+            )}
             <div className="flex items-center justify-between text-muted-foreground">
               <dt>Delivery to Gate 3</dt>
               <dd className="rounded-full bg-success-soft px-2.5 py-0.5 text-sm font-semibold text-success">Free</dd>
             </div>
             <div className="flex items-baseline justify-between border-t border-dashed pt-2.5">
               <dt className="font-semibold">To pay at pickup</dt>
-              <dd key={amount} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-primary">
-                {formatRupees(amount)}
+              <dd key={toPay} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-primary">
+                {formatRupees(toPay)}
               </dd>
             </div>
           </dl>
@@ -243,6 +312,12 @@ function CartContents({
           </p>
         )}
 
+        {needsPick && orderingEnabled && (
+          <p className="mb-3 text-center text-sm text-muted-foreground">
+            Pick your free Single biryani above, or remove the offer.
+          </p>
+        )}
+
         {error && (
           <p id="place-order-error" role="alert" className="mb-3 text-center text-sm text-destructive">
             {error}
@@ -252,7 +327,7 @@ function CartContents({
         <button
           type="button"
           onClick={submit}
-          disabled={placing || !orderingEnabled}
+          disabled={placing || !orderingEnabled || needsPick}
           aria-describedby={error ? "place-order-error" : undefined}
           className={cn(
             "surface-primary glow-neon flex h-14 w-full items-center justify-between gap-2 rounded-full bg-primary px-6 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70 disabled:shadow-none",
@@ -263,7 +338,7 @@ function CartContents({
             {placing && <Loader2 className="size-5 animate-spin" />}
             {placing ? "Placing order…" : "Place order"}
           </span>
-          <span className="font-heading text-xl tabular-nums">{formatRupees(amount)}</span>
+          <span className="font-heading text-xl tabular-nums">{formatRupees(toPay)}</span>
         </button>
       </footer>
     </>

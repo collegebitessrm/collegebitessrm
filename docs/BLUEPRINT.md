@@ -161,9 +161,11 @@ every rule lives in the database.
 **Tables:** `users` (1:1 with `auth.users`; phone not unique; role;
 `is_banned` + `banned_at`), `restaurants` (with `delivery_minutes`),
 `dish_categories`, `dishes` (`is_available` = sold-out flag), `orders`
-(status, `daily_number` token, `delivered_at`; no payment fields),
-`order_items` (name and price snapshotted), `daily_order_counters`,
-`app_settings` (one row, `ordering_mode` `'open' | 'closed'`),
+(status, `daily_number` token, `delivered_at`, `discount_offer` /
+`discount_amount`; no payment fields), `order_items` (name and price
+snapshotted; `is_free` for an offer's free biryani), `daily_order_counters`,
+`app_settings` (one row, `ordering_mode` `'open' | 'closed'`, three offer
+switches),
 `order_reviews` + `order_item_ratings`, `push_subscriptions`,
 `milestone_rewards`, `taste_profiles` (avatar, spice, diet, cravings —
 private to the student), `favorite_dishes` (hearted dishes — private too).
@@ -179,8 +181,9 @@ ordering open (`ordering_paused` if not) → not banned by phone → rate
 limit (5 orders a minute, 8 unfinished, under a per-student lock) → phone
 format `^\+91[6-9][0-9]{9}$` → note ≤ 200 → restaurant on → cart not empty
 → quantities 1–20, no duplicates → every dish belongs to the restaurant
-and is available → insert with prices taken from `dishes`, total computed
-in the database.
+and is available → the offer (if any) is switched on and the order
+qualifies → insert with prices taken from `dishes`, discount and total
+computed in the database.
 
 **Triggers:** `prevent_role_self_escalation` (no API changes to `role`;
 `is_banned` only by an admin; `phone` locked while banned or with an
@@ -221,6 +224,7 @@ SQL editor (so it's missing from the database's migration history).
 | 26 | `20261001010000_favorite_dishes` | Hearted dishes per student, own-row RLS |
 | 27 | `20261001020000_biryani_nation_prices_and_new_dishes` | Data: Biryani Nation price rise, Starters + Chinese sections (37 dishes; 150 in all) |
 | 29 | `20261001040000_rls_performance` | RLS rules evaluated once per query, admin/own policies merged, 4 FK indexes (access unchanged) |
+| 30 | `20261001050000_discount_offers` | Admin offer switches (10% / 20% / buy 3 Full get 1 Single free), order discount columns, free order items, `place_order()` takes an offer |
 | 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
@@ -256,6 +260,11 @@ migrations are never edited, so they stay.
   Campus Explorer (every active restaurant), Campus Foodie (25), Gate
   Legend (50), Centurion (100). All six → one free biryani, claimed on
   WhatsApp and marked once by an admin.
+- **Offers** (added 1 Oct 2026): the admin switches on any of 10% off,
+  20% off, and "buy 3 Full biryanis, get 1 Single free" (Biryani Nation;
+  one free Single per 3 Fulls, the student picks which). With any on, the
+  cart shows "Apply discount"; the student picks one offer per order (no
+  stacking), every order while it's on. The database decides the discount.
 - **Limits:** 20 per dish, 200-character notes; 5 orders a minute, 8
   unfinished; reviews within 7 days of delivery, once per order, 300
   characters; Trending = last 7 days, top 5; weekly rank shown only in

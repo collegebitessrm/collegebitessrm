@@ -556,6 +556,29 @@ on its own page, `/admin/banned`, reached via a "Banned users" button on
 `/admin/users`, and its back-link points to `/admin/users` (`BackToDashboardLink` takes optional
 `href`/`label` overrides for this).
 
+**Offers** (`OffersCard`, `src/components/admin/offers-card.tsx`, under the
+alerts on the dashboard): three switches, any mix on —
+**10% off**, **20% off** and **Buy 3 Full biryanis, get 1 Single free** —
+saved straight to `app_settings.offer_pct10 | offer_pct20 | offer_biryani`
+by `setOfferEnabled()` (`src/lib/admin/actions.ts`, admin-checked, RLS the
+boundary). While any is on, the cart sheet shows an **Apply discount** bar
+(`DiscountPicker`, `src/components/cart/discount-picker.tsx`): the live
+offers as a radio group, **one per order, never stacked**, each with what it
+saves. 10% / 20% come off the paid items (rounded to the rupee). The
+biryani offer only works where dishes are named "… Biryani (Full)" /
+"… Biryani (Single)" (Biryani Nation): one free Single per 3 paid Fulls in
+the same order, the student picks which Single(s) — elsewhere, or with too
+few Fulls, it shows why it's unavailable ("Add 2 more Full biryanis to
+unlock"). No per-student limit: every order while it's on (by decision).
+The rules live in `src/lib/offers.ts` for the cart's numbers and in
+`place_order()` for real — change them together. `getOffers()`
+(`src/lib/data/offers.ts`) feeds Home, menus (via `MenuView` → `CartBar` →
+`CartSheet`) and the dashboard. Every order view shows the offer line and
+free items ("Free" / "(free)"): ticket, admin card and detail, WhatsApp
+and copy text (`offerLine()`), CSV export (Offer + Discount columns). A
+free biryani is left out of "Your usual" (`usual.ts`) so a re-order never
+adds it as paid.
+
 **Sold out** (`/admin/sold-out`, a "Sold out" pill on the dashboard) lists
 every dish on every menu — including the ones already off sale, since this
 is the only way to put one back — grouped by restaurant and section, with
@@ -844,6 +867,13 @@ exact OR — e.g. "Users read own orders; admins read all"); policies scoped
 `milestone_rewards.marked_by`, `order_items.dish_id`, `order_reviews.user_id`.
 Access unchanged — verified with rolled-back student / admin / signed-out
 tests. New policies should follow the same `(select auth.uid())` pattern.)
+[`supabase/migrations/20261001050000_discount_offers.sql`](supabase/migrations/20261001050000_discount_offers.sql)
+(discount offers: `app_settings.offer_pct10 / offer_pct20 / offer_biryani`
+booleans, default off; `orders.discount_offer` (`'pct10' | 'pct20' |
+'biryani'` or null) and `orders.discount_amount` (≥ 0); `order_items.is_free`;
+and `place_order()` with two optional arguments, `p_offer` and
+`p_free_items` — see **Offers** under Admin access and the `orders` notes
+below).
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:
@@ -908,6 +938,11 @@ on `orders`).
 - **`orders`** — `user_id`, `restaurant_id`, `status` (`order_status` enum:
   `pending → confirmed → preparing → out_for_delivery → delivered`, or
   `cancelled`), `contact_phone`, `notes`, `total_amount`. No payment fields — COD only.
+  `total_amount` is what the student pays: `sum(order_items.subtotal) -
+  discount_amount`. `discount_offer` / `discount_amount` record the offer
+  used. A free Single biryani is its own `order_items` row with
+  `is_free = true` and its real menu price (so history stays truthful);
+  its value is the order's `discount_amount`.
   The admin dashboard only ever drives two of those transitions directly —
   `pending → confirmed` and `confirmed → delivered` (`preparing` /
   `out_for_delivery` stay valid enum values but nothing in the app sets
@@ -1005,7 +1040,13 @@ RLS is enabled on every table:
   contact phone format, restaurant `is_active`, and every dish belonging to
   the restaurant and `is_available`; snapshots dish name/price from
   `dishes` (never from the client); leaves `status` at `pending`; and
-  computes `total_amount` itself. It also checks `public.ordering_is_open()`
+  computes `total_amount` itself. Offers: with `p_offer` set it raises
+  `offer_unavailable` if that switch is off, and for `'biryani'` checks every
+  `p_free_items` entry is an available "… Biryani (Single)" from the same
+  restaurant and that there's at most one per 3 paid "… Biryani (Full)"
+  (`offer_not_eligible`); it computes the discount itself (10% / 20% of the
+  paid items, `round()`ed, or the free items' value). Free items without
+  the biryani offer are `invalid_items`. It also checks `public.ordering_is_open()`
   before anything else (raising `ordering_paused` while the admin has
   ordering closed) — enforced in the function itself, not just hidden in the UI,
   since a direct PostgREST call would otherwise bypass an app-level check.

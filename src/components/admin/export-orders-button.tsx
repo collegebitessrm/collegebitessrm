@@ -7,8 +7,9 @@ import { formatRupees } from "@/lib/format";
 import { formatOrderNumber, statusBadge } from "@/lib/orders/status";
 import { formatStoredMobile } from "@/lib/phone";
 import { adminPill } from "./styles";
+import { OFFERS } from "@/lib/offers";
 
-const COLUMNS = ["Order", "Date", "Student", "Phone", "Restaurant", "Items", "Amount", "Status"];
+const COLUMNS = ["Order", "Date", "Student", "Phone", "Restaurant", "Items", "Offer", "Discount", "Amount", "Status"];
 
 // Excel (and everything else) treats a field as one cell only when it's
 // quoted and internal quotes are doubled — needed here since names, item
@@ -25,7 +26,9 @@ function ordersToCsv(orders: AdminOrder[]): string {
       o.studentName,
       formatStoredMobile(o.contactPhone),
       o.restaurantName,
-      o.items.map((i) => `${i.dishName} x${i.quantity}`).join("; "),
+      o.items.map((i) => `${i.dishName} x${i.quantity}${i.isFree ? " (free)" : ""}`).join("; "),
+      o.discountOffer ? OFFERS[o.discountOffer].short : "",
+      o.discountOffer ? formatRupees(o.discountAmount) : "",
       formatRupees(o.totalAmount),
       statusBadge(o.status).label,
     ]

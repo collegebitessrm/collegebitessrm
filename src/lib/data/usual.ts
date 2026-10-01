@@ -17,7 +17,7 @@ export type UsualCart = {
 type OrderRow = {
   restaurant_id: string;
   created_at: string;
-  order_items: { dish_id: string | null; quantity: number }[];
+  order_items: { dish_id: string | null; quantity: number; is_free: boolean }[];
 };
 
 /**
@@ -33,7 +33,7 @@ export async function getUsualCart(userId: string): Promise<UsualCart | null> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("orders")
-    .select("restaurant_id, created_at, order_items(dish_id, quantity)")
+    .select("restaurant_id, created_at, order_items(dish_id, quantity, is_free)")
     .eq("user_id", userId)
     .eq("status", "delivered")
     .order("created_at", { ascending: false })
@@ -48,8 +48,10 @@ export async function getUsualCart(userId: string): Promise<UsualCart | null> {
   const groups = new Map<string, Group>();
 
   for (const o of orders) {
+    // A free biryani from an offer isn't part of the usual — re-ordering
+    // would add it as a paid dish.
     const items = o.order_items.filter(
-      (i): i is { dish_id: string; quantity: number } => i.dish_id !== null,
+      (i): i is { dish_id: string; quantity: number; is_free: boolean } => i.dish_id !== null && !i.is_free,
     );
     if (items.length === 0) continue;
 

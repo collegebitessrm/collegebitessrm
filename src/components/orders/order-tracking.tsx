@@ -26,6 +26,7 @@ import type { OrderStatus } from "@/lib/data/types";
 import { deliveryWindow, formatTime } from "@/lib/date";
 import { getDishPhoto } from "@/lib/data/dish-photos";
 import { formatRupees } from "@/lib/format";
+import { OFFERS } from "@/lib/offers";
 import { NAV_TRANSITION } from "@/lib/nav-transition";
 import { formatOrderNumber, orderTimeline, type TimelineStepState } from "@/lib/orders/status";
 import { createClient } from "@/lib/supabase/client";
@@ -316,7 +317,7 @@ export function OrderTracking({
               {initialOrder.items.map((item) => {
                 const photo = getDishPhoto(initialOrder.restaurantName, item.dishName);
                 return (
-                  <li key={item.dishName} className="flex items-center gap-3 py-2.5">
+                  <li key={item.id} className="flex items-center gap-3 py-2.5">
                     <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-pink-soft font-heading font-bold text-pink-soft-foreground/60 shadow-card">
                       {photo ? (
                         <BlurImage src={photo} alt="" sizes="44px" className="object-cover" />
@@ -327,11 +328,21 @@ export function OrderTracking({
                     <span className="min-w-0 flex-1 text-sm">
                       <span className="font-semibold tabular-nums">{item.quantity} ×</span> {item.dishName}
                     </span>
-                    <span className="text-sm tabular-nums">{formatRupees(item.subtotal)}</span>
+                    {item.isFree ? (
+                      <span className="rounded-full bg-success-soft px-2.5 py-0.5 text-sm font-semibold text-success">Free</span>
+                    ) : (
+                      <span className="text-sm tabular-nums">{formatRupees(item.subtotal)}</span>
+                    )}
                   </li>
                 );
               })}
             </ul>
+            {initialOrder.discountOffer && (
+              <div className="mt-1 flex items-center justify-between gap-3 border-t pt-3 text-sm font-semibold text-success">
+                <span>{OFFERS[initialOrder.discountOffer].short}</span>
+                <span className="tabular-nums">−{formatRupees(initialOrder.discountAmount)}</span>
+              </div>
+            )}
             {initialOrder.notes && (
               <p className="mt-3 rounded-xl bg-secondary px-4 py-2.5 text-sm text-muted-foreground">
                 “{initialOrder.notes}”

@@ -15,6 +15,7 @@ import { getHighlyReorderedDishIds } from "@/lib/data/reorders";
 import { getRestaurantMenu } from "@/lib/data/restaurants";
 import { isUuid } from "@/lib/ids";
 import { getOrderingState } from "@/lib/data/settings";
+import { getOffers } from "@/lib/data/offers";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   if (!isUuid(id)) notFound();
   const profilePromise = requireProfile();
   const orderingPromise = getOrderingState();
+  const offersPromise = getOffers();
   const highlyReorderedPromise = getHighlyReorderedDishIds();
   const menuPromise = getRestaurantMenu(id);
   // ?dish=<id> — set by Trending and the Thursday banner so the menu opens
@@ -46,7 +48,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
   const focusDishId = typeof dish === "string" && isUuid(dish) ? dish : null;
 
   const profile = await profilePromise;
-  const [menu, ordering, triedDishIds, usualDishId, highlyReorderedDishIds, taste, liked] = await Promise.all([
+  const [menu, ordering, triedDishIds, usualDishId, highlyReorderedDishIds, taste, liked, offers] = await Promise.all([
     menuPromise,
     orderingPromise,
     getTriedDishIds(profile.id, id),
@@ -54,6 +56,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
     highlyReorderedPromise,
     getTasteProfile(profile.id),
     getLikedDishes(profile.id),
+    offersPromise,
   ]);
   if (!menu) notFound();
 
@@ -163,6 +166,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
               highlyReorderedDishIds={highlyReorderedDishIds}
               focusDishId={focusDishId}
               spiceLevel={taste.spiceLevel}
+              offers={offers}
               likedDishIds={liked.filter((d) => d.restaurantId === id).map((d) => d.id)}
             />
           </div>

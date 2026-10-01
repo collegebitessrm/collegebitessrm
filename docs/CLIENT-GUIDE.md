@@ -66,6 +66,26 @@ number, timings).
 The ticket shows "Delivery by" that time. To change these times, ask the
 developer.
 
+### Offers (discounts)
+
+The **Offers** card on the admin page has three switches:
+
+- **10% off** — 10% off the whole order, any restaurant.
+- **20% off** — 20% off the whole order, any restaurant.
+- **Buy 3 Full biryanis, get 1 Single free** — Biryani Nation only. For
+  every 3 Full biryanis in one order, the student picks one Single biryani
+  free.
+
+Turn on any you like; they take effect straight away. Students see an
+**Apply discount** bar in their cart and pick **one offer per order**.
+Turn a switch off to end that offer. Orders already placed keep their
+discount.
+
+Order cards show the offer and its saving (e.g. "10% off −₹42") and mark
+free biryanis "Free", and the WhatsApp and copy text say "(free)", so the
+restaurant knows not to charge for them. The total shown is what the
+student pays.
+
 ## When something changes
 
 | You want to… | Do this |

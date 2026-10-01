@@ -8,6 +8,7 @@ import { ThursdayNudge } from "@/components/home/thursday-nudge";
 import { YourUsualChip } from "@/components/home/your-usual-chip";
 import { getRestaurantMenuStats, getRestaurants, getSearchableDishes, getThursdaySpecial } from "@/lib/data/restaurants";
 import { getOrderingState } from "@/lib/data/settings";
+import { getOffers } from "@/lib/data/offers";
 import { getDishOrderCounts, getTrendingDishes } from "@/lib/data/trending";
 import { getUsualCart } from "@/lib/data/usual";
 import { getRatePromptOrder } from "@/lib/data/orders";
@@ -31,12 +32,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const menuStatsPromise = getRestaurantMenuStats();
   const dishesPromise = getSearchableDishes();
   const orderingPromise = getOrderingState();
+  const offersPromise = getOffers();
   const trendingDishesPromise = getTrendingDishes();
   const dishOrderCountsPromise = getDishOrderCounts();
   const thursdaySpecialPromise = isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null);
 
   const profile = await profilePromise;
-  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked] = await Promise.all([
+  const [restaurants, menuStats, dishes, ordering, usual, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked, offers] = await Promise.all([
     restaurantsPromise,
     menuStatsPromise,
     dishesPromise,
@@ -49,6 +51,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     getTasteProfile(profile.id),
     hasPlacedOrder(profile.id),
     getLikedDishes(profile.id),
+    offersPromise,
   ]);
   const fromHearts = heartCravings(liked);
   const timeOfDay = getTimeOfDayIST();
@@ -79,7 +82,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           />
         </ViewTransition>
       </ViewTransition>
-      <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} spiceLevel={taste.spiceLevel} hasTabBar />
+      <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} spiceLevel={taste.spiceLevel} offers={offers} hasTabBar />
     </main>
   );
 }

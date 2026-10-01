@@ -6,6 +6,7 @@ import { ArrowRight } from "@/components/icons";
 import { cartTotals, useCart } from "@/lib/cart/store";
 import { getDishPhoto } from "@/lib/data/dish-photos";
 import { formatRupees } from "@/lib/format";
+import type { OffersState } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 import { CartSheet } from "./cart-sheet";
 
@@ -20,6 +21,7 @@ export function CartBar({
   closedNote,
   hasTabBar = false,
   spiceLevel = null,
+  offers,
 }: {
   profilePhone: string;
   /** On a menu page: names the cart's restaurant when it's a different one. */
@@ -33,6 +35,8 @@ export function CartBar({
   hasTabBar?: boolean;
   /** The taste profile's spice level — offers a one-tap "less / extra spicy" note. */
   spiceLevel?: number | null;
+  /** Discount offers the admin has on — offered in the cart sheet. */
+  offers?: OffersState;
 }) {
   const cart = useCart();
   const [open, setOpen] = useState(false);
@@ -103,6 +107,7 @@ export function CartBar({
         orderingEnabled={orderingEnabled}
         closedNote={closedNote}
         spiceLevel={spiceLevel}
+        offers={offers}
       />
     </>
   );

@@ -98,6 +98,9 @@ const checks = [
   // Status
   ['success text on success-soft chip', 'success', 1, [T('success-soft')], 4.5],
   ['success text on card', 'success', 1, [T('card')], 4.5],
+  ['success text on secondary well (admin order box: offer line)', 'success', 1, [T('secondary')], 4.5],
+  ['success text on ground (cart sheet: discount line)', 'success', 1, [T('background')], 4.5],
+  ['offer switch knob (card) on primary track (non-text, 3:1)', 'card', 1, [T('primary')], 3.0],
   ['destructive text on card', 'destructive', 1, [T('card')], 4.5],
   ['destructive text on destructive/10 over card', 'destructive', 1, [T('card'), T('destructive', 0.1)], 4.5],
   ['destructive text on destructive/5 over card (outlined buttons)', 'destructive', 1, [T('card'), T('destructive', 0.05)], 4.5],

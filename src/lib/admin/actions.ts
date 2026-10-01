@@ -5,6 +5,7 @@ import { after } from "next/server";
 import { notifyUser, type PushPayload } from "@/lib/notifications/send";
 import type { OrderStatus } from "@/lib/data/types";
 import type { OrderingMode } from "@/lib/ordering";
+import { isOfferKey, type OfferKey } from "@/lib/offers";
 import { formatOrderNumber, nextStatus } from "@/lib/orders/status";
 import { getSessionProfile } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -55,6 +56,26 @@ export async function setOrderingMode(mode: OrderingMode): Promise<AdminActionRe
   }
 
   revalidatePath("/admin");
+  return { ok: true };
+}
+
+/**
+ * Turns one discount offer on or off (app_settings.offer_*). Students see
+ * it in the cart straight away; place_order() refuses an offer that's off.
+ */
+export async function setOfferEnabled(offer: OfferKey, enabled: boolean): Promise<AdminActionResult> {
+  const denied = await assertAdmin();
+  if (denied) return denied;
+  if (!isOfferKey(offer) || typeof enabled !== "boolean") return { ok: false, error: "Unknown offer." };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("app_settings")
+    .update({ [`offer_${offer}`]: enabled, updated_at: new Date().toISOString() })
+    .eq("id", true);
+  if (error) return { ok: false, error: "Couldn't update the offer. Please try again." };
+
+  revalidatePath("/", "layout"); // the cart on Home and every menu
   return { ok: true };
 }
 

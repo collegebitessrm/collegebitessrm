@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Drumstick, Leaf, Search, SearchX, UtensilsCrossed, X, type AppIcon } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import { CartBar } from "@/components/cart/cart-bar";
+import type { OffersState } from "@/lib/offers";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,6 +40,7 @@ export function MenuView({
   focusDishId = null,
   spiceLevel = null,
   likedDishIds = [],
+  offers,
 }: {
   restaurant: Restaurant;
   sections: MenuSection[];
@@ -59,6 +61,8 @@ export function MenuView({
   spiceLevel?: number | null;
   /** Dishes this student has hearted — their hearts start filled. */
   likedDishIds?: string[];
+  /** Discount offers the admin has on, for the cart sheet. */
+  offers?: OffersState;
 }) {
   const cart = useCart();
   const [filter, setFilter] = useState(ALL);
@@ -313,6 +317,7 @@ export function MenuView({
         orderingEnabled={orderingEnabled}
         closedNote={closedNote}
         spiceLevel={spiceLevel}
+        offers={offers}
       />
 
       <AlertDialog open={pendingDish !== null} onOpenChange={(open) => !open && setPendingDish(null)}>

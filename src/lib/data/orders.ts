@@ -6,6 +6,7 @@ import { REVIEW_WINDOW_MS } from "@/lib/reviews/limits";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/ids";
 import { ACTIVE_STATUSES } from "@/lib/orders/status";
+import type { OfferKey } from "@/lib/offers";
 import type { OrderStatus } from "./types";
 
 export type OrderSummary = {
@@ -41,7 +42,15 @@ function hasReview(row: unknown): boolean {
   return Array.isArray(row) ? row.length > 0 : row != null;
 }
 
-export type OrderItem = { id: string; dishName: string; unitPrice: number; quantity: number; subtotal: number };
+export type OrderItem = {
+  id: string;
+  dishName: string;
+  unitPrice: number;
+  quantity: number;
+  subtotal: number;
+  /** A Single biryani given free by the biryani offer. */
+  isFree: boolean;
+};
 
 /** The student's own review of an order (order_reviews + order_item_ratings), if they've left one. */
 export type OrderReview = {
@@ -69,6 +78,9 @@ export type OrderDetail = {
   deliveryMinutes: number;
   items: OrderItem[];
   dailyNumber: number;
+  /** The discount offer used, if any; totalAmount is already after it. */
+  discountOffer: OfferKey | null;
+  discountAmount: number;
 };
 
 type OrderSummaryRow = {
@@ -178,8 +190,10 @@ type OrderDetailRow = {
   notes: string | null;
   restaurant_id: string;
   restaurants: { name: string; phone: string; delivery_minutes: number } | null;
-  order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number }[];
+  order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number; is_free: boolean }[];
   daily_number: number;
+  discount_offer: OfferKey | null;
+  discount_amount: number;
   delivered_at: string | null;
   // One-to-one via order_reviews.order_id; PostgREST may return an object or a one-element array.
   order_reviews: ReviewRow | ReviewRow[] | null;
@@ -333,7 +347,7 @@ export const getOrder = cache(async function getOrder(
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal), daily_number, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
+      "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free), daily_number, discount_offer, discount_amount, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
     )
     .eq("id", id)
     .eq("user_id", userId)
@@ -362,7 +376,10 @@ export const getOrder = cache(async function getOrder(
       unitPrice: i.unit_price,
       quantity: i.quantity,
       subtotal: i.subtotal,
+      isFree: i.is_free,
     })),
     dailyNumber: data.daily_number,
+    discountOffer: data.discount_offer,
+    discountAmount: Number(data.discount_amount),
   };
 });

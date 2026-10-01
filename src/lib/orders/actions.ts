@@ -8,6 +8,7 @@ import { getSessionProfile } from "@/lib/profile";
 import { notifyAdmins } from "@/lib/notifications/send";
 import { formatRupees } from "@/lib/format";
 import { formatOrderNumber } from "@/lib/orders/status";
+import { isOfferKey, type OfferKey } from "@/lib/offers";
 import { createClient } from "@/lib/supabase/server";
 
 export type PlaceOrderInput = {
@@ -16,6 +17,10 @@ export type PlaceOrderInput = {
   lines: { dishId: string; quantity: number; price: number }[];
   notes: string;
   contactPhone: string;
+  /** The discount the student picked, if any — place_order() decides if it applies. */
+  offer?: OfferKey | null;
+  /** The free Single biryanis picked for the "buy 3 Full" offer. */
+  freeItems?: { dishId: string; quantity: number }[];
 };
 
 export type PlaceOrderResult =
@@ -27,6 +32,8 @@ export type PlaceOrderResult =
       removedDishIds?: string[];
       /** Dishes whose price changed — the client updates them. */
       updatedPrices?: { dishId: string; price: number }[];
+      /** The picked offer was switched off — the client drops it. */
+      offerEnded?: boolean;
     };
 
 /**
@@ -57,6 +64,23 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     new Set(input.lines.map((l) => l.dishId)).size !== input.lines.length
   ) {
     return { ok: false, error: "Something's off with your cart. Give it a quick look and try again." };
+  }
+
+  const offer = input.offer ?? null;
+  const freeItems = offer === "biryani" ? (input.freeItems ?? []) : [];
+  if (
+    (offer !== null && !isOfferKey(offer)) ||
+    !Array.isArray(freeItems) ||
+    freeItems.some(
+      (f) =>
+        typeof f?.dishId !== "string" || !Number.isInteger(f.quantity) || f.quantity < 1 || f.quantity > MAX_QUANTITY,
+    ) ||
+    new Set(freeItems.map((f) => f.dishId)).size !== freeItems.length
+  ) {
+    return { ok: false, error: "Something's off with your discount. Remove it and try again." };
+  }
+  if (offer === "biryani" && freeItems.length === 0) {
+    return { ok: false, error: "Pick your free Single biryani, or remove the offer." };
   }
 
   const contactPhone = normalizeIndianMobile(String(input.contactPhone ?? ""));
@@ -108,10 +132,17 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     p_items: input.lines.map((l) => ({ dish_id: l.dishId, quantity: l.quantity })),
     p_contact_phone: contactPhone,
     p_notes: notes || null,
+    p_offer: offer,
+    p_free_items: freeItems.length ? freeItems.map((f) => ({ dish_id: f.dishId, quantity: f.quantity })) : null,
   });
 
   if (error || typeof orderId !== "string") {
-    return { ok: false, error: PLACE_ORDER_ERRORS[error?.message ?? ""] ?? GENERIC_ERROR };
+    const key = error?.message ?? "";
+    return {
+      ok: false,
+      error: PLACE_ORDER_ERRORS[key] ?? GENERIC_ERROR,
+      ...(key === "offer_unavailable" && { offerEnded: true }),
+    };
   }
 
   // Buzz the admin's phone, after the student already has their response —
@@ -152,4 +183,7 @@ const PLACE_ORDER_ERRORS: Record<string, string> = {
   // Rate limits (20260922000000_place_order_rate_limit.sql): 5 a minute, 8 unfinished.
   order_rate_limited: "That's a lot of orders in a minute. Wait a moment and try again. Your cart is saved.",
   too_many_open_orders: "You already have 8 orders on the way. Once one is delivered you can order again.",
+  // Discount offers (20261001050000_discount_offers.sql).
+  offer_unavailable: "That offer just ended, so it's been removed. Check the new total and place your order again.",
+  offer_not_eligible: "Your cart doesn't qualify for that many free biryanis. Every 3 Full biryanis get 1 Single free.",
 };

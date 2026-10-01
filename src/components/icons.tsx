@@ -90,6 +90,7 @@ import { ShieldSlash as PhShieldSlash } from "@phosphor-icons/react/dist/ssr/Shi
 import { SignOut as PhSignOut } from "@phosphor-icons/react/dist/ssr/SignOut";
 import { SlidersHorizontal as PhSlidersHorizontal } from "@phosphor-icons/react/dist/ssr/SlidersHorizontal";
 import { SmileyMeh as PhSmileyMeh } from "@phosphor-icons/react/dist/ssr/SmileyMeh";
+import { SealPercent as PhSealPercent } from "@phosphor-icons/react/dist/ssr/SealPercent";
 import { Sparkle as PhSparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
 import { SpeakerHigh as PhSpeakerHigh } from "@phosphor-icons/react/dist/ssr/SpeakerHigh";
 import { SpeakerSlash as PhSpeakerSlash } from "@phosphor-icons/react/dist/ssr/SpeakerSlash";
@@ -122,6 +123,8 @@ function make(Ph: PhosphorIcon, name: string, defaultWeight: IconProps["weight"]
   return AppIcon;
 }
 
+/** discount offers (cart, admin) */
+export const Discount = make(PhSealPercent, "Discount");
 /** error toasts */
 export const AlertCircle = make(PhWarningCircle, "AlertCircle");
 /** fruit categories */

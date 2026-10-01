@@ -4,6 +4,7 @@ import { Phone, Star } from "@/components/icons";
 import type { AdminOrderDetail } from "@/lib/data/admin";
 import { deliveryWindow, formatOrderTimestamp } from "@/lib/date";
 import { formatRupees } from "@/lib/format";
+import { OFFERS } from "@/lib/offers";
 import { itemLine } from "@/lib/orders/admin-text";
 import { formatOrderNumber, statusBadge } from "@/lib/orders/status";
 import { formatStoredMobile } from "@/lib/phone";
@@ -79,11 +80,23 @@ export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
                   </p>
                   {detail?.rating != null && <Stars rating={detail.rating} />}
                 </div>
-                <span className="shrink-0 font-semibold tabular-nums">{formatRupees(item.subtotal)}</span>
+                <span className="shrink-0 font-semibold tabular-nums">
+                  {item.isFree ? (
+                    <span className="text-success">Free</span>
+                  ) : (
+                    formatRupees(item.subtotal)
+                  )}
+                </span>
               </li>
             );
           })}
         </ul>
+        {order.discountOffer && (
+          <div className="mt-2 flex items-center justify-between gap-3 border-t pt-3 font-semibold text-success">
+            <span>Offer · {OFFERS[order.discountOffer].title}</span>
+            <span className="shrink-0 tabular-nums">−{formatRupees(order.discountAmount)}</span>
+          </div>
+        )}
         <div className="mt-2 flex items-center justify-between border-t pt-3">
           <span className="font-semibold">Total · pay on delivery</span>
           <span className="font-heading text-xl font-bold tabular-nums">{formatRupees(order.totalAmount)}</span>

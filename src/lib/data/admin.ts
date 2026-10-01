@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
+import type { OfferKey } from "@/lib/offers";
 import { DEFAULT_DELIVERY_MINUTES, isPastDeliveryTime, startOfTodayIST } from "@/lib/date";
 import { getUnlockedMilestones, MILESTONES } from "@/components/profile/milestone-badges";
 import { isUuid } from "@/lib/ids";
@@ -78,9 +79,13 @@ export type AdminOrder = {
   userId: string;
   studentName: string;
   studentBanned: boolean;
-  /** In the order they were added; `subtotal` = unit price × quantity, snapshotted at order time. */
-  items: { dishName: string; quantity: number; subtotal: number }[];
+  /** In the order they were added; `subtotal` = unit price × quantity, snapshotted at order time.
+   *  `isFree` = a Single biryani given free by the biryani offer (its value is in discountAmount). */
+  items: { dishName: string; quantity: number; subtotal: number; isFree: boolean }[];
   dailyNumber: number;
+  /** The discount offer the student used, if any; totalAmount is already after it. */
+  discountOffer: OfferKey | null;
+  discountAmount: number;
 };
 
 type AdminOrderRow = {
@@ -95,11 +100,13 @@ type AdminOrderRow = {
   restaurant_id: string;
   restaurants: { name: string; delivery_minutes: number } | null;
   users: { full_name: string; is_banned: boolean } | null;
-  order_items: { dish_name: string; quantity: number; subtotal: number }[];
+  order_items: { dish_name: string; quantity: number; subtotal: number; is_free: boolean }[];
+  discount_offer: OfferKey | null;
+  discount_amount: number;
 };
 
 const ADMIN_ORDER_COLUMNS =
-  "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal), daily_number";
+  "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal, is_free), daily_number, discount_offer, discount_amount";
 
 function toAdminOrder(o: AdminOrderRow): AdminOrder {
   return {
@@ -115,8 +122,15 @@ function toAdminOrder(o: AdminOrderRow): AdminOrder {
     deliveryMinutes: o.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
     studentName: o.users?.full_name ?? "Student",
     studentBanned: o.users?.is_banned ?? false,
-    items: o.order_items.map((i) => ({ dishName: i.dish_name, quantity: i.quantity, subtotal: Number(i.subtotal) })),
+    items: o.order_items.map((i) => ({
+      dishName: i.dish_name,
+      quantity: i.quantity,
+      subtotal: Number(i.subtotal),
+      isFree: i.is_free,
+    })),
     dailyNumber: o.daily_number,
+    discountOffer: o.discount_offer,
+    discountAmount: Number(o.discount_amount),
   };
 }
 
@@ -137,14 +151,14 @@ export async function getAdminOrderDetail(id: string): Promise<AdminOrderDetail 
     supabase
       .from("orders")
       .select(
-        "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, restaurants(name, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal)",
+        "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, discount_offer, discount_amount, restaurants(name, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal, is_free)",
       )
       .eq("id", id)
       .maybeSingle<
         Omit<AdminOrderRow, "users" | "order_items"> & {
           delivered_at: string | null;
           users: { full_name: string; is_banned: boolean; email: string | null; registration_number: string | null } | null;
-          order_items: { id: string; dish_name: string; quantity: number; unit_price: number; subtotal: number }[];
+          order_items: { id: string; dish_name: string; quantity: number; unit_price: number; subtotal: number; is_free: boolean }[];
         }
       >(),
     supabase
