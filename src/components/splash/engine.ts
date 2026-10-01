@@ -254,7 +254,9 @@ export function runSplash(C: SplashRuntime): void {
     go(
       dish,
       [
-        { opacity: 1, transform: `translate(${bx - ds / 2}px, ${by - ds / 2}px) scale(0.12) rotate(-35deg)` },
+        // Starts invisible: with fill "both" the first frame shows during the delay.
+        { opacity: 0, transform: `translate(${bx - ds / 2}px, ${by - ds / 2}px) scale(0.12) rotate(-35deg)` },
+        { opacity: 1, offset: 0.08 },
         { opacity: 1, transform: `${flyTo} scale(1.1) rotate(8deg)`, offset: 0.55 },
         { opacity: 0, transform: `${flyTo} scale(1.45) rotate(14deg)` },
       ],
@@ -317,7 +319,8 @@ export function runSplash(C: SplashRuntime): void {
       go(
         c,
         [
-          { opacity: 1, transform: "translate(0, 0) rotate(0deg) scale(1)" },
+          { opacity: 0, transform: "translate(0, 0) rotate(0deg) scale(1)" },
+          { opacity: 1, offset: 0.05 },
           { opacity: 1, transform: `translate(${fx * 0.7}px, ${fy}px) rotate(${rot / 2}deg)`, offset: 0.45 },
           { opacity: 0, transform: `translate(${fx}px, ${fy + 70}px) rotate(${rot}deg) scale(0.7)` },
         ],

@@ -80,11 +80,13 @@ export function AppSplash() {
 
         <div className="sp-type">
           <p className="sp-word font-heading">
-            {LETTERS.map((l, i) => (
-              <span key={i} className="sp-letter" data-sp="letter">
-                {l}
-              </span>
-            ))}
+            <span className="sp-row">
+              {LETTERS.map((l, i) => (
+                <span key={i} className="sp-letter" data-sp="letter">
+                  {l}
+                </span>
+              ))}
+            </span>
             <span className="sp-bites" data-sp="bites">
               Bites
             </span>
