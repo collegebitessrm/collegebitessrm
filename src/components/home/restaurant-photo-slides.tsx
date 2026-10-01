@@ -132,6 +132,10 @@ export function RestaurantPhotoSlides({
         onPointerDown={() => {
           pausedUntilRef.current = Date.now() + PAUSE_AFTER_TOUCH_MS;
         }}
+        // tabIndex -1 keeps it out of the Tab order, but a click would still
+        // focus it — and focus inside aria-hidden is an accessibility error.
+        // Not taking focus on press; taps (onClick) and swipes still work.
+        onMouseDown={(e) => e.preventDefault()}
         className="flex h-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {count === 0 && <div className="h-full w-full shrink-0 bg-stripes" />}
