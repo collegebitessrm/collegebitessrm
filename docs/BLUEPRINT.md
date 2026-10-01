@@ -379,15 +379,16 @@ the admin taps "Tap to arm sound" each visit.
 ## 9. Security
 
 - Two-layer admin (role + passcode), passcode only in env vars, fails
-  closed.
+  closed; the passcode cookie is an HMAC bound to the admin's account, never
+  the passcode.
 - Prices, totals, availability, ordering state, bans and rate limits are
   all decided inside `place_order()`.
 - Headers: `X-Frame-Options: DENY`, `nosniff`,
   `strict-origin-when-cross-origin`, no camera/mic/location; HSTS from
   Vercel.
 - Content-Security-Policy: self + Supabase, inline scripts allowed (theme,
-  splash and structured data are inline on purpose); **report-only** at
-  launch. Reports log as `[csp]` Warnings (Vercel dashboard → Logs, search
+  splash and structured data are inline on purpose); **enforced** since 1 Oct
+  2026 (report-only at launch). Reports log as `[csp]` Warnings (Vercel dashboard → Logs, search
   `csp`; Hobby keeps about an hour).
 - Supabase security advisor: only expected notices (the functions students
   are meant to call; the counter table with no policies on purpose).
@@ -443,9 +444,6 @@ Never commit a secret; never paste one into chat.
 
 ## 12. Still open
 
-- **Switch the content policy to enforced** once a check of the `[csp]`
-  logs after signed-in browsing comes back empty (one line in
-  `next.config.ts`).
 - **Publish the Google sign-in app** (out of "Testing") before real
   students sign in, if not done already.
 - Restaurant phone numbers are the support number; set real ones if

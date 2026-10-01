@@ -523,7 +523,8 @@ author.
 2. A separate passcode, checked in `src/app/admin/layout.tsx` after (1)
    passes. The passcode lives only in the `ADMIN_PASSCODE` env var —
    never hardcoded, never committed. Entering it right sets an httpOnly,
-   `/admin`-scoped session cookie (`src/lib/admin/passcode.ts` /
+   `/admin`-scoped session cookie holding an HMAC of the admin's user id
+   keyed by the passcode, never the passcode itself (`src/lib/admin/passcode.ts` /
    `passcode-actions.ts`); no `ADMIN_PASSCODE` set means the gate **fails
    closed** — nobody gets in, admin role or not — rather than silently
    letting everyone through.
@@ -1001,7 +1002,7 @@ RLS is enabled on every table:
   `Permissions-Policy` (no camera/mic/location); HSTS comes from Vercel.
   CSP is a moderate policy (`'unsafe-inline'` scripts because the
   theme/splash init scripts and JSON-LD are inline on purpose; connections
-  only to self + Supabase REST/Realtime), currently **report-only** —
+  only to self + Supabase REST/Realtime), **enforced** since 1 Oct 2026 —
   violations POST to `/api/csp-report` (excluded from the proxy matcher)
   and land in Vercel logs as `[csp] …`. Switch the header key to
   `Content-Security-Policy` once the logs are clean; add any new external
@@ -1125,14 +1126,18 @@ Parked by the developer — do these only when asked.
   launch day starts at token #1 with empty history).
 - **Publish the Google sign-in app** out of "Testing" (Google Auth
   Platform → Audience) — until then only listed test users can sign in.
-- **Switch the content policy to enforced** — browse the signed-in
+- ~~Switch the content policy to enforced~~ — done 1 Oct 2026. Was: browse the signed-in
   screens, then within the hour search Vercel dashboard → Logs for `csp`
   (Hobby keeps ~1 hour; a real report is a Warning). Empty (ignoring the
   `TEST-from-Claude-ignore` line) → change the header key in
   `next.config.ts` to `Content-Security-Policy`.
 
 **Worth doing soon (code only, no database)**
-- **Harden the admin passcode cookie** — it currently stores the passcode
+- ~~Harden the admin passcode cookie~~ — done 1 Oct 2026: the cookie holds
+  an HMAC of the admin's user id keyed by `ADMIN_PASSCODE`
+  (`passcodeToken()`), compared in constant time (`safeEqual()`); it only
+  works for that admin and changing the passcode logs every device out.
+  Was: it stored the passcode
   value itself (httpOnly, `/admin`-scoped). Store a signed token (HMAC of
   the passcode with a server secret) and compare in constant time
   (`src/lib/admin/passcode.ts` / `passcode-actions.ts`).
