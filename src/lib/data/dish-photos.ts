@@ -59,7 +59,7 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Chicken Curry Biryani": photo("chicken-curry-biryani"),
     "Egg Biryani": photo("egg-biryani"),
     "Gongura Chicken Biryani": photo("gongura-chicken-biryani"),
-    "Boneless Biryani": photo("boneless-biryani"),
+    "Boneless Biryani": photo("boneless-biryani-v2"),
     // Added 1 Oct 2026 (Openverse photos, credited on /terms).
     "Chicken 555": photo("chicken-555"),
     "Garlic Chicken": photo("garlic-chicken"),
@@ -67,9 +67,9 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Pepper Chicken": photo("pepper-chicken"),
     "SP Kaju Noodles": photo("kaju-noodles"),
     "Zeera Fried Rice": photo("jeera-rice"),
-    "Tomato Fried Rice": photo("tomato-rice"),
+    "Tomato Fried Rice": photo("tomato-rice-v2"),
     "Corn Fried Rice": photo("corn-fried-rice"),
-    "Baby Corn Fried Rice": photo("corn-fried-rice"),
+    "Baby Corn Fried Rice": photo("baby-corn-fried-rice"),
     // Photos from the developer (1 Oct 2026).
     "Mushroom Noodles": photo("mushroom-noodles"),
   },
