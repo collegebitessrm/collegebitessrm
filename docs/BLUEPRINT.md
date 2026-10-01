@@ -365,10 +365,15 @@ light: things should look lit, not flat.
   rim and glow in dark mode). The wordmark is
   never an image (glow fringe from background removal; unreadable small) —
   it's set in the app's fonts on the splash and share card.
-- Splash: ~1.6 s, once per session: the tile rises in, "College Bites" and
-  the tagline follow, then a fade to the app. Tap skips; reduced motion
-  fades only; never on admin/auth/legal pages or a background tab; CSS
-  hides it after 9 s whatever happens.
+- Splash, "One Bite" (1 Oct 2026, approved on a preview link): ~1.5 s,
+  once per session, no tap-to-skip. The logo's indigo fills the screen, the
+  tile eases in, its graduation cap drops into place, "College Bites"
+  rises in, then a bite (the one in the logo's "COLLEGE") is taken out of
+  the screen's corner and opens onto the app while the tile glides into the
+  page's logo. The cap and the cap-less tile are cut by the brand script.
+  Reduced motion: a plain logo fade; never on admin/auth/legal pages or a
+  background tab; slow images = no splash; any error ends it; CSS hides it
+  after 9 s whatever happens.
 
 ### Photos
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact

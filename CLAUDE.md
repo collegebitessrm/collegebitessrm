@@ -763,6 +763,11 @@ silently re-enables the button.
     wordmark and tagline are never used as an image: they're unreadable at
     icon sizes and the transparent file's wordmark carries a coloured glow
     from background removal.
+  - `public/brand/mark-v2-1-cap.webp` / `-nocap.webp` — the splash's
+    layers: the graduation cap alone and the tile without it, cut from the
+    tile with a cap/tassel outline traced on logo v2 (`CAP_POLY` /
+    `TASSEL_BOX` in the script, fractions of the tile — retrace for a new
+    logo); `MARK_CAP` in `brand-mark.ts` says where the cap sits.
   - `src/lib/brand-mark.ts` — `MARK_TILE` (was `MARK_NAVY`), the tile's
     colour sampled from the art. `BrandLogo` (`src/components/brand-logo.tsx`)
     shows the tile on it, so callers size/round it freely and it reads as
@@ -775,15 +780,31 @@ silently re-enables the button.
   - `src/app/favicon.ico` — the tile, 16/32/48/64 RGBA PNG frames (Next
     can't generate `favicon` from code, and its ico decoder rejects
     non-RGBA frames), written by the same script.
-- **Startup splash** (`src/components/splash/`), ~1.6 s, once per browser
-  session (sessionStorage `collegebites.splash-shown` — every fresh app/PWA
-  open, never on route changes or reloads), never on `/admin`, `/auth`,
-  `/privacy`, `/terms` or a tab opened in the background:
-  - A short logo fade-in on the palette's ground with its two splash glows
-    (`--splash-glow-a/-b`; the theme-init script has set `.dark` and
-    `data-palette` by then): the indigo tile rises in and
-    settles, "College Bites" (Poppins) and the tagline follow, a hold,
-    then the screen fades to the app. Timings in `config.ts`.
+- **Startup splash — "One Bite"** (`src/components/splash/`, since 1 Oct
+  2026, approved on a preview link first), ~1.5 s, once per browser session
+  (sessionStorage `collegebites.splash-shown` — every fresh app/PWA open,
+  never on route changes or reloads), never on `/admin`, `/auth`,
+  `/privacy`, `/terms` or a tab opened in the background. **No tap-to-skip**
+  (by decision). Storyboard and timings in `config.ts`:
+  - The screen is the logo's own indigo (`MARK_TILE`) with a violet glow —
+    the same in every palette and mode, the logo's world. The tile eases in
+    out of a slight blur; its **graduation cap drops into place** (the tile
+    is `mark-v2-1-nocap.webp`, the cap `mark-v2-1-cap.webp` positioned by
+    `MARK_CAP`, both cut by the brand script; the tile clips the cap as it
+    falls), bounces, the tassel swings, the tile bumps; a sheen catches it;
+    "College Bites" (cream) and the tagline (cyan) rise in; then **CHOMP**:
+    a scalloped bite (three circles in a CSS mask on the indigo layer) snaps
+    out of the screen's top-right corner — the bite in the logo's
+    "COLLEGE" — and opens across the whole screen onto the app (the radii
+    are `@property`-registered and animated; without `CSS.registerProperty`
+    the screen fades instead), while the tile glides into the page's own
+    logo: the `BrandLogo` with `splashTarget` (Home header, sign-in page),
+    or shrinks away if none is on screen.
+  - History: a fade (launch), then "The Drop" (a busy neon rider / glitch /
+    flying-dish splash) was built and rejected as busy, cartoony and
+    off-brand, and reverted. A scooter riding into the logo was tried on the
+    preview and dropped. Lesson: one idea, the real logo, premium over
+    playful — and preview it (a private Artifact link) before it ships.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in
     `splash.css`). `engine.ts` is all the motion — Web Animations on
     transform/opacity — in one self-contained function that
@@ -793,10 +814,13 @@ silently re-enables the button.
     the app paint first (the theme-init script, `src/lib/theme/init-script.ts`,
     is inline for the same reason — no light flash for dark users). Keep
     `engine.ts` free of imports and module-scope helpers.
-  - Reduced motion: no rise — the logo fades in, holds ~0.65 s, fades out.
-    Safety valves: tap skips, a logo image that hasn't loaded within 2.5 s
-    means it doesn't play, and CSS hides the overlay after 9 s whatever
-    happens.
+    Fill-mode gotcha: entrances are `fill: "both"`; an animation that takes
+    over an element an earlier one already moved must be `"forwards"`, or
+    its first frame freezes the element from time zero.
+  - Reduced motion: no motion — the finished logo (cap in place) and name
+    fade in, hold ~0.65 s, fade out. Safety valves: the logo layers not
+    ready within 1.5 s means it doesn't play, any error mid-way ends it at
+    once, and CSS hides the overlay after 9 s whatever happens.
   - Replay / disable: `?intro` (or `?splash`) forces it, `?nosplash`
     skips one load, localStorage `collegebites.splash = "off"` disables it on
     one device, `NEXT_PUBLIC_DISABLE_SPLASH=1` removes it from the build.
