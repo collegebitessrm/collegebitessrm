@@ -68,7 +68,8 @@ developer.
 
 ### Offers (discounts)
 
-The **Offers** card on the admin page has three switches:
+Tap **Offers** on the admin page (next to **Sold out**; it shows "2 on"
+while offers are running). The Offers page has three switches:
 
 - **10% off** — 10% off the whole order, any restaurant.
 - **20% off** — 20% off the whole order, any restaurant.

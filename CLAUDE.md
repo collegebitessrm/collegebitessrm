@@ -556,8 +556,9 @@ on its own page, `/admin/banned`, reached via a "Banned users" button on
 `/admin/users`, and its back-link points to `/admin/users` (`BackToDashboardLink` takes optional
 `href`/`label` overrides for this).
 
-**Offers** (`OffersCard`, `src/components/admin/offers-card.tsx`, under the
-alerts on the dashboard): three switches, any mix on —
+**Offers** (`/admin/offers`, an "Offers" pill on the dashboard next to
+"Sold out" with an "N on" chip while any is on; the switches are
+`OffersCard`, `src/components/admin/offers-card.tsx`): three switches, any mix on —
 **10% off**, **20% off** and **Buy 3 Full biryanis, get 1 Single free** —
 saved straight to `app_settings.offer_pct10 | offer_pct20 | offer_biryani`
 by `setOfferEnabled()` (`src/lib/admin/actions.ts`, admin-checked, RLS the

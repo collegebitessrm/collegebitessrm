@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { History, PackageX, Star, Users } from "@/components/icons";
+import { Discount, History, PackageX, Star, Users } from "@/components/icons";
 import { MarkAllDeliveredButton } from "@/components/admin/mark-all-delivered-button";
 import { NewOrderAlerts } from "@/components/admin/new-order-alerts";
-import { OffersCard } from "@/components/admin/offers-card";
 import { OrderingKillSwitch } from "@/components/admin/ordering-kill-switch";
 import { OrderList } from "@/components/admin/order-list";
 import { RefreshAt } from "@/components/admin/refresh-at";
@@ -62,11 +61,18 @@ export default async function AdminPage() {
           <PackageX className="size-4" aria-hidden="true" />
           Sold out
         </Link>
+        <Link href="/admin/offers" className={adminPill}>
+          <Discount className="size-4" aria-hidden="true" />
+          Offers
+          {offers.active.length > 0 && (
+            <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
+              {offers.active.length} on
+            </span>
+          )}
+        </Link>
       </div>
 
       <NewOrderAlerts />
-
-      <OffersCard active={offers.active} />
 
       <section>
         <h2 className="mb-3 font-heading text-title font-bold">Restaurants</h2>

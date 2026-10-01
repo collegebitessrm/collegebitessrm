@@ -123,7 +123,7 @@ verify, submit `sitemap.xml`.
 | `/orders`, `/orders/[id]` | Order history; tracking ticket (`?rate=1` opens rating) | student |
 | `/profile` | Member card, milestones, reward, details, settings | student |
 | `/privacy`, `/terms` | Static policy pages | public |
-| `/admin` (+ `history`, `orders/[id]`, `users`, `banned`, `reviews`, `sold-out`) | Admin | admin + passcode |
+| `/admin` (+ `history`, `orders/[id]`, `users`, `banned`, `reviews`, `sold-out`, `offers`) | Admin | admin + passcode |
 | `/api/csp-report` | Logs content-policy reports | public |
 | icons, manifest, robots, sitemap, share image | | public |
 
