@@ -9,8 +9,17 @@
  * ink (--hero-foreground), the trail and the type its hero gradient. A
  * Golden Run and Midnight Cravings swap the three stops.
  */
+/* The run's three colours and its ink (a Golden Run / Midnight Cravings
+   swap them below — those rules must out-rank this one, so it stays a plain
+   class selector). */
 .app-splash {
   display: none;
+  --sp-a: var(--hero-a);
+  --sp-b: var(--hero-b);
+  --sp-c: var(--hero-c);
+  --sp-ink: var(--hero-foreground);
+  --sp-tile: min(40vw, 10.5rem);
+  --sp-rider: min(48vw, 15rem);
 }
 html[data-splash="play"] .app-splash,
 html[data-splash="run"] .app-splash,
@@ -22,12 +31,6 @@ html[data-splash="out"] .app-splash {
   overflow: hidden;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  --sp-a: var(--hero-a);
-  --sp-b: var(--hero-b);
-  --sp-c: var(--hero-c);
-  --sp-ink: var(--hero-foreground);
-  --sp-tile: min(40vw, 10.5rem);
-  --sp-rider: min(48vw, 15rem);
 }
 .app-splash[data-variant="golden"] {
   --sp-a: #fff1c2;

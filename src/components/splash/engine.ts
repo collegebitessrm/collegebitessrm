@@ -390,13 +390,15 @@ export function runSplash(C: SplashRuntime): void {
         const dx = r.left + r.width / 2 - (tr.left + tr.width / 2);
         const dy = r.top + r.height / 2 - (tr.top + tr.height / 2);
         const k = r.width / tr.width;
+        // The flight eases over most of the exit (per-keyframe easing, so the
+        // short fade at the end doesn't squash it), landing on the real logo.
         done = tile.animate(
           [
-            { opacity: 1, transform: `${base} scale(1)` },
-            { opacity: 1, transform: `${base} translate(${dx}px, ${dy}px) scale(${k})`, offset: 0.9 },
+            { opacity: 1, transform: `${base} scale(1)`, easing: "cubic-bezier(0.5, 0, 0.15, 1)" },
+            { opacity: 1, transform: `${base} translate(${dx}px, ${dy}px) scale(${k})`, offset: 0.88 },
             { opacity: 0, transform: `${base} translate(${dx}px, ${dy}px) scale(${k})` },
           ],
-          { duration: C.exitMs, easing: OUT, fill: "both" },
+          { duration: C.exitMs, fill: "both" },
         );
       } else {
         done = tile.animate(
