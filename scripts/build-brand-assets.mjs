@@ -22,9 +22,9 @@
 //
 // A new logo gets a new MARK name (mark-v3, …): an outside cache once kept
 // serving a replaced image by its old URL, so images are never overwritten
-// in place. The name is a literal in five files (the PNG reads must stay
-// literal so the build bundles them): brand-logo.tsx, splash/app-splash.tsx,
-// splash/init-script.ts, lib/app-icon.tsx, app/opengraph-image.tsx.
+// in place. The name is a literal in four files (the PNG reads must stay
+// literal so the build bundles them): brand-logo.tsx, splash/config.ts,
+// lib/app-icon.tsx, app/opengraph-image.tsx.
 
 import sharp from "sharp";
 import { mkdir, writeFile } from "node:fs/promises";

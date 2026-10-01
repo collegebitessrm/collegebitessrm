@@ -365,10 +365,15 @@ light: things should look lit, not flat.
   rim and glow in dark mode). The wordmark is
   never an image (glow fringe from background removal; unreadable small) —
   it's set in the app's fonts on the splash and share card.
-- Splash: ~1.6 s, once per session: the tile rises in, "College Bites" and
-  the tagline follow, then a fade to the app. Tap skips; reduced motion
-  fades only; never on admin/auth/legal pages or a background tab; CSS
-  hides it after 9 s whatever happens.
+- Splash, "The Drop" (1 Oct 2026): 1.88 s, once per session, no
+  tap-to-skip. Night in the theme's ink, a neon road whips across, the
+  side-on rider rips along it, wheelie + glitch freeze while a random real
+  dish flies at the camera, the logo tile slams in and gets bitten,
+  "College Bites" punches in, the night wipes away and the tile docks into
+  the page's logo. Rare Golden Run (1 in 15) and Midnight Cravings (10 PM–
+  5 AM) variants. Reduced motion: a plain logo fade; never on admin/auth/
+  legal pages or a background tab; slow images = no splash; any error ends
+  it; CSS hides it after 9 s whatever happens.
 
 ### Photos
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact

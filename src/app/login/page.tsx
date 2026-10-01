@@ -52,6 +52,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           <div className="flex items-end gap-3.5">
             <BrandLogo
               preload
+              splashTarget
               className="login-rise -mt-9 size-18 shrink-0 rounded-[1.4rem] shadow-raised ring-4 ring-card"
             />
             <div className="login-rise min-w-0 pb-1" style={{ "--rise-delay": "0.38s" } as CSSProperties}>

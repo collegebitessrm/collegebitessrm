@@ -78,6 +78,12 @@ const checks = [
   ['"Rate your order" pill: dusk on gold', 'hero-foreground', 1, [T('gold')], 4.5],
   ['campus-pass stat label (hero text on its /10 tile over magenta)', 'hero-foreground', 1, [T('hero-c'), T('hero-foreground', 0.1)], 4.5],
   ['campus-pass initials / rank pill (coral on dusk)', 'hero', 1, [T('hero-foreground')], 4.5],
+  // Startup splash: the night is the palette's ink; "College" in hero-a,
+  // "Bites" in hero-b → hero-c (display sizes, 3:1), the sticker ink on hero-a.
+  ['splash "College" (hero-a on the ink night, large)', 'hero-a', 1, [T('hero-foreground')], 3.0],
+  ['splash "Bites" start (hero-b on the ink night, large)', 'hero-b', 1, [T('hero-foreground')], 3.0],
+  ['splash "Bites" end (hero-c on the ink night, large)', 'hero-c', 1, [T('hero-foreground')], 3.0],
+  ['splash sticker (ink on hero-a)', 'hero-foreground', 1, [T('hero-a')], 4.5],
   ['bottom-bar tab label (muted on card/85 over the ground)', 'muted-foreground', 1, [T('background'), T('card', 0.85)], 4.5],
   // Accent text
   ['aqua text (cuisines) on card', 'aqua', 1, [T('card')], 4.5],
