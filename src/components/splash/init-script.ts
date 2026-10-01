@@ -11,7 +11,7 @@ const runtime: SplashRuntime = {
   sessionKey: SPLASH.sessionKey,
   disableKey: SPLASH.disableKey,
   skipPaths: SPLASH.skipPaths,
-  image: "/brand/mark.webp",
+  image: "/brand/mark-v2.webp",
 };
 
 /**

@@ -29,7 +29,7 @@ export default async function OpengraphImage() {
   // Literal paths (not a helper taking a path) so the build only bundles
   // these files. Renaming one of these photos means updating it here.
   const [markData, biryaniData, noodlesData, chilliData] = await Promise.all([
-    readFile(join(process.cwd(), "public/brand/mark.png")),
+    readFile(join(process.cwd(), "public/brand/mark-v2.png")),
     readFile(join(process.cwd(), "public/photos/dishes/mixed-chicken-biryani.jpg")),
     readFile(join(process.cwd(), "public/photos/dishes/chicken-noodles.jpg")),
     readFile(join(process.cwd(), "public/photos/dishes/chilli-chicken.jpg")),

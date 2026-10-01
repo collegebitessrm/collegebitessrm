@@ -738,21 +738,30 @@ silently re-enables the button.
   scroll-snap. Dish photos mount one slide ahead, only once the card has
   been seen. The card's "24 dishes · from ₹60" line comes from
   `getRestaurantMenuStats()` (`src/lib/data/restaurants.ts`).
-- **Logo** — the client's logo, two files in `public/`: `logo-v1-2.png`
-  (transparent; everything is generated from it) and `logo-v1-1.png`
-  (same art on its own background, reference only). `node
-  scripts/build-brand-assets.mjs` regenerates everything below from v1-2 —
-  rerun it whenever the logo changes:
-  - `public/brand/mark.webp` / `mark.png` — the logo's navy rounded-square
-    icon tile only (scooter, campus, grad cap), found by its navy fill. The
+- **Logo** — the client's logo. Since 1 Oct 2026 it's **v2**,
+  `public/logo-v2-1.png` (transparent; everything is generated from it): the
+  same art refreshed in a hybrid of the four themes — indigo `#141049` tile,
+  cyan scooter, turmeric food box, coral clouds, a crescent moon, "BITES"
+  in a cyan → violet → magenta brush. The original `logo-v1-1.png` /
+  `logo-v1-2.png` stay in `public/` for reference only. `node
+  scripts/build-brand-assets.mjs` regenerates everything below from v2-1 —
+  rerun it whenever the logo changes, and bump its `MARK` name (`mark-v3`, …)
+  so no image is overwritten in place (the cache rule under photos); the
+  name is a literal in five files the script lists:
+  - `public/brand/mark-v2.webp` / `mark-v2.png` — the logo's indigo
+    rounded-square icon tile only (scooter, campus, grad cap), found by its
+    fill (`isTileFill`, which matches v1's navy too). v2's tile is slightly
+    taller than wide (636×670), so it's padded to a square — invisible, the
+    pad takes the tile colour wherever it's shown. The
     wordmark and tagline are never used as an image: they're unreadable at
     icon sizes and the transparent file's wordmark carries a coloured glow
     from background removal.
-  - `src/lib/brand-mark.ts` — `MARK_NAVY`, the tile's navy sampled from the
-    art. `BrandLogo` (`src/components/brand-logo.tsx`) shows the tile on
-    that navy, so callers size/round it freely and it reads as one tile in
-    both themes.
-  - App icons: `src/lib/app-icon.tsx` puts the tile on `MARK_NAVY` for
+  - `src/lib/brand-mark.ts` — `MARK_TILE` (was `MARK_NAVY`), the tile's
+    colour sampled from the art. `BrandLogo` (`src/components/brand-logo.tsx`)
+    shows the tile on it, so callers size/round it freely and it reads as
+    one tile in both themes (dark mode adds a 1px light rim and a neon glow
+    so it doesn't sink into the dark grounds).
+  - App icons: `src/lib/app-icon.tsx` puts the tile on `MARK_TILE` for
     `apple-icon.tsx` and `icons/icon-192|512|512-maskable` (maskable at
     `markScale: 0.8` to stay inside the ~80% safe circle). The manifest's
     `background_color` is Electric Sunrise's cream `#FFF8F0` (the default palette).
@@ -765,7 +774,7 @@ silently re-enables the button.
   `/privacy`, `/terms` or a tab opened in the background:
   - A short logo fade-in on the palette's ground with its two splash glows
     (`--splash-glow-a/-b`; the theme-init script has set `.dark` and
-    `data-palette` by then): the navy tile rises in and
+    `data-palette` by then): the indigo tile rises in and
     settles, "College Bites" (Poppins) and the tagline follow, a hold,
     then the screen fades to the app. Timings in `config.ts`.
   - `app-splash.tsx` is plain server markup (first in `<body>`, styles in

@@ -354,11 +354,15 @@ light: things should look lit, not flat.
   and dark.
 
 ### Logo, icons, splash
-- Source `public/logo-v1-2.png` (transparent). `node
-  scripts/build-brand-assets.mjs` cuts the navy icon tile (found by its
-  navy fill, stopping at the gap above the wordmark) into
-  `public/brand/mark.webp|png`, the favicon and `MARK_NAVY`.
-- App icons and `BrandLogo` show the tile on its own navy. The wordmark is
+- Source `public/logo-v2-1.png` (transparent; logo v2 since 1 Oct 2026 —
+  the same art in a hybrid of the four themes: indigo tile, cyan scooter,
+  turmeric box, coral clouds, a moon; v1 kept for reference). `node
+  scripts/build-brand-assets.mjs` cuts the indigo icon tile (found by its
+  fill, stopping at the gap above the wordmark) into
+  `public/brand/mark-v2.webp|png`, the favicon and `MARK_TILE`. A new logo
+  gets a new mark name (`mark-v3`, …), never an overwrite.
+- App icons and `BrandLogo` show the tile on its own indigo (with a light
+  rim and glow in dark mode). The wordmark is
   never an image (glow fringe from background removal; unreadable small) —
   it's set in the app's fonts on the splash and share card.
 - Splash: ~1.6 s, once per session: the tile rises in, "College Bites" and

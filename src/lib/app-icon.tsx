@@ -1,20 +1,20 @@
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { MARK_NAVY } from "@/lib/brand-mark";
+import { MARK_TILE } from "@/lib/brand-mark";
 
 // Doesn't depend on request data, so read once at module scope (same
 // pattern Next.js recommends for custom ImageResponse fonts). The mark is
-// the logo's navy icon tile, cut from the transparent logo by
+// the logo's indigo icon tile, cut from the transparent logo by
 // scripts/build-brand-assets.mjs — the full logo's wordmark and tagline
 // are unreadable at icon sizes.
-const markData = await readFile(join(process.cwd(), "public/brand/mark.png"));
+const markData = await readFile(join(process.cwd(), "public/brand/mark-v2.png"));
 const MARK_SRC = `data:image/png;base64,${markData.toString("base64")}`;
 
 /**
- * Shared College Bites app-icon: the navy icon tile on its own navy (the
+ * Shared College Bites app-icon: the indigo icon tile on its own indigo (the
  * tile's corners are transparent, so the background fills them and the
- * icon reads as one navy square) — used by every generated icon route
+ * icon reads as one indigo square) — used by every generated icon route
  * (app/icons/*, app/apple-icon.tsx) so the source image only ever needs
  * updating in one place.
  */
@@ -46,7 +46,7 @@ export function appIconResponse({
           justifyContent: "center",
           overflow: "hidden",
           borderRadius,
-          background: MARK_NAVY,
+          background: MARK_TILE,
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}

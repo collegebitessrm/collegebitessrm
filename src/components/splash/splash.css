@@ -4,7 +4,7 @@
  * data-splash on <html> — the overlay stays hidden unless this load plays
  * it. The chosen palette's ground with its two splash glows, light or dark
  * (the theme-init script has set .dark and data-palette by then), with the
- * logo's navy tile.
+ * logo's indigo tile.
  */
 .app-splash {
   display: none;

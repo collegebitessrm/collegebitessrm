@@ -1,27 +1,36 @@
 // Regenerates every brand asset from the client's logo in public/:
 //
-//   logo-v1-2.png  transparent (1254×1254) — the source for everything
-//   logo-v1-1.png  the same art on its own background — reference only
+//   logo-v2-1.png  transparent (1254×1254) — the source for everything
+//                  (v2, 1 Oct 2026: the hybrid-palette refresh — indigo
+//                  tile, cyan scooter, turmeric box, coral clouds, moon)
+//   logo-v1-*.png  the original logo, kept for reference only
 //
-// The "mark" is the logo's navy rounded-square icon (scooter, campus,
+// The "mark" is the logo's indigo rounded-square icon (scooter, campus,
 // grad cap) — the wordmark and tagline are unreadable at icon sizes, and
 // the transparent file's wordmark carries a coloured glow from background
 // removal, so only the tile is used as an image. The splash and the share
 // card set "College Bites" and the tagline in the app's own fonts.
 //
 // Outputs:
-//   public/brand/mark.webp   the tile, 512 px, for in-app logo spots (BrandLogo)
-//   public/brand/mark.png    the tile, 640 px, for the generated app icons
+//   public/brand/mark-v2.webp  the tile, 512 px, for in-app logo spots (BrandLogo, splash)
+//   public/brand/mark-v2.png   the tile, 640 px, for the app icons and the share card
 //   src/app/favicon.ico      16/32/48/64 RGBA PNG frames (Next's .ico
 //                            decoder rejects non-RGBA frames)
-//   src/lib/brand-mark.ts    the tile's navy, sampled (icon backgrounds)
+//   src/lib/brand-mark.ts    the tile's colour, sampled (icon backgrounds)
 //
 // Run after changing the logo:  node scripts/build-brand-assets.mjs
+//
+// A new logo gets a new MARK name (mark-v3, …): an outside cache once kept
+// serving a replaced image by its old URL, so images are never overwritten
+// in place. The name is a literal in five files (the PNG reads must stay
+// literal so the build bundles them): brand-logo.tsx, splash/app-splash.tsx,
+// splash/init-script.ts, lib/app-icon.tsx, app/opengraph-image.tsx.
 
 import sharp from "sharp";
 import { mkdir, writeFile } from "node:fs/promises";
 
-const SRC = "public/logo-v1-2.png";
+const SRC = "public/logo-v2-1.png";
+const MARK = "mark-v2";
 const OUT = "public/brand";
 
 const { data, info } = await sharp(SRC).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -31,16 +40,17 @@ const px = (x, y) => {
   return [data[i], data[i + 1], data[i + 2], data[i + 3]];
 };
 
-// The tile's bounds: rows and columns where navy fill (solid, dark blue
-// pixels) covers a real stretch — robust against the wordmark below and
-// the faint glow specks background removal left around the logo.
+// The tile's bounds: rows and columns where the tile's fill (solid, dark
+// blue-indigo pixels — v2's #151049; v1's navy #012141 matches too) covers
+// a real stretch — robust against the wordmark below and the faint glow
+// specks background removal left around the logo.
 const TILE_BOTTOM_LIMIT = Math.round(info.height * 0.66);
-const isNavy = ([r, g, b, a]) => a > 200 && r < 40 && g < 70 && b > 40 && b < 110;
+const isTileFill = ([r, g, b, a]) => a > 200 && r < 45 && g < 70 && b > 40 && b < 115;
 const rows = new Array(info.height).fill(0);
 const cols = new Array(W).fill(0);
 for (let y = 0; y < TILE_BOTTOM_LIMIT; y++) {
   for (let x = 0; x < W; x++) {
-    if (isNavy(px(x, y))) {
+    if (isTileFill(px(x, y))) {
       rows[y]++;
       cols[x]++;
     }
@@ -49,7 +59,7 @@ for (let y = 0; y < TILE_BOTTOM_LIMIT; y++) {
 const MIN_RUN = 60; // a tile edge row/column has far more navy than a speck
 const minY = rows.findIndex((n) => n >= MIN_RUN);
 // The tile ends at the first near-empty row below it (the gap above the
-// navy "COLLEGE" letters of the wordmark).
+// indigo "COLLEGE" letters of the wordmark).
 let maxY = minY;
 while (maxY + 1 < rows.length && rows[maxY + 1] >= MIN_RUN) maxY++;
 const minX = cols.findIndex((n) => n >= MIN_RUN);
@@ -58,10 +68,10 @@ const side = Math.max(maxX - minX + 1, maxY - minY + 1);
 const box = { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
 console.log("tile box", box, "square side", side);
 
-// Sample the tile's navy just inside its left edge, halfway down.
+// Sample the tile's colour just inside its left edge, a third of the way down.
 const sample = px(minX + Math.round(box.width * 0.04), minY + Math.round(box.height * 0.3));
 const hex = "#" + sample.slice(0, 3).map((v) => v.toString(16).padStart(2, "0")).join("");
-console.log("tile navy", hex);
+console.log("tile colour", hex);
 
 const tile = () =>
   sharp(SRC)
@@ -69,14 +79,14 @@ const tile = () =>
     .resize(side, side, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } });
 
 await mkdir(OUT, { recursive: true });
-await tile().resize(512).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/mark.webp`);
-await tile().resize(640).png({ compressionLevel: 9 }).toFile(`${OUT}/mark.png`);
+await tile().resize(512).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/${MARK}.webp`);
+await tile().resize(640).png({ compressionLevel: 9 }).toFile(`${OUT}/${MARK}.png`);
 
 await writeFile(
   "src/lib/brand-mark.ts",
   `// Generated by scripts/build-brand-assets.mjs — don't edit by hand.
-/** The navy of the logo's icon tile (public/brand/mark.*), sampled from the art. */
-export const MARK_NAVY = "${hex}";
+/** The colour of the logo's icon tile (public/brand/${MARK}.*), sampled from the art. */
+export const MARK_TILE = "${hex}";
 `,
 );
 
