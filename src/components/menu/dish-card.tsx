@@ -219,7 +219,7 @@ export function DishCard({
         )}
 
         <div className="absolute top-2 right-2">
-          <HeartButton dishId={dish.id} dishName={dish.name} initialLiked={liked} />
+          <HeartButton dishId={dish.id} dishName={displayName} initialLiked={liked} />
         </div>
 
         {soldOut && (
