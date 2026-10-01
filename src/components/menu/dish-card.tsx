@@ -96,7 +96,7 @@ export function DishCard({
       type="button"
       onClick={onChoosePortion}
       aria-haspopup="dialog"
-      aria-label={inCart ? `Change portions of ${displayName}, ${quantity} in cart` : `Choose a portion of ${displayName}`}
+      aria-label={inCart ? `Change ${displayName}, ${quantity} in cart` : `Choose ${displayName}: ${portions!.map((p) => p.label).join(" or ")}`}
       className={cn(
         "surface-primary flex h-11 items-center justify-center gap-1 rounded-full bg-primary font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80",
         inCart ? "glow-neon min-w-11 pr-2.5 pl-3.5" : "w-11 shadow-raised",

@@ -8,13 +8,15 @@ import { MAX_QUANTITY } from "@/lib/cart/limits";
 import { getDishPhoto } from "@/lib/data/dish-photos";
 import type { Dish } from "@/lib/data/types";
 import { formatRupees } from "@/lib/format";
+import { pickerPrompt } from "@/lib/menu/portions";
 import { cn } from "@/lib/utils";
 
 export type PortionPick = { base: string; portions: { label: string; dish: Dish }[] };
 
 /**
- * "Choose a portion" — the bottom sheet a portion-mode DishCard opens
- * (e.g. Chicken Dum Biryani: Single / Full). One row per portion with its
+ * "Choose a portion" / "Choose a style" — the bottom sheet a portion-mode
+ * DishCard opens (Chicken Dum Biryani: Single / Full; Veg Fried Rice:
+ * Regular / White). One row per portion with its
  * price and its own stepper, so a student can take a Single and a Full in
  * one go; each portion is still its own dish in the cart. Sold-out
  * portions show but can't be added.
@@ -55,7 +57,9 @@ export function PortionSheet({
                   <VegMark isVeg={first.is_veg} className="mr-1.5 inline-flex size-4 -translate-y-px align-middle" />
                   {pick.base}
                 </SheetTitle>
-                <SheetDescription className="mt-0.5 text-sm">Choose a portion</SheetDescription>
+                <SheetDescription className="mt-0.5 text-sm">
+                  {pickerPrompt(pick.portions.map((p) => p.label))}
+                </SheetDescription>
               </div>
               <button
                 type="button"

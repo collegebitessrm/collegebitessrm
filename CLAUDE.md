@@ -426,7 +426,9 @@ author.
   and a Back to a cached menu still shows the right heart; Profile and Home
   are dynamic and read fresh. The top-left tag is capped short of the
   heart. **Portions** (`src/lib/menu/portions.ts`): dishes named
-  "<name> (Single)" / "<name> (Full)" (Biryani Nation) are grouped by
+  "<name> (Single)" / "<name> (Full)" (Biryani Nation), and "<name>" +
+  "<name> (White)" (Local Home Kitchen: the plain dish is "Regular", the
+  sheet asks "Choose a style" — `pickerPrompt()`), are grouped by
   `groupPortions()` into ONE card — base name, both prices ("Single ₹220 ·
   Full ₹310"), one photo, one heart (the first portion's) — whose "+" (or
   the in-cart count with a chevron) opens `PortionSheet`

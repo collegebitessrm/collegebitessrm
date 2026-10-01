@@ -1,17 +1,23 @@
 import type { Dish } from "@/lib/data/types";
 
-// Some menus list each size as its own dish: "Chicken Dum Biryani (Single)"
-// and "Chicken Dum Biryani (Full)" (Biryani Nation). The menu groups those
-// into ONE card with a portion picker, so a 37-dish menu doesn't read as
-// two near-identical cards per biryani. Nothing changes underneath: each
-// portion is still its own dish (id, price, cart line, order item).
+// Some menus list each option of a dish as its own dish, and the menu
+// groups them into ONE card with a picker, so a long menu doesn't read as
+// near-identical cards side by side. Nothing changes underneath: each
+// option is still its own dish (id, price, cart line, order item).
+//
+//   Sizes   "Chicken Dum Biryani (Single)" + "Chicken Dum Biryani (Full)"
+//           (Biryani Nation) → Single / Full
+//   Styles  "Veg Fried Rice" + "Veg Fried Rice (White)" (Local Home
+//           Kitchen) → Regular / White — the plain dish is the "Regular".
 
-const PORTION = /^(.*\S)\s+\((Single|Full)\)$/;
-const ORDER = ["Single", "Full"];
+const TAGGED = /^(.*\S)\s+\((Single|Full|White)\)$/;
+const ORDER = ["Single", "Full", "Regular", "White"];
+/** Tags whose untagged twin is the dish's other option. */
+const PAIRS_WITH_PLAIN: Record<string, string> = { White: "Regular" };
 
 /** "Chicken Dum Biryani (Full)" → { base: "Chicken Dum Biryani", portion: "Full" }; others → portion null. */
 export function splitPortion(name: string): { base: string; portion: string | null } {
-  const m = name.match(PORTION);
+  const m = name.match(TAGGED);
   return m ? { base: m[1], portion: m[2] } : { base: name, portion: null };
 }
 
@@ -19,33 +25,48 @@ export type MenuItem =
   | { kind: "dish"; dish: Dish }
   | { kind: "portions"; base: string; portions: { label: string; dish: Dish }[] };
 
+/** What the picker asks: sizes are portions, Regular / White is a style. */
+export function pickerPrompt(labels: string[]): string {
+  return labels.includes("White") ? "Choose a style" : "Choose a portion";
+}
+
 /**
- * A section's dishes as menu cards: portions of the same dish become one
- * "portions" item (at the first one's place, Single before Full); a lone
- * "(Single)" with no sibling stays a plain dish.
+ * A section's dishes as menu cards: a dish's options become one "portions"
+ * item at the first one's place (Single before Full, Regular before
+ * White). A tag with no sibling stays a plain dish.
  */
 export function groupPortions(dishes: Dish[]): MenuItem[] {
+  const byName = new Map(dishes.map((d) => [d.name, d]));
   const groups = new Map<string, { label: string; dish: Dish }[]>();
   for (const d of dishes) {
     const { base, portion } = splitPortion(d.name);
     if (!portion) continue;
-    groups.set(base, [...(groups.get(base) ?? []), { label: portion, dish: d }]);
+    const list = groups.get(base) ?? [];
+    list.push({ label: portion, dish: d });
+    const plainLabel = PAIRS_WITH_PLAIN[portion];
+    const plain = plainLabel ? byName.get(base) : undefined;
+    if (plain && !list.some((x) => x.dish.id === plain.id)) list.push({ label: plainLabel, dish: plain });
+    groups.set(base, list);
   }
+  const groupOf = (d: Dish) => {
+    const { base, portion } = splitPortion(d.name);
+    const g = groups.get(portion ? base : d.name);
+    return g && g.length > 1 && g.some((x) => x.dish.id === d.id) ? { base: portion ? base : d.name, g } : null;
+  };
   const items: MenuItem[] = [];
   const placed = new Set<string>();
   for (const d of dishes) {
-    const { base, portion } = splitPortion(d.name);
-    const group = portion ? groups.get(base) : undefined;
-    if (!group || group.length < 2) {
+    const found = groupOf(d);
+    if (!found) {
       items.push({ kind: "dish", dish: d });
       continue;
     }
-    if (placed.has(base)) continue;
-    placed.add(base);
+    if (placed.has(found.base)) continue;
+    placed.add(found.base);
     items.push({
       kind: "portions",
-      base,
-      portions: [...group].sort((a, b) => ORDER.indexOf(a.label) - ORDER.indexOf(b.label)),
+      base: found.base,
+      portions: [...found.g].sort((a, b) => ORDER.indexOf(a.label) - ORDER.indexOf(b.label)),
     });
   }
   return items;
