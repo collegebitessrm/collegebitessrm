@@ -490,7 +490,8 @@ author.
   skipped: the menu has a `loading.tsx`, so the pair rarely forms.
 - **Backend**: Supabase (Postgres + Auth + Row Level Security)
 - **Auth**: "Continue with Google" via Supabase Auth (Google OAuth
-  provider). No email/password, no OTP. On first login (no matching
+  provider). Sign-out is `scope: "local"` (this device only; the default
+  "global" logged students out everywhere). No email/password, no OTP. On first login (no matching
   `public.users` row yet), the app collects full name + mobile number
   (and offers the theme picker, saved on the device only) before
   continuing; returning users skip straight in.
@@ -834,6 +835,15 @@ Chicken Fry ₹230, "Chicken Dum Biryani (Half)" ₹170 with note "7x9 cover"
 (the portion picker knows Half: Half / Single / Full), and a Fried Rice
 section — Paneer Fried Rice ₹140, Kaju Fried Rice ₹150; 40 dishes now,
 153 in all).
+[`supabase/migrations/20261001040000_rls_performance.sql`](supabase/migrations/20261001040000_rls_performance.sql)
+(Supabase performance advisor: every `auth.uid()` / `is_admin()` in RLS
+wrapped as `(select …)` — evaluated once per query, not per row; each
+table's admin + own-row policies for the same action merged into one (their
+exact OR — e.g. "Users read own orders; admins read all"); policies scoped
+`to authenticated`; indexes on `dishes.category_id`,
+`milestone_rewards.marked_by`, `order_items.dish_id`, `order_reviews.user_id`.
+Access unchanged — verified with rolled-back student / admin / signed-out
+tests. New policies should follow the same `(select auth.uid())` pattern.)
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:
@@ -1158,14 +1168,16 @@ Parked by the developer — do these only when asked.
   `dish-photos.ts`, no database change.
 
 **Optional, later**
-- **Google Search Console** (`GOOGLE_SITE_VERIFICATION`, see
-  `docs/BLUEPRINT.md`).
-- **Supabase performance suggestions** — wrap `auth.uid()` as
+- **Google Search Console** — set up 1 Oct 2026: verified by the HTML tag
+  (`GOOGLE_SITE_VERIFICATION` env var in Vercel), `sitemap.xml` submitted
+  (it showed "Couldn't fetch" at first, the usual state before Google's
+  first read — recheck after a few days).
+- ~~Supabase performance suggestions~~ — done 1 Oct 2026
+  (`20261001040000_rls_performance.sql`). Was: wrap `auth.uid()` as
   `(select auth.uid())` in policies, add indexes on a few foreign keys;
   only matters if order volume grows, and goes through the schema hard
   rule.
-- **Automated WhatsApp confirmation** — see below; needs the client's
-  agreement first.
+- ~~Automated WhatsApp confirmation~~ — dropped by decision (1 Oct 2026).
 
 ## Ideas not started
 

@@ -220,6 +220,7 @@ SQL editor (so it's missing from the database's migration history).
 | 25 | `20261001000000_taste_profiles` | Taste profile + avatar per student, own-row RLS (history name `taste_profiles`) |
 | 26 | `20261001010000_favorite_dishes` | Hearted dishes per student, own-row RLS |
 | 27 | `20261001020000_biryani_nation_prices_and_new_dishes` | Data: Biryani Nation price rise, Starters + Chinese sections (37 dishes; 150 in all) |
+| 29 | `20261001040000_rls_performance` | RLS rules evaluated once per query, admin/own policies merged, 4 FK indexes (access unchanged) |
 | 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
@@ -447,7 +448,5 @@ Never commit a secret; never paste one into chat.
 - **Publish the Google sign-in app** (out of "Testing") before real
   students sign in, if not done already.
   sends real ones.
-- Supabase performance suggestions (wrap `auth.uid()` in `select` inside
-  policies, a few foreign-key indexes) — worth doing if order volume grows;
-  any change goes through the schema hard rule.
-- Automated WhatsApp confirmation — an idea only (see `CLAUDE.md`).
+- ~~Supabase performance suggestions~~ — done (migration 29).
+- Google Search Console: verified; recheck the sitemap status after a few days.
