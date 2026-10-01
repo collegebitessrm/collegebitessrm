@@ -445,8 +445,6 @@ Never commit a secret; never paste one into chat.
 
 ## 12. Still open
 
-- **Publish the Google sign-in app** (out of "Testing") before real
-  students sign in, if not done already.
-  sends real ones.
+- Google sign-in app: published (out of "Testing") on 1 Oct 2026.
 - ~~Supabase performance suggestions~~ — done (migration 29).
 - Google Search Console: verified; recheck the sitemap status after a few days.
