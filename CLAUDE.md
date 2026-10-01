@@ -748,7 +748,7 @@ silently re-enables the button.
   rerun it whenever the logo changes, and bump its `MARK` name (`mark-v3`, …)
   so no image is overwritten in place (the cache rule under photos); the
   name is a literal in five files the script lists:
-  - `public/brand/mark-v2.webp` / `mark-v2.png` — the logo's indigo
+  - `public/brand/mark-v2-1.webp` / `mark-v2-1.png` — the logo's indigo
     rounded-square icon tile only (scooter, campus, grad cap), found by its
     fill (`isTileFill`, which matches v1's navy too). v2's tile is slightly
     taller than wide (636×670), so it's padded to a square — invisible, the

@@ -8,7 +8,7 @@ import { MARK_TILE } from "@/lib/brand-mark";
 // the logo's indigo icon tile, cut from the transparent logo by
 // scripts/build-brand-assets.mjs — the full logo's wordmark and tagline
 // are unreadable at icon sizes.
-const markData = await readFile(join(process.cwd(), "public/brand/mark-v2.png"));
+const markData = await readFile(join(process.cwd(), "public/brand/mark-v2-1.png"));
 const MARK_SRC = `data:image/png;base64,${markData.toString("base64")}`;
 
 /**

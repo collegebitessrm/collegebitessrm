@@ -22,7 +22,7 @@ export function BrandLogo({ className, preload }: { className?: string; preload?
       style={{ backgroundColor: MARK_TILE }}
     >
       <Image
-        src="/brand/mark-v2.webp"
+        src="/brand/mark-v2-1.webp"
         alt="College Bites: Crave. Click. Campus."
         width={512}
         height={512}

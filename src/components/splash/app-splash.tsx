@@ -19,7 +19,7 @@ export function AppSplash() {
       <div className="sp-stage" data-sp="stage">
         <div className="sp-mark" data-sp="mark" style={{ backgroundColor: MARK_TILE }}>
           {/* eslint-disable-next-line @next/next/no-img-element -- raw <img> so the inline engine can drive it before hydration */}
-          <img src="/brand/mark-v2.webp" alt="" width={512} height={512} loading="lazy" draggable={false} />
+          <img src="/brand/mark-v2-1.webp" alt="" width={512} height={512} loading="lazy" draggable={false} />
         </div>
         <p className="sp-word font-heading" data-sp="word">
           College Bites

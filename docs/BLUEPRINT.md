@@ -359,7 +359,7 @@ light: things should look lit, not flat.
   turmeric box, coral clouds, a moon; v1 kept for reference). `node
   scripts/build-brand-assets.mjs` cuts the indigo icon tile (found by its
   fill, stopping at the gap above the wordmark) into
-  `public/brand/mark-v2.webp|png`, the favicon and `MARK_TILE`. A new logo
+  `public/brand/mark-v2-1.webp|png`, the favicon and `MARK_TILE`. A new logo
   gets a new mark name (`mark-v3`, …), never an overwrite.
 - App icons and `BrandLogo` show the tile on its own indigo (with a light
   rim and glow in dark mode). The wordmark is
@@ -418,6 +418,7 @@ the admin taps "Tap to arm sound" each visit.
 | First Vercel deploy "Blocked" | Commit authored by a personal git identity | Hobby only builds the owner's commits — author commits as collegebitessrm |
 | Security revoke didn't take | The function's access came through PUBLIC, not `anon` | Revoke from `public, anon`, grant to `authenticated` |
 | Several migrations sent at once ran out of order | Parallel tool calls | Apply migrations strictly one at a time |
+| Logo v2's mark came out 512×539, not square | sharp keeps only the LAST `resize()` in a pipeline, so "pad to square, then scale" dropped the padding (v1's tile was nearly square, so it never showed) | Pad to a square buffer first, then scale that; a re-cut image gets a new name (`mark-v2-1`) |
 | Logo tile bounds wrong | Glow specks and the navy wordmark counted as "tile" | Detect by rows/columns with a real run of navy; stop at the first gap |
 | Navy read as black, yellow too loud | Brief's exact values on phone screens | Lift navy to `#173F6B`, soften yellow to `#F6DC8A`, more pastel surfaces (palette since replaced by the 30 Sep redesign) |
 | Pastel mood washes too strong for the heading | Alpha too high | Contrast audit now checks the heading over each mood |

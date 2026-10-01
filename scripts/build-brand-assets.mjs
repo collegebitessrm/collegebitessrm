@@ -12,8 +12,8 @@
 // card set "College Bites" and the tagline in the app's own fonts.
 //
 // Outputs:
-//   public/brand/mark-v2.webp  the tile, 512 px, for in-app logo spots (BrandLogo, splash)
-//   public/brand/mark-v2.png   the tile, 640 px, for the app icons and the share card
+//   public/brand/mark-v2-1.webp  the tile, 512 px, for in-app logo spots (BrandLogo, splash)
+//   public/brand/mark-v2-1.png   the tile, 640 px, for the app icons and the share card
 //   src/app/favicon.ico      16/32/48/64 RGBA PNG frames (Next's .ico
 //                            decoder rejects non-RGBA frames)
 //   src/lib/brand-mark.ts    the tile's colour, sampled (icon backgrounds)
@@ -30,7 +30,7 @@ import sharp from "sharp";
 import { mkdir, writeFile } from "node:fs/promises";
 
 const SRC = "public/logo-v2-1.png";
-const MARK = "mark-v2";
+const MARK = "mark-v2-1";
 const OUT = "public/brand";
 
 const { data, info } = await sharp(SRC).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -73,14 +73,19 @@ const sample = px(minX + Math.round(box.width * 0.04), minY + Math.round(box.hei
 const hex = "#" + sample.slice(0, 3).map((v) => v.toString(16).padStart(2, "0")).join("");
 console.log("tile colour", hex);
 
-const tile = () =>
-  sharp(SRC)
-    .extract(box)
-    .resize(side, side, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } });
+// Padded to a square first, as its own buffer: sharp keeps only the LAST
+// resize() in a pipeline, so chaining "pad to square" and "scale down"
+// silently drops the padding (v2's tile is 636×670, not square).
+const squareTile = await sharp(SRC)
+  .extract(box)
+  .resize(side, side, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
+  .png()
+  .toBuffer();
+const tile = () => sharp(squareTile);
 
 await mkdir(OUT, { recursive: true });
-await tile().resize(512).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/${MARK}.webp`);
-await tile().resize(640).png({ compressionLevel: 9 }).toFile(`${OUT}/${MARK}.png`);
+await tile().resize(512, 512).webp({ quality: 90, alphaQuality: 100, effort: 6 }).toFile(`${OUT}/${MARK}.webp`);
+await tile().resize(640, 640).png({ compressionLevel: 9 }).toFile(`${OUT}/${MARK}.png`);
 
 await writeFile(
   "src/lib/brand-mark.ts",
@@ -91,7 +96,7 @@ export const MARK_TILE = "${hex}";
 );
 
 // ---- favicon.ico: the tile itself (it already has rounded corners) ----------
-const tilePng = await tile().png().toBuffer();
+const tilePng = squareTile;
 async function faviconFrame(size) {
   return sharp(tilePng).resize(size, size).png().toBuffer();
 }
