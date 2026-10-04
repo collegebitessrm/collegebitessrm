@@ -83,13 +83,15 @@ developer.
 ### Offers (discounts)
 
 Tap **Offers** on the admin page (next to **Sold out**; it shows "2 on"
-while offers are running). The Offers page has three switches:
+while offers are running). **Every offer is for Clg Bites Biryani Nation
+orders only** — other restaurants' carts show them greyed out. The Offers
+page has three switches:
 
-- **10% off** — 10% off the whole order, any restaurant.
-- **20% off** — 20% off the whole order, any restaurant.
-- **Buy 3 Full biryanis, get 1 Single free** — Biryani Nation only. For
-  every 3 Full biryanis in one order, the student picks one Single biryani
-  free.
+- **10% off** — 10% off the whole Biryani Nation order.
+- **20% off** — 20% off the whole Biryani Nation order.
+- **Buy 3 Full biryanis, get 1 Single free** — for every 3 Full biryanis
+  in one order, the student picks one Single biryani free. They pay the
+  full price of the Full biryanis; the Single costs nothing.
 
 Turn on any you like; they take effect straight away. Students see an
 **Apply discount** bar in their cart and pick **one offer per order**.

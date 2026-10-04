@@ -141,7 +141,7 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
     return {
       ok: false,
       error: PLACE_ORDER_ERRORS[key] ?? GENERIC_ERROR,
-      ...(key === "offer_unavailable" && { offerEnded: true }),
+      ...((key === "offer_unavailable" || key === "offer_wrong_restaurant") && { offerEnded: true }),
     };
   }
 
@@ -185,5 +185,6 @@ const PLACE_ORDER_ERRORS: Record<string, string> = {
   too_many_open_orders: "You already have 8 orders on the way. Once one is delivered you can order again.",
   // Discount offers (20261001050000_discount_offers.sql).
   offer_unavailable: "That offer just ended, so it's been removed. Check the new total and place your order again.",
+  offer_wrong_restaurant: "Offers are only on Clg Bites Biryani Nation orders, so it's been removed. Check the total and place your order again.",
   offer_not_eligible: "Your cart doesn't qualify for that many free biryanis. Every 3 Full biryanis get 1 Single free.",
 };

@@ -181,8 +181,8 @@ ordering open (`ordering_paused` if not) → not banned by phone → rate
 limit (5 orders a minute, 8 unfinished, under a per-student lock) → phone
 format `^\+91[6-9][0-9]{9}$` → note ≤ 200 → restaurant on → cart not empty
 → quantities 1–20, no duplicates → every dish belongs to the restaurant
-and is available → the offer (if any) is switched on and the order
-qualifies → insert with prices taken from `dishes`, discount and total
+and is available → the offer (if any) is switched on, the order is from
+Biryani Nation (`offer_wrong_restaurant`) and qualifies → insert with prices taken from `dishes`, discount and total
 computed in the database.
 
 **Triggers:** `prevent_role_self_escalation` (no API changes to `role`;
@@ -226,6 +226,7 @@ SQL editor (so it's missing from the database's migration history).
 | 29 | `20261001040000_rls_performance` | RLS rules evaluated once per query, admin/own policies merged, 4 FK indexes (access unchanged) |
 | 30 | `20261001050000_discount_offers` | Admin offer switches (10% / 20% / buy 3 Full get 1 Single free), order discount columns, free order items, `place_order()` takes an offer (history name `discount_offers`) |
 | 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
+| 31 | `20261004000000_offers_biryani_nation_only` | `place_order()`: every offer only on Biryani Nation orders (`offer_wrong_restaurant`) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied
@@ -265,6 +266,11 @@ migrations are never edited, so they stay.
   one free Single per 3 Fulls, the student picks which). With any on, the
   cart shows "Apply discount"; the student picks one offer per order (no
   stacking), every order while it's on. The database decides the discount.
+  Since 4 Oct 2026 all three are Biryani Nation only (`OFFER_RESTAURANT_ID`
+  in `src/lib/offers.ts`, the same id in `place_order()`). Free Single
+  maths: the cart's item total includes the free Single at menu price and
+  the same amount comes off, so the student pays exactly the paid lines
+  (the cart once subtracted it from the paid lines alone — fixed 4 Oct).
 - **Limits:** 20 per dish, 200-character notes; 5 orders a minute, 8
   unfinished; reviews within 7 days of delivery, once per order, 300
   characters; Trending = last 7 days, top 5; weekly rank shown only in

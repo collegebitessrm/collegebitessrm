@@ -583,10 +583,17 @@ by `setOfferEnabled()` (`src/lib/admin/actions.ts`, admin-checked, RLS the
 boundary). While any is on, the cart sheet shows an **Apply discount** bar
 (`DiscountPicker`, `src/components/cart/discount-picker.tsx`): the live
 offers as a radio group, **one per order, never stacked**, each with what it
-saves. 10% / 20% come off the paid items (rounded to the rupee). The
+saves. **All three are Biryani Nation only** (by decision, 4 Oct 2026:
+`OFFER_RESTAURANT_ID` in `src/lib/offers.ts`; `place_order()` checks the
+same id and raises `offer_wrong_restaurant`, which the cart treats like an
+ended offer) — other restaurants' carts list them greyed out, "Only at Clg
+Bites Biryani Nation". 10% / 20% come off the paid items (rounded to the rupee). The
 biryani offer only works where dishes are named "… Biryani (Full)" /
 "… Biryani (Single)" (Biryani Nation): one free Single per 3 paid Fulls in
-the same order, the student picks which Single(s) — elsewhere, or with too
+the same order, the student picks which Single(s); the cart's item total
+adds the free Single at its menu price and the same amount comes off, so
+the student pays exactly the paid lines (never subtract the free value
+from the paid lines alone — that was the 4 Oct bug) — elsewhere, or with too
 few Fulls, it shows why it's unavailable ("Add 2 more Full biryanis to
 unlock"). No per-student limit: every order while it's on (by decision).
 The rules live in `src/lib/offers.ts` for the cart's numbers and in
@@ -945,6 +952,10 @@ booleans, default off; `orders.discount_offer` (`'pct10' | 'pct20' |
 and `place_order()` with two optional arguments, `p_offer` and
 `p_free_items` — see **Offers** under Admin access and the `orders` notes
 below).
+[`supabase/migrations/20261004000000_offers_biryani_nation_only.sql`](supabase/migrations/20261004000000_offers_biryani_nation_only.sql)
+(named `offers_biryani_nation_only` in the database's migration history;
+`place_order()` re-created with one new check — any offer on an order not
+from Clg Bites Biryani Nation raises `offer_wrong_restaurant`).
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:

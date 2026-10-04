@@ -17,7 +17,7 @@ import { placeOrder } from "@/lib/orders/actions";
 import { formatLocalMobile, formatStoredMobile, normalizeIndianMobile } from "@/lib/phone";
 import { toast } from "@/lib/toast/store";
 import { spiceNote } from "@/lib/taste/options";
-import { discountAmount, freeAllowance, fullsToNextFree, NO_OFFERS, OFFERS, type OfferKey, type OffersState } from "@/lib/offers";
+import { discountAmount, freeAllowance, fullsToNextFree, NO_OFFERS, OFFER_RESTAURANT_ID, OFFER_RESTAURANT_NAME, OFFERS, type OfferKey, type OffersState } from "@/lib/offers";
 import { cn } from "@/lib/utils";
 
 const eyebrow = "text-label text-muted-foreground";
@@ -151,12 +151,12 @@ function CartContents({
     }
   }
   const freeItems = freeChoices.filter((c) => picks[c.id]).map((c) => ({ ...c, quantity: picks[c.id] }));
-  const biryaniHome = offers.freeChoices[0]?.restaurantName;
+  // Every offer is Biryani Nation only (place_order() checks it too).
+  const offerHere = cart.restaurantId === OFFER_RESTAURANT_ID;
   const offerOptions: OfferOption[] = offers.active.map((key) => {
+    if (!offerHere) return { key, saving: 0, blocked: `Only at ${OFFER_RESTAURANT_NAME}` };
     if (key !== "biryani") return { key, saving: discountAmount(key, amount), blocked: null };
-    if (freeChoices.length === 0) {
-      return { key, saving: 0, blocked: biryaniHome ? `Only at ${biryaniHome}` : "Not on this menu" };
-    }
+    if (freeChoices.length === 0) return { key, saving: 0, blocked: "No Single biryanis on sale right now" };
     if (allowance === 0) {
       const more = fullsToNextFree(cart.lines);
       return { key, saving: 0, blocked: `Add ${more} more Full ${more === 1 ? "biryani" : "biryanis"} to unlock` };
@@ -166,7 +166,12 @@ function CartContents({
   const appliedOffer = offerOptions.find((o) => o.key === offer && !o.blocked)?.key ?? null;
   const discount = discountAmount(appliedOffer, amount, freeItems);
   const needsPick = appliedOffer === "biryani" && pickedCount === 0;
-  const toPay = amount - discount;
+  // `amount` is the paid lines only. A free Single is added to the item
+  // total at its menu price and taken off again as the discount, so the
+  // student pays exactly the paid lines — the same sum place_order() makes.
+  const freeValue = appliedOffer === "biryani" ? discount : 0;
+  const itemTotal = amount + freeValue;
+  const toPay = itemTotal - discount;
   // From the taste profile: a one-tap note, offered until it's in the box.
   const suggestedNote = spiceNote(spiceLevel);
   const showSuggestion =
@@ -268,7 +273,7 @@ function CartContents({
           <dl className="space-y-1.5">
             <div className="flex justify-between text-muted-foreground">
               <dt>Item total</dt>
-              <dd className="tabular-nums">{formatRupees(amount)}</dd>
+              <dd className="tabular-nums">{formatRupees(itemTotal)}</dd>
             </div>
             {discount > 0 && (
               <div className="flex justify-between gap-3 font-semibold text-success">

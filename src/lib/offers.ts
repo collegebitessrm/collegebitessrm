@@ -10,14 +10,21 @@ export type OfferKey = "pct10" | "pct20" | "biryani";
 export const OFFER_KEYS: OfferKey[] = ["pct10", "pct20", "biryani"];
 
 export const OFFERS: Record<OfferKey, { title: string; short: string; detail: string }> = {
-  pct10: { title: "10% off", short: "10% off", detail: "On your whole order" },
-  pct20: { title: "20% off", short: "20% off", detail: "On your whole order" },
+  pct10: { title: "10% off", short: "10% off", detail: "On your whole Biryani Nation order" },
+  pct20: { title: "20% off", short: "20% off", detail: "On your whole Biryani Nation order" },
   biryani: {
     title: "Buy 3 Full biryanis, get 1 Single free",
     short: "Free Single biryani",
     detail: "Pick any Single biryani for every 3 Full ones",
   },
 };
+
+/**
+ * Offers are only for Clg Bites Biryani Nation orders (by decision, 4 Oct
+ * 2026). place_order() checks the same id (offer_wrong_restaurant).
+ */
+export const OFFER_RESTAURANT_ID = "4c887e24-4d51-47f3-b8f8-4c97bba87567";
+export const OFFER_RESTAURANT_NAME = "Clg Bites Biryani Nation";
 
 /** How many paid Full biryanis earn one free Single. */
 export const FULLS_PER_FREE = 3;
