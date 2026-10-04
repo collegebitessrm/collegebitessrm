@@ -173,7 +173,11 @@ author.
   status by `RANGE` [floor, ceiling] — pending 6–20% (it can't ride far
   before the restaurant confirms), confirmed / preparing 20–94%, out for
   delivery 50–94% (running late, it waits just short of the gate),
-  delivered 100% → a tick. Before the first tick (and on the server) it
+  delivered 100% → a tick. Not delivered `LATE_AFTER_MINUTES` (75) after
+  placing — any restaurant — the scooter says sorry in a speech bubble
+  (`LATE_LINES`, Gen Z one-liners like "sorry we're late, fr", a new one
+  every 30 s), hung from the scooter and slid left by `--p` of its width so
+  it never leaves the road; on the pass and the Orders card alike. Before the first tick (and on the server) it
   sits at the floor, so hydration matches. The covered stretch is lit, a
   one-line status message is `aria-live`, and Realtime status changes move
   it live (CSS transition on `left` / `width` via a `--p` custom property). The Orders list's in-progress card reuses it

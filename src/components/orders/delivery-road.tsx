@@ -26,6 +26,29 @@ const RANGE: Record<OrderStatus, [number, number]> = {
 /** How often the scooter moves on. */
 const TICK_MS = 15_000;
 
+/**
+ * Not delivered this long after placing (any restaurant) → the scooter
+ * says sorry in a little speech bubble, a new line every LATE_LINE_MS.
+ */
+export const LATE_AFTER_MINUTES = 75;
+const LATE_LINE_MS = 30_000;
+const LATE_LINES = [
+  "sorry we're late, fr",
+  "taking the scenic route, our bad",
+  "almost there, no cap",
+  "late but worth it, promise",
+  "ok this one's on us, sorry",
+  "traffic said no. we said yes",
+];
+
+/** The apology the scooter shows right now, or null while it's on time. */
+function lateLine(status: OrderStatus, createdAt: string, now: number | null): string | null {
+  if (now === null || status === "delivered" || status === "cancelled") return null;
+  const late = now - new Date(createdAt).getTime() - LATE_AFTER_MINUTES * 60_000;
+  if (late < 0) return null;
+  return LATE_LINES[Math.floor(late / LATE_LINE_MS) % LATE_LINES.length];
+}
+
 function progressAt(status: OrderStatus, createdAt: string, minutes: number, now: number | null): number {
   const [floor, ceiling] = RANGE[status];
   // Before the first tick (and on the server) it sits at the floor, so the
@@ -86,6 +109,7 @@ export function DeliveryRoad({
     };
   }, [riding]);
   const p = progressAt(status, createdAt, deliveryMinutes, now);
+  const sorry = lateLine(status, createdAt, now);
   const arrived = status === "delivered";
   const hero = tone === "hero";
 
@@ -94,11 +118,12 @@ export function DeliveryRoad({
       {showMessage && (
         <p className="text-sm font-semibold" aria-live="polite">
           {MESSAGE[status]}
+          {sorry && <span className="sr-only">. Running late, sorry.</span>}
         </p>
       )}
       <div
         aria-hidden="true"
-        className="relative mt-3 h-11"
+        className={cn("relative h-11", sorry ? "mt-12" : "mt-3")}
         style={{ "--p": p } as CSSProperties}
       >
         {/* The road, with dashed lane markings. */}
@@ -133,6 +158,28 @@ export function DeliveryRoad({
             )}
           >
             <MapPin className="size-4.5" />
+          </span>
+        )}
+        {/* Running late: a speech bubble over the scooter. It hangs from
+            the scooter's centre and slides left by --p of its own width, so
+            it never leaves the road near either end; its tail follows. */}
+        {sorry && (
+          <span
+            key={sorry}
+            className={cn(
+              "animate-pop-in absolute bottom-[calc(100%+0.25rem)] left-[calc(1rem+(100%-2rem)*var(--p))] origin-bottom translate-x-[calc(var(--p)*-100%)] rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap",
+              hero
+                ? "bg-hero-foreground text-hero shadow-raised"
+                : "border bg-popover text-popover-foreground shadow-card",
+            )}
+          >
+            {sorry}
+            <span
+              className={cn(
+                "absolute top-full left-[clamp(0.9rem,calc(var(--p)*100%),calc(100%-0.9rem))] size-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45",
+                hero ? "bg-hero-foreground" : "border-r border-b bg-popover",
+              )}
+            />
           </span>
         )}
         {/* The scooter. */}
