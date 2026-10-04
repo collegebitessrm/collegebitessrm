@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/brand-logo";
+import { AboutCredits } from "@/components/home/about-credits";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MessageCircle } from "@/components/icons";
 import { ThemeMotif } from "@/components/theme/theme-motif";
@@ -43,7 +44,7 @@ export function AboutDialog({ children }: { children: ReactNode }) {
           <MessageCircle className="size-5 text-success" />
           Follow our WhatsApp channel
         </a>
-        <p className="mt-4 text-xs text-muted-foreground">~ college bites · srm ap</p>
+        <AboutCredits />
       </DialogContent>
     </Dialog>
   );
