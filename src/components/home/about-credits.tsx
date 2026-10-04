@@ -22,7 +22,9 @@ export function AboutCredits() {
 
   return (
     <div className="mt-5 text-xs text-muted-foreground">
-      <p>Owned by {OWNERS}</p>
+      <p>
+        Owned by <span className="font-semibold text-foreground/80">{OWNERS}</span>
+      </p>
       <p className="mt-1">
         ~ Developed &amp; maintained by{" "}
         <button
