@@ -289,7 +289,12 @@ author.
 - **Overlays and toasts**: dialogs and alert dialogs sit over a dusk
   (`bg-night-900/50`) blurred backdrop, rounded 2rem / 1.75rem with a
   border, alert buttons are pills. The About dialog has a strip of the
-  palette's hero with its motif and the logo rising out of it.
+  palette's hero with its motif and the logo rising out of it, and ends
+  with the credits (`AboutCredits`, `src/components/home/about-credits.tsx`):
+  "Owned by Jaswanth & Harsha", "~ Developed & maintained by Naga Adithya"
+  — the name is plain text (dotted underline on hover only); tapping it
+  folds open a small "Call · Mail" line (+91 90325 63455,
+  nagaadithya999@gmail.com) — then "~ college bites · srm ap".
   `CelebrationOverlay` is the palette's hero (`surface-hero`) with its
   motif rising from the bottom — plus slowly turning light rays
   (`sunburst`) for Vice Dusk only. Toasts are popover pills with a green /
