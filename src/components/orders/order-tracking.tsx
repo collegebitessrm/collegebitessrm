@@ -245,7 +245,6 @@ export function OrderTracking({
                   status={status}
                   restaurantName={initialOrder.restaurantName}
                   createdAt={initialOrder.createdAt}
-                  deliveryMinutes={initialOrder.deliveryMinutes}
                 />
               </div>
             )}

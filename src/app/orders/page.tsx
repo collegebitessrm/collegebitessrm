@@ -168,7 +168,6 @@ function ActiveOrderCard({ order }: { order: OrderSummary }) {
           status={order.status}
           restaurantName={order.restaurantName}
           createdAt={order.createdAt}
-          deliveryMinutes={order.deliveryMinutes}
           tone="card"
           showMessage={false}
         />

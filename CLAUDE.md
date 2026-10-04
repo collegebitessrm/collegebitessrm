@@ -167,18 +167,20 @@ author.
   top, then the token (text-6xl, share button), the delivery window and a
   "Collect at Gate 3 · pay on delivery" pill, and while the order is live
   a footer strip with `DeliveryRoad` (`src/components/orders/delivery-road.tsx`):
-  the road from the kitchen (chef's hat) to Gate 3 (pin) with Phosphor's
-  `Moped` riding along it WITH THE CLOCK: position = time since placing ÷
-  the restaurant's `delivery_minutes`, re-read every 15 s, bounded per
-  status by `RANGE` [floor, ceiling] — pending 6–20% (it can't ride far
-  before the restaurant confirms), confirmed / preparing 20–94%, out for
-  delivery 50–94% (running late, it waits just short of the gate),
-  delivered 100% → a tick. Not delivered `LATE_AFTER_MINUTES` (75) after
-  placing — any restaurant — the scooter says sorry in a speech bubble
-  (`LATE_LINES`, Gen Z one-liners like "sorry we're late, fr", a new one
-  every 30 s), hung from the scooter and slid left by `--p` of its width so
-  it never leaves the road; on the pass and the Orders card alike. Before the first tick (and on the server) it
-  sits at the floor, so hydration matches. The covered stretch is lit, a
+  the road from the kitchen (chef's hat) to Gate 3 (pin) on ONE 75-minute
+  timeline for every restaurant (`phaseAt()`, 4 Oct 2026 — animation only;
+  the "Delivery by" promise still uses `delivery_minutes`), re-read every
+  15 s: for the first `COOK_MINUTES` (30) a jiggling `CookingPot`
+  (`animate-cook`) sits on the kitchen with a Gen Z kitchen line over it
+  (`COOK_LINES`, "the wok is wokking"…); then Phosphor's `Moped` rides
+  from 10% to 94% by `RIDE_END_MINUTES` (75), and past that it waits just
+  short of the gate and apologises (`LATE_LINES`, "sorry we're late,
+  fr"…). Lines change every 30 s, in a speech bubble hung from the pot /
+  scooter and slid left by `--p` of its width so it never leaves the road.
+  Status keeps it honest: pending stays a pot at the kitchen (no kitchen
+  line — not confirmed yet), out for delivery always shows the scooter
+  (from 50%), delivered → a tick at the gate. Before the first tick (and on
+  the server) it shows the pot at the kitchen, so hydration matches. The covered stretch is lit, a
   one-line status message is `aria-live`, and Realtime status changes move
   it live (CSS transition on `left` / `width` via a `--p` custom property). The Orders list's in-progress card reuses it
   (`tone="card"`, no message). The step list sits in a card below the

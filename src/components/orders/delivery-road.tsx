@@ -1,37 +1,45 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
-import { Check, ChefHat, MapPin, Moped } from "@/components/icons";
+import { Check, ChefHat, CookingPot, MapPin, Moped } from "@/components/icons";
 import type { OrderStatus } from "@/lib/data/types";
 import { cn } from "@/lib/utils";
 
 /*
- * Where the scooter may be, per status, as [floor, ceiling] (0–1). Between
- * them it rides with the CLOCK — the share of the promised delivery time
- * (placed → placed + delivery_minutes) that has passed — so it creeps
- * forward minute by minute instead of jumping at the end. The ceilings
- * keep it honest: it never rides past "waiting for the restaurant" before
- * the order's confirmed, and never reaches the gate before it's delivered
- * (running late, it waits just short of Gate 3).
+ * The same 75-minute timeline for every restaurant — animation only; the
+ * ticket's "Delivery by" promise still uses the restaurant's
+ * delivery_minutes. For the first COOK_MINUTES after placing, a cooking pot
+ * sits at the kitchen end with a Gen Z kitchen line over it; then the
+ * scooter takes over and rides with the clock, reaching just short of the
+ * gate at RIDE_END_MINUTES. Past that, it apologises (LATE_LINES).
+ *
+ * Status keeps it honest: a pending order (not confirmed yet) never leaves
+ * the kitchen, "out for delivery" always shows the scooter, and nothing
+ * reaches the gate until it's delivered.
  */
-const RANGE: Record<OrderStatus, [number, number]> = {
-  pending: [0.06, 0.2],
-  confirmed: [0.2, 0.94],
-  preparing: [0.2, 0.94],
-  out_for_delivery: [0.5, 0.94],
-  delivered: [1, 1],
-  cancelled: [0, 0],
-};
+const COOK_MINUTES = 30;
+export const RIDE_END_MINUTES = 75;
+/** The pot sits right on the kitchen (over the chef's hat). */
+const KITCHEN_P = 0;
+/** Where the scooter sets off, just past the kitchen. */
+const RIDE_START_P = 0.1;
+/** Where the scooter waits when it's running late. */
+const GATE_WAIT_P = 0.94;
 
-/** How often the scooter moves on. */
+/** How often everything moves on. */
 const TICK_MS = 15_000;
+/** How often the bubble's line changes. */
+const LINE_MS = 30_000;
 
-/**
- * Not delivered this long after placing (any restaurant) → the scooter
- * says sorry in a little speech bubble, a new line every LATE_LINE_MS.
- */
-export const LATE_AFTER_MINUTES = 75;
-const LATE_LINE_MS = 30_000;
+const COOK_LINES = [
+  "chef's locked in rn",
+  "the wok is wokking",
+  "letting it cook, literally",
+  "spice level: immaculate",
+  "it's giving fresh off the stove",
+  "main character energy in the kitchen",
+];
+
 const LATE_LINES = [
   "sorry we're late, fr",
   "taking the scenic route, our bad",
@@ -41,21 +49,41 @@ const LATE_LINES = [
   "traffic said no. we said yes",
 ];
 
-/** The apology the scooter shows right now, or null while it's on time. */
-function lateLine(status: OrderStatus, createdAt: string, now: number | null): string | null {
-  if (now === null || status === "delivered" || status === "cancelled") return null;
-  const late = now - new Date(createdAt).getTime() - LATE_AFTER_MINUTES * 60_000;
-  if (late < 0) return null;
-  return LATE_LINES[Math.floor(late / LATE_LINE_MS) % LATE_LINES.length];
-}
+type Phase = {
+  /** Position on the road, 0–1. */
+  p: number;
+  /** The pot instead of the scooter. */
+  cooking: boolean;
+  /** The speech bubble, if any. */
+  line: string | null;
+  late: boolean;
+};
 
-function progressAt(status: OrderStatus, createdAt: string, minutes: number, now: number | null): number {
-  const [floor, ceiling] = RANGE[status];
-  // Before the first tick (and on the server) it sits at the floor, so the
-  // server and browser render the same thing.
-  if (now === null) return floor;
-  const elapsed = (now - new Date(createdAt).getTime()) / (minutes * 60_000);
-  return Math.min(ceiling, Math.max(floor, elapsed));
+const pick = (lines: string[], ms: number) => lines[Math.floor(ms / LINE_MS) % lines.length];
+
+function phaseAt(status: OrderStatus, createdAt: string, now: number | null): Phase {
+  if (status === "delivered") return { p: 1, cooking: false, line: null, late: false };
+  if (status === "cancelled") return { p: 0, cooking: false, line: null, late: false };
+  const onTheWay = status === "out_for_delivery";
+  // Before the first tick (and on the server) it sits at the kitchen, so
+  // the server and browser render the same thing.
+  if (now === null) {
+    return onTheWay
+      ? { p: 0.5, cooking: false, line: null, late: false }
+      : { p: KITCHEN_P, cooking: true, line: null, late: false };
+  }
+  const elapsed = now - new Date(createdAt).getTime();
+  const late = elapsed >= RIDE_END_MINUTES * 60_000;
+  const lateLine = late ? pick(LATE_LINES, elapsed - RIDE_END_MINUTES * 60_000) : null;
+
+  const cooking = status === "pending" || (!onTheWay && elapsed < COOK_MINUTES * 60_000);
+  if (cooking) {
+    const kitchenLine = status === "pending" ? null : pick(COOK_LINES, elapsed);
+    return { p: KITCHEN_P, cooking: true, line: lateLine ?? kitchenLine, late };
+  }
+  const ride = (elapsed - COOK_MINUTES * 60_000) / ((RIDE_END_MINUTES - COOK_MINUTES) * 60_000);
+  const p = RIDE_START_P + Math.min(1, Math.max(0, ride)) * (GATE_WAIT_P - RIDE_START_P);
+  return { p: onTheWay ? Math.max(0.5, p) : p, cooking: false, line: lateLine, late };
 }
 
 const MESSAGE: Record<OrderStatus, string> = {
@@ -68,9 +96,11 @@ const MESSAGE: Record<OrderStatus, string> = {
 };
 
 /**
- * The road from the kitchen to Gate 3, with the delivery scooter riding
- * along it with the clock (see RANGE) and the order's status (Realtime
- * moves it live on the tracking page): dashed lane markings, the stretch already covered lit
+ * The road from the kitchen to Gate 3 (see phaseAt): first a cooking pot
+ * jiggling at the kitchen, then the delivery scooter riding with the clock
+ * and the order's status (Realtime moves it live on the tracking page),
+ * with a speech bubble over it — kitchen lines while cooking, apologies
+ * once it's late. Dashed lane markings, the stretch already covered lit
  * up, a chef's hat at the start and the Gate 3 pin at the end. The
  * scooter bobs while it's on the move and turns into a tick on arrival.
  *
@@ -83,16 +113,13 @@ export function DeliveryRoad({
   status,
   restaurantName,
   createdAt,
-  deliveryMinutes,
   tone = "hero",
   showMessage = true,
 }: {
   status: OrderStatus;
   restaurantName: string;
-  /** When the order was placed — the start of the ride. */
+  /** When the order was placed — the start of the timeline. */
   createdAt: string;
-  /** The restaurant's promise — the ride's length. */
-  deliveryMinutes: number;
   tone?: "hero" | "card";
   showMessage?: boolean;
 }) {
@@ -108,8 +135,7 @@ export function DeliveryRoad({
       clearInterval(every);
     };
   }, [riding]);
-  const p = progressAt(status, createdAt, deliveryMinutes, now);
-  const sorry = lateLine(status, createdAt, now);
+  const { p, cooking, line, late } = phaseAt(status, createdAt, now);
   const arrived = status === "delivered";
   const hero = tone === "hero";
 
@@ -118,12 +144,12 @@ export function DeliveryRoad({
       {showMessage && (
         <p className="text-sm font-semibold" aria-live="polite">
           {MESSAGE[status]}
-          {sorry && <span className="sr-only">. Running late, sorry.</span>}
+          {late && <span className="sr-only">. Running late, sorry.</span>}
         </p>
       )}
       <div
         aria-hidden="true"
-        className={cn("relative h-11", sorry ? "mt-12" : "mt-3")}
+        className={cn("relative h-11", line ? "mt-12" : "mt-3")}
         style={{ "--p": p } as CSSProperties}
       >
         {/* The road, with dashed lane markings. */}
@@ -160,12 +186,12 @@ export function DeliveryRoad({
             <MapPin className="size-4.5" />
           </span>
         )}
-        {/* Running late: a speech bubble over the scooter. It hangs from
-            the scooter's centre and slides left by --p of its own width, so
+        {/* The speech bubble (kitchen line or apology). It hangs from the
+            pot / scooter's centre and slides left by --p of its own width, so
             it never leaves the road near either end; its tail follows. */}
-        {sorry && (
+        {line && (
           <span
-            key={sorry}
+            key={line}
             className={cn(
               "animate-pop-in absolute bottom-[calc(100%+0.25rem)] left-[calc(1rem+(100%-2rem)*var(--p))] origin-bottom translate-x-[calc(var(--p)*-100%)] rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap",
               hero
@@ -173,7 +199,7 @@ export function DeliveryRoad({
                 : "border bg-popover text-popover-foreground shadow-card",
             )}
           >
-            {sorry}
+            {line}
             <span
               className={cn(
                 "absolute top-full left-[clamp(0.9rem,calc(var(--p)*100%),calc(100%-0.9rem))] size-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45",
@@ -192,6 +218,8 @@ export function DeliveryRoad({
         >
           {arrived ? (
             <Check key="arrived" className="animate-pop-in size-5" />
+          ) : cooking ? (
+            <CookingPot key="cooking" className="animate-cook size-6" weight="fill" />
           ) : (
             <Moped key="riding" className="animate-scooter size-6" weight="fill" />
           )}
