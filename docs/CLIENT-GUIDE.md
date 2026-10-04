@@ -62,7 +62,9 @@ student's note, name and number.
    typed out. Ask them to reply "yes".
 2. **Confirm** — once they've confirmed. The student gets a notification.
 3. **Copy** — copies restaurant, dishes, name and number, to paste to the
-   restaurant.
+   restaurant. For **Triangle Food Court** and **Local Home Kitchen** each
+   dish also has its price, with a total when there's more than one dish;
+   Biryani Nation's copy has no prices.
 4. **Mark delivered** — once they've collected it at **Gate 3**.
 5. **Cancel** — if it can't go ahead. The student is notified.
 

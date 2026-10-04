@@ -647,7 +647,11 @@ the student's name and number. The WhatsApp button's message and the copy
 button's text come from `src/lib/orders/admin-text.ts` (WhatsApp: full
 name; restaurant, each dish and the question on their own lines; a total
 line only for multi-dish orders. Copy: restaurant, each dish, name,
-number — nothing else) — keep them in step with the card.
+number — no token or times; for Triangle Food Court and Local Home Kitchen
+(`COPY_WITH_PRICES`, by restaurant id, 4 Oct 2026) each dish also carries
+its price — "Dish - 2 (₹240)" — plus the offer and total lines, exactly as
+in the WhatsApp text; Biryani Nation's copy stays price-free) — keep them
+in step with the card.
 Tapping a card opens **`/admin/orders/[id]`** (`getAdminOrderDetail()` +
 `OrderDetailView`): timing (placed, delivery window, delivered at),
 student (phone, reg. number, email, Call / WhatsApp / Copy), each dish

@@ -36,13 +36,24 @@ export function whatsAppConfirmation(order: AdminOrder): string {
 }
 
 /**
- * The copy button's text: restaurant, each dish, name, number — nothing
- * else (no token, prices or times), same as the card's "From" box.
+ * Restaurants whose copied order text carries prices (Triangle Food Court,
+ * Local Home Kitchen — by decision, 4 Oct 2026). Biryani Nation's stays
+ * price-free. By id, so a rename doesn't change it.
+ */
+const COPY_WITH_PRICES = new Set([
+  "5b19f610-f3d7-4e82-bb06-d79abb36ffe4", // Triangle Food Court
+  "99142bb3-5d63-4fc7-8b5c-0a1ef4c63919", // Local Home Kitchen
+]);
+
+/**
+ * The copy button's text: restaurant, each dish, name, number — no token or
+ * times. For the restaurants above each dish also carries its price, with
+ * the offer and total lines the WhatsApp message uses.
  */
 export function orderDetailsText(order: AdminOrder): string {
   return [
     order.restaurantName,
-    ...order.items.map(itemLine),
+    ...(COPY_WITH_PRICES.has(order.restaurantId) ? itemLinesWithPrices(order) : order.items.map(itemLine)),
     order.studentName,
     formatStoredMobile(order.contactPhone),
   ].join("\n");
