@@ -98,6 +98,7 @@ const checks = [
   // Status
   ['success text on success-soft chip', 'success', 1, [T('success-soft')], 4.5],
   ['success text on card', 'success', 1, [T('card')], 4.5],
+  ['success WhatsApp icon on pink-soft tile (Profile channel card, non-text)', 'success', 1, [T('pink-soft')], 3.0],
   ['success text on secondary well (admin order box: offer line)', 'success', 1, [T('secondary')], 4.5],
   ['success text on ground (cart sheet: discount line)', 'success', 1, [T('background')], 4.5],
   ['offer switch knob (card) on primary track (non-text, 3:1)', 'card', 1, [T('primary')], 3.0],

@@ -1,6 +1,7 @@
 import { MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
 import { BrandLogo } from "@/components/brand-logo";
+import { ChannelPopover } from "@/components/channel/channel-popover";
 import { Avatar } from "@/components/taste/avatar";
 import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
 import type { TimeOfDay } from "@/lib/date";
@@ -16,8 +17,9 @@ const MOOD: Record<TimeOfDay, { greeting: string; Icon: AppIcon; question: strin
 };
 
 /**
- * Home's header, over the time-of-day sky: the logo (opens About) and the
- * student's avatar (opens the "Your taste" sheet) on top, then a small time-of-day line, "Hey, <name>" in
+ * Home's header, over the time-of-day sky: the logo (opens About), the
+ * WhatsApp channel button and the student's avatar (opens the "Your taste"
+ * sheet) on top, then a small time-of-day line, "Hey, <name>" in
  * the sunset gradient, and the question of the hour.
  */
 export function HomeHeader({
@@ -46,12 +48,15 @@ export function HomeHeader({
         <AboutDialog>
           <BrandLogo splashTarget className="size-12 rounded-2xl shadow-card" />
         </AboutDialog>
-        <OpenTasteSheetButton
-          aria-label="Your avatar and taste"
-          className="pressable rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
-        >
-          <Avatar id={avatar} className="size-12 shadow-card ring-2 ring-card" />
-        </OpenTasteSheetButton>
+        <div className="flex items-center gap-2.5">
+          <ChannelPopover />
+          <OpenTasteSheetButton
+            aria-label="Your avatar and taste"
+            className="pressable rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+          >
+            <Avatar id={avatar} className="size-12 shadow-card ring-2 ring-card" />
+          </OpenTasteSheetButton>
+        </div>
       </div>
       <p className="relative mt-7 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
         <Icon className="icon-tint-gold size-4.5 shrink-0" />

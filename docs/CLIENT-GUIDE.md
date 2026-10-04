@@ -125,6 +125,12 @@ The app itself never takes payments.
 ## Support details students see
 
 - Call / WhatsApp: **+91 99899 55833**
+- **WhatsApp channel** (offers, open / closed, new dishes):
+  https://whatsapp.com/channel/0029VbDNWZPHrDZaWYZTjK21 — students find it
+  from the WhatsApp button at the top of Home (it has a dot until they open
+  it), a card on Profile and the About popup (tap the logo). Post offers
+  and "we're open" there. If the channel link ever changes, ask the
+  developer to update it.
 - Email (privacy page): **collegebitessrm@gmail.com**
 
 ## If something looks wrong

@@ -316,8 +316,8 @@ author.
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
 - **Home layout** (`src/app/(home)/page.tsx`, `src/components/home/`): the
-  header over the time-of-day sky (logo → About, the student's avatar →
-  the "Your taste" sheet; a small
+  header over the time-of-day sky (logo → About, the WhatsApp channel
+  button, the student's avatar → the "Your taste" sheet; a small
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —
   hidden while searching — `PromoCard` (hero card: "Hot food, at Gate 3" + "Order here, pay when
@@ -407,6 +407,25 @@ author.
   same dish grid as the filters below (sold-out and closed-kitchen dishes
   stay in while searching, greyed / last); restaurants also appear if they
   serve a match.
+- **WhatsApp channel** (`WHATSAPP_CHANNEL_URL` in `src/lib/support.ts`,
+  added 4 Oct 2026; `src/components/channel/`): `ChannelPopover`, a round
+  WhatsApp button left of the Home header avatar. Tapping it opens a Base
+  UI popover card (`z-50`) that grows out of the button's corner with a
+  spring (`.channel-pop`, transitions on Base UI's
+  `data-starting-style` / `data-ending-style`, origin
+  `--transform-origin`) and its rows rise in one by one (`.channel-rise`,
+  `--i` stagger): a hero strip with the palette's motif, the WhatsApp logo
+  and "College Bites", three perks (offers and free biryani drops, when we
+  open and close, new dishes), a "Follow on WhatsApp" action pill
+  (`target="_blank"`) and "Your number stays private". Until the card is
+  opened once on the device (`collegebites.wa-channel-seen`, a
+  `useSyncExternalStore` store in `channel-seen.ts`; server snapshot =
+  seen, so nothing flashes) the button carries a pulsing dot and wiggles
+  twice after the splash (`.channel-wiggle`, paused under the splash). All
+  motion is in the no-preference block. Also findable from a
+  `ChannelCard` row on Profile (under "Need help?") and a "Follow our
+  WhatsApp channel" pill in the About dialog. The channel's own name is
+  "College Bites - SRM"; on the site it's just "College Bites".
 - **Home filter** (Swiggy / Zomato style; `src/lib/home-filters.ts` +
   `src/components/home/`): all on the device over the dishes Home already
   ships — no new query. `FoodTypeRail` ("What's on your mind?"): round

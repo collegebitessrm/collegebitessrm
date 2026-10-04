@@ -280,6 +280,13 @@ migrations are never edited, so they stay.
 
 ## 7. Design
 
+- **WhatsApp channel** (4 Oct 2026): a round WhatsApp button beside the
+  Home header avatar pops a small card out of itself (spring scale from the
+  button's corner, rows staggered in) with three perks and a "Follow on
+  WhatsApp" pill; a pulsing dot and two wiggles until first opened on the
+  device. Also a Profile card and a pill in the About dialog. Link in
+  `src/lib/support.ts`; components in `src/components/channel/`.
+
 The logo and the layout ideas come from `docs/design-reference.webp` (the
 client's brand sheet). Since the 30 Sep 2026 redesign the palette is
 **Vice Dusk × Leonida Gold**, a GTA Vice City × GTA VI hybrid built around

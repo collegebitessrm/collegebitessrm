@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ViewTransition } from "react";
+import { ChannelCard } from "@/components/channel/channel-card";
 import { IconTile } from "@/components/icon-tile";
 import { Bell, Lock, Mail, MapPin, Palette, Pepper, Sun, Volume2 } from "@/components/icons";
 import { LikedDishes } from "@/components/profile/liked-dishes";
@@ -175,6 +176,7 @@ export default async function ProfilePage() {
           </div>
 
           <SupportCard />
+          <ChannelCard />
 
           <div className="mt-6">
             <SignOutButton />

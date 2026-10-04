@@ -3,7 +3,9 @@
 import type { ReactNode } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MessageCircle } from "@/components/icons";
 import { ThemeMotif } from "@/components/theme/theme-motif";
+import { WHATSAPP_CHANNEL_URL } from "@/lib/support";
 
 /** Tapping the Home logo pops up a short "what is this app" card — mostly for first-time visitors poking around. */
 export function AboutDialog({ children }: { children: ReactNode }) {
@@ -32,6 +34,15 @@ export function AboutDialog({ children }: { children: ReactNode }) {
           <li className="rounded-full bg-secondary px-2.5 py-1">Pay on delivery, cash or UPI</li>
         </ul>
         <p className="mt-4 text-label text-primary">Order in a minute · Collect at Gate 3</p>
+        <a
+          href={WHATSAPP_CHANNEL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 flex h-10 items-center gap-2 rounded-full border bg-card px-4 text-sm font-semibold shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
+        >
+          <MessageCircle className="size-5 text-success" />
+          Follow our WhatsApp channel
+        </a>
         <p className="mt-4 text-xs text-muted-foreground">~ college bites · srm ap</p>
       </DialogContent>
     </Dialog>
