@@ -46,15 +46,15 @@ const COPY_WITH_PRICES = new Set([
 ]);
 
 /**
- * The copy button's text: restaurant, each dish, name, number — no token or
- * times. For the restaurants above each dish also carries its price, with
- * the offer and total lines the WhatsApp message uses.
+ * The copy button's text: number, name, then restaurant and each dish — no
+ * token or times. For the restaurants above each dish also carries its
+ * price, with the offer and total lines the WhatsApp message uses.
  */
 export function orderDetailsText(order: AdminOrder): string {
   return [
+    formatStoredMobile(order.contactPhone),
+    order.studentName,
     order.restaurantName,
     ...(COPY_WITH_PRICES.has(order.restaurantId) ? itemLinesWithPrices(order) : order.items.map(itemLine)),
-    order.studentName,
-    formatStoredMobile(order.contactPhone),
   ].join("\n");
 }

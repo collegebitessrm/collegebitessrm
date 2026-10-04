@@ -61,8 +61,8 @@ student's note, name and number.
 1. **WhatsApp** — opens a chat with the student with the order already
    typed out. Ask them to reply "yes".
 2. **Confirm** — once they've confirmed. The student gets a notification.
-3. **Copy** — copies restaurant, dishes, name and number, to paste to the
-   restaurant. For **Triangle Food Court** and **Local Home Kitchen** each
+3. **Copy** — copies the student's number and name (on top), then the
+   restaurant and dishes, to paste to the restaurant. For **Triangle Food Court** and **Local Home Kitchen** each
    dish also has its price, with a total when there's more than one dish;
    Biryani Nation's copy has no prices.
 4. **Mark delivered** — once they've collected it at **Gate 3**.
