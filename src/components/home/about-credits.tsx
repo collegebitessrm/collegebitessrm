@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone } from "@/components/icons";
+import { Mail, MessageCircle, Phone } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 /** Who's behind the app — the About dialog's footer. */
@@ -15,7 +15,7 @@ const DEVELOPER = {
 /**
  * "Owned by …" and "Developed & maintained by <name>". The name looks like
  * plain text (a dotted underline only on hover); tapping it quietly opens a
- * small "Call · Mail" line underneath, and tapping again folds it away.
+ * small "Call · WhatsApp · Mail" line underneath, and tapping again folds it away.
  */
 export function AboutCredits() {
   const [open, setOpen] = useState(false);
@@ -58,6 +58,17 @@ export function AboutCredits() {
             >
               <Phone className="size-3.5" />
               Call
+            </a>
+            <span aria-hidden="true">·</span>
+            <a
+              href={`https://wa.me/${DEVELOPER.phone.replace("+", "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={open ? 0 : -1}
+              className="flex items-center gap-1 rounded-sm text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/80"
+            >
+              <MessageCircle className="size-3.5" />
+              WhatsApp
             </a>
             <span aria-hidden="true">·</span>
             <a
