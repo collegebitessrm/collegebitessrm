@@ -49,6 +49,9 @@ import { CookingPot as PhCookingPot } from "@phosphor-icons/react/dist/ssr/Cooki
 import { Copy as PhCopy } from "@phosphor-icons/react/dist/ssr/Copy";
 import { Crown as PhCrown } from "@phosphor-icons/react/dist/ssr/Crown";
 import { DownloadSimple as PhDownloadSimple } from "@phosphor-icons/react/dist/ssr/DownloadSimple";
+import { DeviceMobile as PhDeviceMobile } from "@phosphor-icons/react/dist/ssr/DeviceMobile";
+import { Export as PhExport } from "@phosphor-icons/react/dist/ssr/Export";
+import { PlusSquare as PhPlusSquare } from "@phosphor-icons/react/dist/ssr/PlusSquare";
 import { Egg as PhEgg } from "@phosphor-icons/react/dist/ssr/Egg";
 import { EnvelopeSimple as PhEnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
 import { Fire as PhFire } from "@phosphor-icons/react/dist/ssr/Fire";
@@ -241,6 +244,12 @@ export const SearchX = make(PhSmileyMeh, "SearchX");
 export const SlidersHorizontal = make(PhSlidersHorizontal, "SlidersHorizontal");
 /** share token */
 export const Share2 = make(PhShareNetwork, "Share2");
+/** iOS share button (install steps) */
+export const Share = make(PhExport, "Share");
+/** install the admin app */
+export const Smartphone = make(PhDeviceMobile, "Smartphone");
+/** iOS "Add to Home Screen" (install steps) */
+export const SquarePlus = make(PhPlusSquare, "SquarePlus");
 /** banned users */
 export const ShieldBan = make(PhShieldSlash, "ShieldBan");
 /** unban */

@@ -125,12 +125,12 @@ verify, submit `sitemap.xml`.
 | `/privacy`, `/terms` | Static policy pages | public |
 | `/admin` (+ `history`, `orders/[id]`, `users`, `banned`, `reviews`, `sold-out`, `offers`) | Admin | admin + passcode |
 | `/api/csp-report` | Logs content-policy reports | public |
-| icons, manifest, robots, sitemap, share image | | public |
+| icons, manifest, `admin.webmanifest`, robots, sitemap, share image | | public |
 
 ### The sign-in guard
 `src/proxy.ts` refreshes the session on every request and sends signed-out
 visitors to `/login`. Anything a signed-out browser, phone or bot fetches
-(icons, manifest, `sw.js`, `robots.txt`, `sitemap.xml`, the share image,
+(icons, both manifests, `sw.js`, `robots.txt`, `sitemap.xml`, the share image,
 `/api/csp-report`) is excluded from its matcher. Pages call
 `requireProfile()` (signed out → `/login`, no profile → `/welcome`); admin
 pages call `requireAdmin()` and then check the passcode.
@@ -374,6 +374,16 @@ light: things should look lit, not flat.
   Reduced motion: a plain logo fade; never on admin/auth/legal pages or a
   background tab; slow images = no splash; any error ends it; CSS hides it
   after 9 s whatever happens.
+- Two installable apps (4 Oct 2026): the student app
+  (`app/manifest.ts`, scope `/`) and the admin app "CB Admin"
+  (`app/admin.webmanifest/route.ts`: `id`/`scope`/`start_url` `/admin`,
+  same icons), linked only from the admin layout's `metadata.manifest`, so
+  both can sit on one phone. The admin header's Install pill
+  (`InstallAppButton`, state in `src/lib/pwa/install-store.ts`) uses
+  `beforeinstallprompt` on Chrome/Edge and shows Share → Add to Home Screen
+  steps on iOS; hidden when standalone. The manifest lives outside `/admin`
+  and is excluded from the proxy because browsers fetch manifests without
+  cookies.
 
 ### Photos
 `public/photos/dishes/` and `public/photos/covers/`, matched by exact

@@ -16,6 +16,20 @@ can be added to the home screen like an app.
 
 A new admin account can only be added by the developer.
 
+### Install the admin app (optional)
+
+Put admin on your phone's home screen as its own app, **CB Admin** — it
+opens straight on the dashboard, full screen, separate from the student
+app.
+
+- **Android (Chrome):** on the dashboard, tap the **phone icon** (Install)
+  at the top, then **Install**.
+- **iPhone:** open the dashboard in **Safari**, tap the phone icon to see
+  the steps: **Share** → **Add to Home Screen** → **Add**.
+
+The button disappears once it's installed (or on a browser that can't
+install apps). You still sign in and enter the passcode the first time.
+
 ## Every day
 
 ### Open or close ordering

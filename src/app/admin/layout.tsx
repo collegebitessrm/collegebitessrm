@@ -4,8 +4,14 @@ import { AdminPasscodeGate } from "@/components/admin/admin-passcode-gate";
 import { requireAdmin } from "@/lib/admin/guard";
 import { isAdminPasscodeVerified } from "@/lib/admin/passcode";
 
-// Never in search results (robots.txt also disallows /admin).
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  // Never in search results (robots.txt also disallows /admin).
+  robots: { index: false, follow: false },
+  // Installs as its own app ("CB Admin") that opens on the dashboard,
+  // instead of the student app — see app/admin.webmanifest/route.ts.
+  manifest: "/admin.webmanifest",
+  appleWebApp: { capable: true, title: "CB Admin", statusBarStyle: "default" },
+};
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const admin = await requireAdmin();

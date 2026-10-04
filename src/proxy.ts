@@ -19,8 +19,10 @@ export const config = {
     // JavaScript, so notifications could never register. sitemap.xml and
     // opengraph-image (app/sitemap.ts, app/opengraph-image.tsx) are fetched
     // signed out by search engines and link-preview bots.
+    // admin.webmanifest (app/admin.webmanifest/route.ts) is the admin app's
+    // manifest — fetched without cookies, like manifest.webmanifest.
     // api/csp-report receives CSP violation reports, including from the
     // signed-out login page.
-    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|opengraph-image|api/csp-report|sw.js|manifest.webmanifest|apple-icon|icons/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|opengraph-image|api/csp-report|sw.js|manifest.webmanifest|admin.webmanifest|apple-icon|icons/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

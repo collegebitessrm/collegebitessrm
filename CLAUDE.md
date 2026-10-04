@@ -609,6 +609,22 @@ dish still shows on the student menu — greyed, struck through and
 unorderable (`DishCard`'s `soldOut`) — and `place_order()` refuses it
 anyway, so the flag is never only a UI state.
 
+**Admin app (PWA)**: the admin layout links its own manifest,
+`/admin.webmanifest` (`src/app/admin.webmanifest/route.ts`, static): name
+"College Bites Admin", short name "CB Admin", `id` / `scope` / `start_url`
+`/admin`, the same icons — so it installs as a second app beside the
+student one and opens on the dashboard. It sits outside `/admin` and is
+excluded from the `src/proxy.ts` matcher: browsers fetch manifests without
+cookies, so behind the sign-in redirect it would come back as HTML. The
+header's **Install** pill (`InstallAppButton`,
+`src/components/admin/install-app-button.tsx`; state in
+`src/lib/pwa/install-store.ts`, a `useSyncExternalStore` store whose
+`beforeinstallprompt` listener registers at module load so the one-shot
+event isn't missed) opens Chrome / Edge's install dialog, or on iPhone /
+iPad a dialog with the Share → Add to Home Screen steps; it's hidden when
+running standalone, after `appinstalled`, or where installing isn't
+offered. The service worker (`/sw.js`, scope `/`) covers it for push.
+
 Visually, admin shares the student app's system: the dashboard's sunset
 "Today" card (`StatCards`) carries today's counts with the campus ordering
 control (`OrderingKillSwitch` — a two-way Open / Closed switch for
