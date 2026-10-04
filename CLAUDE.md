@@ -933,7 +933,7 @@ and `place_order()` in its final form with the rate limits — see
 `app_settings` below),
 [`supabase/migrations/20260929030000_seed_college_bites_menus.sql`](supabase/migrations/20260929030000_seed_college_bites_menus.sql)
 (data only — the three partner restaurants, **Triangle Food Court**
-(Kuragallu, 41 dishes), **Local Home Kitchen** (Neerukonda, 72) and **Clg
+(Kuragallu, 41 dishes), **Local Home Kitchen** (Neerukonda, 72; 81 since 4 Oct 2026) and **Clg
 Bites Biryani Nation** (24: Single / Full are separate dishes; 60-minute
 delivery), 137 dishes in all; Biryani Nation since has 37 and the total is
 150 — see `20261001020000` below). Note the shape: the `values` list comes
@@ -979,6 +979,17 @@ below).
 (named `offers_biryani_nation_only` in the database's migration history;
 `place_order()` re-created with one new check — any offer on an order not
 from Clg Bites Biryani Nation raises `offer_wrong_restaurant`).
+[`supabase/migrations/20261004010000_local_home_kitchen_menu_update.sql`](supabase/migrations/20261004010000_local_home_kitchen_menu_update.sql)
+(data only — Local Home Kitchen's new menu: 18 price changes, "Paneer
+Majestic" renamed "Kaju Paneer Majestic", five dishes dropped (Chicken /
+Egg Manchurian Rice and Noodles, Pepper Chicken), 14 new — SP Boneless
+Biryani (note "New"), Double Egg Fried Rice / Noodles and Veg Manchurian
+Rice / Noodles with "(White)" styles, Chicken Kaju Manchurian, and two new
+sections, **KFC Veg Starters** and **KFC Non-Veg Starters** (KFC Chicken
+Lollipop moved there); piece counts live in `note` ("6 pcs"). 81 dishes
+now, 162 in all. The photos are developer-supplied; KFC French Fries shows
+KFC's branded bucket and KFC Popcorn / Drum Chicken carry recipe-site
+watermarks — swap them (new filenames) when better ones arrive).
 **`taste_profiles`** ([`supabase/migrations/20261001000000_taste_profiles.sql`](supabase/migrations/20261001000000_taste_profiles.sql),
 named `taste_profiles` in the database's migration history) — one row per
 student, created the first time they save the "Your taste" sheet:

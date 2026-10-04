@@ -19,7 +19,7 @@ migration, what went wrong along the way and what's still open.
 | Pickup | Everything is handed over at **Gate 3**. No room delivery. |
 | Payment | **Cash on delivery only**, with UPI accepted informally at pickup (the app never processes payments). Delivery to Gate 3 is free. |
 | Sign-in | "Continue with Google" only |
-| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 72), Clg Bites Biryani Nation (40: biryanis incl. a Half portion, starters, Chinese, fried rice) |
+| Restaurants | Triangle Food Court (Kuragallu, 41 dishes), Local Home Kitchen (Neerukonda, 81: biryanis, rice and noodles with White styles, starters, KFC starters), Clg Bites Biryani Nation (40: biryanis incl. a Half portion, starters, Chinese, fried rice) |
 | Delivery promise | 40 minutes from ordering; Biryani Nation 60 |
 | Ordering | An **Open / Closed** switch the admin flips — no daily schedule |
 | Support | +91 99899 55833 (call + WhatsApp) · collegebitessrm@gmail.com |
@@ -227,6 +227,7 @@ SQL editor (so it's missing from the database's migration history).
 | 30 | `20261001050000_discount_offers` | Admin offer switches (10% / 20% / buy 3 Full get 1 Single free), order discount columns, free order items, `place_order()` takes an offer (history name `discount_offers`) |
 | 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
 | 31 | `20261004000000_offers_biryani_nation_only` | `place_order()`: every offer only on Biryani Nation orders (`offer_wrong_restaurant`) |
+| 32 | `20261004010000_local_home_kitchen_menu_update` | Data: Local Home Kitchen's new menu — 18 prices, 14 new dishes incl. two KFC sections, 5 dropped, 1 rename (81 dishes; 162 in all) |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied

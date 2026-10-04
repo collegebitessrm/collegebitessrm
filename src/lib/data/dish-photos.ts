@@ -91,10 +91,8 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Veg Manchurian Rice": photo("veg-manchurian-fried-rice"),
     "Egg Fried Rice": photo("egg-fried-rice"),
     "Egg Fried Rice (White)": photo("egg-fried-rice"),
-    "Egg Manchurian Rice": photo("egg-manchurian-fried-rice"),
     "Chicken Fried Rice": photo("chicken-fried-rice"),
     "Chicken Fried Rice (White)": photo("chicken-fried-rice"),
-    "Chicken Manchurian Rice": photo("chicken-manchurian-rice-lhk"),
     "Double Egg Chicken Fried Rice": photo("double-egg-chicken-fried-rice"),
     "Double Egg Chicken Fried Rice (White)": photo("double-egg-chicken-fried-rice"),
 
@@ -103,17 +101,15 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "Veg Manchurian Noodles": photo("veg-manchurian-noodles"),
     "Egg Noodles": photo("egg-hakka-noodles"),
     "Egg Noodles (White)": photo("egg-hakka-noodles"),
-    "Egg Manchurian Noodles": photo("egg-manchurian-noodles"),
     "Chicken Noodles": photo("chicken-noodles"),
     "Chicken Noodles (White)": photo("chicken-noodles"),
-    "Chicken Manchurian Noodles": photo("chicken-manchurian-noodles-v2"),
     "Double Egg Chicken Noodles": photo("double-egg-chicken-noodles"),
     "Double Egg Chicken Noodles (White)": photo("double-egg-chicken-noodles"),
 
     "Veg Manchurian": photo("veg-manchurian"),
     "Egg Manchurian": photo("egg-manchurian"),
     "Paneer Manchurian": photo("paneer-manchurian"),
-    "Paneer Majestic": photo("paneer-majestic"),
+    "Kaju Paneer Majestic": photo("paneer-majestic"),
     "Kaju Paneer Manchurian": photo("kaju-paneer-manchurian"),
     "Mushroom Manchurian": photo("mushroom-manchurian"),
     "Kaju Mushroom Manchurian": photo("kaju-mushroom-manchurian"),
@@ -134,7 +130,6 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     "SP Paneer Fried Rice": photo("paneer-fried-rice"),
     "SP Paneer Noodles": photo("paneer-noodles"),
     // Added 1 Oct 2026 (Openverse photos, credited on /terms).
-    "Pepper Chicken": photo("pepper-chicken"),
     "Mushroom Fried Rice": photo("mushroom-fried-rice"),
     "SP Mushroom Fried Rice": photo("mushroom-fried-rice"),
     "Kaju Rice": photo("kaju-rice"),
@@ -155,6 +150,21 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
     // Photos from the developer (1 Oct 2026).
     "SP Mushroom Noodles": photo("sp-mushroom-noodles"),
     "Mushroom Noodles": photo("mushroom-noodles"),
+    // Menu update, 4 Oct 2026 (photos from the developer).
+    "SP Boneless Biryani": photo("sp-boneless-biryani"),
+    "Veg Manchurian Rice (White)": photo("veg-manchurian-rice-white"),
+    "Double Egg Fried Rice": photo("double-egg-fried-rice-lhk"),
+    "Double Egg Fried Rice (White)": photo("double-egg-fried-rice-lhk"),
+    "Veg Manchurian Noodles (White)": photo("veg-manchurian-noodles-white"),
+    "Double Egg Noodles": photo("double-egg-noodles"),
+    "Double Egg Noodles (White)": photo("double-egg-noodles"),
+    "Chicken Kaju Manchurian": photo("chicken-kaju-manchurian"),
+    "KFC Paneer": photo("kfc-paneer"),
+    "KFC French Fries": photo("kfc-french-fries"),
+    "KFC Ball": photo("kfc-ball"),
+    "KFC Drum Chicken": photo("kfc-drum-chicken"),
+    "KFC Chicken Majestic": photo("kfc-chicken-majestic"),
+    "KFC Popcorn": photo("kfc-popcorn"),
   },
 
   "Clg Bites Biryani Nation": {
@@ -209,7 +219,7 @@ export function getDishPhoto(restaurantName: string, dishName: string): string |
  */
 const SIGNATURE_DISHES: Record<string, string[]> = {
   "Triangle Food Court": ["Chicken Noodles", "Chilli Chicken", "Chicken 65"],
-  "Local Home Kitchen": ["Chicken Lollipop", "Chicken Dum Biryani", "Paneer Majestic"],
+  "Local Home Kitchen": ["Chicken Lollipop", "Chicken Dum Biryani", "Kaju Paneer Majestic"],
   "Clg Bites Biryani Nation": ["Chicken Dum Biryani (Single)", "All Mix Chicken Biryani (Single)"],
 };
 
