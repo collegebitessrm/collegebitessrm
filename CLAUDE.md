@@ -171,11 +171,14 @@ author.
   timeline for every restaurant (`phaseAt()`, 4 Oct 2026 — animation only;
   the "Delivery by" promise still uses `delivery_minutes`), re-read every
   15 s: for the first `COOK_MINUTES` (30) a jiggling `CookingPot`
-  (`animate-cook`) sits on the kitchen with a Gen Z kitchen line over it
-  (`COOK_LINES`, "the wok is wokking"…); then Phosphor's `Moped` rides
-  from 10% to 94% by `RIDE_END_MINUTES` (75), and past that it waits just
-  short of the gate and apologises (`LATE_LINES`, "sorry we're late,
-  fr"…). Lines change every 30 s, in a speech bubble hung from the pot /
+  (`animate-cook`, its own still steam cropped off and three wisps of
+  `cook-steam` rising over it, staggered by `:nth-child`) sits on the
+  kitchen with a Gen Z kitchen line over it (`COOK_LINES`, "the wok is
+  wokking"…); then Phosphor's `Moped` rides from 10% to 94% by
+  `RIDE_END_MINUTES` (75) with on-the-way lines (`RIDE_LINES`, "zooming to
+  Gate 3 rn"…), waiting just short of the gate after that. From
+  `LATE_AFTER_MINUTES` (60) the bubble apologises instead (`LATE_LINES`,
+  "sorry we're late, fr"…). Lines change every 30 s, in a speech bubble hung from the pot /
   scooter and slid left by `--p` of its width so it never leaves the road.
   Status keeps it honest: pending stays a pot at the kitchen (no kitchen
   line — not confirmed yet), out for delivery always shows the scooter

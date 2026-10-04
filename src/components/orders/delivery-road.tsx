@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
  * delivery_minutes. For the first COOK_MINUTES after placing, a cooking pot
  * sits at the kitchen end with a Gen Z kitchen line over it; then the
  * scooter takes over and rides with the clock, reaching just short of the
- * gate at RIDE_END_MINUTES. Past that, it apologises (LATE_LINES).
+ * gate at RIDE_END_MINUTES, with on-the-way lines (RIDE_LINES). From
+ * LATE_AFTER_MINUTES on it apologises instead (LATE_LINES).
  *
  * Status keeps it honest: a pending order (not confirmed yet) never leaves
  * the kitchen, "out for delivery" always shows the scooter, and nothing
@@ -19,6 +20,8 @@ import { cn } from "@/lib/utils";
  */
 const COOK_MINUTES = 30;
 export const RIDE_END_MINUTES = 75;
+/** Not delivered this long after placing → the bubble says sorry. */
+export const LATE_AFTER_MINUTES = 60;
 /** The pot sits right on the kitchen (over the chef's hat). */
 const KITCHEN_P = 0;
 /** Where the scooter sets off, just past the kitchen. */
@@ -38,6 +41,15 @@ const COOK_LINES = [
   "spice level: immaculate",
   "it's giving fresh off the stove",
   "main character energy in the kitchen",
+];
+
+const RIDE_LINES = [
+  "on the way, hold tight",
+  "food's in the bag, we're moving",
+  "zooming to Gate 3 rn",
+  "hot food incoming, stay ready",
+  "the scooty is scooting",
+  "eta: soon. vibes: immaculate",
 ];
 
 const LATE_LINES = [
@@ -73,8 +85,8 @@ function phaseAt(status: OrderStatus, createdAt: string, now: number | null): Ph
       : { p: KITCHEN_P, cooking: true, line: null, late: false };
   }
   const elapsed = now - new Date(createdAt).getTime();
-  const late = elapsed >= RIDE_END_MINUTES * 60_000;
-  const lateLine = late ? pick(LATE_LINES, elapsed - RIDE_END_MINUTES * 60_000) : null;
+  const late = elapsed >= LATE_AFTER_MINUTES * 60_000;
+  const lateLine = late ? pick(LATE_LINES, elapsed - LATE_AFTER_MINUTES * 60_000) : null;
 
   const cooking = status === "pending" || (!onTheWay && elapsed < COOK_MINUTES * 60_000);
   if (cooking) {
@@ -83,7 +95,7 @@ function phaseAt(status: OrderStatus, createdAt: string, now: number | null): Ph
   }
   const ride = (elapsed - COOK_MINUTES * 60_000) / ((RIDE_END_MINUTES - COOK_MINUTES) * 60_000);
   const p = RIDE_START_P + Math.min(1, Math.max(0, ride)) * (GATE_WAIT_P - RIDE_START_P);
-  return { p: onTheWay ? Math.max(0.5, p) : p, cooking: false, line: lateLine, late };
+  return { p: onTheWay ? Math.max(0.5, p) : p, cooking: false, line: lateLine ?? pick(RIDE_LINES, elapsed), late };
 }
 
 const MESSAGE: Record<OrderStatus, string> = {
@@ -219,7 +231,25 @@ export function DeliveryRoad({
           {arrived ? (
             <Check key="arrived" className="animate-pop-in size-5" />
           ) : cooking ? (
-            <CookingPot key="cooking" className="animate-cook size-6" weight="fill" />
+            <span key="cooking" className="flex flex-col items-center">
+              {/* Steam: three wisps rising off the pot and fading, a beat
+                  apart. The icon's own (still) steam is cropped off below. */}
+              <svg
+                viewBox="0 0 24 14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.25"
+                strokeLinecap="round"
+                className="h-3.5 w-5 overflow-visible"
+              >
+                <path className="cook-steam" d="M7 13c-2-3 2-5 0-8" />
+                <path className="cook-steam" d="M12 12c-2-3 2-5 0-9" />
+                <path className="cook-steam" d="M17 13c-2-3 2-5 0-8" />
+              </svg>
+              <span className="flex h-[18px] items-end overflow-hidden">
+                <CookingPot className="animate-cook size-6 shrink-0" weight="fill" />
+              </span>
+            </span>
           ) : (
             <Moped key="riding" className="animate-scooter size-6" weight="fill" />
           )}
