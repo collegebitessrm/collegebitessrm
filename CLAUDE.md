@@ -330,7 +330,7 @@ author.
   per OS and clash with the icon set). Big moments get
   `CelebrationOverlay`, not an emoji-laden toast.
 - **Home layout** (`src/app/(home)/page.tsx`, `src/components/home/`): the
-  header over the time-of-day sky (logo → About, ringed in a soft `ring-primary/40` so it reads as tappable, the WhatsApp channel
+  header over the time-of-day sky (logo → About, ringed in a soft `ring-primary/40` with a slow glowing pulse and two soft ripples on load (`.logo-beacon`, paused under the splash) so it reads as tappable, the WhatsApp channel
   button, the student's avatar → the "Your taste" sheet; a small
   gold-lit time-of-day line, "Hey, <first name>" as the h1 in
   `text-sunset`, then that hour's question), the pill search, then —

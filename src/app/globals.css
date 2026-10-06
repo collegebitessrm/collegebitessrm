@@ -1517,6 +1517,30 @@
   .channel-wiggle {
     animation: channel-wiggle 0.9s var(--ease-out-expo) 1.2s 2 both;
   }
+  /* Home logo (AboutDialog trigger): a slow glowing pulse so it reads as
+     tappable, plus two soft ripples spreading out once on load. */
+  .logo-beacon {
+    animation: logo-glow 3.2s ease-in-out infinite;
+  }
+  .logo-beacon::before,
+  .logo-beacon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid var(--primary);
+    opacity: 0;
+    pointer-events: none;
+    animation: logo-ripple 1.6s var(--ease-out-expo) 0.4s 1 both;
+  }
+  .logo-beacon::after {
+    animation-delay: 0.85s;
+  }
+  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon,
+  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon::before,
+  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon::after {
+    animation-play-state: paused;
+  }
   html:is([data-splash="play"], [data-splash="run"]) .channel-wiggle {
     animation-play-state: paused;
   }
@@ -1696,6 +1720,27 @@
   }
   100% {
     translate: 110% 0;
+  }
+}
+
+@keyframes logo-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 18px 3px color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+}
+
+@keyframes logo-ripple {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
   }
 }
 
