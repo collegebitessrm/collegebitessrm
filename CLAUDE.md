@@ -301,7 +301,7 @@ author.
   palette's hero with its motif and the logo rising out of it, and ends
   with the credits (`AboutCredits`, `src/components/home/about-credits.tsx`):
   "Owned by Jaswanth & Harsha", "~ Developed & maintained by Naga Adithya"
-  — the name is plain text (dotted underline on hover only); tapping it
+  — the name has a dotted underline so it reads as tappable; tapping it
   folds open a small "Call · WhatsApp · Mail" line (+91 90325 63455,
   nagaadithya999@gmail.com) — then "~ college bites · srm ap".
   `CelebrationOverlay` is the palette's hero (`surface-hero`) with its
