@@ -14,7 +14,7 @@ export function AboutDialog({ children }: { children: ReactNode }) {
     <Dialog>
       <DialogTrigger
         aria-label="About College Bites"
-        className="pressable rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+        className="pressable rounded-2xl shadow-card ring-2 ring-primary/40 outline-none transition-shadow hover:ring-primary/70 focus-visible:ring-3 focus-visible:ring-ring/80"
       >
         {children}
       </DialogTrigger>
