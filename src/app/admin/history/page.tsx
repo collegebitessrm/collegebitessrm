@@ -6,19 +6,19 @@ import { getAdminOrderHistory, getAdminRestaurants } from "@/lib/data/admin";
 export const metadata: Metadata = { title: "Order history · College Bites Admin" };
 
 export default async function AdminHistoryPage() {
-  const [orders, restaurants] = await Promise.all([getAdminOrderHistory(), getAdminRestaurants()]);
+ const [orders, restaurants] = await Promise.all([getAdminOrderHistory(), getAdminRestaurants()]);
 
-  return (
-    <>
-      <div>
-        <BackToDashboardLink />
-        <h1 className="mt-4 font-heading text-headline font-bold">Order history</h1>
-        <p className="mt-1 text-muted-foreground">
-          Every order ever placed, grouped by day. The dashboard only shows current ones. Tap an order for its full details.
-        </p>
-      </div>
+ return (
+ <>
+ <div>
+ <BackToDashboardLink />
+ <h1 className="mt-4 font-heading text-headline font-bold">Order history</h1>
+ <p className="mt-1 text-muted-foreground">
+ Every order ever placed, grouped by day. The dashboard only shows current ones. Tap an order for its full details.
+ </p>
+ </div>
 
-      <OrderList orders={orders} restaurants={restaurants} groupByDate />
-    </>
-  );
+ <OrderList orders={orders} restaurants={restaurants} groupByDate />
+ </>
+ );
 }

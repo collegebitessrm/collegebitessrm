@@ -4,9 +4,9 @@
 // or "nav-back" transitionType; anything untyped (browser back/forward,
 // router.refresh()) falls through to "none" and doesn't animate.
 export const NAV_TRANSITION = {
-  enter: { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" },
-  exit: { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" },
-  default: "none",
+ enter: { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" },
+ exit: { "nav-forward": "nav-forward", "nav-back": "nav-back", default: "none" },
+ default: "none",
 } as const;
 
 // The loading.tsx -> page.tsx handoff: the skeleton slides down and out,

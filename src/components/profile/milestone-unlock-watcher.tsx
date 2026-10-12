@@ -23,76 +23,76 @@ const listFormat = new Intl.ListFormat("en", { type: "conjunction" });
  * whole screen.
  */
 export function MilestoneUnlockWatcher({ unlockedCsv }: { unlockedCsv: string }) {
-  const [celebrating, setCelebrating] = useState<MilestoneKey[]>([]);
+ const [celebrating, setCelebrating] = useState<MilestoneKey[]>([]);
 
-  useEffect(() => {
-    // Deferred (a tick, or until the startup splash has cleared) so the
-    // setState isn't synchronous in the effect body and the moment isn't
-    // spent hidden under the splash. Reading and writing storage both
-    // happen inside the callback, so a Strict Mode double-run (which
-    // cancels it) can't mark milestones seen without also celebrating them.
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const stopWaiting = afterSplash(() => {
-      timer = setTimeout(celebrateNew, 0);
-    });
-    function celebrateNew() {
-      const unlocked = unlockedCsv ? (unlockedCsv.split(",") as MilestoneKey[]) : [];
+ useEffect(() => {
+ // Deferred (a tick, or until the startup splash has cleared) so the
+ // setState isn't synchronous in the effect body and the moment isn't
+ // spent hidden under the splash. Reading and writing storage both
+ // happen inside the callback, so a Strict Mode double-run (which
+ // cancels it) can't mark milestones seen without also celebrating them.
+ let timer: ReturnType<typeof setTimeout> | undefined;
+ const stopWaiting = afterSplash(() => {
+ timer = setTimeout(celebrateNew, 0);
+ });
+ function celebrateNew() {
+ const unlocked = unlockedCsv ? (unlockedCsv.split(",") as MilestoneKey[]) : [];
 
-      let seen: string[] = [];
-      try {
-        seen = JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]");
-      } catch {
-        seen = [];
-      }
-      const seenSet = new Set(seen);
-      const newlyUnlocked = unlocked.filter((key) => !seenSet.has(key));
+ let seen: string[] = [];
+ try {
+ seen = JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]");
+ } catch {
+ seen = [];
+ }
+ const seenSet = new Set(seen);
+ const newlyUnlocked = unlocked.filter((key) => !seenSet.has(key));
 
-      try {
-        localStorage.setItem(SEEN_KEY, JSON.stringify(unlocked));
-      } catch {
-        // Storage unavailable — it still celebrates this visit, just may repeat next time.
-      }
+ try {
+ localStorage.setItem(SEEN_KEY, JSON.stringify(unlocked));
+ } catch {
+ // Storage unavailable — it still celebrates this visit, just may repeat next time.
+ }
 
-      if (newlyUnlocked.length > 0) setCelebrating(newlyUnlocked);
-    }
-    return () => {
-      stopWaiting();
-      clearTimeout(timer);
-    };
-  }, [unlockedCsv]);
+ if (newlyUnlocked.length > 0) setCelebrating(newlyUnlocked);
+ }
+ return () => {
+ stopWaiting();
+ clearTimeout(timer);
+ };
+ }, [unlockedCsv]);
 
-  if (celebrating.length === 0) return null;
+ if (celebrating.length === 0) return null;
 
-  const milestones = MILESTONES.filter((m) => celebrating.includes(m.key));
-  const several = milestones.length > 1;
+ const milestones = MILESTONES.filter((m) => celebrating.includes(m.key));
+ const several = milestones.length > 1;
 
-  return (
-    <CelebrationOverlay duration={several ? 2600 : 2000} onDone={() => setCelebrating([])}>
-      <div className="flex max-w-48 flex-wrap justify-center gap-2" aria-hidden="true">
-        {milestones.map(({ key, Icon }) => (
-          <span
-            key={key}
-            className={cn(
-              "animate-pop-in flex items-center justify-center rounded-full bg-hero-foreground/10 text-hero-accent",
-              several ? "size-14" : "size-20",
-            )}
-          >
-            <Icon className={several ? "size-7" : "size-9"} />
-          </span>
-        ))}
-      </div>
-      <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">
-        {several ? `${milestones.length} milestones unlocked!` : "Milestone unlocked!"}
-      </p>
-      <p className="mt-1 text-hero-foreground/85">Added to your profile</p>
-      <p
-        className={cn(
-          "animate-pop-in mt-4 max-w-xs font-heading font-bold tracking-tight text-balance text-hero-accent",
-          several ? "text-3xl" : "text-5xl",
-        )}
-      >
-        {listFormat.format(milestones.map((m) => m.label))}
-      </p>
-    </CelebrationOverlay>
-  );
+ return (
+ <CelebrationOverlay duration={several ? 2600 : 2000} onDone={() => setCelebrating([])}>
+ <div className="flex max-w-48 flex-wrap justify-center gap-2" aria-hidden="true">
+ {milestones.map(({ key, Icon }) => (
+ <span
+ key={key}
+ className={cn(
+ "animate-pop-in flex items-center justify-center rounded-full bg-primary-foreground/10 text-primary-foreground",
+ several ? "size-14" : "size-20",
+ )}
+ >
+ <Icon className={several ? "size-7" : "size-9"} />
+ </span>
+ ))}
+ </div>
+ <p className="animate-pop-in mt-5 font-heading text-2xl font-bold">
+ {several ? `${milestones.length} milestones unlocked!` : "Milestone unlocked!"}
+ </p>
+ <p className="mt-1 text-primary-foreground/85">Added to your profile</p>
+ <p
+ className={cn(
+ "animate-pop-in mt-4 max-w-xs font-heading font-bold tracking-tight text-balance text-primary-foreground",
+ several ? "text-3xl" : "text-5xl",
+ )}
+ >
+ {listFormat.format(milestones.map((m) => m.label))}
+ </p>
+ </CelebrationOverlay>
+ );
 }

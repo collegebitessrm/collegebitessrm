@@ -9,13 +9,13 @@ import { createClient } from "@/lib/supabase/server";
  * place_order() enforces — so the UI can't drift from the database.
  */
 export async function getOrderingState(): Promise<OrderingState> {
-  const supabase = await createClient();
-  const [settings, open] = await Promise.all([
-    supabase.from("app_settings").select("ordering_mode").eq("id", true).single(),
-    supabase.rpc("ordering_is_open"),
-  ]);
+ const supabase = await createClient();
+ const [settings, open] = await Promise.all([
+ supabase.from("app_settings").select("ordering_mode").eq("id", true).single(),
+ supabase.rpc("ordering_is_open"),
+ ]);
 
-  if (settings.error) throw settings.error;
-  if (open.error) throw open.error;
-  return describeOrdering(settings.data.ordering_mode as OrderingMode, open.data === true);
+ if (settings.error) throw settings.error;
+ if (open.error) throw open.error;
+ return describeOrdering(settings.data.ordering_mode as OrderingMode, open.data === true);
 }

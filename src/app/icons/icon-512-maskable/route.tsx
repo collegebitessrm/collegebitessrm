@@ -8,5 +8,5 @@ import { appIconResponse } from "@/lib/app-icon";
 export const contentType = "image/png";
 
 export function GET() {
-  return appIconResponse({ width: 512, height: 512, markScale: 0.8 });
+ return appIconResponse({ width: 512, height: 512, markScale: 0.8 });
 }

@@ -15,71 +15,71 @@ const DISMISSED_KEY = "collegebites.notify-asked";
  * dismissed or accepted (remembered per device, like the rating prompt).
  */
 export function NotifyMeCard() {
-  const [show, setShow] = useState(false);
-  const [pending, startTransition] = useTransition();
+ const [show, setShow] = useState(false);
+ const [pending, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (pushState() !== "default") return;
-    try {
-      if (localStorage.getItem(DISMISSED_KEY)) return;
-    } catch {
-      // Storage unavailable — offering it again next time is fine.
-    }
-    hasPushSubscription().then((has) => setShow(!has));
-  }, []);
+ useEffect(() => {
+ if (pushState() !== "default") return;
+ try {
+ if (localStorage.getItem(DISMISSED_KEY)) return;
+ } catch {
+ // Storage unavailable — offering it again next time is fine.
+ }
+ hasPushSubscription().then((has) => setShow(!has));
+ }, []);
 
-  function remember() {
-    try {
-      localStorage.setItem(DISMISSED_KEY, "1");
-    } catch {
-      // Same as above: worst case, it's offered again.
-    }
-  }
+ function remember() {
+ try {
+ localStorage.setItem(DISMISSED_KEY, "1");
+ } catch {
+ // Same as above: worst case, it's offered again.
+ }
+ }
 
-  function enable() {
-    startTransition(async () => {
-      const result = await enablePush();
-      remember();
-      if (result.ok) {
-        setShow(false);
-        toast.success("We'll ping you when it's confirmed.");
-      } else {
-        toast.error(result.error);
-      }
-    });
-  }
+ function enable() {
+ startTransition(async () => {
+ const result = await enablePush();
+ remember();
+ if (result.ok) {
+ setShow(false);
+ toast.success("We'll ping you when it's confirmed.");
+ } else {
+ toast.error(result.error);
+ }
+ });
+ }
 
-  if (!show) return null;
+ if (!show) return null;
 
-  return (
-    <div className="animate-slide-up-in mt-4 flex items-center gap-3 rounded-[1.5rem] border bg-card p-4 shadow-card">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-pink-soft text-pink-soft-foreground">
-        <Bell className="icon-tint-gold size-5" aria-hidden="true" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold">Get a ping when it&apos;s ready</p>
-        <p className="text-sm text-muted-foreground">No need to keep this page open.</p>
-      </div>
-      <button
-        type="button"
-        onClick={enable}
-        disabled={pending}
-        className="surface-primary flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
-      >
-        {pending && <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />}
-        Turn on
-      </button>
-      <button
-        type="button"
-        onClick={() => {
-          remember();
-          setShow(false);
-        }}
-        aria-label="Not now"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring/80"
-      >
-        <X className="size-4" aria-hidden="true" />
-      </button>
-    </div>
-  );
+ return (
+ <div className="animate-slide-up-in mt-4 flex items-center gap-3 rounded-[1.5rem] border bg-card p-4 shadow-card">
+ <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary text-foreground">
+ <Bell className="text-primary size-5" aria-hidden="true" />
+ </span>
+ <div className="min-w-0 flex-1">
+ <p className="font-semibold">Get a ping when it&apos;s ready</p>
+ <p className="text-sm text-muted-foreground">No need to keep this page open.</p>
+ </div>
+ <button
+ type="button"
+ onClick={enable}
+ disabled={pending}
+ className=" flex h-10 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70"
+ >
+ {pending && <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />}
+ Turn on
+ </button>
+ <button
+ type="button"
+ onClick={() => {
+ remember();
+ setShow(false);
+ }}
+ aria-label="Not now"
+ className="flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring/80"
+ >
+ <X className="size-4" aria-hidden="true" />
+ </button>
+ </div>
+ );
 }

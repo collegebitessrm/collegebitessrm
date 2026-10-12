@@ -6,20 +6,20 @@ import { getBannedUsers } from "@/lib/data/admin";
 export const metadata: Metadata = { title: "Banned users · College Bites Admin" };
 
 export default async function AdminBannedPage() {
-  const bannedUsers = await getBannedUsers();
+ const bannedUsers = await getBannedUsers();
 
-  return (
-    <>
-      <div>
-        <BackToDashboardLink href="/admin/users" label="Back to users" />
-        <h1 className="mt-4 font-heading text-headline font-bold">Banned users</h1>
-        <p className="mt-1 text-muted-foreground">
-          Search a student to ban them, or unban from the list below. Bans match by phone number,
-          campus-wide.
-        </p>
-      </div>
+ return (
+ <>
+ <div>
+ <BackToDashboardLink href="/admin/users" label="Back to users" />
+ <h1 className="mt-4 font-heading text-headline font-bold">Banned users</h1>
+ <p className="mt-1 text-muted-foreground">
+ Search a student to ban them, or unban from the list below. Bans match by phone number,
+ campus-wide.
+ </p>
+ </div>
 
-      <BannedUsersSection bannedUsers={bannedUsers} />
-    </>
-  );
+ <BannedUsersSection bannedUsers={bannedUsers} />
+ </>
+ );
 }

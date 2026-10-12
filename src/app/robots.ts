@@ -7,12 +7,12 @@ import { SITE_URL } from "@/lib/site";
 // exists so /robots.txt itself is a real robots file instead of that
 // redirect — it's excluded from the proxy matcher for the same reason.
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/admin", "/auth", "/orders", "/profile", "/welcome"],
-    },
-    sitemap: `${SITE_URL}/sitemap.xml`,
-  };
+ return {
+ rules: {
+ userAgent: "*",
+ allow: "/",
+ disallow: ["/admin", "/auth", "/orders", "/profile", "/welcome"],
+ },
+ sitemap: `${SITE_URL}/sitemap.xml`,
+ };
 }

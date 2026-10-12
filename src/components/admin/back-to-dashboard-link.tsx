@@ -10,19 +10,19 @@ import { adminPill } from "./styles";
  * that it's reached via the Users page rather than the dashboard directly.
  */
 export function BackToDashboardLink({
-  href = "/admin",
-  label = "Back to dashboard",
+ href = "/admin",
+ label = "Back to dashboard",
 }: {
-  href?: string;
-  label?: string;
+ href?: string;
+ label?: string;
 }) {
-  return (
-    <Link
-      href={href}
-      className={cn(adminPill, "w-fit")}
-    >
-      <ArrowLeft className="size-4" aria-hidden="true" />
-      {label}
-    </Link>
-  );
+ return (
+ <Link
+ href={href}
+ className={cn(adminPill, "w-fit")}
+ >
+ <ArrowLeft className="size-4" aria-hidden="true" />
+ {label}
+ </Link>
+ );
 }

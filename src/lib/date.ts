@@ -3,46 +3,46 @@
 const IST = "Asia/Kolkata";
 
 const dayKeyFmt = new Intl.DateTimeFormat("en-CA", {
-  timeZone: IST,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
+ timeZone: IST,
+ year: "numeric",
+ month: "2-digit",
+ day: "2-digit",
 });
 const timeFmt = new Intl.DateTimeFormat("en-IN", {
-  timeZone: IST,
-  hour: "numeric",
-  minute: "2-digit",
-  hour12: true,
+ timeZone: IST,
+ hour: "numeric",
+ minute: "2-digit",
+ hour12: true,
 });
 const dateFmt = new Intl.DateTimeFormat("en-IN", {
-  timeZone: IST,
-  day: "numeric",
-  month: "short",
+ timeZone: IST,
+ day: "numeric",
+ month: "short",
 });
 
 // Intl inserts a narrow no-break space before am/pm in en-IN and lowercases
 // it; normalize both so times render as "7:42 PM" everywhere.
 function time(d: Date) {
-  return timeFmt.format(d).replace(/ /g, " ").replace(/am|pm/i, (m) => m.toUpperCase());
+ return timeFmt.format(d).replace(/ /g, " ").replace(/am|pm/i, (m) => m.toUpperCase());
 }
 
 /** "7:42 PM" */
 export function formatTime(iso: string): string {
-  return time(new Date(iso));
+ return time(new Date(iso));
 }
 
 /** "Today, 7:42 PM" or "11 Sep, 9:10 PM", both in IST. */
 export function formatOrderTimestamp(iso: string): string {
-  const d = new Date(iso);
-  const isToday = dayKeyFmt.format(d) === dayKeyFmt.format(new Date());
-  return isToday ? `Today, ${time(d)}` : `${dateFmt.format(d)}, ${time(d)}`;
+ const d = new Date(iso);
+ const isToday = dayKeyFmt.format(d) === dayKeyFmt.format(new Date());
+ return isToday ? `Today, ${time(d)}` : `${dateFmt.format(d)}, ${time(d)}`;
 }
 
 const hourMinuteFmt = new Intl.DateTimeFormat("en-GB", {
-  timeZone: IST,
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
+ timeZone: IST,
+ hour: "2-digit",
+ minute: "2-digit",
+ hour12: false,
 });
 
 /**
@@ -54,7 +54,7 @@ export const DEFAULT_DELIVERY_MINUTES = 40;
 
 /** When an order is promised by: placed time + the restaurant's delivery minutes. */
 export function deliveryDue(iso: string, minutes: number = DEFAULT_DELIVERY_MINUTES): Date {
-  return new Date(new Date(iso).getTime() + minutes * 60_000);
+ return new Date(new Date(iso).getTime() + minutes * 60_000);
 }
 
 /**
@@ -62,53 +62,53 @@ export function deliveryDue(iso: string, minutes: number = DEFAULT_DELIVERY_MINU
  * the UI can keep the time on one line; spaces inside `time` are no-break.
  */
 export function deliveryWindow(
-  iso: string,
-  minutes: number = DEFAULT_DELIVERY_MINUTES,
+ iso: string,
+ minutes: number = DEFAULT_DELIVERY_MINUTES,
 ): { lead: string; time: string } {
-  return { lead: "Delivery by", time: time(deliveryDue(iso, minutes)).replace(/ /g, " ") };
+ return { lead: "Delivery by", time: time(deliveryDue(iso, minutes)).replace(/ /g, " ") };
 }
 
 /** True once an order's promised delivery time has passed. */
 export function isPastDeliveryTime(
-  iso: string,
-  minutes: number = DEFAULT_DELIVERY_MINUTES,
-  now: Date = new Date(),
+ iso: string,
+ minutes: number = DEFAULT_DELIVERY_MINUTES,
+ now: Date = new Date(),
 ): boolean {
-  return now.getTime() >= deliveryDue(iso, minutes).getTime();
+ return now.getTime() >= deliveryDue(iso, minutes).getTime();
 }
 
 const weekdayFmt = new Intl.DateTimeFormat("en-US", { timeZone: IST, weekday: "long" });
 
 /** True on Thursdays, IST wall-clock — powers the Thursday-special nudge on Home. */
 export function isThursdayIST(now: Date = new Date()): boolean {
-  return weekdayFmt.format(now) === "Thursday";
+ return weekdayFmt.format(now) === "Thursday";
 }
 
 const adminDayFmt = new Intl.DateTimeFormat("en-IN", {
-  timeZone: IST,
-  weekday: "long",
-  day: "numeric",
-  month: "short",
-  year: "numeric",
+ timeZone: IST,
+ weekday: "long",
+ day: "numeric",
+ month: "short",
+ year: "numeric",
 });
 
 /** Stable per-IST-day grouping key, e.g. "2026-09-17" — for the admin order-history grouping. */
 export function istDayKey(iso: string): string {
-  return dayKeyFmt.format(new Date(iso));
+ return dayKeyFmt.format(new Date(iso));
 }
 
 /** "Wednesday, 17 Sep 2026" — IST calendar day, for the admin order-history section headings. */
 export function formatAdminDay(iso: string): string {
-  return adminDayFmt.format(new Date(iso));
+ return adminDayFmt.format(new Date(iso));
 }
 
 // Built from en-US parts: en-IN and en-GB both abbreviate September as
 // "Sept" in current ICU, which reads like a typo next to "Aug"/"Oct".
 const dayHeadingFmt = new Intl.DateTimeFormat("en-US", {
-  timeZone: IST,
-  weekday: "short",
-  day: "numeric",
-  month: "short",
+ timeZone: IST,
+ weekday: "short",
+ day: "numeric",
+ month: "short",
 });
 
 /**
@@ -116,37 +116,37 @@ const dayHeadingFmt = new Intl.DateTimeFormat("en-US", {
  * year) — IST calendar day, for the student orders list's date groups.
  */
 export function formatDayHeading(iso: string, now: Date = new Date()): string {
-  const key = istDayKey(iso);
-  if (key === dayKeyFmt.format(now)) return "Today";
-  if (key === dayKeyFmt.format(new Date(now.getTime() - 24 * 60 * 60 * 1000))) return "Yesterday";
-  const label = formatShortDay(iso);
-  return key.slice(0, 4) === dayKeyFmt.format(now).slice(0, 4) ? label : `${label} ${key.slice(0, 4)}`;
+ const key = istDayKey(iso);
+ if (key === dayKeyFmt.format(now)) return "Today";
+ if (key === dayKeyFmt.format(new Date(now.getTime() - 24 * 60 * 60 * 1000))) return "Yesterday";
+ const label = formatShortDay(iso);
+ return key.slice(0, 4) === dayKeyFmt.format(now).slice(0, 4) ? label : `${label} ${key.slice(0, 4)}`;
 }
 
 /** "Sat 19 Sep" — IST calendar day, no relative wording (admin's Today card). */
 export function formatShortDay(iso: string): string {
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    dayHeadingFmt.formatToParts(new Date(iso)).find((p) => p.type === type)?.value;
-  return `${part("weekday")} ${part("day")} ${part("month")}`;
+ const part = (type: Intl.DateTimeFormatPartTypes) =>
+ dayHeadingFmt.formatToParts(new Date(iso)).find((p) => p.type === type)?.value;
+ return `${part("weekday")} ${part("day")} ${part("month")}`;
 }
 
 /** The UTC instant of the start of "today" in IST wall-clock time — for scoping the admin dashboard to today's orders only. */
 export function startOfTodayIST(now: Date = new Date()): Date {
-  const [year, month, day] = dayKeyFmt.format(now).split("-").map(Number);
-  // IST is a fixed UTC+5:30 offset (no DST) — subtract it from the
-  // wall-clock time to get the actual UTC instant it corresponds to.
-  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - (5 * 60 + 30) * 60_000);
+ const [year, month, day] = dayKeyFmt.format(now).split("-").map(Number);
+ // IST is a fixed UTC+5:30 offset (no DST) — subtract it from the
+ // wall-clock time to get the actual UTC instant it corresponds to.
+ return new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - (5 * 60 + 30) * 60_000);
 }
 
 const monthYearFmt = new Intl.DateTimeFormat("en-IN", {
-  timeZone: IST,
-  month: "long",
-  year: "numeric",
+ timeZone: IST,
+ month: "long",
+ year: "numeric",
 });
 
 /** "January 2026" — for the profile's "Member since" line. */
 export function formatMonthYear(iso: string): string {
-  return monthYearFmt.format(new Date(iso));
+ return monthYearFmt.format(new Date(iso));
 }
 
 export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
@@ -155,9 +155,9 @@ export type TimeOfDay = "morning" | "afternoon" | "evening" | "night";
  * IST wall-clock time-of-day bucket for the Home greeting.
  */
 export function getTimeOfDayIST(now: Date = new Date()): TimeOfDay {
-  const [h] = hourMinuteFmt.format(now).split(":").map(Number);
-  if (h >= 5 && h < 12) return "morning";
-  if (h >= 12 && h < 17) return "afternoon";
-  if (h >= 17 && h < 21) return "evening";
-  return "night";
+ const [h] = hourMinuteFmt.format(now).split(":").map(Number);
+ if (h >= 5 && h < 12) return "morning";
+ if (h >= 12 && h < 17) return "afternoon";
+ if (h >= 17 && h < 21) return "evening";
+ return "night";
 }

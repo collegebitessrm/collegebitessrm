@@ -17,35 +17,35 @@ let nextId = 1;
 const listeners = new Set<() => void>();
 
 function emit() {
-  listeners.forEach((l) => l());
+ listeners.forEach((l) => l());
 }
 
 function dismiss(id: number) {
-  toasts = toasts.filter((t) => t.id !== id);
-  emit();
+ toasts = toasts.filter((t) => t.id !== id);
+ emit();
 }
 
 function push(kind: ToastKind, message: string) {
-  const id = nextId++;
-  toasts = [...toasts, { id, kind, message }];
-  emit();
-  setTimeout(() => dismiss(id), DURATIONS[kind]);
+ const id = nextId++;
+ toasts = [...toasts, { id, kind, message }];
+ emit();
+ setTimeout(() => dismiss(id), DURATIONS[kind]);
 }
 
 export const toast = {
-  success: (message: string) => push("success", message),
-  error: (message: string) => push("error", message),
+ success: (message: string) => push("success", message),
+ error: (message: string) => push("error", message),
 };
 
 function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
+ listeners.add(listener);
+ return () => listeners.delete(listener);
 }
 
 function getSnapshot() {
-  return toasts;
+ return toasts;
 }
 
 export function useToasts(): ToastItem[] {
-  return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
+ return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 }

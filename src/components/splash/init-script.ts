@@ -2,15 +2,15 @@ import { SPLASH } from "./config";
 import { runSplash, type SplashRuntime } from "./engine";
 
 const runtime: SplashRuntime = {
-  biteAt: SPLASH.biteAt,
-  openAt: SPLASH.openAt,
-  openMs: SPLASH.openMs,
-  reducedHoldMs: SPLASH.reducedHoldMs,
-  loadTimeoutMs: SPLASH.loadTimeoutMs,
-  sessionKey: SPLASH.sessionKey,
-  disableKey: SPLASH.disableKey,
-  skipPaths: SPLASH.skipPaths,
-  images: [SPLASH.tileImage, SPLASH.capImage],
+ biteAt: SPLASH.biteAt,
+ openAt: SPLASH.openAt,
+ openMs: SPLASH.openMs,
+ reducedHoldMs: SPLASH.reducedHoldMs,
+ loadTimeoutMs: SPLASH.loadTimeoutMs,
+ sessionKey: SPLASH.sessionKey,
+ disableKey: SPLASH.disableKey,
+ skipPaths: SPLASH.skipPaths,
+ images: [SPLASH.tileImage, SPLASH.capImage],
 };
 
 /**

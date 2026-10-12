@@ -8,12 +8,12 @@ import { createClient } from "@/lib/supabase/server";
  * never breaks over this card.
  */
 export async function getMilestoneRewardClaimedAt(userId: string): Promise<string | null> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("milestone_rewards")
-    .select("claimed_at")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) return null;
-  return data?.claimed_at ?? null;
+ const supabase = await createClient();
+ const { data, error } = await supabase
+ .from("milestone_rewards")
+ .select("claimed_at")
+ .eq("user_id", userId)
+ .maybeSingle();
+ if (error) return null;
+ return data?.claimed_at ?? null;
 }

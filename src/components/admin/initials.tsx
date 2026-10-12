@@ -1,13 +1,13 @@
 /** Small initials avatar for admin people lists (users, banned). */
 export function Initials({ name }: { name: string }) {
-  const parts = name.trim().split(/\s+/);
-  const letters = ((parts[0]?.[0] ?? "") + (parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : "")).toUpperCase();
-  return (
-    <span
-      className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-pink-soft font-heading font-bold text-pink-soft-foreground"
-      aria-hidden="true"
-    >
-      {letters}
-    </span>
-  );
+ const parts = name.trim().split(/\s+/);
+ const letters = ((parts[0]?.[0] ?? "") + (parts.length > 1 ? (parts.at(-1)?.[0] ?? "") : "")).toUpperCase();
+ return (
+ <span
+ className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-secondary font-heading font-bold text-foreground"
+ aria-hidden="true"
+ >
+ {letters}
+ </span>
+ );
 }

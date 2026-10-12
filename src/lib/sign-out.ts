@@ -10,6 +10,6 @@ import { clearCart } from "@/lib/cart/store";
  * phone or lab machine) would inherit the previous student's cart.
  */
 export async function signOutAndClearCart() {
-  clearCart();
-  await signOut();
+ clearCart();
+ await signOut();
 }

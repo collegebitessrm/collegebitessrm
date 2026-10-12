@@ -1,71 +1,84 @@
-import { MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
+import { Bell, ChevronDown, Heart, MapPin, MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
 import { BrandLogo } from "@/components/brand-logo";
-import { ChannelPopover } from "@/components/channel/channel-popover";
 import { Avatar } from "@/components/taste/avatar";
 import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
 import type { TimeOfDay } from "@/lib/date";
 
-// Each time of day gets its own sky (.mood-field.mood-<time> in
-// globals.css) — Leonida sunrise, Vice beach afternoon, golden-hour
-// evening, neon night — plus a greeting and a question to match.
+// Each time of day gets its own greeting and question.
 const MOOD: Record<TimeOfDay, { greeting: string; Icon: AppIcon; question: string }> = {
-  morning: { greeting: "Good morning", Icon: Sunrise, question: "Fuel up for the day?" },
-  afternoon: { greeting: "Good afternoon", Icon: Sun, question: "What are you craving today?" },
-  evening: { greeting: "Good evening", Icon: Sunset, question: "Dinner o'clock. What's it going to be?" },
-  night: { greeting: "Still up", Icon: MoonStars, question: "Late-night craving?" },
+	morning: { greeting: "Good morning", Icon: Sunrise, question: "Fuel up for the day?" },
+	afternoon: { greeting: "Good afternoon", Icon: Sun, question: "What are you craving today?" },
+	evening: { greeting: "Good evening", Icon: Sunset, question: "Dinner o'clock. What's it going to be?" },
+	night: { greeting: "Still up", Icon: MoonStars, question: "Late-night craving?" },
 };
 
 /**
- * Home's header, over the time-of-day sky: the logo (opens About), the
- * WhatsApp channel button and the student's avatar (opens the "Your taste"
- * sheet) on top, then a small time-of-day line, "Hey, <name>" in
- * the sunset gradient, and the question of the hour.
+ * Home's header — Zomato-style: location pin on the left, heart + bell
+ * icons on the right, then the greeting and question below.
  */
 export function HomeHeader({
-  fullName,
-  timeOfDay,
-  avatar,
+	fullName,
+	timeOfDay,
+	avatar,
 }: {
-  fullName: string;
-  timeOfDay: TimeOfDay;
-  /** The taste profile's avatar id (the default pot until they pick one). */
-  avatar: string;
+	fullName: string;
+	timeOfDay: TimeOfDay;
+	avatar: string;
 }) {
-  const { greeting, Icon, question } = MOOD[timeOfDay];
-  const firstName = fullName.trim().split(/\s+/)[0];
+	const { greeting, Icon, question } = MOOD[timeOfDay];
+	const firstName = fullName.trim().split(/\s+/)[0];
 
-  return (
-    // Bleeds out of main's px-6/pt-6 so the sky reaches the screen edges
-    // and the very top; it runs past the header's bottom and fades out
-    // behind whatever comes next.
-    <header className="relative -mx-6 -mt-6 px-6 pt-6">
-      <div
-        aria-hidden="true"
-        className={`mood-field mood-${timeOfDay} pointer-events-none absolute inset-x-0 top-0 h-[calc(100%+6rem)]`}
-      />
-      <div className="relative flex items-center justify-between">
-        <AboutDialog>
-          <BrandLogo splashTarget className="size-12 rounded-2xl shadow-card" />
-        </AboutDialog>
-        <div className="flex items-center gap-2.5">
-          <ChannelPopover />
-          <OpenTasteSheetButton
-            aria-label="Your avatar and taste"
-            className="pressable rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
-          >
-            <Avatar id={avatar} className="size-12 shadow-card ring-2 ring-card" />
-          </OpenTasteSheetButton>
-        </div>
-      </div>
-      <p className="relative mt-7 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-        <Icon className="icon-tint-gold size-4.5 shrink-0" />
-        {greeting}
-      </p>
-      <h1 className="relative mt-1 font-heading text-display font-bold break-words text-sunset">
-        Hey, {firstName}
-      </h1>
-      <p className="relative mt-1.5 text-lg leading-snug">{question}</p>
-    </header>
-  );
+	return (
+		<header className="relative px-1 pt-4 pb-2">
+			{/* Top row: location + actions */}
+			<div className="flex items-center justify-between">
+				<AboutDialog>
+					<div
+						className="pressable flex items-center gap-1.5 rounded-full px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/80"
+					>
+						<MapPin className="size-4 shrink-0 text-primary" />
+						<span className="text-sm font-semibold text-foreground">SRM University AP</span>
+						<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+					</div>
+				</AboutDialog>
+				<div className="flex items-center gap-2">
+					<button
+						type="button"
+						aria-label="Wishlist"
+						className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
+					>
+						<Heart className="size-5" />
+					</button>
+					<button
+						type="button"
+						aria-label="Notifications"
+						className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
+					>
+						<Bell className="size-5" />
+					</button>
+				</div>
+			</div>
+
+			{/* Greeting */}
+			<div className="mt-6 flex items-center justify-between">
+				<div className="min-w-0 flex-1">
+					<p className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+						<Icon className="size-4 shrink-0 text-primary" />
+						{greeting}
+					</p>
+					<h1 className="mt-0.5 font-heading text-display font-bold text-foreground">
+						Hey, {firstName}
+					</h1>
+					<p className="mt-1 text-base text-muted-foreground">{question}</p>
+				</div>
+				<OpenTasteSheetButton
+					aria-label="Your avatar and taste"
+					className="pressable shrink-0 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+				>
+					<Avatar id={avatar} className="size-14 ring-2 ring-border" />
+				</OpenTasteSheetButton>
+			</div>
+		</header>
+	);
 }

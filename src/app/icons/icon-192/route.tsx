@@ -7,5 +7,5 @@ import { appIconResponse } from "@/lib/app-icon";
 export const contentType = "image/png";
 
 export function GET() {
-  return appIconResponse({ width: 192, height: 192, borderRadius: 40 });
+ return appIconResponse({ width: 192, height: 192, borderRadius: 40 });
 }

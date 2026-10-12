@@ -7,9 +7,9 @@ const MIN_PARTICIPANTS = 5;
 // stats-speak (students kept asking what it meant); a label needs no
 // interpreting. Checked in order, first match wins.
 const TIERS: { maxPercentile: number; label: string; Icon: AppIcon }[] = [
-  { maxPercentile: 10, label: "Top orderer this week", Icon: Trophy },
-  { maxPercentile: 25, label: "Frequent orderer this week", Icon: Flame },
-  { maxPercentile: 50, label: "Active orderer this week", Icon: Sparkle },
+ { maxPercentile: 10, label: "Top orderer this week", Icon: Trophy },
+ { maxPercentile: 25, label: "Frequent orderer this week", Icon: Flame },
+ { maxPercentile: 50, label: "Active orderer this week", Icon: Sparkle },
 ];
 
 /**
@@ -19,15 +19,15 @@ const TIERS: { maxPercentile: number; label: string; Icon: AppIcon }[] = [
  * the profile's sunset member card, so it uses the hero-surface tokens.
  */
 export function WeeklyRankBadge({ rank }: { rank: WeeklyRank | null }) {
-  if (!rank || rank.totalStudents < MIN_PARTICIPANTS) return null;
+ if (!rank || rank.totalStudents < MIN_PARTICIPANTS) return null;
 
-  const tier = TIERS.find((t) => rank.percentile <= t.maxPercentile);
-  if (!tier) return null;
+ const tier = TIERS.find((t) => rank.percentile <= t.maxPercentile);
+ if (!tier) return null;
 
-  return (
-    <p className="inline-flex items-center gap-1.5 rounded-full bg-hero-foreground px-3 py-1 text-sm font-semibold text-hero">
-      <tier.Icon className="icon-tint-gold size-4" aria-hidden="true" />
-      {tier.label}
-    </p>
-  );
+ return (
+ <p className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground px-3 py-1 text-sm font-semibold text-hero">
+ <tier.Icon className="text-primary size-4" aria-hidden="true" />
+ {tier.label}
+ </p>
+ );
 }

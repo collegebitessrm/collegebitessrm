@@ -11,29 +11,29 @@ import { EMPTY_TASTE, type Diet, type TasteProfile } from "@/lib/taste/options";
  * Cached per request: the Home header, the nudge and the cart all ask.
  */
 export const getTasteProfile = cache(async function getTasteProfile(userId: string): Promise<TasteProfile> {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("taste_profiles")
-    .select("avatar, spice_level, diet, cravings")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error || !data) return EMPTY_TASTE;
-  return {
-    avatar: data.avatar,
-    spiceLevel: data.spice_level,
-    diet: data.diet as Diet | null,
-    cravings: data.cravings ?? [],
-  };
+ const supabase = await createClient();
+ const { data, error } = await supabase
+ .from("taste_profiles")
+ .select("avatar, spice_level, diet, cravings")
+ .eq("user_id", userId)
+ .maybeSingle();
+ if (error || !data) return EMPTY_TASTE;
+ return {
+ avatar: data.avatar,
+ spiceLevel: data.spice_level,
+ diet: data.diet as Diet | null,
+ cravings: data.cravings ?? [],
+ };
 });
 
 /** True once the student has placed any order — the "Finish your profile" card waits for that. */
 export async function hasPlacedOrder(userId: string): Promise<boolean> {
-  const supabase = await createClient();
-  const { count, error } = await supabase
-    .from("orders")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .limit(1);
-  if (error) return false;
-  return (count ?? 0) > 0;
+ const supabase = await createClient();
+ const { count, error } = await supabase
+ .from("orders")
+ .select("id", { count: "exact", head: true })
+ .eq("user_id", userId)
+ .limit(1);
+ if (error) return false;
+ return (count ?? 0) > 0;
 }

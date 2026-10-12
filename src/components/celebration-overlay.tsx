@@ -4,13 +4,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ConfettiBurst } from "@/components/orders/confetti-burst";
 import { playOrderPlacedSound } from "@/lib/sound/play";
 import { cn } from "@/lib/utils";
-import { ThemeMotif } from "@/components/theme/theme-motif";
 
 // animate-overlay-out runs --dur-base (240ms); unmount just before it ends.
 const FADE_OUT_MS = 220;
 
 /**
- * The full-screen sunset "you did it" moment — order placed, milestone
+ * The full-screen "you did it" moment — order placed, milestone
  * unlocked. Mount it to play it: it chimes (respecting the Profile sound
  * toggle), bursts confetti (never under reduced motion), then fades itself
  * out after `duration` ms or on tap, and renders nothing from then on.
@@ -23,83 +22,74 @@ const FADE_OUT_MS = 220;
  * screen rather than a transformed ancestor.
  */
 export function CelebrationOverlay({
-  children,
-  duration = 1800,
-  confettiOnceKey,
-  onDone,
+ children,
+ duration = 1800,
+ confettiOnceKey,
+ onDone,
 }: {
-  /** The moment's content: art, headline, detail. Sits on `bg-hero`. */
-  children: ReactNode;
-  /** How long it stays up before fading out, in ms. */
-  duration?: number;
-  /** When set, confetti plays only the first time this localStorage key is seen on this device. */
-  confettiOnceKey?: string;
-  onDone?: () => void;
+ /** The moment's content: art, headline, detail. Sits on `bg-primary`. */
+ children: ReactNode;
+ /** How long it stays up before fading out, in ms. */
+ duration?: number;
+ /** When set, confetti plays only the first time this localStorage key is seen on this device. */
+ confettiOnceKey?: string;
+ onDone?: () => void;
 }) {
-  const [phase, setPhase] = useState<"in" | "out" | "hidden">("in");
-  const [showConfetti, setShowConfetti] = useState(false);
-  const onDoneRef = useRef(onDone);
-  useEffect(() => {
-    onDoneRef.current = onDone;
-  });
-  const finishedRef = useRef(false);
-  const finish = () => {
-    if (finishedRef.current) return;
-    finishedRef.current = true;
-    setPhase("hidden");
-    onDoneRef.current?.();
-  };
+ const [phase, setPhase] = useState<"in" | "out" | "hidden">("in");
+ const [showConfetti, setShowConfetti] = useState(false);
+ const onDoneRef = useRef(onDone);
+ useEffect(() => {
+ onDoneRef.current = onDone;
+ });
+ const finishedRef = useRef(false);
+ const finish = () => {
+ if (finishedRef.current) return;
+ finishedRef.current = true;
+ setPhase("hidden");
+ onDoneRef.current?.();
+ };
 
-  useEffect(() => {
-    playOrderPlacedSound();
-    // Deferred a tick (not called synchronously in the effect body) so this
-    // one-time browser-only check doesn't trigger a same-render setState.
-    const toConfetti = setTimeout(() => {
-      try {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-        if (confettiOnceKey) {
-          if (localStorage.getItem(confettiOnceKey)) return;
-          localStorage.setItem(confettiOnceKey, "1");
-        }
-        setShowConfetti(true);
-      } catch {
-        // Storage unavailable (private mode) — skip the confetti, the rest of the moment still shows.
-      }
-    }, 0);
-    const toOut = setTimeout(() => setPhase("out"), duration);
-    const toHidden = setTimeout(finish, duration + FADE_OUT_MS);
-    return () => {
-      clearTimeout(toConfetti);
-      clearTimeout(toOut);
-      clearTimeout(toHidden);
-    };
-    // Deliberately mount-only — see the doc comment.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+ useEffect(() => {
+ playOrderPlacedSound();
+ // Deferred a tick (not called synchronously in the effect body) so this
+ // one-time browser-only check doesn't trigger a same-render setState.
+ const toConfetti = setTimeout(() => {
+ try {
+ if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+ if (confettiOnceKey) {
+ if (localStorage.getItem(confettiOnceKey)) return;
+ localStorage.setItem(confettiOnceKey, "1");
+ }
+ setShowConfetti(true);
+ } catch {
+ // Storage unavailable (private mode) — skip the confetti, the rest of the moment still shows.
+ }
+ }, 0);
+ const toOut = setTimeout(() => setPhase("out"), duration);
+ const toHidden = setTimeout(finish, duration + FADE_OUT_MS);
+ return () => {
+ clearTimeout(toConfetti);
+ clearTimeout(toOut);
+ clearTimeout(toHidden);
+ };
+ // Deliberately mount-only — see the doc comment.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, []);
 
-  if (phase === "hidden") return null;
+ if (phase === "hidden") return null;
 
-  return (
-    <div
-      role="status"
-      onClick={finish}
-      className={cn(
-        "surface-hero fixed inset-0 z-[90] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-hero px-6 text-center text-hero-foreground",
-        phase === "out" ? "animate-overlay-out" : "animate-overlay-in",
-      )}
-    >
-      {/* Vice's rays of light turning slowly behind the moment; then the
-          palette's own motif rising from the bottom (the retro sun for
-          Vice, the line-art sunrise, Hub's orbits, Kaapi's tumbler). */}
-      <span aria-hidden="true" className="only-vice sunburst animate-ring-spin pointer-events-none absolute size-[150vmax] [animation-duration:40s]" />
-      <ThemeMotif className="-bottom-24 size-80" />
-      <span
-        aria-hidden="true"
-        className="animate-ping-slow pointer-events-none absolute size-56 rounded-full bg-hero-accent/25 blur-3xl"
-      />
-      {showConfetti && <ConfettiBurst />}
-      <div className="relative flex flex-col items-center">{children}</div>
-      <p className="relative mt-6 text-sm font-medium">Tap to continue</p>
-    </div>
-  );
+ return (
+ <div
+ role="status"
+ onClick={finish}
+ className={cn(
+ "bg-primary fixed inset-0 z-[90] flex cursor-pointer flex-col items-center justify-center overflow-hidden px-6 text-center text-primary-foreground",
+ phase === "out" ? "animate-overlay-out" : "animate-overlay-in",
+ )}
+ >
+ {showConfetti && <ConfettiBurst />}
+ <div className="relative flex flex-col items-center">{children}</div>
+ <p className="relative mt-6 text-sm font-medium">Tap to continue</p>
+ </div>
+ );
 }

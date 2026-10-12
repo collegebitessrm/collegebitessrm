@@ -4,20 +4,20 @@
  * the brand sheet. Import icons from here, never from the library directly.
  *
  * - The names are the app's own vocabulary (kept from when it used lucide,
- *   so call sites read the same); each maps to a Phosphor icon below.
+ * so call sites read the same); each maps to a Phosphor icon below.
  * - Every icon is Phosphor's SSR build, imported one file per icon, so it
- *   works in server and client components alike and only the icons used
- *   end up in the bundle (the library's barrel file isn't tree-shaken by
- *   Next's optimizePackageImports).
+ * works in server and client components alike and only the icons used
+ * end up in the bundle (the library's barrel file isn't tree-shaken by
+ * Next's optimizePackageImports).
  * - Defaults: 24px (callers size with size-* classes), duotone (bold for
- *   plain glyphs like Plus, X, arrows), and aria-hidden unless given an
- *   aria-label / alt. Pass weight="fill" / "bold" / "regular" to
- *   override.
+ * plain glyphs like Plus, X, arrows), and aria-hidden unless given an
+ * aria-label / alt. Pass weight="fill" / "bold" / "regular" to
+ * override.
  * - Styling the fill layer (globals.css): icon-solid makes it opaque (a
- *   filled star), icon-tint-<colour> paints it a palette colour (a gold
- *   star, a pink heart, a cyan cart).
+ * filled star), icon-tint-<colour> paints it a palette colour (a gold
+ * star, a pink heart, a cyan cart).
  * - Spinner: Loader2 with animate-spin (Phosphor's CircleNotch — its faint
- *   ring is the track).
+ * ring is the track).
  */
 import type { ComponentType } from "react";
 import type { Icon as PhosphorIcon, IconProps } from "@phosphor-icons/react/dist/lib/types";
@@ -60,6 +60,7 @@ import { Gift as PhGift } from "@phosphor-icons/react/dist/ssr/Gift";
 import { Grains as PhGrains } from "@phosphor-icons/react/dist/ssr/Grains";
 import { Hamburger as PhHamburger } from "@phosphor-icons/react/dist/ssr/Hamburger";
 import { Heart as PhHeart } from "@phosphor-icons/react/dist/ssr/Heart";
+import { House as PhHouse } from "@phosphor-icons/react/dist/ssr/House";
 import { IceCream as PhIceCream } from "@phosphor-icons/react/dist/ssr/IceCream";
 import { Leaf as PhLeaf } from "@phosphor-icons/react/dist/ssr/Leaf";
 import { LockSimple as PhLockSimple } from "@phosphor-icons/react/dist/ssr/LockSimple";
@@ -88,6 +89,7 @@ import { QrCode as PhQrCode } from "@phosphor-icons/react/dist/ssr/QrCode";
 import { Receipt as PhReceipt } from "@phosphor-icons/react/dist/ssr/Receipt";
 import { Repeat as PhRepeat } from "@phosphor-icons/react/dist/ssr/Repeat";
 import { ShareNetwork as PhShareNetwork } from "@phosphor-icons/react/dist/ssr/ShareNetwork";
+import { ShoppingCart as PhShoppingCart } from "@phosphor-icons/react/dist/ssr/ShoppingCart";
 import { ShieldCheck as PhShieldCheck } from "@phosphor-icons/react/dist/ssr/ShieldCheck";
 import { ShieldSlash as PhShieldSlash } from "@phosphor-icons/react/dist/ssr/ShieldSlash";
 import { SignOut as PhSignOut } from "@phosphor-icons/react/dist/ssr/SignOut";
@@ -97,6 +99,7 @@ import { SealPercent as PhSealPercent } from "@phosphor-icons/react/dist/ssr/Sea
 import { Sparkle as PhSparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
 import { SpeakerHigh as PhSpeakerHigh } from "@phosphor-icons/react/dist/ssr/SpeakerHigh";
 import { SpeakerSlash as PhSpeakerSlash } from "@phosphor-icons/react/dist/ssr/SpeakerSlash";
+import { Storefront as PhStorefront } from "@phosphor-icons/react/dist/ssr/Storefront";
 import { SquaresFour as PhSquaresFour } from "@phosphor-icons/react/dist/ssr/SquaresFour";
 import { Star as PhStar } from "@phosphor-icons/react/dist/ssr/Star";
 import { StarHalf as PhStarHalf } from "@phosphor-icons/react/dist/ssr/StarHalf";
@@ -118,12 +121,12 @@ export type { IconProps };
 export type AppIcon = ComponentType<IconProps>;
 
 function make(Ph: PhosphorIcon, name: string, defaultWeight: IconProps["weight"] = "duotone"): AppIcon {
-  function AppIcon({ size = 24, weight = defaultWeight, ...props }: IconProps) {
-    const labelled = Boolean(props["aria-label"] || props["aria-labelledby"] || props.alt);
-    return <Ph size={size} weight={weight} aria-hidden={labelled ? undefined : true} {...props} />;
-  }
-  AppIcon.displayName = name;
-  return AppIcon;
+ function AppIcon({ size = 24, weight = defaultWeight, ...props }: IconProps) {
+ const labelled = Boolean(props["aria-label"] || props["aria-labelledby"] || props.alt);
+ return <Ph size={size} weight={weight} aria-hidden={labelled ? undefined : true} {...props} />;
+ }
+ AppIcon.displayName = name;
+ return AppIcon;
 }
 
 /** discount offers (cart, admin) */
@@ -188,6 +191,8 @@ export const Gift = make(PhGift, "Gift");
 export const GlassWater = make(PhPintGlass, "GlassWater");
 /** order history */
 export const History = make(PhClockCounterClockwise, "History");
+/** home tab */
+export const Home = make(PhHouse, "Home");
 /** no orders */
 export const Inbox = make(PhTray, "Inbox");
 /** all categories */
@@ -244,6 +249,8 @@ export const SearchX = make(PhSmileyMeh, "SearchX");
 export const SlidersHorizontal = make(PhSlidersHorizontal, "SlidersHorizontal");
 /** share token */
 export const Share2 = make(PhShareNetwork, "Share2");
+/** cart (tab bar) */
+export const ShoppingCart = make(PhShoppingCart, "ShoppingCart");
 /** iOS share button (install steps) */
 export const Share = make(PhExport, "Share");
 /** install the admin app */
@@ -310,3 +317,5 @@ export const Popcorn = make(PhPopcorn, "Popcorn");
 export const Heart = make(PhHeart, "Heart");
 /** edit taste profile */
 export const PencilSimple = make(PhPencilSimple, "PencilSimple");
+/** restaurants admin */
+export const Storefront = make(PhStorefront, "Storefront");

@@ -1,40 +1,40 @@
 import type { CSSProperties } from "react";
 import {
-  Award,
-  ChefHat,
-  Compass,
-  Crown,
-  Gift,
-  Lock,
-  MessageCircle,
-  Repeat,
-  UtensilsCrossed,
-  type AppIcon,
+ Award,
+ ChefHat,
+ Compass,
+ Crown,
+ Gift,
+ Lock,
+ MessageCircle,
+ Repeat,
+ UtensilsCrossed,
+ type AppIcon,
 } from "@/components/icons";
+import { ThemeMotif } from "@/components/theme/theme-motif";
 import { SUPPORT_PHONE } from "@/lib/support";
 import { cn } from "@/lib/utils";
-import { ThemeMotif } from "@/components/theme/theme-motif";
 
 /** "21 Sep", in IST. */
 export function formatDayMonth(iso: string) {
-  return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
+ return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });
 }
 
 export type MilestoneKey =
-  | "first_bite"
-  | "regular"
-  | "campus_explorer"
-  | "campus_foodie"
-  | "gate_legend"
-  | "centurion";
+ | "first_bite"
+ | "regular"
+ | "campus_explorer"
+ | "campus_foodie"
+ | "gate_legend"
+ | "centurion";
 
 type MilestoneStats = {
-  /** Orders that actually reached the student (status = delivered). */
-  deliveredCount: number;
-  /** Distinct restaurants among those delivered orders. */
-  restaurantsVisited: number;
-  /** Restaurants on the platform right now — Campus Explorer needs all of them. */
-  totalRestaurants: number;
+ /** Orders that actually reached the student (status = delivered). */
+ deliveredCount: number;
+ /** Distinct restaurants among those delivered orders. */
+ restaurantsVisited: number;
+ /** Restaurants on the platform right now — Campus Explorer needs all of them. */
+ totalRestaurants: number;
 };
 
 /*
@@ -44,123 +44,123 @@ type MilestoneStats = {
  * with only three, most regulars had all of them within a couple of weeks.
  */
 export const MILESTONES: {
-  key: MilestoneKey;
-  label: string;
-  Icon: AppIcon;
-  /** [current, target] toward unlocking. */
-  progress: (s: MilestoneStats) => [number, number];
-  /** "19 more orders" etc., shown while locked. */
-  remaining: (left: number) => string;
+ key: MilestoneKey;
+ label: string;
+ Icon: AppIcon;
+ /** [current, target] toward unlocking. */
+ progress: (s: MilestoneStats) => [number, number];
+ /** "19 more orders" etc., shown while locked. */
+ remaining: (left: number) => string;
 }[] = [
-  {
-    key: "first_bite",
-    label: "First Bite",
-    Icon: UtensilsCrossed,
-    progress: (s) => [s.deliveredCount, 1],
-    remaining: () => "Place your first order",
-  },
-  {
-    key: "regular",
-    label: "Regular",
-    Icon: Repeat,
-    progress: (s) => [s.deliveredCount, 10],
-    remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
-  },
-  {
-    key: "campus_explorer",
-    label: "Campus Explorer",
-    Icon: Compass,
-    progress: (s) => [s.restaurantsVisited, s.totalRestaurants],
-    remaining: (n) => `${n} more ${n === 1 ? "restaurant" : "restaurants"}`,
-  },
-  {
-    key: "campus_foodie",
-    label: "Campus Foodie",
-    Icon: ChefHat,
-    progress: (s) => [s.deliveredCount, 25],
-    remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
-  },
-  {
-    key: "gate_legend",
-    label: "Gate Legend",
-    Icon: Crown,
-    progress: (s) => [s.deliveredCount, 50],
-    remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
-  },
-  {
-    key: "centurion",
-    label: "Centurion",
-    Icon: Award,
-    progress: (s) => [s.deliveredCount, 100],
-    remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
-  },
+ {
+ key: "first_bite",
+ label: "First Bite",
+ Icon: UtensilsCrossed,
+ progress: (s) => [s.deliveredCount, 1],
+ remaining: () => "Place your first order",
+ },
+ {
+ key: "regular",
+ label: "Regular",
+ Icon: Repeat,
+ progress: (s) => [s.deliveredCount, 10],
+ remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
+ },
+ {
+ key: "campus_explorer",
+ label: "Campus Explorer",
+ Icon: Compass,
+ progress: (s) => [s.restaurantsVisited, s.totalRestaurants],
+ remaining: (n) => `${n} more ${n === 1 ? "restaurant" : "restaurants"}`,
+ },
+ {
+ key: "campus_foodie",
+ label: "Campus Foodie",
+ Icon: ChefHat,
+ progress: (s) => [s.deliveredCount, 25],
+ remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
+ },
+ {
+ key: "gate_legend",
+ label: "Gate Legend",
+ Icon: Crown,
+ progress: (s) => [s.deliveredCount, 50],
+ remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
+ },
+ {
+ key: "centurion",
+ label: "Centurion",
+ Icon: Award,
+ progress: (s) => [s.deliveredCount, 100],
+ remaining: (n) => `${n} more ${n === 1 ? "order" : "orders"}`,
+ },
 ];
 
 function isUnlocked([current, target]: [number, number]) {
-  return target > 0 && current >= target;
+ return target > 0 && current >= target;
 }
 
 /** Shared unlock logic — used both to render the badges and (in profile/page.tsx) to detect a newly-unlocked one to celebrate. */
 export function getUnlockedMilestones(
-  deliveredCount: number,
-  restaurantsVisited: number,
-  totalRestaurants: number,
+ deliveredCount: number,
+ restaurantsVisited: number,
+ totalRestaurants: number,
 ): MilestoneKey[] {
-  const stats = { deliveredCount, restaurantsVisited, totalRestaurants };
-  return MILESTONES.filter((m) => isUnlocked(m.progress(stats))).map((m) => m.key);
+ const stats = { deliveredCount, restaurantsVisited, totalRestaurants };
+ return MILESTONES.filter((m) => isUnlocked(m.progress(stats))).map((m) => m.key);
 }
 
 export function MilestoneBadges({
-  rewardClaimedAt,
-  ...stats
+ rewardClaimedAt,
+ ...stats
 }: MilestoneStats & { rewardClaimedAt: string | null }) {
-  const tiles = MILESTONES.map((m) => {
-    const [current, target] = m.progress(stats);
-    return { ...m, current, target, unlocked: isUnlocked([current, target]) };
-  });
-  const unlockedCount = tiles.filter((t) => t.unlocked).length;
-  // The locked milestone you're proportionally closest to.
-  const next = tiles
-    .filter((t) => !t.unlocked && t.target > 0)
-    .sort((a, b) => b.current / b.target - a.current / a.target)[0];
+ const tiles = MILESTONES.map((m) => {
+ const [current, target] = m.progress(stats);
+ return { ...m, current, target, unlocked: isUnlocked([current, target]) };
+ });
+ const unlockedCount = tiles.filter((t) => t.unlocked).length;
+ // The locked milestone you're proportionally closest to.
+ const next = tiles
+ .filter((t) => !t.unlocked && t.target > 0)
+ .sort((a, b) => b.current / b.target - a.current / a.target)[0];
 
-  return (
-    <section className="mt-7" aria-labelledby="milestones">
-      <div className="flex items-baseline justify-between">
-        <h2 id="milestones" className="font-heading text-title font-bold">
-          Milestones
-        </h2>
-        <span className="text-sm font-semibold text-muted-foreground tabular-nums">
-          {unlockedCount} of {tiles.length}
-        </span>
-      </div>
-      {next && (
-        <p className="mt-0.5 text-sm text-muted-foreground">
-          Next up: <span className="font-semibold text-foreground">{next.label}</span>,{" "}
-          {next.remaining(next.target - next.current).toLowerCase()}
-        </p>
-      )}
-      <ul className="mt-3 grid grid-cols-3 gap-2.5">
-        {tiles.map((t, i) => (
-          <li key={t.key} className="animate-slide-up-in" style={{ animationDelay: `${i * 50}ms` }}>
-            <BadgeTile
-              id={t.key}
-              Icon={t.Icon}
-              label={t.label}
-              unlocked={t.unlocked}
-              progress={t.target > 0 ? t.current / t.target : 0}
-              caption={t.unlocked ? "Unlocked" : t.remaining(t.target - t.current)}
-            />
-          </li>
-        ))}
-      </ul>
-      <MilestoneReward
-        unlocked={unlockedCount}
-        total={tiles.length}
-        claimedAt={rewardClaimedAt}
-      />
-    </section>
-  );
+ return (
+ <section className="mt-7" aria-labelledby="milestones">
+ <div className="flex items-baseline justify-between">
+ <h2 id="milestones" className="font-heading text-title font-bold">
+ Milestones
+ </h2>
+ <span className="text-sm font-semibold text-muted-foreground tabular-nums">
+ {unlockedCount} of {tiles.length}
+ </span>
+ </div>
+ {next && (
+ <p className="mt-0.5 text-sm text-muted-foreground">
+ Next up: <span className="font-semibold text-foreground">{next.label}</span>,{" "}
+ {next.remaining(next.target - next.current).toLowerCase()}
+ </p>
+ )}
+ <ul className="mt-3 grid grid-cols-3 gap-2.5">
+ {tiles.map((t, i) => (
+ <li key={t.key} className="animate-slide-up-in" style={{ animationDelay: `${i * 50}ms` }}>
+ <BadgeTile
+ id={t.key}
+ Icon={t.Icon}
+ label={t.label}
+ unlocked={t.unlocked}
+ progress={t.target > 0 ? t.current / t.target : 0}
+ caption={t.unlocked ? "Unlocked" : t.remaining(t.target - t.current)}
+ />
+ </li>
+ ))}
+ </ul>
+ <MilestoneReward
+ unlocked={unlockedCount}
+ total={tiles.length}
+ claimedAt={rewardClaimedAt}
+ />
+ </section>
+ );
 }
 
 /*
@@ -173,74 +173,74 @@ export function MilestoneBadges({
  * a lit sunset card with a WhatsApp claim pill — the moment it's for.
  */
 function MilestoneReward({ unlocked, total, claimedAt }: { unlocked: number; total: number; claimedAt: string | null }) {
-  const done = unlocked === total;
-  const left = total - unlocked;
-  const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones. I'd like to claim my free biryani.");
+ const done = unlocked === total;
+ const left = total - unlocked;
+ const claimText = encodeURIComponent("Hi College Bites! I've unlocked all the milestones. I'd like to claim my free biryani.");
 
-  if (done && !claimedAt) {
-    return (
-      <div className="surface-hero glow-sun relative mt-3 overflow-hidden rounded-[1.5rem] bg-hero p-5 text-hero-foreground">
-        <ThemeMotif className="-right-8 -bottom-14 size-36" />
-        <span className="relative flex size-11 items-center justify-center rounded-2xl bg-hero-foreground text-hero">
-          <Gift className="icon-tint-gold size-6" aria-hidden="true" />
-        </span>
-        <p className="relative mt-3 font-heading text-title font-bold">You&apos;ve earned a free biryani!</p>
-        <p className="relative mt-1 text-sm text-hero-foreground/85">
-          Every milestone done. Pick any biryani you like, on us.
-        </p>
-        <a
-          href={`https://wa.me/${SUPPORT_PHONE.replace("+", "")}?text=${claimText}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="pressable relative mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-hero-foreground px-5 text-sm font-bold text-hero outline-none focus-visible:ring-3 focus-visible:ring-hero-foreground/60"
-        >
-          <MessageCircle className="size-4.5" />
-          Claim it on WhatsApp
-        </a>
-      </div>
-    );
-  }
+ if (done && !claimedAt) {
+ return (
+ <div className="bg-primary relative mt-3 overflow-hidden rounded-[1.5rem] bg-primary p-5 text-primary-foreground">
+ <ThemeMotif className="-right-8 -bottom-14 size-36" />
+ <span className="relative flex size-11 items-center justify-center rounded-2xl bg-primary-foreground text-hero">
+ <Gift className="text-primary size-6" aria-hidden="true" />
+ </span>
+ <p className="relative mt-3 font-heading text-title font-bold">You&apos;ve earned a free biryani!</p>
+ <p className="relative mt-1 text-sm text-primary-foreground/85">
+ Every milestone done. Pick any biryani you like, on us.
+ </p>
+ <a
+ href={`https://wa.me/${SUPPORT_PHONE.replace("+", "")}?text=${claimText}`}
+ target="_blank"
+ rel="noopener noreferrer"
+ className="pressable relative mt-4 inline-flex h-11 items-center gap-2 rounded-full bg-primary-foreground px-5 text-sm font-bold text-hero outline-none focus-visible:ring-3 focus-visible:ring-hero-foreground/60"
+ >
+ <MessageCircle className="size-4.5" />
+ Claim it on WhatsApp
+ </a>
+ </div>
+ );
+ }
 
-  return (
-    <div className="mt-3 flex items-start gap-3 rounded-[1.5rem] border border-pink-soft-foreground/15 bg-pink-soft px-4 py-4 text-pink-soft-foreground">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-card shadow-card">
-        <Gift className="icon-tint-gold size-5" aria-hidden="true" />
-      </span>
-      <div className="min-w-0 flex-1 text-sm">
-        {claimedAt ? (
-          <>
-            <p className="font-semibold">Free biryani claimed</p>
-            <p className="mt-0.5">
-              Handed over on {formatDayMonth(claimedAt)}. Enjoy, and thanks for sticking with us.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="font-semibold">A free biryani is waiting</p>
-            <p className="mt-0.5">
-              Unlock all {total} milestones and your next biryani is on us, any one you like.
-            </p>
-            <div className="mt-2.5 flex items-center gap-2.5">
-              <div
-                role="progressbar"
-                aria-valuenow={unlocked}
-                aria-valuemin={0}
-                aria-valuemax={total}
-                aria-label="Milestones unlocked"
-                className="h-2 flex-1 overflow-hidden rounded-full bg-card"
-              >
-                <div
-                  className="progress-fill h-full w-(--fill) rounded-full bg-[linear-gradient(90deg,var(--hero-a),var(--hero-b),var(--hero-c))]"
-                  style={{ "--fill": `${Math.round((unlocked / total) * 100)}%` } as CSSProperties}
-                />
-              </div>
-              <span className="shrink-0 font-semibold tabular-nums">{left} to go</span>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
+ return (
+ <div className="mt-3 flex items-start gap-3 rounded-[1.5rem] border border-pink-soft-foreground/15 bg-secondary px-4 py-4 text-foreground">
+ <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-card shadow-card">
+ <Gift className="text-primary size-5" aria-hidden="true" />
+ </span>
+ <div className="min-w-0 flex-1 text-sm">
+ {claimedAt ? (
+ <>
+ <p className="font-semibold">Free biryani claimed</p>
+ <p className="mt-0.5">
+ Handed over on {formatDayMonth(claimedAt)}. Enjoy, and thanks for sticking with us.
+ </p>
+ </>
+ ) : (
+ <>
+ <p className="font-semibold">A free biryani is waiting</p>
+ <p className="mt-0.5">
+ Unlock all {total} milestones and your next biryani is on us, any one you like.
+ </p>
+ <div className="mt-2.5 flex items-center gap-2.5">
+ <div
+ role="progressbar"
+ aria-valuenow={unlocked}
+ aria-valuemin={0}
+ aria-valuemax={total}
+ aria-label="Milestones unlocked"
+ className="h-2 flex-1 overflow-hidden rounded-full bg-card"
+ >
+ <div
+ className="progress-fill h-full w-(--fill) rounded-full bg-[linear-gradient(90deg,var(--hero-a),var(--hero-b),var(--hero-c))]"
+ style={{ "--fill": `${Math.round((unlocked / total) * 100)}%` } as CSSProperties}
+ />
+ </div>
+ <span className="shrink-0 font-semibold tabular-nums">{left} to go</span>
+ </div>
+ </>
+ )}
+ </div>
+ </div>
+ );
 }
 
 // Ring geometry for the size-12 (48px) icon circle.
@@ -250,99 +250,99 @@ const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 function BadgeTile({
-  id,
-  Icon,
-  label,
-  unlocked,
-  progress,
-  caption,
+ id,
+ Icon,
+ label,
+ unlocked,
+ progress,
+ caption,
 }: {
-  /** The milestone key — makes the ring's gradient id unique on the page. */
-  id: string;
-  Icon: AppIcon;
-  label: string;
-  unlocked: boolean;
-  /** 0–1 fraction toward this milestone, drawn as a ring around a locked icon. */
-  progress: number;
-  caption: string;
+ /** The milestone key — makes the ring's gradient id unique on the page. */
+ id: string;
+ Icon: AppIcon;
+ label: string;
+ unlocked: boolean;
+ /** 0–1 fraction toward this milestone, drawn as a ring around a locked icon. */
+ progress: number;
+ caption: string;
 }) {
-  const dashOffset = RING_CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, progress)));
+ const dashOffset = RING_CIRCUMFERENCE * (1 - Math.max(0, Math.min(1, progress)));
 
-  return (
-    <div
-      className={cn(
-        "flex h-full flex-col items-center rounded-2xl px-1.5 pt-3.5 pb-3 text-center",
-        unlocked ? "border bg-card shadow-raised" : "border border-dashed bg-card/40",
-      )}
-    >
-      <span className="relative flex size-12 shrink-0 items-center justify-center">
-        {!unlocked && (
-          <svg viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`} className="absolute inset-0 -rotate-90" aria-hidden="true">
-            {/* The sunset, around the ring. */}
-            <defs>
-              <linearGradient id={`ring-${id}`} x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="var(--hero-a)" />
-                <stop offset="50%" stopColor="var(--hero-b)" />
-                <stop offset="100%" stopColor="var(--hero-c)" />
-              </linearGradient>
-            </defs>
-            <circle
-              cx={RING_SIZE / 2}
-              cy={RING_SIZE / 2}
-              r={RING_RADIUS}
-              fill="none"
-              strokeWidth={RING_STROKE}
-              className="stroke-secondary"
-            />
-            <circle
-              cx={RING_SIZE / 2}
-              cy={RING_SIZE / 2}
-              r={RING_RADIUS}
-              fill="none"
-              strokeWidth={RING_STROKE}
-              strokeLinecap="round"
-              strokeDasharray={RING_CIRCUMFERENCE}
-              strokeDashoffset={dashOffset}
-              stroke={`url(#ring-${id})`}
-              className="ring-fill"
-              style={{ "--ring-empty": RING_CIRCUMFERENCE } as CSSProperties}
-            />
-          </svg>
-        )}
-        <span
-          className={cn(
-            "relative flex items-center justify-center rounded-full",
-            unlocked
-              ? "surface-primary glow-neon animate-shine size-12 overflow-hidden bg-primary text-primary-foreground"
-              : "size-9 bg-secondary text-muted-foreground",
-          )}
-        >
-          <Icon className={unlocked ? "icon-tint-gold size-5.5" : "size-4.5"} aria-hidden="true" />
-        </span>
-        {!unlocked && (
-          <span className="absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full border bg-card text-muted-foreground">
-            <Lock className="size-2.5" aria-hidden="true" />
-          </span>
-        )}
-      </span>
-      <span
-        className={cn(
-          "mt-2 text-xs leading-tight font-semibold",
-          unlocked ? "text-foreground" : "text-muted-foreground",
-        )}
-      >
-        {label}
-      </span>
-      <span className={cn("mt-0.5 text-[0.6875rem] leading-tight", unlocked ? "text-success" : "text-muted-foreground")}>
-        {unlocked ? (
-          caption
-        ) : (
-          <>
-            <span className="sr-only">Locked · </span>
-            {caption}
-          </>
-        )}
-      </span>
-    </div>
-  );
+ return (
+ <div
+ className={cn(
+ "flex h-full flex-col items-center rounded-2xl px-1.5 pt-3.5 pb-3 text-center",
+ unlocked ? "border bg-card shadow-raised" : "border border-dashed bg-card/40",
+ )}
+ >
+ <span className="relative flex size-12 shrink-0 items-center justify-center">
+ {!unlocked && (
+ <svg viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`} className="absolute inset-0 -rotate-90" aria-hidden="true">
+ {/* The sunset, around the ring. */}
+ <defs>
+ <linearGradient id={`ring-${id}`} x1="0" y1="0" x2="1" y2="1">
+ <stop offset="0%" stopColor="var(--hero-a)" />
+ <stop offset="50%" stopColor="var(--hero-b)" />
+ <stop offset="100%" stopColor="var(--hero-c)" />
+ </linearGradient>
+ </defs>
+ <circle
+ cx={RING_SIZE / 2}
+ cy={RING_SIZE / 2}
+ r={RING_RADIUS}
+ fill="none"
+ strokeWidth={RING_STROKE}
+ className="stroke-secondary"
+ />
+ <circle
+ cx={RING_SIZE / 2}
+ cy={RING_SIZE / 2}
+ r={RING_RADIUS}
+ fill="none"
+ strokeWidth={RING_STROKE}
+ strokeLinecap="round"
+ strokeDasharray={RING_CIRCUMFERENCE}
+ strokeDashoffset={dashOffset}
+ stroke={`url(#ring-${id})`}
+ className="ring-fill"
+ style={{ "--ring-empty": RING_CIRCUMFERENCE } as CSSProperties}
+ />
+ </svg>
+ )}
+ <span
+ className={cn(
+ "relative flex items-center justify-center rounded-full",
+ unlocked
+ ? " animate-shine size-12 overflow-hidden bg-primary text-primary-foreground"
+ : "size-9 bg-secondary text-muted-foreground",
+ )}
+ >
+ <Icon className={unlocked ? "text-primary size-5.5" : "size-4.5"} aria-hidden="true" />
+ </span>
+ {!unlocked && (
+ <span className="absolute -right-0.5 -bottom-0.5 flex size-5 items-center justify-center rounded-full border bg-card text-muted-foreground">
+ <Lock className="size-2.5" aria-hidden="true" />
+ </span>
+ )}
+ </span>
+ <span
+ className={cn(
+ "mt-2 text-xs leading-tight font-semibold",
+ unlocked ? "text-foreground" : "text-muted-foreground",
+ )}
+ >
+ {label}
+ </span>
+ <span className={cn("mt-0.5 text-[0.6875rem] leading-tight", unlocked ? "text-success" : "text-muted-foreground")}>
+ {unlocked ? (
+ caption
+ ) : (
+ <>
+ <span className="sr-only">Locked · </span>
+ {caption}
+ </>
+ )}
+ </span>
+ </div>
+ );
 }

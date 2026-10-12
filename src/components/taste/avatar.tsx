@@ -5,14 +5,14 @@ import { cn } from "@/lib/utils";
 // Each tone is a lit surface from the current palette, so avatars recolour
 // with the theme. Icon-on-fill pairs are the contrast-audited ones.
 const TONE: Record<AvatarTone | "ink", string> = {
-  hero: "surface-hero bg-hero text-hero-foreground",
-  primary: "surface-primary bg-primary text-primary-foreground",
-  chip: "bg-chip-active text-chip-active-foreground",
-  pink: "bg-pink-soft text-pink-soft-foreground",
-  aqua: "bg-aqua text-aqua-foreground",
-  gold: "bg-gold text-hero-foreground",
-  // On the campus pass (a sunset card): the dusk circle the initials used.
-  ink: "bg-hero-foreground text-hero",
+ hero: "bg-primary bg-primary text-primary-foreground",
+ primary: " bg-primary text-primary-foreground",
+ chip: "bg-primary text-primary-foreground",
+ pink: "bg-secondary text-foreground",
+ aqua: "bg-primary text-primary-foreground",
+ gold: "bg-primary text-primary-foreground",
+ // On the campus pass (a sunset card): the dusk circle the initials used.
+ ink: "bg-hero-foreground text-hero",
 };
 
 /**
@@ -21,25 +21,25 @@ const TONE: Record<AvatarTone | "ink", string> = {
  * label. Unknown ids fall back to the default biryani pot.
  */
 export function Avatar({
-  id,
-  className,
-  iconClassName,
-  tone,
+ id,
+ className,
+ iconClassName,
+ tone,
 }: {
-  id: string | null | undefined;
-  className?: string;
-  iconClassName?: string;
-  /** Override the avatar's own tone ("ink" on the campus pass). */
-  tone?: AvatarTone | "ink";
+ id: string | null | undefined;
+ className?: string;
+ iconClassName?: string;
+ /** Override the avatar's own tone ("ink" on the campus pass). */
+ tone?: AvatarTone | "ink";
 }) {
-  const avatar = getAvatar(id);
-  return (
-    <span
-      aria-hidden="true"
-      className={cn("flex shrink-0 items-center justify-center rounded-full", TONE[tone ?? avatar.tone], className)}
-    >
-      {/* createElement: the icon is looked up from a static list, not made during render. */}
-      {createElement(avatar.Icon, { className: cn("size-[55%]", iconClassName) })}
-    </span>
-  );
+ const avatar = getAvatar(id);
+ return (
+ <span
+ aria-hidden="true"
+ className={cn("flex shrink-0 items-center justify-center rounded-full", TONE[tone ?? avatar.tone], className)}
+ >
+ {/* createElement: the icon is looked up from a static list, not made during render. */}
+ {createElement(avatar.Icon, { className: cn("size-[55%]", iconClassName) })}
+ </span>
+ );
 }

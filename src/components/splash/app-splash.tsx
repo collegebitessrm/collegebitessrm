@@ -22,30 +22,30 @@ import "./splash.css";
  * painting frames — not something to depend on before first paint.
  */
 export function AppSplash() {
-  const capStyle: CSSProperties = {
-    left: `${MARK_CAP.x * 100}%`,
-    top: `${MARK_CAP.y * 100}%`,
-    width: `${MARK_CAP.w * 100}%`,
-    // The cap's own shape, so it never collapses to 0 px before its image paints.
-    aspectRatio: `${MARK_CAP.w} / ${MARK_CAP.h}`,
-  };
-  return (
-    <div id="app-splash" className="app-splash" aria-hidden="true" style={{ "--sp-tile": MARK_TILE } as CSSProperties}>
-      <div className="sp-night" data-sp="night" />
-      <div className="sp-halo" data-sp="halo" />
-      <div className="sp-words" data-sp="words">
-        <p className="sp-name font-heading">College Bites</p>
-        <p className="sp-tagline">Crave. Click. Campus.</p>
-      </div>
-      <div className="sp-tile" data-sp="tile">
-        {/* eslint-disable-next-line @next/next/no-img-element -- raw <img>: the inline engine drives it before hydration */}
-        <img className="sp-art" data-src={SPLASH.tileImage} alt="" width={512} height={512} draggable={false} />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="sp-cap" data-sp="cap" data-src={SPLASH.capImage} alt="" draggable={false} style={capStyle} />
-        <div className="sp-sheen" data-sp="sheen" />
-      </div>
-      {/* Last element: the engine waits until the overlay has streamed in up to here. */}
-      <span hidden data-sp="end" />
-    </div>
-  );
+ const capStyle: CSSProperties = {
+ left: `${MARK_CAP.x * 100}%`,
+ top: `${MARK_CAP.y * 100}%`,
+ width: `${MARK_CAP.w * 100}%`,
+ // The cap's own shape, so it never collapses to 0 px before its image paints.
+ aspectRatio: `${MARK_CAP.w} / ${MARK_CAP.h}`,
+ };
+ return (
+ <div id="app-splash" className="app-splash" aria-hidden="true" style={{ "--sp-tile": MARK_TILE } as CSSProperties}>
+ <div className="sp-night" data-sp="night" suppressHydrationWarning />
+ <div className="sp-halo" data-sp="halo" />
+ <div className="sp-words" data-sp="words">
+ <p className="sp-name font-heading">College Bites</p>
+ <p className="sp-tagline">Crave. Click. Campus.</p>
+ </div>
+ <div className="sp-tile" data-sp="tile">
+ {/* eslint-disable-next-line @next/next/no-img-element -- raw <img>: the inline engine drives it before hydration */}
+ <img className="sp-art" data-src={SPLASH.tileImage} alt="" width={512} height={512} draggable={false} suppressHydrationWarning />
+ {/* eslint-disable-next-line @next/next/no-img-element */}
+ <img className="sp-cap" data-sp="cap" data-src={SPLASH.capImage} alt="" draggable={false} style={capStyle} suppressHydrationWarning />
+ <div className="sp-sheen" data-sp="sheen" />
+ </div>
+ {/* Last element: the engine waits until the overlay has streamed in up to here. */}
+ <span hidden data-sp="end" />
+ </div>
+ );
 }

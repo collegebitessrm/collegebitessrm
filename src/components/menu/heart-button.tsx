@@ -17,51 +17,51 @@ import { cn } from "@/lib/utils";
 const TAPPED = new Map<string, boolean>();
 
 export function HeartButton({
-  dishId,
-  dishName,
-  initialLiked,
+ dishId,
+ dishName,
+ initialLiked,
 }: {
-  dishId: string;
-  dishName: string;
-  initialLiked: boolean;
+ dishId: string;
+ dishName: string;
+ initialLiked: boolean;
 }) {
-  const [liked, setLikedState] = useState(() => TAPPED.get(dishId) ?? initialLiked);
-  function setLiked(value: boolean) {
-    TAPPED.set(dishId, value);
-    setLikedState(value);
-  }
-  const [pops, setPops] = useState(0);
-  const [, startTransition] = useTransition();
+ const [liked, setLikedState] = useState(() => TAPPED.get(dishId) ?? initialLiked);
+ function setLiked(value: boolean) {
+ TAPPED.set(dishId, value);
+ setLikedState(value);
+ }
+ const [pops, setPops] = useState(0);
+ const [, startTransition] = useTransition();
 
-  function toggle() {
-    const next = !liked;
-    setLiked(next);
-    if (next) {
-      setPops((n) => n + 1);
-      navigator.vibrate?.(10);
-    }
-    startTransition(async () => {
-      const result = await setDishLiked(dishId, next);
-      if (!result.ok) {
-        setLiked(!next);
-        toast.error(result.error);
-      }
-    });
-  }
+ function toggle() {
+ const next = !liked;
+ setLiked(next);
+ if (next) {
+ setPops((n) => n + 1);
+ navigator.vibrate?.(10);
+ }
+ startTransition(async () => {
+ const result = await setDishLiked(dishId, next);
+ if (!result.ok) {
+ setLiked(!next);
+ toast.error(result.error);
+ }
+ });
+ }
 
-  return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-pressed={liked}
-      aria-label={`Heart ${dishName}`}
-      className="flex size-9 items-center justify-center rounded-full bg-card/90 shadow-card backdrop-blur-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
-    >
-      <Heart
-        key={pops}
-        weight={liked ? "fill" : "bold"}
-        className={cn("size-[1.15rem]", liked ? "animate-pop-in text-primary" : "text-muted-foreground")}
-      />
-    </button>
-  );
+ return (
+ <button
+ type="button"
+ onClick={toggle}
+ aria-pressed={liked}
+ aria-label={`Heart ${dishName}`}
+ className="flex size-9 items-center justify-center rounded-full bg-card/90 shadow-card backdrop-blur-sm outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
+ >
+ <Heart
+ key={pops}
+ weight={liked ? "fill" : "bold"}
+ className={cn("size-[1.15rem]", liked ? "animate-pop-in text-primary" : "text-muted-foreground")}
+ />
+ </button>
+ );
 }

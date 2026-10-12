@@ -15,32 +15,32 @@ import { cn } from "@/lib/utils";
  * ends (Home header, sign-in page).
  */
 export function BrandLogo({
-  className,
-  preload,
-  splashTarget,
+ className,
+ preload,
+ splashTarget,
 }: {
-  className?: string;
-  preload?: boolean;
-  splashTarget?: boolean;
+ className?: string;
+ preload?: boolean;
+ splashTarget?: boolean;
 }) {
-  return (
-    <div
-      data-splash-target={splashTarget ? "" : undefined}
-      className={cn(
-        "flex size-36 items-center justify-center overflow-hidden rounded-[2rem] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.14),0_10px_28px_-10px_var(--glow-neon)]",
-        className,
-      )}
-      style={{ backgroundColor: MARK_TILE }}
-    >
-      <Image
-        src="/brand/mark-v2-1.webp"
-        alt="College Bites: Crave. Click. Campus."
-        width={512}
-        height={512}
-        sizes="144px"
-        preload={preload}
-        className="size-full object-contain"
-      />
-    </div>
-  );
+ return (
+ <div
+ data-splash-target={splashTarget ? "" : undefined}
+ className={cn(
+ "flex size-36 items-center justify-center overflow-hidden rounded-[2rem] dark:shadow-[0_0_0_1px_rgb(255_255_255/0.14),0_10px_28px_-10px_var(--glow-neon)]",
+ className,
+ )}
+ style={{ backgroundColor: MARK_TILE }}
+ >
+ <Image
+ src="/brand/mark-v2-1.webp"
+ alt="College Bites: Crave. Click. Campus."
+ width={512}
+ height={512}
+ sizes="144px"
+ preload={preload}
+ className="size-full object-contain"
+ />
+ </div>
+ );
 }

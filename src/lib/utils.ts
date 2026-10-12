@@ -5,5 +5,5 @@ import { createCn } from "cn/config";
 // takes `text-label` for a text colour, so `cn("text-label
 // text-muted-foreground", …)` silently dropped the size.
 export const cn = createCn({
-  extend: { classGroups: { "font-size": [{ text: ["display", "headline", "title", "label"] }] } },
+ extend: { classGroups: { "font-size": [{ text: ["display", "headline", "title", "label"] }] } },
 });

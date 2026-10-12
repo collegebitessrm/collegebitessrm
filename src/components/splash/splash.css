@@ -11,185 +11,185 @@
  */
 
 /* The bite's three radii animate (Web Animations on registered custom
-   properties). Without @property support they'd jump, so the engine fades
-   the screen instead there. */
+ properties). Without @property support they'd jump, so the engine fades
+ the screen instead there. */
 @property --sp-r1 {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
+ syntax: "<length>";
+ inherits: false;
+ initial-value: 0px;
 }
 @property --sp-r2 {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
+ syntax: "<length>";
+ inherits: false;
+ initial-value: 0px;
 }
 @property --sp-r3 {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
+ syntax: "<length>";
+ inherits: false;
+ initial-value: 0px;
 }
 
 .app-splash {
-  display: none;
-  --sp-glow: #7a28e8;
-  --sp-cyan: #22ddeb;
-  --sp-cream: #fff8f0;
-  --sp-size: min(38vw, 10rem);
+ display: none;
+ --sp-glow: #7a28e8;
+ --sp-cyan: #22ddeb;
+ --sp-cream: #fff8f0;
+ --sp-size: min(38vw, 10rem);
 }
 html[data-splash="play"] .app-splash,
 html[data-splash="run"] .app-splash,
 html[data-splash="out"] .app-splash {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: block;
-  overflow: hidden;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+ position: fixed;
+ inset: 0;
+ z-index: 200;
+ display: block;
+ overflow: hidden;
+ user-select: none;
+ -webkit-tap-highlight-color: transparent;
 }
 /* Last resort if the engine dies mid-way: never cover the app for good.
-   (Not on "out", where the engine's own exit runs.) */
+ (Not on "out", where the engine's own exit runs.) */
 html[data-splash="play"] .app-splash,
 html[data-splash="run"] .app-splash {
-  animation: sp-failsafe 1ms linear 9s both;
+ animation: sp-failsafe 1ms linear 9s both;
 }
 html[data-splash="play"],
 html[data-splash="run"] {
-  overflow: hidden;
+ overflow: hidden;
 }
 html[data-splash="out"] .app-splash {
-  pointer-events: none;
+ pointer-events: none;
 }
 
 /* ---- The indigo screen, with the bite cut out of its top-right corner ----- */
 .sp-night {
-  position: absolute;
-  inset: 0;
-  background: var(--sp-tile);
-  background:
-    radial-gradient(70% 42% at 50% 40%, color-mix(in srgb, var(--sp-glow) 38%, transparent), transparent 72%),
-    radial-gradient(60% 30% at 50% 100%, color-mix(in srgb, var(--sp-cyan) 10%, transparent), transparent 70%),
-    var(--sp-tile);
-  /* Three circles (a big one at the corner, scallops along the top and right
-     edges); the engine sets their centres in px and animates their radii. */
-  --sp-x1: 100%;
-  --sp-y1: 0%;
-  --sp-x2: 100%;
-  --sp-y2: 0%;
-  --sp-x3: 100%;
-  --sp-y3: 0%;
-  -webkit-mask:
-    radial-gradient(circle at var(--sp-x1) var(--sp-y1), #0000 var(--sp-r1), #000 calc(var(--sp-r1) + 0.6px)),
-    radial-gradient(circle at var(--sp-x2) var(--sp-y2), #0000 var(--sp-r2), #000 calc(var(--sp-r2) + 0.6px)),
-    radial-gradient(circle at var(--sp-x3) var(--sp-y3), #0000 var(--sp-r3), #000 calc(var(--sp-r3) + 0.6px));
-  -webkit-mask-composite: source-in;
-  mask:
-    radial-gradient(circle at var(--sp-x1) var(--sp-y1), #0000 var(--sp-r1), #000 calc(var(--sp-r1) + 0.6px)),
-    radial-gradient(circle at var(--sp-x2) var(--sp-y2), #0000 var(--sp-r2), #000 calc(var(--sp-r2) + 0.6px)),
-    radial-gradient(circle at var(--sp-x3) var(--sp-y3), #0000 var(--sp-r3), #000 calc(var(--sp-r3) + 0.6px));
-  mask-composite: intersect;
+ position: absolute;
+ inset: 0;
+ background: var(--sp-tile);
+ background:
+ radial-gradient(70% 42% at 50% 40%, color-mix(in srgb, var(--sp-glow) 38%, transparent), transparent 72%),
+ radial-gradient(60% 30% at 50% 100%, color-mix(in srgb, var(--sp-cyan) 10%, transparent), transparent 70%),
+ var(--sp-tile);
+ /* Three circles (a big one at the corner, scallops along the top and right
+ edges); the engine sets their centres in px and animates their radii. */
+ --sp-x1: 100%;
+ --sp-y1: 0%;
+ --sp-x2: 100%;
+ --sp-y2: 0%;
+ --sp-x3: 100%;
+ --sp-y3: 0%;
+ -webkit-mask:
+ radial-gradient(circle at var(--sp-x1) var(--sp-y1), #0000 var(--sp-r1), #000 calc(var(--sp-r1) + 0.6px)),
+ radial-gradient(circle at var(--sp-x2) var(--sp-y2), #0000 var(--sp-r2), #000 calc(var(--sp-r2) + 0.6px)),
+ radial-gradient(circle at var(--sp-x3) var(--sp-y3), #0000 var(--sp-r3), #000 calc(var(--sp-r3) + 0.6px));
+ -webkit-mask-composite: source-in;
+ mask:
+ radial-gradient(circle at var(--sp-x1) var(--sp-y1), #0000 var(--sp-r1), #000 calc(var(--sp-r1) + 0.6px)),
+ radial-gradient(circle at var(--sp-x2) var(--sp-y2), #0000 var(--sp-r2), #000 calc(var(--sp-r2) + 0.6px)),
+ radial-gradient(circle at var(--sp-x3) var(--sp-y3), #0000 var(--sp-r3), #000 calc(var(--sp-r3) + 0.6px));
+ mask-composite: intersect;
 }
 
 /* Everything on it starts hidden; the engine animates it in (reduced motion
-   shows the finished logo instead — see the bottom). */
+ shows the finished logo instead — see the bottom). */
 .sp-halo,
 .sp-words,
 .sp-tile,
 .sp-cap {
-  opacity: 0;
+ opacity: 0;
 }
 
 /* A soft light behind the tile. */
 .sp-halo {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  width: calc(var(--sp-size) * 2);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--sp-cyan) 28%, transparent) 0%,
-    color-mix(in srgb, var(--sp-glow) 26%, transparent) 40%,
-    transparent 70%
-  );
-  pointer-events: none;
+ position: absolute;
+ left: 50%;
+ top: 40%;
+ width: calc(var(--sp-size) * 2);
+ aspect-ratio: 1;
+ border-radius: 50%;
+ transform: translate(-50%, -50%);
+ background: radial-gradient(
+ circle,
+ color-mix(in srgb, var(--sp-cyan) 28%, transparent) 0%,
+ color-mix(in srgb, var(--sp-glow) 26%, transparent) 40%,
+ transparent 70%
+ );
+ pointer-events: none;
 }
 
 .sp-tile {
-  position: absolute;
-  left: 50%;
-  top: 40%;
-  width: var(--sp-size);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 24%;
-  background: var(--sp-tile);
-  transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 0 1px rgb(255 255 255 / 12%),
-    0 18px 50px -14px color-mix(in srgb, var(--sp-glow) 80%, transparent);
+ position: absolute;
+ left: 50%;
+ top: 40%;
+ width: var(--sp-size);
+ aspect-ratio: 1;
+ overflow: hidden;
+ border-radius: 24%;
+ background: var(--sp-tile);
+ transform: translate(-50%, -50%);
+ box-shadow:
+ 0 0 0 1px rgb(255 255 255 / 12%),
+ 0 18px 50px -14px color-mix(in srgb, var(--sp-glow) 80%, transparent);
 }
 .sp-tile img {
-  -webkit-user-drag: none;
+ -webkit-user-drag: none;
 }
 .sp-art {
-  display: block;
-  width: 100%;
-  height: 100%;
+ display: block;
+ width: 100%;
+ height: 100%;
 }
 /* The graduation cap (placed by MARK_CAP, inline): it drops in from above
-   the tile, which clips it. */
+ the tile, which clips it. */
 .sp-cap {
-  position: absolute;
-  height: auto;
-  transform-origin: 40% 55%;
+ position: absolute;
+ height: auto;
+ transform-origin: 40% 55%;
 }
 .sp-sheen {
-  position: absolute;
-  inset: -10%;
-  background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 42%) 50%, transparent 62%);
-  transform: translateX(-120%);
-  pointer-events: none;
+ position: absolute;
+ inset: -10%;
+ background: linear-gradient(105deg, transparent 38%, rgb(255 255 255 / 42%) 50%, transparent 62%);
+ transform: translateX(-120%);
+ pointer-events: none;
 }
 
 .sp-words {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(40% + var(--sp-size) / 2 + 1.4rem);
-  text-align: center;
-  color: var(--sp-cream);
+ position: absolute;
+ left: 0;
+ right: 0;
+ top: calc(40% + var(--sp-size) / 2 + 1.4rem);
+ text-align: center;
+ color: var(--sp-cream);
 }
 .sp-name {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+ margin: 0;
+ font-size: 2rem;
+ font-weight: 700;
+ line-height: 1.1;
+ letter-spacing: -0.02em;
 }
 .sp-tagline {
-  margin: 0.4rem 0 0;
-  color: var(--sp-cyan);
-  font-size: 0.95rem;
-  font-weight: 600;
+ margin: 0.4rem 0 0;
+ color: var(--sp-cyan);
+ font-size: 0.95rem;
+ font-weight: 600;
 }
 
 /* Reduced motion: the finished logo (cap in place) and name, faded in and out. */
 .app-splash[data-reduced] .sp-halo {
-  opacity: 0.55;
+ opacity: 0.55;
 }
 .app-splash[data-reduced] .sp-words,
 .app-splash[data-reduced] .sp-tile,
 .app-splash[data-reduced] .sp-cap {
-  opacity: 1;
+ opacity: 1;
 }
 
 @keyframes sp-failsafe {
-  to {
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-  }
+ to {
+ visibility: hidden;
+ opacity: 0;
+ pointer-events: none;
+ }
 }

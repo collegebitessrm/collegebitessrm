@@ -3,11 +3,11 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 
 type HighlyReorderedRow = {
-  dish_id: string;
-  dish_name: string;
-  restaurant_id: string;
-  restaurant_name: string;
-  repeat_student_count: number;
+ dish_id: string;
+ dish_name: string;
+ restaurant_id: string;
+ restaurant_name: string;
+ repeat_student_count: number;
 };
 
 /**
@@ -17,9 +17,9 @@ type HighlyReorderedRow = {
  * "Highly re-ordered" tag.
  */
 export async function getHighlyReorderedDishIds(): Promise<Set<string>> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("highly_reordered_dishes");
+ const supabase = await createClient();
+ const { data, error } = await supabase.rpc("highly_reordered_dishes");
 
-  if (error) throw error;
-  return new Set(((data ?? []) as HighlyReorderedRow[]).map((d) => d.dish_id));
+ if (error) throw error;
+ return new Set(((data ?? []) as HighlyReorderedRow[]).map((d) => d.dish_id));
 }

@@ -5,2318 +5,468 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Vice Dusk × Leonida Gold — fixed ramps, identical in light and dark. Five
- * steps per hue (100 lightest -> 900 darkest); the 500 is the named colour
- * itself. Components should normally reach for the semantic tokens further
- * down (bg-primary, text-aqua, bg-card, …), which DO flip per theme; the
- * raw ramps are for one-off decorative work where a specific,
- * theme-independent shade is the point (illustrations, confetti, glows).
- *
- *   night   #0E0A24  Vice dusk — the dark ground, and text on every neon
- *                    or sunset fill. Blue-violet on purpose, never plum.
- *   pink    #FF2E88  Ocean Drive neon — dark-mode actions, glows. #D6006C
- *                    is its light-mode ink.
- *   aqua    #22DDEB  Keys cyan — selected chips, focus, cool light. It's
- *                    the logo's teal switched on.
- *   sunset  #FF7A2F  Leonida tangerine — the warm end of actions.
- *   coral   #FF6A5B  only ever the middle of the sunset gradient, where
- *                    orange melts into pink.
- *   gold    #FFC857  Starfish gold — stars, highlights (#C77F00 on light).
- *   violet  #7A28E8  the far edge of the sky; end of light-mode actions.
- *   sand    #FFF5EE  golden-hour ground.
+ * Zomato-style clean design: white backgrounds, red accents, black text.
+ * Minimal, professional food-delivery aesthetic.
  */
 @theme {
-  --color-night-100: #e9e6f5;
-  --color-night-300: #8f86b8;
-  --color-night-500: #3a2f6b;
-  --color-night-700: #1a1238;
-  --color-night-900: #0e0a24;
+ /* Primary palette — Orange */
+ --color-red-100: #fff0e6;
+ --color-red-300: #ffb899;
+ --color-red-500: #ff6b35;
+ --color-red-700: #cc5528;
+ --color-red-900: #803519;
 
-  --color-pink-100: #ffe3f0;
-  --color-pink-300: #ff8cc0;
-  --color-pink-500: #ff2e88;
-  --color-pink-700: #d6006c;
-  --color-pink-900: #8a0046;
+ /* Neutral greys */
+ --color-grey-100: #f8f8f8;
+ --color-grey-300: #e8e8e8;
+ --color-grey-500: #9c9c9c;
+ --color-grey-700: #696969;
+ --color-grey-900: #1c1c1c;
 
-  --color-aqua-100: #d9fafc;
-  --color-aqua-300: #7eeef5;
-  --color-aqua-500: #22ddeb;
-  --color-aqua-700: #00707e;
-  --color-aqua-900: #003b43;
-
-  --color-sunset-100: #ffe9da;
-  --color-sunset-300: #ffb557;
-  --color-sunset-500: #ff7a2f;
-  --color-sunset-700: #b24a00;
-  --color-sunset-900: #5e2600;
-
-  --color-coral-500: #ff6a5b;
-
-  --color-gold-100: #fff4d6;
-  --color-gold-300: #ffdc8f;
-  --color-gold-500: #ffc857;
-  --color-gold-700: #c77f00;
-  --color-gold-900: #6b4300;
-
-  --color-violet-100: #efe6ff;
-  --color-violet-300: #b79cff;
-  --color-violet-500: #7a28e8;
-  --color-violet-700: #5a1bb0;
-  --color-violet-900: #2e0b63;
-
-  --color-sand-100: #ffffff;
-  --color-sand-300: #fff5ee;
-  --color-sand-500: #fbe8dc;
-  --color-sand-700: #f0d2c2;
-  --color-sand-900: #d9b3a0;
-
-  --color-forest-100: #e3efe7;
-  --color-forest-300: #8cc3a6;
-  --color-forest-500: #2f6b4f;
-  --color-forest-700: #22503a;
-  --color-forest-900: #14301f;
-
-  --color-brick-100: #fbe3df;
-  --color-brick-300: #f08271;
-  --color-brick-500: #b42b1c;
-  --color-brick-700: #8e2416;
-  --color-brick-900: #561409;
+ /* Success green (veg, delivered) */
+ --color-green-100: #e8f5e3;
+ --color-green-300: #a8d89e;
+ --color-green-500: #60a756;
+ --color-green-700: #4d8645;
+ --color-green-900: #2e5029;
 }
 
 /*
- * Type scale — the named steps for display text (Poppins via font-heading).
- * Body copy keeps Tailwind's text-sm/text-base; everything bigger than a
- * card title should come from here rather than one-off text-[2.5rem]s.
- *   display   login / welcome hero
- *   headline  page titles (Your orders, restaurant name, cart)
- *   title     card and section titles
- *   label     small caption above a field or section — sentence case,
- *             sans, no letter-spacing. Replaces the old mono-uppercase
- *             eyebrows, which made screens read like developer tooling.
- */
-/*
- * Motion tokens. Three curves and four durations cover every animation in
- * the app; reach for these instead of hand-typing cubic-beziers.
- *   ease-out-expo  things arriving (sheets, toasts, content sliding in)
- *   ease-spring    small confirmations that should feel springy (add to
- *                  cart, count bumps) — overshoots slightly, keep it short
- *   ease-in-quad   things leaving
- * Durations: press 120ms · quick 180ms · base 240ms · slow 400ms. The
- * ease-* ones also generate Tailwind utilities (ease-out-expo, …).
+ * Type scale — Poppins for display text, Inter for body.
  */
 @theme {
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+ --text-display: clamp(2rem, 10vw, 2.5rem);
+ --text-display--line-height: 1.08;
+ --text-display--letter-spacing: -0.03em;
+ --text-headline: 1.75rem;
+ --text-headline--line-height: 1.15;
+ --text-headline--letter-spacing: -0.02em;
+ --text-title: 1.3125rem;
+ --text-title--line-height: 1.25;
+ --text-title--letter-spacing: -0.015em;
+ --text-label: 0.8125rem;
+ --text-label--line-height: 1.125rem;
+ --text-label--font-weight: 600;
+}
+
+/*
+ * Motion tokens — keep functional, remove decorative.
+ */
+@theme {
+ --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+ --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+ --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
 }
 
 :root {
-  --dur-press: 120ms;
-  --dur-quick: 180ms;
-  --dur-base: 240ms;
-  --dur-slow: 400ms;
-}
-
-@theme {
-  /* Poppins runs wider and taller than a serif of the same size, so the
-     steps sit a little smaller. Fluid display: 32px on a 320px phone (so
-     "Crave. Click." stays one line), up to 40px from ~410px wide. */
-  --text-display: clamp(2rem, 10vw, 2.5rem);
-  --text-display--line-height: 1.08;
-  --text-display--letter-spacing: -0.03em;
-  --text-headline: 1.75rem;
-  --text-headline--line-height: 1.15;
-  --text-headline--letter-spacing: -0.02em;
-  --text-title: 1.3125rem;
-  --text-title--line-height: 1.25;
-  --text-title--letter-spacing: -0.015em;
-  --text-label: 0.8125rem;
-  --text-label--line-height: 1.125rem;
-  --text-label--font-weight: 600;
+ --dur-press: 120ms;
+ --dur-quick: 180ms;
+ --dur-base: 240ms;
+ --dur-slow: 400ms;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-poppins), var(--font-inter);
-  --color-scrim: var(--scrim);
-  --color-hero: var(--hero);
-  --color-hero-foreground: var(--hero-foreground);
-  --color-hero-accent: var(--hero-accent);
-  --color-hero-success: var(--hero-success);
-  --color-hero-danger: var(--hero-danger);
-  --color-chip-active: var(--chip-active);
-  --color-chip-active-foreground: var(--chip-active-foreground);
-  --color-pink-soft: var(--pink-soft);
-  --color-pink-soft-foreground: var(--pink-soft-foreground);
-  --color-aqua: var(--aqua);
-  --color-aqua-foreground: var(--aqua-foreground);
-  --color-gold: var(--gold);
-  --color-gold-strong: var(--gold-strong);
-  --color-success: var(--success);
-  --color-success-foreground: var(--success-foreground);
-  --color-success-soft: var(--success-soft);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --shadow-card: var(--elevation-card);
-  --shadow-raised: var(--elevation-raised);
-  --shadow-overlay: var(--elevation-overlay);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+ --color-background: var(--background);
+ --color-foreground: var(--foreground);
+ --font-sans: var(--font-inter);
+ --font-heading: var(--font-poppins), var(--font-inter);
+ --color-scrim: var(--scrim);
+ --color-chip-active: var(--chip-active);
+ --color-chip-active-foreground: var(--chip-active-foreground);
+ --color-success: var(--success);
+ --color-success-foreground: var(--success-foreground);
+ --color-success-soft: var(--success-soft);
+ --color-sidebar-ring: var(--sidebar-ring);
+ --color-sidebar-border: var(--sidebar-border);
+ --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+ --color-sidebar-accent: var(--sidebar-accent);
+ --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+ --color-sidebar-primary: var(--sidebar-primary);
+ --color-sidebar-foreground: var(--sidebar-foreground);
+ --color-sidebar: var(--sidebar);
+ --color-chart-5: var(--chart-5);
+ --color-chart-4: var(--chart-4);
+ --color-chart-3: var(--chart-3);
+ --color-chart-2: var(--chart-2);
+ --color-chart-1: var(--chart-1);
+ --color-ring: var(--ring);
+ --color-input: var(--input);
+ --color-border: var(--border);
+ --color-destructive: var(--destructive);
+ --color-destructive-foreground: var(--destructive-foreground);
+ --color-accent-foreground: var(--accent-foreground);
+ --color-accent: var(--accent);
+ --color-muted-foreground: var(--muted-foreground);
+ --color-muted: var(--muted);
+ --color-secondary-foreground: var(--secondary-foreground);
+ --color-secondary: var(--secondary);
+ --color-primary-foreground: var(--primary-foreground);
+ --color-primary: var(--primary);
+ --color-popover-foreground: var(--popover-foreground);
+ --color-popover: var(--popover);
+ --color-card-foreground: var(--card-foreground);
+ --color-card: var(--card);
+ --shadow-card: var(--elevation-card);
+ --shadow-raised: var(--elevation-raised);
+ --shadow-overlay: var(--elevation-overlay);
+ --radius-sm: calc(var(--radius) * 0.6);
+ --radius-md: calc(var(--radius) * 0.8);
+ --radius-lg: var(--radius);
+ --radius-xl: calc(var(--radius) * 1.4);
+ --radius-2xl: calc(var(--radius) * 1.8);
+ --radius-3xl: calc(var(--radius) * 2.2);
+ --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 /*
- * Vice Dusk × Leonida Gold — the palette is built around LIGHT, not a row
- * of equal swatches: a deep dusk ground, neon that glows (magenta, cyan), a
- * sunset that bleeds gold → coral → magenta, and violet as the far edge of
- * the sky. Light mode is the same scene at golden hour.
- *
- *   actions   --primary → --primary-2 gradient pill (surface-primary):
- *             light magenta → violet with white text, dark neon magenta →
- *             tangerine with dusk text. Solid --primary is the fallback
- *             and the colour of primary-as-text (links).
- *   chips     --chip-active: Keys cyan with deep text, both themes.
- *   text      --aqua (cuisines, info), --primary (links), --gold (stars)
- *   hero      --hero-a → -b → -c sunset (surface-hero): pickup pass,
- *             member card, cart bar, banners, admin Today card. Dusk
- *             text in BOTH themes, at full strength — faded text fails on
- *             the magenta end.
- *   light     --glow-* bloom colours (glow-neon/-cyan/-sun utilities),
- *             --page-glow-* (the sky over every page), rim light baked
- *             into the dark card elevation, --heading-* (text-sunset).
- *
- * Surfaces step ground < card < raised in both themes:
- *   light  sand #FFF5EE < white < white, lilac wells #F6EEFF
- *   dark   dusk #0E0A24 < #1A1238 < #251A4E (blue-violet, not black)
- *
- * Every text/surface pair (and the Home heading over each sky) is checked
- * by `npm run audit:contrast`.
- *
- * This is the default palette (Vice Dusk, `data-palette="vice"` or none).
- * Three more follow the .dark block — Electric Sunrise, Innovation Hub and
- * Kaapi — each a complete light + dark token set; the student picks one in
- * Profile (src/lib/theme/palettes.ts).
+ * Light mode — clean white with red accents.
  */
-:root,
-[data-palette="vice"] {
-  --background: #fff5ee;
-  --foreground: #1a0f3d;
-  --card: #ffffff;
-  --card-foreground: #1a0f3d;
-  --popover: #ffffff;
-  --popover-foreground: #1a0f3d;
-  --primary: #c2005e;
-  --primary-2: #7a28e8;
-  --primary-foreground: #ffffff;
-  --secondary: #f6eeff;
-  --secondary-foreground: #1a0f3d;
-  --muted: #f6eeff;
-  --muted-foreground: #5b4f86;
-  --accent: #f6eeff;
-  --accent-foreground: #1a0f3d;
-  --destructive: #b42b1c;
-  --destructive-foreground: #ffffff;
-  --border: #efdcea;
-  /* 3.3:1 against card — WCAG 1.4.11 wants 3:1 for a control's boundary. */
-  --input: #9186b8;
-  --ring: #00707e;
-  /* The sunset hero: gold → coral → magenta, dusk text on all of it. */
-  --hero: #ff6a5b;
-  --hero-a: #ffb557;
-  --hero-b: #ff6a5b;
-  --hero-c: #ff3d93;
-  --hero-foreground: #0e0a24;
-  /* Accents that sit ON the sunset hero (initials, "Show this token",
-     stat numbers that need a second colour) — checked against every stop. */
-  --hero-accent: #2a0752;
-  --hero-success: #022617;
-  --hero-danger: #350303;
-  --chip-active: #10cfdd;
-  --chip-active-foreground: #1a0f3d;
-  --pink-soft: #ffe6f1;
-  --pink-soft-foreground: #9c0050;
-  --aqua: #00707e;
-  --aqua-foreground: #ffffff;
-  --gold: #ffc857;
-  /* Stars and other gold marks on light surfaces need 3:1 as graphics. */
-  --gold-strong: #c77f00;
-  --success: #0e7556;
-  --success-foreground: #ffffff;
-  --success-soft: #dcf4ea;
-  --stripe-a: #fbe6f0;
-  --stripe-b: #fff2f7;
-  --chart-1: #c2005e;
-  --chart-2: #10cfdd;
-  --chart-3: #ffc857;
-  --chart-4: #ff7a2f;
-  --chart-5: #7a28e8;
-  --radius: 0.875rem;
-  --sidebar: #fff5ee;
-  --sidebar-foreground: #1a0f3d;
-  --sidebar-primary: #c2005e;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f6eeff;
-  --sidebar-accent-foreground: #1a0f3d;
-  --sidebar-border: #efdcea;
-  --sidebar-ring: #00707e;
+:root {
+ --background: #ffffff;
+ --foreground: #1c1c1c;
+ --card: #ffffff;
+ --card-foreground: #1c1c1c;
+ --popover: #ffffff;
+ --popover-foreground: #1c1c1c;
+ --primary: #ff6b35;
+ --primary-foreground: #ffffff;
+ --secondary: #f8f8f8;
+ --secondary-foreground: #1c1c1c;
+ --muted: #f8f8f8;
+ --muted-foreground: #696969;
+ --accent: #f8f8f8;
+ --accent-foreground: #1c1c1c;
+ --destructive: #ff6b35;
+ --destructive-foreground: #ffffff;
+ --border: #ebebeb;
+ --input: #d4d4d4;
+ --ring: #ff6b35;
+ --chip-active: #ff6b35;
+ --chip-active-foreground: #ffffff;
+ --success: #60a756;
+ --success-foreground: #ffffff;
+ --success-soft: #e8f5e3;
+ --chart-1: #ff6b35;
+ --chart-2: #60a756;
+ --chart-3: #f5a3ab;
+ --chart-4: #9c9c9c;
+ --chart-5: #1c1c1c;
+ --radius: 0.75rem;
+ --sidebar: #ffffff;
+ --sidebar-foreground: #1c1c1c;
+ --sidebar-primary: #ff6b35;
+ --sidebar-primary-foreground: #ffffff;
+ --sidebar-accent: #f8f8f8;
+ --sidebar-accent-foreground: #1c1c1c;
+ --sidebar-border: #ebebeb;
+ --sidebar-ring: #ff6b35;
 
-  /* Light. Bloom colours for the glow-* utilities, the sky that sits over
-     the top of every page, and the gradient-text stops. */
-  --glow-neon: rgb(214 0 108 / 42%);
-  --glow-cyan: rgb(16 207 221 / 45%);
-  --glow-sun: rgb(255 106 91 / 45%);
-  --page-glow-a: rgb(255 106 91 / 16%);
-  --page-glow-b: rgb(255 200 87 / 24%);
-  --heading-a: #a30052;
-  --heading-b: #8a1494;
-  --heading-c: #6a22d6;
+ /* Clean, neutral shadows */
+ --elevation-card: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+ --elevation-raised: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+ --elevation-overlay: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.08);
 
-  /* Elevation — warm, coral-tinted in golden hour so shadows read as
-     sunlight rather than grey smudges on sand. */
-  --elevation-card: 0 1px 2px rgb(26 15 61 / 5%), 0 8px 22px -10px rgb(255 106 91 / 24%);
-  --elevation-raised: 0 2px 4px rgb(26 15 61 / 5%), 0 16px 32px -12px rgb(255 106 91 / 30%);
-  --elevation-overlay: 0 4px 8px rgb(26 15 61 / 8%), 0 28px 56px -16px rgb(122 40 232 / 28%);
-
-  /* Home header sky, three stops per time of day — see .mood-field below
-     and HomeHeader. Leonida sunrise (gold/peach), Vice beach afternoon
-     (cyan haze), golden-hour evening (tangerine → magenta), neon night
-     (violet with a magenta edge). Alpha is baked into each stop so the
-     heading on top of the densest point stays above 6.7:1 (contrast
-     audit). */
-  --mood-morning-a: #ffc85788;
-  --mood-morning-b: #ffe9da;
-  --mood-morning-c: #ff6a5b33;
-  --mood-afternoon-a: #10cfdd44;
-  --mood-afternoon-b: #fff0e6;
-  --mood-afternoon-c: #ffc85755;
-  --mood-evening-a: #ffb55799;
-  --mood-evening-b: #ffe3ee;
-  --mood-evening-c: #ff3d9344;
-  --mood-night-a: #7a28e833;
-  --mood-night-b: #f6eeff;
-  --mood-night-c: #ff2e8833;
-
-  /* Scrim behind dialogs, the ink of every glow shadow (an rgb triplet),
-     the chosen food tile's ring, the promo card's striped sun, confetti and
-     the startup splash glows — all per palette. */
-  --scrim: #0e0a24;
-  --shadow-ink: 14 10 36;
-  --food-ring: #ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857;
-  --promo-sun-a: #fff6d6;
-  --promo-sun-b: #ffd66b;
-  --confetti-1: #ff2e88;
-  --confetti-2: #22ddeb;
-  --confetti-3: #ffc857;
-  --confetti-4: #ff7a2f;
-  --confetti-5: #7a28e8;
-  --confetti-6: #ff6a5b;
-  --splash-glow-a: rgb(255 181 87 / 45%);
-  --splash-glow-b: rgb(255 61 147 / 18%);
-  /* The hero surface's shape (surface-hero) and which palette's decoration
-     shows (only-vice / only-sunrise / only-hub / only-kaapi, ThemeMotif and
-     the sign-in scene). Custom properties inherit from the nearest
-     data-palette, so a picker preview card shows its own palette's art. */
-  --hero-surface: radial-gradient(120% 90% at 0% 0%, rgb(255 255 255 / 22%), transparent 55%),
-    linear-gradient(135deg, var(--hero-a) 0%, var(--hero-b) 50%, var(--hero-c) 100%);
-  --show-vice: block;
-  --show-sunrise: none;
-  --show-hub: none;
-  --show-kaapi: none;
-}
-
-/* Dusk: a layered blue-violet night (not black, not an inverted light
-   mode). Neon fills carry dusk text — they're far too bright for white.
-   Cards get a 1px rim light on the top edge, baked into their elevation. */
-.dark,
-.dark [data-palette="vice"] {
-  --background: #0e0a24;
-  --foreground: #fff0f6;
-  --card: #1a1238;
-  --card-foreground: #fff0f6;
-  --popover: #251a4e;
-  --popover-foreground: #fff0f6;
-  --primary: #ff2e88;
-  --primary-2: #ff7a2f;
-  --primary-foreground: #0e0a24;
-  --secondary: #251a4e;
-  --secondary-foreground: #fff0f6;
-  --muted: #251a4e;
-  --muted-foreground: #bfb4e8;
-  --accent: #251a4e;
-  --accent-foreground: #fff0f6;
-  --destructive: #ff8a7a;
-  --destructive-foreground: #2a0e09;
-  --border: rgb(191 180 232 / 16%);
-  --input: #6e62a6;
-  --ring: #22ddeb;
-  --hero: #ff6a5b;
-  --hero-a: #ffb557;
-  --hero-b: #ff6a5b;
-  --hero-c: #ff3d93;
-  --hero-foreground: #0e0a24;
-  --hero-accent: #2a0752;
-  --hero-success: #022617;
-  --hero-danger: #350303;
-  --chip-active: #22ddeb;
-  --chip-active-foreground: #0e0a24;
-  --pink-soft: #3a1242;
-  --pink-soft-foreground: #ffc2de;
-  --aqua: #3de6f2;
-  --aqua-foreground: #0e0a24;
-  --gold: #ffc857;
-  --gold-strong: #ffc857;
-  --success: #5fe3b9;
-  --success-foreground: #06281f;
-  --success-soft: #0f3b3a;
-  --stripe-a: #221848;
-  --stripe-b: #1a1238;
-  --chart-1: #ff2e88;
-  --chart-2: #22ddeb;
-  --chart-3: #ffc857;
-  --chart-4: #ff7a2f;
-  --chart-5: #b79cff;
-  --sidebar: #1a1238;
-  --sidebar-foreground: #fff0f6;
-  --sidebar-primary: #ff2e88;
-  --sidebar-primary-foreground: #0e0a24;
-  --sidebar-accent: #251a4e;
-  --sidebar-accent-foreground: #fff0f6;
-  --sidebar-border: rgb(191 180 232 / 16%);
-  --sidebar-ring: #22ddeb;
-
-  --glow-neon: rgb(255 46 136 / 55%);
-  --glow-cyan: rgb(34 221 235 / 45%);
-  --glow-sun: rgb(255 106 91 / 50%);
-  --page-glow-a: rgb(255 46 136 / 16%);
-  --page-glow-b: rgb(34 221 235 / 10%);
-  --heading-a: #ffc857;
-  --heading-b: #ff8a6e;
-  --heading-c: #ff6fb4;
-
-  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(0 0 0 / 40%), 0 10px 26px -12px rgb(0 0 0 / 60%);
-  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(0 0 0 / 40%), 0 16px 34px -12px rgb(122 40 232 / 45%);
-  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(0 0 0 / 45%), 0 28px 56px -16px rgb(255 46 136 / 30%);
-
-  --mood-morning-a: #ffc85726;
-  --mood-morning-b: #2a1a4ecc;
-  --mood-morning-c: #ff7a2f22;
-  --mood-afternoon-a: #22ddeb26;
-  --mood-afternoon-b: #1a1238cc;
-  --mood-afternoon-c: #7a28e833;
-  --mood-evening-a: #ff7a2f30;
-  --mood-evening-b: #2a1245cc;
-  --mood-evening-c: #ff2e8833;
-  --mood-night-a: #7a28e83a;
-  --mood-night-b: #1a1238cc;
-  --mood-night-c: #ff2e882a;
-  --scrim: #0e0a24;
-  --shadow-ink: 14 10 36;
-  --food-ring: #ffc857, #ff6a5b, #ff2e88, #7a28e8, #22ddeb, #ffc857;
-  --promo-sun-a: #fff6d6;
-  --promo-sun-b: #ffd66b;
-  --confetti-1: #ff2e88;
-  --confetti-2: #22ddeb;
-  --confetti-3: #ffc857;
-  --confetti-4: #ff7a2f;
-  --confetti-5: #7a28e8;
-  --confetti-6: #ff6a5b;
-  --splash-glow-a: rgb(255 46 136 / 30%);
-  --splash-glow-b: rgb(34 221 235 / 16%);
-  /* The hero surface's shape (surface-hero) and which palette's decoration
-     shows (only-vice / only-sunrise / only-hub / only-kaapi, ThemeMotif and
-     the sign-in scene). Custom properties inherit from the nearest
-     data-palette, so a picker preview card shows its own palette's art. */
-  --hero-surface: radial-gradient(120% 90% at 0% 0%, rgb(255 255 255 / 22%), transparent 55%),
-    linear-gradient(135deg, var(--hero-a) 0%, var(--hero-b) 50%, var(--hero-c) 100%);
-  --show-vice: block;
-  --show-sunrise: none;
-  --show-hub: none;
-  --show-kaapi: none;
+ --scrim: #1c1c1c;
 }
 
 /*
- * The other three palettes. Each one is a full token set for light and for
- * dark — every token the Vice blocks above define (the contrast audit fails
- * if one is missing), so nothing leaks from another palette. They key on
- * data-palette, set on <html> by the theme-init script and
- * src/lib/theme/store.ts; the same attribute on any element (the theme
- * picker's preview cards) scopes that palette to it.
- *
- * Specificity: [data-palette="x"] ties with .dark, so the light block of a
- * palette overrides Vice dusk in dark mode too — the palette's dark block
- * (.dark[data-palette="x"], one step more specific) then wins. That's why
- * both blocks must be complete.
+ * Dark mode — dark grey backgrounds, red accents.
  */
+.dark {
+ --background: #1c1c1c;
+ --foreground: #f8f8f8;
+ --card: #2c2c2c;
+ --card-foreground: #f8f8f8;
+ --popover: #2c2c2c;
+ --popover-foreground: #f8f8f8;
+ --primary: #ff6b35;
+ --primary-foreground: #ffffff;
+ --secondary: #3c3c3c;
+ --secondary-foreground: #f8f8f8;
+ --muted: #3c3c3c;
+ --muted-foreground: #9c9c9c;
+ --accent: #3c3c3c;
+ --accent-foreground: #f8f8f8;
+ --destructive: #ff6b35;
+ --destructive-foreground: #ffffff;
+ --border: #3c3c3c;
+ --input: #4c4c4c;
+ --ring: #ff6b35;
+ --chip-active: #ff6b35;
+ --chip-active-foreground: #ffffff;
+ --success: #60a756;
+ --success-foreground: #ffffff;
+ --success-soft: #2e5029;
+ --chart-1: #ff6b35;
+ --chart-2: #60a756;
+ --chart-3: #f5a3ab;
+ --chart-4: #9c9c9c;
+ --chart-5: #f8f8f8;
+ --sidebar: #2c2c2c;
+ --sidebar-foreground: #f8f8f8;
+ --sidebar-primary: #ff6b35;
+ --sidebar-primary-foreground: #ffffff;
+ --sidebar-accent: #3c3c3c;
+ --sidebar-accent-foreground: #f8f8f8;
+ --sidebar-border: #3c3c3c;
+ --sidebar-ring: #ff6b35;
 
-/*
- * Electric Sunrise — cream ground, vibrant purple actions, neon peach,
- * soft lilac, gold dust, tech blue for info and focus, midnight green for
- * veg/success. The hero is a sunrise: gold dust → peach → lilac. Dark is a
- * charcoal night with magenta-bloom actions (#E264FF — the brief's #D500F9
- * lifted so it passes 4.5:1 as link text on the cards; #D500F9 itself stays
- * in the glows, the food ring and confetti).
- */
-[data-palette="sunrise"] {
-  --background: #fff8f0;
-  --foreground: #221433;
-  --card: #ffffff;
-  --card-foreground: #221433;
-  --popover: #ffffff;
-  --popover-foreground: #221433;
-  --primary: #6a0dad;
-  --primary-2: #a81f6c;
-  --primary-foreground: #ffffff;
-  --secondary: #f5ecff;
-  --secondary-foreground: #221433;
-  --muted: #f5ecff;
-  --muted-foreground: #5e5070;
-  --accent: #f5ecff;
-  --accent-foreground: #221433;
-  --destructive: #b42b1c;
-  --destructive-foreground: #ffffff;
-  --border: #f1e1d6;
-  --input: #9a88ab;
-  --ring: #2f5fc4;
-  --hero: #ff9e80;
-  --hero-a: #f5d1a0;
-  --hero-b: #ff9e80;
-  --hero-c: #e2b4ff;
-  --hero-foreground: #221433;
-  --hero-accent: #4a0b86;
-  --hero-success: #003b31;
-  --hero-danger: #4a0808;
-  --chip-active: #ff9e80;
-  --chip-active-foreground: #221433;
-  --pink-soft: #f5e6ff;
-  --pink-soft-foreground: #5f0f99;
-  --aqua: #2f5fc4;
-  --aqua-foreground: #ffffff;
-  --gold: #f5d1a0;
-  --gold-strong: #b0741c;
-  --success: #0a6b55;
-  --success-foreground: #ffffff;
-  --success-soft: #dff3ec;
-  --stripe-a: #fbe8da;
-  --stripe-b: #fff4ea;
-  --chart-1: #6a0dad;
-  --chart-2: #ff9e80;
-  --chart-3: #f5d1a0;
-  --chart-4: #4080f0;
-  --chart-5: #004d40;
-  --sidebar: #fff8f0;
-  --sidebar-foreground: #221433;
-  --sidebar-primary: #6a0dad;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5ecff;
-  --sidebar-accent-foreground: #221433;
-  --sidebar-border: #f1e1d6;
-  --sidebar-ring: #2f5fc4;
-  --glow-neon: rgb(106 13 173 / 38%);
-  --glow-cyan: rgb(255 158 128 / 50%);
-  --glow-sun: rgb(255 158 128 / 50%);
-  --page-glow-a: rgb(255 158 128 / 20%);
-  --page-glow-b: rgb(245 209 160 / 30%);
-  --heading-a: #6a0dad;
-  --heading-b: #8a1592;
-  --heading-c: #a01f66;
-  --elevation-card: 0 1px 2px rgb(34 20 51 / 5%), 0 8px 22px -10px rgb(255 158 128 / 32%);
-  --elevation-raised: 0 2px 4px rgb(34 20 51 / 5%), 0 16px 32px -12px rgb(255 158 128 / 38%);
-  --elevation-overlay: 0 4px 8px rgb(34 20 51 / 8%), 0 28px 56px -16px rgb(106 13 173 / 26%);
-  --mood-morning-a: #f5d1a0aa;
-  --mood-morning-b: #fff0e0;
-  --mood-morning-c: #ff9e8044;
-  --mood-afternoon-a: #4080f02e;
-  --mood-afternoon-b: #fff4ea;
-  --mood-afternoon-c: #f5d1a066;
-  --mood-evening-a: #ff9e8088;
-  --mood-evening-b: #ffece4;
-  --mood-evening-c: #e2b4ff66;
-  --mood-night-a: #6a0dad26;
-  --mood-night-b: #f5ecff;
-  --mood-night-c: #ff9e8033;
-  --scrim: #221433;
-  --shadow-ink: 34 20 51;
-  --food-ring: #f5d1a0, #ff9e80, #e2b4ff, #6a0dad, #4080f0, #f5d1a0;
-  --promo-sun-a: #ffffff;
-  --promo-sun-b: #ffe2bd;
-  --confetti-1: #6a0dad;
-  --confetti-2: #d500f9;
-  --confetti-3: #ff9e80;
-  --confetti-4: #f5d1a0;
-  --confetti-5: #4080f0;
-  --confetti-6: #e7c6ff;
-  --splash-glow-a: rgb(255 158 128 / 45%);
-  --splash-glow-b: rgb(106 13 173 / 14%);
-  /* A dawn glow rising from the bottom edge, crossed by two light ribbons. */
-  --hero-surface: linear-gradient(115deg, transparent 56%, rgb(255 255 255 / 24%) 56% 63%, transparent 63% 68%, rgb(255 255 255 / 14%) 68% 71%, transparent 71%),
-    radial-gradient(130% 115% at 50% 118%, var(--hero-a) 0%, var(--hero-b) 48%, var(--hero-c) 100%);
-  --show-vice: none;
-  --show-sunrise: block;
-  --show-hub: none;
-  --show-kaapi: none;
-}
+ --elevation-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+ --elevation-raised: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+ --elevation-overlay: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 
-.dark[data-palette="sunrise"],
-.dark [data-palette="sunrise"] {
-  --background: #1a1a1d;
-  --foreground: #f6efe8;
-  --card: #242428;
-  --card-foreground: #f6efe8;
-  --popover: #2e2d33;
-  --popover-foreground: #f6efe8;
-  --primary: #e264ff;
-  --primary-2: #ff9e80;
-  --primary-foreground: #0c0a1f;
-  --secondary: #2e2d33;
-  --secondary-foreground: #f6efe8;
-  --muted: #2e2d33;
-  --muted-foreground: #bdb5c8;
-  --accent: #2e2d33;
-  --accent-foreground: #f6efe8;
-  --destructive: #ff8a7a;
-  --destructive-foreground: #2a0e09;
-  --border: rgb(231 198 255 / 14%);
-  --input: #7a738d;
-  --ring: #86adff;
-  --hero: #ff9e80;
-  --hero-a: #f0c28a;
-  --hero-b: #ff9278;
-  --hero-c: #d9a6ff;
-  --hero-foreground: #1c1030;
-  --hero-accent: #43097a;
-  --hero-success: #00332a;
-  --hero-danger: #430707;
-  --chip-active: #ff9e80;
-  --chip-active-foreground: #1a1a1d;
-  --pink-soft: #33253f;
-  --pink-soft-foreground: #ecd0ff;
-  --aqua: #86adff;
-  --aqua-foreground: #0c0a1f;
-  --gold: #f5d1a0;
-  --gold-strong: #f5d1a0;
-  --success: #5fd9b0;
-  --success-foreground: #06281f;
-  --success-soft: #123a33;
-  --stripe-a: #26252b;
-  --stripe-b: #1f1f23;
-  --chart-1: #e264ff;
-  --chart-2: #ff9e80;
-  --chart-3: #f5d1a0;
-  --chart-4: #86adff;
-  --chart-5: #5fd9b0;
-  --sidebar: #242428;
-  --sidebar-foreground: #f6efe8;
-  --sidebar-primary: #e264ff;
-  --sidebar-primary-foreground: #0c0a1f;
-  --sidebar-accent: #2e2d33;
-  --sidebar-accent-foreground: #f6efe8;
-  --sidebar-border: rgb(231 198 255 / 14%);
-  --sidebar-ring: #86adff;
-  --glow-neon: rgb(213 0 249 / 50%);
-  --glow-cyan: rgb(255 158 128 / 42%);
-  --glow-sun: rgb(255 158 128 / 48%);
-  --page-glow-a: rgb(213 0 249 / 14%);
-  --page-glow-b: rgb(255 158 128 / 9%);
-  --heading-a: #f5d1a0;
-  --heading-b: #ffa98c;
-  --heading-c: #e6b3ff;
-  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(0 0 0 / 40%), 0 10px 26px -12px rgb(0 0 0 / 60%);
-  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(0 0 0 / 40%), 0 16px 34px -12px rgb(213 0 249 / 35%);
-  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(0 0 0 / 45%), 0 28px 56px -16px rgb(255 158 128 / 24%);
-  --mood-morning-a: #f5d1a022;
-  --mood-morning-b: #2a2228cc;
-  --mood-morning-c: #ff9e8022;
-  --mood-afternoon-a: #4080f026;
-  --mood-afternoon-b: #202026cc;
-  --mood-afternoon-c: #e7c6ff22;
-  --mood-evening-a: #ff9e8030;
-  --mood-evening-b: #2c2026cc;
-  --mood-evening-c: #d500f930;
-  --mood-night-a: #6a0dad40;
-  --mood-night-b: #1f1b26cc;
-  --mood-night-c: #d500f926;
-  --scrim: #0b0b0d;
-  --shadow-ink: 0 0 0;
-  --food-ring: #f5d1a0, #ff9e80, #e7c6ff, #d500f9, #4080f0, #f5d1a0;
-  --promo-sun-a: #ffffff;
-  --promo-sun-b: #ffe2bd;
-  --confetti-1: #d500f9;
-  --confetti-2: #ff9e80;
-  --confetti-3: #f5d1a0;
-  --confetti-4: #4080f0;
-  --confetti-5: #e7c6ff;
-  --confetti-6: #5fd9b0;
-  --splash-glow-a: rgb(213 0 249 / 26%);
-  --splash-glow-b: rgb(255 158 128 / 16%);
-  /* A dawn glow rising from the bottom edge, crossed by two light ribbons. */
-  --hero-surface: linear-gradient(115deg, transparent 56%, rgb(255 255 255 / 24%) 56% 63%, transparent 63% 68%, rgb(255 255 255 / 14%) 68% 71%, transparent 71%),
-    radial-gradient(130% 115% at 50% 118%, var(--hero-a) 0%, var(--hero-b) 48%, var(--hero-c) 100%);
-  --show-vice: none;
-  --show-sunrise: block;
-  --show-hub: none;
-  --show-kaapi: none;
+ --scrim: #000000;
 }
 
 /*
- * Innovation Hub — a cool mint-white ground, purple actions, coral, soft
- * lilac, tech blue for selected chips and info, silver and pewter in the
- * surfaces. The hero is tech blue → lilac → coral. Dark is a navy night
- * with electric-lime actions (navy text) running into aqua.
+ * Functional animations — keep these, remove decorative ones.
  */
-[data-palette="hub"] {
-  --background: #f3f8f8;
-  --foreground: #111c2e;
-  --card: #ffffff;
-  --card-foreground: #111c2e;
-  --popover: #ffffff;
-  --popover-foreground: #111c2e;
-  --primary: #6a0dad;
-  --primary-2: #8a1cc4;
-  --primary-foreground: #ffffff;
-  --secondary: #e6eff1;
-  --secondary-foreground: #111c2e;
-  --muted: #e6eff1;
-  --muted-foreground: #4c5a68;
-  --accent: #e6eff1;
-  --accent-foreground: #111c2e;
-  --destructive: #b42b1c;
-  --destructive-foreground: #ffffff;
-  --border: #d9e4e7;
-  --input: #86939e;
-  --ring: #2459c4;
-  --hero: #ff9a78;
-  --hero-a: #9dbcff;
-  --hero-b: #dcc4ff;
-  --hero-c: #ffa184;
-  --hero-foreground: #111c2e;
-  --hero-accent: #3d0a73;
-  --hero-success: #00361c;
-  --hero-danger: #470808;
-  --chip-active: #4080f0;
-  --chip-active-foreground: #0b1428;
-  --pink-soft: #efe3ff;
-  --pink-soft-foreground: #5a0f96;
-  --aqua: #2459c4;
-  --aqua-foreground: #ffffff;
-  --gold: #ffcf5c;
-  --gold-strong: #b7791f;
-  --success: #0e7556;
-  --success-foreground: #ffffff;
-  --success-soft: #dcf4ea;
-  --stripe-a: #e3edf0;
-  --stripe-b: #f0f6f7;
-  --chart-1: #6a0dad;
-  --chart-2: #ff7f50;
-  --chart-3: #4080f0;
-  --chart-4: #a9a9a9;
-  --chart-5: #e7c6ff;
-  --sidebar: #f3f8f8;
-  --sidebar-foreground: #111c2e;
-  --sidebar-primary: #6a0dad;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #e6eff1;
-  --sidebar-accent-foreground: #111c2e;
-  --sidebar-border: #d9e4e7;
-  --sidebar-ring: #2459c4;
-  --glow-neon: rgb(106 13 173 / 36%);
-  --glow-cyan: rgb(64 128 240 / 40%);
-  --glow-sun: rgb(255 127 80 / 40%);
-  --page-glow-a: rgb(64 128 240 / 12%);
-  --page-glow-b: rgb(255 127 80 / 14%);
-  --heading-a: #5a0b94;
-  --heading-b: #7d2394;
-  --heading-c: #9a3615;
-  --elevation-card: 0 1px 2px rgb(17 28 46 / 6%), 0 8px 22px -10px rgb(64 128 240 / 22%);
-  --elevation-raised: 0 2px 4px rgb(17 28 46 / 6%), 0 16px 32px -12px rgb(64 128 240 / 28%);
-  --elevation-overlay: 0 4px 8px rgb(17 28 46 / 8%), 0 28px 56px -16px rgb(106 13 173 / 24%);
-  --mood-morning-a: #ff7f5033;
-  --mood-morning-b: #fff4ee;
-  --mood-morning-c: #ffcf5c44;
-  --mood-afternoon-a: #4080f033;
-  --mood-afternoon-b: #eef4ff;
-  --mood-afternoon-c: #c0c0c055;
-  --mood-evening-a: #ff7f5055;
-  --mood-evening-b: #fbeefa;
-  --mood-evening-c: #e7c6ff88;
-  --mood-night-a: #6a0dad22;
-  --mood-night-b: #efe8ff;
-  --mood-night-c: #4080f033;
-  --scrim: #0b1628;
-  --shadow-ink: 17 28 46;
-  --food-ring: #9dbcff, #e7c6ff, #ff7f50, #6a0dad, #4080f0, #9dbcff;
-  --promo-sun-a: #ffffff;
-  --promo-sun-b: #ffd9c8;
-  --confetti-1: #6a0dad;
-  --confetti-2: #32cd32;
-  --confetti-3: #ff7f50;
-  --confetti-4: #4080f0;
-  --confetti-5: #e7c6ff;
-  --confetti-6: #c0c0c0;
-  --splash-glow-a: rgb(64 128 240 / 28%);
-  --splash-glow-b: rgb(255 127 80 / 20%);
-  /* Two glows (blue top-left, coral bottom-right) over lilac, on a fine grid. */
-  --hero-surface: repeating-linear-gradient(0deg, rgb(255 255 255 / 14%) 0 1px, transparent 1px 16px),
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 14%) 0 1px, transparent 1px 16px),
-    radial-gradient(95% 125% at 0% 0%, var(--hero-a) 0%, transparent 62%),
-    radial-gradient(95% 125% at 100% 100%, var(--hero-c) 0%, transparent 62%),
-    linear-gradient(var(--hero-b), var(--hero-b));
-  --show-vice: none;
-  --show-sunrise: none;
-  --show-hub: block;
-  --show-kaapi: none;
-}
-
-.dark[data-palette="hub"],
-.dark [data-palette="hub"] {
-  --background: #122238;
-  --foreground: #eef4ff;
-  --card: #1a2d47;
-  --card-foreground: #eef4ff;
-  --popover: #223757;
-  --popover-foreground: #eef4ff;
-  --primary: #32cd32;
-  --primary-2: #2ed3c5;
-  --primary-foreground: #0b1628;
-  --secondary: #223757;
-  --secondary-foreground: #eef4ff;
-  --muted: #223757;
-  --muted-foreground: #b0c0d8;
-  --accent: #223757;
-  --accent-foreground: #eef4ff;
-  --destructive: #ff8a7a;
-  --destructive-foreground: #2a0e09;
-  --border: rgb(176 192 216 / 16%);
-  --input: #6c80a0;
-  --ring: #8fb4ff;
-  --hero: #ff9a78;
-  --hero-a: #86aaf5;
-  --hero-b: #cdb0ff;
-  --hero-c: #ff9472;
-  --hero-foreground: #0b1628;
-  --hero-accent: #340a66;
-  --hero-success: #002e18;
-  --hero-danger: #3d0606;
-  --chip-active: #7aa6ff;
-  --chip-active-foreground: #0b1628;
-  --pink-soft: #2d2a55;
-  --pink-soft-foreground: #e2caff;
-  --aqua: #8fb4ff;
-  --aqua-foreground: #0b1628;
-  --gold: #ffcf5c;
-  --gold-strong: #ffcf5c;
-  --success: #5fe3b9;
-  --success-foreground: #06281f;
-  --success-soft: #0f3b3a;
-  --stripe-a: #1c3150;
-  --stripe-b: #172a44;
-  --chart-1: #32cd32;
-  --chart-2: #ff7f50;
-  --chart-3: #7aa6ff;
-  --chart-4: #c0c0c0;
-  --chart-5: #e7c6ff;
-  --sidebar: #1a2d47;
-  --sidebar-foreground: #eef4ff;
-  --sidebar-primary: #32cd32;
-  --sidebar-primary-foreground: #0b1628;
-  --sidebar-accent: #223757;
-  --sidebar-accent-foreground: #eef4ff;
-  --sidebar-border: rgb(176 192 216 / 16%);
-  --sidebar-ring: #8fb4ff;
-  --glow-neon: rgb(50 205 50 / 42%);
-  --glow-cyan: rgb(122 166 255 / 40%);
-  --glow-sun: rgb(255 127 80 / 40%);
-  --page-glow-a: rgb(50 205 50 / 9%);
-  --page-glow-b: rgb(64 128 240 / 14%);
-  --heading-a: #a6f28f;
-  --heading-b: #8fe0e0;
-  --heading-c: #d7b8ff;
-  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 7%), 0 1px 2px rgb(3 8 18 / 45%), 0 10px 26px -12px rgb(3 8 18 / 65%);
-  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 9%), 0 2px 4px rgb(3 8 18 / 45%), 0 16px 34px -12px rgb(64 128 240 / 35%);
-  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 10%), 0 4px 8px rgb(3 8 18 / 50%), 0 28px 56px -16px rgb(50 205 50 / 20%);
-  --mood-morning-a: #ffcf5c22;
-  --mood-morning-b: #1a2d47cc;
-  --mood-morning-c: #ff7f5022;
-  --mood-afternoon-a: #4080f033;
-  --mood-afternoon-b: #16294acc;
-  --mood-afternoon-c: #32cd3218;
-  --mood-evening-a: #ff7f5030;
-  --mood-evening-b: #1f2a4acc;
-  --mood-evening-c: #e7c6ff26;
-  --mood-night-a: #6a0dad40;
-  --mood-night-b: #14223ccc;
-  --mood-night-c: #32cd321f;
-  --scrim: #050b16;
-  --shadow-ink: 3 8 18;
-  --food-ring: #7aa6ff, #e7c6ff, #ff7f50, #32cd32, #2ed3c5, #7aa6ff;
-  --promo-sun-a: #ffffff;
-  --promo-sun-b: #ffd9c8;
-  --confetti-1: #32cd32;
-  --confetti-2: #ff7f50;
-  --confetti-3: #7aa6ff;
-  --confetti-4: #e7c6ff;
-  --confetti-5: #2ed3c5;
-  --confetti-6: #c0c0c0;
-  --splash-glow-a: rgb(50 205 50 / 20%);
-  --splash-glow-b: rgb(64 128 240 / 22%);
-  /* Two glows (blue top-left, coral bottom-right) over lilac, on a fine grid. */
-  --hero-surface: repeating-linear-gradient(0deg, rgb(255 255 255 / 14%) 0 1px, transparent 1px 16px),
-    repeating-linear-gradient(90deg, rgb(255 255 255 / 14%) 0 1px, transparent 1px 16px),
-    radial-gradient(95% 125% at 0% 0%, var(--hero-a) 0%, transparent 62%),
-    radial-gradient(95% 125% at 100% 100%, var(--hero-c) 0%, transparent 62%),
-    linear-gradient(var(--hero-b), var(--hero-b));
-  --show-vice: none;
-  --show-sunrise: none;
-  --show-hub: block;
-  --show-kaapi: none;
-}
-
-/*
- * Kaapi — filter coffee. Cream ground, espresso text, coffee → cinnamon
- * actions (cream text), turmeric gold, rose-milk chips, a teal counterpoint
- * for info and focus. The hero is turmeric → caramel → rose milk. Dark is
- * an espresso night with turmeric → rose-milk actions (espresso text).
- */
-[data-palette="kaapi"] {
-  --background: #f6eee3;
-  --foreground: #2b1a12;
-  --card: #fffaf4;
-  --card-foreground: #2b1a12;
-  --popover: #fffdf9;
-  --popover-foreground: #2b1a12;
-  --primary: #6f3b1f;
-  --primary-2: #9a4f2a;
-  --primary-foreground: #fff8f0;
-  --secondary: #f0e3d3;
-  --secondary-foreground: #2b1a12;
-  --muted: #f0e3d3;
-  --muted-foreground: #614a3b;
-  --accent: #f0e3d3;
-  --accent-foreground: #2b1a12;
-  --destructive: #a8321f;
-  --destructive-foreground: #ffffff;
-  --border: #e8d8c6;
-  --input: #9c8472;
-  --ring: #2e6b62;
-  --hero: #eba566;
-  --hero-a: #f2c14e;
-  --hero-b: #eba566;
-  --hero-c: #eba0b3;
-  --hero-foreground: #2b1a12;
-  --hero-accent: #5a1f10;
-  --hero-success: #0f3a1c;
-  --hero-danger: #4a0c08;
-  --chip-active: #e98fa6;
-  --chip-active-foreground: #2b1a12;
-  --pink-soft: #f7e0e6;
-  --pink-soft-foreground: #8a2945;
-  --aqua: #2e6b62;
-  --aqua-foreground: #ffffff;
-  --gold: #f2c14e;
-  --gold-strong: #a8740f;
-  --success: #1e6e3e;
-  --success-foreground: #ffffff;
-  --success-soft: #e0efdf;
-  --stripe-a: #efe0cf;
-  --stripe-b: #f8efe4;
-  --chart-1: #6f3b1f;
-  --chart-2: #f2c14e;
-  --chart-3: #e98fa6;
-  --chart-4: #2e6b62;
-  --chart-5: #eba566;
-  --sidebar: #f6eee3;
-  --sidebar-foreground: #2b1a12;
-  --sidebar-primary: #6f3b1f;
-  --sidebar-primary-foreground: #fff8f0;
-  --sidebar-accent: #f0e3d3;
-  --sidebar-accent-foreground: #2b1a12;
-  --sidebar-border: #e8d8c6;
-  --sidebar-ring: #2e6b62;
-  --glow-neon: rgb(111 59 31 / 35%);
-  --glow-cyan: rgb(233 143 166 / 45%);
-  --glow-sun: rgb(242 193 78 / 45%);
-  --page-glow-a: rgb(235 165 102 / 16%);
-  --page-glow-b: rgb(242 193 78 / 22%);
-  --heading-a: #6f3b1f;
-  --heading-b: #874020;
-  --heading-c: #8f3350;
-  --elevation-card: 0 1px 2px rgb(43 26 18 / 6%), 0 8px 22px -10px rgb(160 100 50 / 26%);
-  --elevation-raised: 0 2px 4px rgb(43 26 18 / 6%), 0 16px 32px -12px rgb(160 100 50 / 32%);
-  --elevation-overlay: 0 4px 8px rgb(43 26 18 / 8%), 0 28px 56px -16px rgb(111 59 31 / 28%);
-  --mood-morning-a: #f2c14e88;
-  --mood-morning-b: #fbeedb;
-  --mood-morning-c: #eba56633;
-  --mood-afternoon-a: #2e6b6222;
-  --mood-afternoon-b: #f9efe2;
-  --mood-afternoon-c: #f2c14e44;
-  --mood-evening-a: #eba56699;
-  --mood-evening-b: #f8e4e0;
-  --mood-evening-c: #e98fa655;
-  --mood-night-a: #6f3b1f22;
-  --mood-night-b: #f3e6da;
-  --mood-night-c: #e98fa633;
-  --scrim: #1c120d;
-  --shadow-ink: 43 26 18;
-  --food-ring: #f2c14e, #eba566, #e98fa6, #6f3b1f, #2e6b62, #f2c14e;
-  --promo-sun-a: #fffaf0;
-  --promo-sun-b: #ffe6a8;
-  --confetti-1: #f2c14e;
-  --confetti-2: #e98fa6;
-  --confetti-3: #eba566;
-  --confetti-4: #6f3b1f;
-  --confetti-5: #2e6b62;
-  --confetti-6: #fff1d6;
-  --splash-glow-a: rgb(242 193 78 / 42%);
-  --splash-glow-b: rgb(233 143 166 / 20%);
-  /* A warm coffee wash, top to bottom, with a little crema light. */
-  --hero-surface: radial-gradient(70% 60% at 88% 6%, rgb(255 255 255 / 28%), transparent 60%),
-    radial-gradient(60% 55% at 6% 100%, rgb(255 255 255 / 14%), transparent 70%),
-    linear-gradient(170deg, var(--hero-a) 0%, var(--hero-b) 55%, var(--hero-c) 100%);
-  --show-vice: none;
-  --show-sunrise: none;
-  --show-hub: none;
-  --show-kaapi: block;
-}
-
-.dark[data-palette="kaapi"],
-.dark [data-palette="kaapi"] {
-  --background: #1c120d;
-  --foreground: #f5e9dc;
-  --card: #2a1c15;
-  --card-foreground: #f5e9dc;
-  --popover: #35251c;
-  --popover-foreground: #f5e9dc;
-  --primary: #f2c14e;
-  --primary-2: #e98fa6;
-  --primary-foreground: #1c120d;
-  --secondary: #35251c;
-  --secondary-foreground: #f5e9dc;
-  --muted: #35251c;
-  --muted-foreground: #c9b6a3;
-  --accent: #35251c;
-  --accent-foreground: #f5e9dc;
-  --destructive: #ff8a7a;
-  --destructive-foreground: #2a0e09;
-  --border: rgb(245 233 220 / 12%);
-  --input: #85705e;
-  --ring: #8fd3c6;
-  --hero: #eba566;
-  --hero-a: #f2c14e;
-  --hero-b: #e9a060;
-  --hero-c: #e893a9;
-  --hero-foreground: #1c120d;
-  --hero-accent: #4d1a0c;
-  --hero-success: #0c3018;
-  --hero-danger: #420b07;
-  --chip-active: #e98fa6;
-  --chip-active-foreground: #1c120d;
-  --pink-soft: #3b2228;
-  --pink-soft-foreground: #f4bccb;
-  --aqua: #8fd3c6;
-  --aqua-foreground: #1c120d;
-  --gold: #f2c14e;
-  --gold-strong: #f2c14e;
-  --success: #7fd4a0;
-  --success-foreground: #0b2614;
-  --success-soft: #173424;
-  --stripe-a: #2e2019;
-  --stripe-b: #261912;
-  --chart-1: #f2c14e;
-  --chart-2: #e98fa6;
-  --chart-3: #eba566;
-  --chart-4: #8fd3c6;
-  --chart-5: #f5e9dc;
-  --sidebar: #2a1c15;
-  --sidebar-foreground: #f5e9dc;
-  --sidebar-primary: #f2c14e;
-  --sidebar-primary-foreground: #1c120d;
-  --sidebar-accent: #35251c;
-  --sidebar-accent-foreground: #f5e9dc;
-  --sidebar-border: rgb(245 233 220 / 12%);
-  --sidebar-ring: #8fd3c6;
-  --glow-neon: rgb(242 193 78 / 42%);
-  --glow-cyan: rgb(233 143 166 / 40%);
-  --glow-sun: rgb(235 165 102 / 45%);
-  --page-glow-a: rgb(242 193 78 / 10%);
-  --page-glow-b: rgb(233 143 166 / 9%);
-  --heading-a: #f2c14e;
-  --heading-b: #efa877;
-  --heading-c: #f0a3b6;
-  --elevation-card: inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(0 0 0 / 45%), 0 10px 26px -12px rgb(0 0 0 / 65%);
-  --elevation-raised: inset 0 1px 0 rgb(255 255 255 / 8%), 0 2px 4px rgb(0 0 0 / 45%), 0 16px 34px -12px rgb(242 193 78 / 22%);
-  --elevation-overlay: inset 0 1px 0 rgb(255 255 255 / 9%), 0 4px 8px rgb(0 0 0 / 50%), 0 28px 56px -16px rgb(233 143 166 / 20%);
-  --mood-morning-a: #f2c14e24;
-  --mood-morning-b: #2a1c15cc;
-  --mood-morning-c: #eba56620;
-  --mood-afternoon-a: #8fd3c61f;
-  --mood-afternoon-b: #241810cc;
-  --mood-afternoon-c: #f2c14e1a;
-  --mood-evening-a: #eba56630;
-  --mood-evening-b: #2c1a16cc;
-  --mood-evening-c: #e98fa62a;
-  --mood-night-a: #6f3b1f55;
-  --mood-night-b: #1f1510cc;
-  --mood-night-c: #e98fa620;
-  --scrim: #0e0806;
-  --shadow-ink: 0 0 0;
-  --food-ring: #f2c14e, #eba566, #e98fa6, #fff1d6, #8fd3c6, #f2c14e;
-  --promo-sun-a: #fffaf0;
-  --promo-sun-b: #ffe6a8;
-  --confetti-1: #f2c14e;
-  --confetti-2: #e98fa6;
-  --confetti-3: #eba566;
-  --confetti-4: #8fd3c6;
-  --confetti-5: #fff1d6;
-  --confetti-6: #c9b6a3;
-  --splash-glow-a: rgb(242 193 78 / 26%);
-  --splash-glow-b: rgb(233 143 166 / 16%);
-  /* A warm coffee wash, top to bottom, with a little crema light. */
-  --hero-surface: radial-gradient(70% 60% at 88% 6%, rgb(255 255 255 / 28%), transparent 60%),
-    radial-gradient(60% 55% at 6% 100%, rgb(255 255 255 / 14%), transparent 70%),
-    linear-gradient(170deg, var(--hero-a) 0%, var(--hero-b) 55%, var(--hero-c) 100%);
-  --show-vice: none;
-  --show-sunrise: none;
-  --show-hub: none;
-  --show-kaapi: block;
-}
-
-/*
- * Home header's time-of-day ambient field: a top-down wash of the mood's
- * middle colour, a broad light source from the top-left and a second one
- * low and to the right, all fading out downward into the ground, so the header has an atmosphere instead of a hard band. On
- * screens wider than the app column the sides fade too, so the field
- * never ends in a visible vertical edge.
- */
-.mood-field {
-  background:
-    radial-gradient(95% 110% at 0% 0%, var(--mood-a), transparent 70%),
-    radial-gradient(110% 70% at 70% 80%, var(--mood-c), transparent 70%),
-    linear-gradient(var(--mood-b), transparent);
-  mask-image: linear-gradient(to bottom, #000 45%, transparent);
-}
-@media (min-width: 28rem) {
-  .mood-field {
-    mask-image:
-      linear-gradient(to bottom, #000 45%, transparent),
-      linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
-    mask-composite: intersect;
-  }
-}
-.mood-morning {
-  --mood-a: var(--mood-morning-a);
-  --mood-b: var(--mood-morning-b);
-  --mood-c: var(--mood-morning-c);
-}
-.mood-afternoon {
-  --mood-a: var(--mood-afternoon-a);
-  --mood-b: var(--mood-afternoon-b);
-  --mood-c: var(--mood-afternoon-c);
-}
-.mood-evening {
-  --mood-a: var(--mood-evening-a);
-  --mood-b: var(--mood-evening-b);
-  --mood-c: var(--mood-evening-c);
-}
-.mood-night {
-  --mood-a: var(--mood-night-a);
-  --mood-b: var(--mood-night-b);
-  --mood-c: var(--mood-night-c);
-}
-
-/* Striped stand-in for photos we don't have yet (matches the design refs). */
-@utility bg-stripes {
-  background-image: repeating-linear-gradient(
-    135deg,
-    var(--stripe-a) 0 14px,
-    var(--stripe-b) 14px 28px
-  );
-}
-
-/*
- * The lighting kit. The palette only works if things look LIT, so these
- * are used across the whole app rather than on one hero:
- *
- *   surface-primary  the action pill: --primary → --primary-2 (magenta →
- *                    violet at golden hour, neon → tangerine at dusk), with
- *                    a soft highlight along the top edge like a lit tube.
- *                    Layered over bg-primary, which stays the flat fallback.
- *   surface-hero     the palette's hero (--hero-surface): Vice's sunset
- *                    (gold → coral → magenta, light top-left), Sunrise's
- *                    dawn with ribbons, Hub's glows on a grid, Kaapi's
- *                    coffee wash. Dark text on all of it.
- *   glow-neon/-cyan/-sun  coloured bloom under a surface. Restraint: one
- *                    bloom per screen region — the main action or the
- *                    hero — everything else gets rim light and the tinted
- *                    card shadows (--elevation-*).
- *   text-sunset      gradient headline text; every stop is contrast-checked
- *                    on the ground it sits on (--heading-*).
- */
-@utility surface-primary {
-  background-image:
-    linear-gradient(180deg, rgb(255 255 255 / 16%), transparent 48%),
-    linear-gradient(115deg, var(--primary) 0%, var(--primary-2) 100%);
-}
-
-@utility surface-hero {
-  background-image: var(--hero-surface);
-}
-
-/* Home promo (PromoCard). The resting state — what reduced motion shows:
-   the rider parked at the foot of the road (route point A, scene
-   percentages), sitting on the road by its wheels; speed lines, dust and
-   the arrival burst hidden. The 9 s delivery run is under no-preference. */
-.promo-route {
-  translate: 33% 93%;
-  pointer-events: none;
-}
-.promo-rider {
-  translate: -50% -100%;
-  transform-origin: 50% 100%;
-}
-.promo-trail,
-.promo-dust,
-.promo-burst {
-  opacity: 0;
-}
-.promo-streak {
-  stroke: currentColor;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-}
-.promo-burst {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-/* Each palette's own decoration (ThemeMotif, the sign-in scene): shown
-   only under that palette, by the nearest data-palette's --show-* token. */
-@utility only-vice {
-  display: var(--show-vice);
-}
-@utility only-sunrise {
-  display: var(--show-sunrise);
-}
-@utility only-hub {
-  display: var(--show-hub);
-}
-@utility only-kaapi {
-  display: var(--show-kaapi);
-}
-
-@utility glow-neon {
-  box-shadow:
-    0 2px 6px -2px rgb(var(--shadow-ink) / 30%),
-    0 14px 32px -12px var(--glow-neon);
-}
-
-@utility glow-cyan {
-  box-shadow:
-    0 2px 6px -2px rgb(var(--shadow-ink) / 25%),
-    0 10px 26px -10px var(--glow-cyan);
-}
-
-@utility glow-sun {
-  box-shadow:
-    0 4px 10px -4px rgb(var(--shadow-ink) / 35%),
-    0 22px 48px -18px var(--glow-neon),
-    0 12px 30px -16px var(--glow-sun);
-}
-
-/* An inset top highlight — the edge of a card catching the neon above it.
-   Dark cards already carry one inside --elevation-card; this is for
-   surfaces that don't use shadow-card (chips, the tab bar, sheets). */
-/* A small striped retro sun (the sign-in sun, as decoration) — used behind
-   the logo tile on Home's promo card. */
-@utility promo-sun {
-  background: linear-gradient(to bottom, var(--promo-sun-a) 0%, var(--promo-sun-b) 45%, rgb(255 255 255 / 0%) 100%);
-  opacity: 0.75;
-  mask-image:
-    linear-gradient(#000 0 45%, transparent 45%),
-    repeating-linear-gradient(to bottom, #000 0 7px, transparent 7px 11px);
-  mask-composite: add;
-}
-
-/* The ring around the chosen "What's on your mind?" tile: the palette's
-   whole light run as a circle (--food-ring, e.g. Vice's gold → coral →
-   magenta → violet → cyan). It turns slowly (animate-ring-spin). */
-@utility food-ring {
-  background: conic-gradient(var(--food-ring));
-}
-
-/* Sun rays for the celebration overlay: soft light wedges fading out
-   from the centre (turned slowly by animate-ring-spin). */
-@utility sunburst {
-  background: repeating-conic-gradient(rgb(255 255 255 / 16%) 0deg 9deg, transparent 9deg 22deg);
-  mask-image: radial-gradient(closest-side, #000 20%, transparent 70%);
-}
-
-@utility rim-light {
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 9%);
-}
-
-@utility text-sunset {
-  background-image: linear-gradient(100deg, var(--heading-a) 0%, var(--heading-b) 50%, var(--heading-c) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  @media (forced-colors: active) {
-    background-image: none;
-    color: CanvasText;
-  }
-}
-
-/*
- * Icons (src/components/icons.tsx) are Phosphor duotone: an outline plus a
- * fill layer drawn at opacity 0.2. These two utilities restyle that layer:
- *   icon-solid        makes it opaque — a filled star, an active tab
- *   icon-tint-<col>   paints it a palette colour (icon-tint-gold,
- *                     icon-tint-primary, icon-tint-aqua…) — the brand
- *                     sheet's two-tone look: a gold star, a pink heart
- */
-@utility icon-solid {
-  & path[opacity="0.2"] {
-    opacity: 1;
-  }
-}
-
-@utility icon-tint-* {
-  & path[opacity="0.2"] {
-    fill: --value(--color-*);
-    opacity: 0.9;
-  }
-}
-
 @layer base {
-  * {
-    @apply border-border outline-ring/80;
-  }
-  body {
-    @apply bg-background text-foreground;
-    /* The sky over every page: two soft light sources above the top edge
-       (coral + gold at golden hour, magenta + cyan at dusk) that fade out
-       within the first screen, so no page sits on a flat, unlit ground. */
-    background-image:
-      radial-gradient(70rem 30rem at 110% -12rem, var(--page-glow-a), transparent 70%),
-      radial-gradient(56rem 26rem at -20% -10rem, var(--page-glow-b), transparent 70%);
-    background-repeat: no-repeat;
-  }
-  html {
-    @apply font-sans;
-  }
-  /* Poppins for display text and big numbers: tabular figures so tokens,
-     prices and totals don't jitter as they change. */
-  .font-heading {
-    font-variant-numeric: lining-nums tabular-nums;
-  }
+ * {
+ @apply border-border outline-ring/80;
+ }
+ body {
+ @apply bg-background text-foreground;
+ }
+ html {
+ @apply font-sans;
+ }
+ .font-heading {
+ font-variant-numeric: lining-nums tabular-nums;
+ }
 }
 
 /*
- * Small CSS-only motion moments (add-to-cart morph, cart bar entrance,
- * count bounce). Kept inside `no-preference` so anyone with "reduce
- * motion" set gets the plain, instant state change instead — no
- * transform/opacity animation at all, never just a faster one.
+ * Tactile press feedback — keep this.
  */
 @media (prefers-reduced-motion: no-preference) {
-  .animate-pop-in {
-    animation: pop-in var(--dur-quick) var(--ease-spring) both;
-  }
-  .animate-bounce-count {
-    animation: bounce-count var(--dur-base) var(--ease-spring);
-  }
-  .animate-slide-up-in {
-    animation: slide-up-in var(--dur-base) var(--ease-out-expo) both;
-  }
-  .animate-toast-in {
-    animation: toast-in var(--dur-base) var(--ease-out-expo) both;
-  }
-  .animate-overlay-in {
-    animation: overlay-in var(--dur-base) var(--ease-out-expo) both;
-  }
-  .animate-overlay-out {
-    animation: overlay-out var(--dur-base) var(--ease-in-quad) both;
-  }
-  .animate-confetti-fall {
-    animation-name: confetti-fall;
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    animation-fill-mode: both;
-  }
-  .animate-ping-slow {
-    animation: ping-slow 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-  }
-  /* The delivery scooter on the order road: a small bob while riding. */
-  .animate-scooter {
-    animation: scooter-bob 0.9s ease-in-out infinite alternate;
-  }
-  /* The order road's cooking pot (DeliveryRoad, first 30 min): a simmering
-     jiggle with a little hop now and then. */
-  .animate-cook {
-    animation: cook-jiggle 1.6s ease-in-out infinite;
-    transform-origin: 50% 90%;
-  }
-  /* …and its steam: each wisp rises and fades, a beat apart. */
-  .cook-steam {
-    animation: cook-steam 1.8s ease-out infinite;
-  }
-  .cook-steam:nth-child(2) {
-    animation-delay: -0.6s;
-  }
-  .cook-steam:nth-child(3) {
-    animation-delay: -1.2s;
-  }
-  .animate-ring-spin {
-    animation: ring-spin 5s linear infinite;
-  }
-  /* Unlocked milestone badges: a band of light sweeps across now and then,
-     like a medal catching the sun. The element needs overflow: hidden. */
-  .animate-shine {
-    position: relative;
-  }
-  .animate-shine::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 55%) 50%, transparent 70%);
-    translate: -110% 0;
-    animation: shine-sweep 5.5s var(--ease-out-expo) 1s infinite;
-    pointer-events: none;
-  }
-  /* Theme decoration: Sunrise's sparkles twinkle, Kaapi's steam rises,
-     Hub's nodes pulse (ThemeMotif, the sign-in scene). */
-  .motif-twinkle {
-    animation: motif-twinkle 2.6s ease-in-out infinite alternate;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .motif-steam {
-    animation: motif-steam 3.2s ease-in-out infinite;
-  }
-  /* Campus-pass details (PassArt): Sunrise's rays breathe, Hub's
-     satellites circle the node. */
-  .motif-rays {
-    animation: motif-rays 2.8s ease-in-out infinite alternate;
-    transform-box: view-box;
-    transform-origin: 24px 36px;
-  }
-  .motif-orbit {
-    animation: motif-orbit 6s linear infinite;
-    transform-box: view-box;
-    transform-origin: 24px 24px;
-  }
-  .motif-orbit-slow {
-    animation: motif-orbit 14s linear infinite reverse;
-    transform-box: view-box;
-    transform-origin: 24px 24px;
-  }
-  .motif-pulse {
-    animation: motif-pulse 2.4s ease-in-out infinite alternate;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  /* A gentle up-and-down hover for floating decoration. transform only,
-     so it never fights translate/rotate. */
-  .animate-float {
-    animation: float 4.8s ease-in-out infinite alternate;
-  }
-  /* Home promo (PromoCard): one 9 s delivery run on a loop, every part on
-     the same clock (same duration and delay) so they stay in step — pull
-     in (0–9%), idle (9–18%), ride the S-bend to the gate (18–70%), ride in
-     (70–74%), pin pops / rings / bursts (72–88%), rest, repeat. */
-  .promo-route {
-    animation: promo-route 9s linear 0.3s infinite both;
-  }
-  .promo-rider {
-    animation: promo-rider 9s linear 0.3s infinite both;
-  }
-  .promo-trail {
-    animation: promo-trail 9s linear 0.3s infinite both;
-  }
-  .promo-dust {
-    animation: promo-dust 9s ease-out 0.3s infinite both;
-  }
-  .promo-dust-2 {
-    animation-name: promo-dust-2;
-  }
-  .promo-pin {
-    animation: promo-pin 9s ease-in-out 0.3s infinite both;
-    transform-origin: 50% 85%;
-  }
-  .promo-pin-ring {
-    animation: promo-ring 9s ease-out 0.3s infinite both;
-  }
-  .promo-burst {
-    animation: promo-burst 9s ease-out 0.3s infinite both;
-  }
-  /* Engine buzz, always on (even idling). */
-  .promo-bob {
-    animation: promo-bob 0.32s ease-in-out infinite alternate;
-  }
-  .promo-streak {
-    animation: promo-streak 0.6s linear infinite;
-    transform-box: fill-box;
-  }
-  html:is([data-splash="play"], [data-splash="run"]) :is(.promo-scene, .promo-scene *) {
-    animation-play-state: paused;
-  }
-  /* WhatsApp channel card (ChannelPopover): it grows out of the header
-     button's corner (Base UI sets --transform-origin) with a spring, its
-     rows rise in one after another (--i), and it shrinks back fast. Until
-     it's been opened once, the button gives two wiggles after the splash. */
-  .channel-pop {
-    transition:
-      transform var(--dur-slow) var(--ease-spring),
-      opacity var(--dur-base) var(--ease-out-expo);
-  }
-  .channel-pop[data-starting-style] {
-    opacity: 0;
-    transform: scale(0.35);
-  }
-  .channel-pop[data-ending-style] {
-    opacity: 0;
-    transform: scale(0.6);
-    transition:
-      transform var(--dur-quick) var(--ease-in-quad),
-      opacity var(--dur-quick) var(--ease-in-quad);
-  }
-  .channel-pop .channel-rise {
-    animation: channel-rise var(--dur-slow) var(--ease-out-expo) both;
-    animation-delay: calc(90ms + var(--i, 0) * 45ms);
-  }
-  .channel-wiggle {
-    animation: channel-wiggle 0.9s var(--ease-out-expo) 1.2s 2 both;
-  }
-  /* Home logo (AboutDialog trigger): a slow glowing pulse so it reads as
-     tappable, plus two soft ripples spreading out once on load. */
-  .logo-beacon {
-    animation: logo-glow 3.2s ease-in-out infinite;
-  }
-  .logo-beacon::before,
-  .logo-beacon::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    border: 2px solid var(--primary);
-    opacity: 0;
-    pointer-events: none;
-    animation: logo-ripple 1.6s var(--ease-out-expo) 0.4s 1 both;
-  }
-  .logo-beacon::after {
-    animation-delay: 0.85s;
-  }
-  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon,
-  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon::before,
-  html:is([data-splash="play"], [data-splash="run"]) .logo-beacon::after {
-    animation-play-state: paused;
-  }
-  html:is([data-splash="play"], [data-splash="run"]) .channel-wiggle {
-    animation-play-state: paused;
-  }
-  /* Bottom bar (TabBar): the new tab's icon pops in with a little twist,
-     and the sliding pill squashes wide as it lands, then settles. */
-  .animate-tab-pop {
-    animation: tab-pop var(--dur-slow) var(--ease-spring) both;
-  }
-  .animate-tab-stretch {
-    animation: tab-stretch var(--dur-slow) var(--ease-out-expo) both;
-  }
-  /* Deep-linked dish (?dish=): a cyan outline that drops in from a little
-     further out, pulses once, then fades — "here it is", not a blinking
-     alarm. The outline lives on its own property so it never fights the
-     in-cart ring (box-shadow). */
-  .animate-highlight {
-    outline: 3px solid transparent;
-    animation: highlight-arrive 3s var(--ease-out-expo) both;
-  }
-  /* Milestone progress rings fill from empty the first time they paint. */
-  .ring-fill {
-    transition: stroke-dashoffset 900ms var(--ease-out-expo) 150ms;
-  }
-  @starting-style {
-    .ring-fill {
-      stroke-dashoffset: var(--ring-empty);
-    }
-  }
-  /* The menu's "tried N of M" sunset bar fills from empty on first paint. */
-  .progress-fill {
-    transition: width 900ms var(--ease-out-expo) 200ms;
-  }
-  @starting-style {
-    .progress-fill {
-      width: 0;
-    }
-  }
-  .animate-shimmer {
-    position: relative;
-    overflow: hidden;
-  }
-  .animate-shimmer::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    transform: translateX(-100%);
-    /* A warm band of sunset light rather than a grey one. */
-    background-image: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--hero-b) 22%, transparent),
-      transparent
-    );
-    animation: shimmer-sweep 1.6s ease-in-out infinite;
-  }
-
-  /*
-   * Tactile press feedback — every native <button> gets a slight
-   * scale-down on tap, app-wide, with zero per-component changes since
-   * this codebase already uses semantic <button> consistently for real
-   * actions. `.pressable` opts in the handful of <Link>-styled cards/CTAs
-   * that aren't literal <button> elements. Deliberately not applied to
-   * plain text links (Cancel, Edit, "Track order →") — a scale effect on
-   * inline underlined text reads as glitchy, not tactile. Also skips
-   * [aria-haspopup] triggers (dropdown/dialog openers), matching the
-   * exclusion already built into components/ui/button.tsx's own
-   * active:not-aria-[haspopup]:translate-y-px — the reveal is the
-   * feedback there, not a press.
-   */
-  /* Lists the colour/shadow properties too: this rule is unlayered, so a
-     bare transition: transform here used to override every
-     transition-colors / transition-shadow utility on the same element and
-     make hovers snap instead of fade. */
-  button:not(:disabled):not([aria-haspopup]),
-  .pressable {
-    transition-property: transform, translate, scale, rotate, color, background-color, border-color, box-shadow, opacity, filter;
-    transition-duration: var(--dur-press);
-    transition-timing-function: ease-out;
-  }
-  button:not(:disabled):not([aria-haspopup]):active,
-  .pressable:active {
-    transform: scale(0.97);
-  }
-
+ button:not(:disabled):not([aria-haspopup]),
+ .pressable {
+ transition-property: transform, translate, scale, rotate, color, background-color, border-color, box-shadow, opacity, filter;
+ transition-duration: var(--dur-press);
+ transition-timing-function: ease-out;
+ }
+ button:not(:disabled):not([aria-haspopup]):active,
+ .pressable:active {
+ transform: scale(0.97);
+ }
 }
 
-@keyframes motif-twinkle {
-  from {
-    opacity: 0.35;
-    scale: 0.75;
-  }
-  to {
-    opacity: 1;
-    scale: 1.1;
-  }
-}
-
-@keyframes motif-steam {
-  0% {
-    opacity: 0;
-    translate: 0 6%;
-  }
-  35% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    translate: 0 -10%;
-  }
-}
-
-@keyframes motif-rays {
-  from {
-    opacity: 0.55;
-    scale: 0.88;
-  }
-  to {
-    opacity: 1;
-    scale: 1.06;
-  }
-}
-
-@keyframes motif-orbit {
-  to {
-    rotate: 1turn;
-  }
-}
-
-@keyframes motif-pulse {
-  from {
-    opacity: 0.55;
-    scale: 0.85;
-  }
-  to {
-    opacity: 1;
-    scale: 1.15;
-  }
-}
-
-@keyframes highlight-arrive {
-  0% {
-    outline-offset: 10px;
-    outline-color: transparent;
-  }
-  18% {
-    outline-offset: 3px;
-    outline-color: var(--aqua);
-  }
-  34% {
-    outline-offset: 6px;
-  }
-  50% {
-    outline-offset: 3px;
-  }
-  78% {
-    outline-color: var(--aqua);
-  }
-  100% {
-    outline-offset: 3px;
-    outline-color: transparent;
-  }
-}
-
-@keyframes shimmer-sweep {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes shine-sweep {
-  0%,
-  70% {
-    translate: -110% 0;
-  }
-  100% {
-    translate: 110% 0;
-  }
-}
-
-@keyframes logo-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 18px 3px color-mix(in srgb, var(--primary) 45%, transparent);
-  }
-}
-
-@keyframes logo-ripple {
-  0% {
-    opacity: 0.7;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.6);
-  }
-}
-
-@keyframes cook-steam {
-  0% {
-    opacity: 0;
-    translate: 0 4px;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    translate: 0 -7px;
-  }
-}
-
-@keyframes cook-jiggle {
-  0%,
-  100% {
-    transform: none;
-  }
-  10% {
-    transform: rotate(-6deg);
-  }
-  20% {
-    transform: rotate(5deg);
-  }
-  30% {
-    transform: rotate(-3deg);
-  }
-  40% {
-    transform: none;
-  }
-  70% {
-    transform: translateY(-2px) scale(1.04);
-  }
-  80% {
-    transform: none;
-  }
-}
-
-@keyframes scooter-bob {
-  from {
-    transform: translateY(1px) rotate(-3deg);
-  }
-  to {
-    transform: translateY(-2px) rotate(2deg);
-  }
-}
-
-@keyframes ring-spin {
-  to {
-    rotate: 1turn;
-  }
-}
-
-/* The route: the road's lane dashes, measured on the four scenes (scene
-   percentages, the rider's wheels on the lane). Segment times follow the
-   on-screen distance, slowing a little with distance (perspective). */
-@keyframes promo-route {
-  0% {
-    translate: 22% 110%;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  9% {
-    translate: 33% 93%;
-  }
-  18% {
-    translate: 33% 93%;
-    animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
-  }
-  24% {
-    translate: 45% 90%;
-  }
-  29.7% {
-    translate: 56% 87%;
-  }
-  35.1% {
-    translate: 66% 84%;
-  }
-  40.3% {
-    translate: 75% 79.5%;
-  }
-  45.5% {
-    translate: 83% 73.5%;
-  }
-  48.8% {
-    translate: 85.5% 66.5%;
-  }
-  52.7% {
-    translate: 81.5% 61.3%;
-  }
-  58.2% {
-    translate: 75.3% 58.5%;
-  }
-  64.7% {
-    translate: 68.5% 56.5%;
-  }
-  70% {
-    translate: 63.5% 54%;
-    animation-timing-function: ease-out;
-  }
-  74%,
-  100% {
-    translate: 65% 51%;
-  }
-}
-
-/* Size with distance — linear in the road's depth (it narrows to a
-   horizon at ~45% of the scene) — and the turn at the bend (x flips
-   through 0, which reads as the scooter swinging round). */
-@keyframes promo-rider {
-  0% {
-    opacity: 0;
-    scale: 1.06;
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  4% {
-    opacity: 1;
-  }
-  9%,
-  18% {
-    scale: 1;
-  }
-  24% {
-    scale: 0.94;
-  }
-  29.7% {
-    scale: 0.875;
-  }
-  35.1% {
-    scale: 0.81;
-  }
-  40.3% {
-    scale: 0.72;
-  }
-  45.5% {
-    scale: 0.59;
-  }
-  48.8% {
-    scale: 0.45;
-  }
-  52.7% {
-    scale: -0.34 0.34;
-  }
-  58.2% {
-    scale: -0.28 0.28;
-  }
-  64.7% {
-    scale: -0.24 0.24;
-  }
-  70% {
-    opacity: 1;
-    scale: -0.19 0.19;
-    animation-timing-function: ease-in;
-  }
-  74%,
-  100% {
-    opacity: 0;
-    scale: -0.07 0.07;
-  }
-}
-
-/* Speed lines only while moving. */
-@keyframes promo-trail {
-  0% {
-    opacity: 0;
-  }
-  2%,
-  7% {
-    opacity: 0.85;
-  }
-  10%,
-  18% {
-    opacity: 0;
-  }
-  21%,
-  68% {
-    opacity: 0.85;
-  }
-  71%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* A puff of dust as it pulls away from idle. */
-@keyframes promo-dust {
-  0%,
-  17% {
-    opacity: 0;
-    scale: 0.4;
-    translate: 0 0;
-  }
-  19% {
-    opacity: 0.8;
-    scale: 1;
-  }
-  26%,
-  100% {
-    opacity: 0;
-    scale: 1.9;
-    translate: -60% -30%;
-  }
-}
-
-@keyframes promo-dust-2 {
-  0%,
-  18% {
-    opacity: 0;
-    scale: 0.4;
-    translate: 0 0;
-  }
-  20.5% {
-    opacity: 0.7;
-    scale: 1;
-  }
-  28%,
-  100% {
-    opacity: 0;
-    scale: 2;
-    translate: -80% -50%;
-  }
-}
-
-@keyframes promo-pin {
-  0%,
-  70% {
-    scale: 1;
-    translate: 0 0;
-  }
-  72.5% {
-    scale: 1.32;
-    translate: 0 -14%;
-  }
-  76% {
-    scale: 0.94;
-    translate: 0 0;
-  }
-  79% {
-    scale: 1.04;
-  }
-  82%,
-  100% {
-    scale: 1;
-    translate: 0 0;
-  }
-}
-
-@keyframes promo-ring {
-  0%,
-  70% {
-    opacity: 0.6;
-    scale: 1;
-  }
-  72% {
-    opacity: 1;
-    scale: 0.8;
-  }
-  88% {
-    opacity: 0;
-    scale: 2.6;
-  }
-  94% {
-    opacity: 0;
-    scale: 1;
-  }
-  100% {
-    opacity: 0.6;
-    scale: 1;
-  }
-}
-
-@keyframes promo-burst {
-  0%,
-  71% {
-    opacity: 0;
-    scale: 0.5;
-    translate: 0 0;
-  }
-  73% {
-    opacity: 1;
-    scale: 1.2;
-  }
-  86%,
-  100% {
-    opacity: 0;
-    scale: 0.6;
-    translate: var(--dx) var(--dy);
-  }
-}
-
-@keyframes promo-bob {
-  from {
-    transform: translateY(0) rotate(-0.6deg);
-  }
-  to {
-    transform: translateY(-1.8%) rotate(0.6deg);
-  }
-}
-
-@keyframes promo-streak {
-  0% {
-    opacity: 0;
-    translate: 35% 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    translate: -45% 0;
-  }
-}
-
-@keyframes float {
-  from {
-    transform: translateY(3px);
-  }
-  to {
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes tab-pop {
-  0% {
-    transform: scale(0.6) rotate(-14deg);
-  }
-  60% {
-    transform: scale(1.14) rotate(4deg);
-  }
-  100% {
-    transform: none;
-  }
-}
-
-@keyframes tab-stretch {
-  0% {
-    transform: scaleX(1.16) scaleY(0.88);
-  }
-  100% {
-    transform: none;
-  }
-}
-
-@keyframes channel-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes channel-wiggle {
-  0%,
-  100% {
-    transform: none;
-  }
-  15% {
-    transform: rotate(-14deg) scale(1.08);
-  }
-  30% {
-    transform: rotate(11deg) scale(1.08);
-  }
-  45% {
-    transform: rotate(-7deg);
-  }
-  60% {
-    transform: rotate(4deg);
-  }
-}
-
-@keyframes ping-slow {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1.9);
-    opacity: 0;
-  }
+/*
+ * Functional animations — simplified.
+ */
+@media (prefers-reduced-motion: no-preference) {
+ .animate-pop-in {
+ animation: pop-in var(--dur-quick) var(--ease-spring) both;
+ }
+ .animate-bounce-count {
+ animation: bounce-count var(--dur-base) var(--ease-spring);
+ }
+ .animate-slide-up-in {
+ animation: slide-up-in var(--dur-base) var(--ease-out-expo) both;
+ }
+ .animate-toast-in {
+ animation: toast-in var(--dur-base) var(--ease-out-expo) both;
+ }
+ .animate-overlay-in {
+ animation: overlay-in var(--dur-base) var(--ease-out-expo) both;
+ }
+ .animate-overlay-out {
+ animation: overlay-out var(--dur-base) var(--ease-in-quad) both;
+ }
+ .animate-tab-pop {
+ animation: tab-pop var(--dur-slow) var(--ease-spring) both;
+ }
+ .animate-tab-stretch {
+ animation: tab-stretch var(--dur-slow) var(--ease-out-expo) both;
+ }
 }
 
 @keyframes pop-in {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+ from {
+ opacity: 0;
+ transform: scale(0.85);
+ }
+ to {
+ opacity: 1;
+ transform: scale(1);
+ }
 }
 
 @keyframes bounce-count {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.22);
-  }
-  100% {
-    transform: scale(1);
-  }
+ 0% {
+ transform: scale(1);
+ }
+ 40% {
+ transform: scale(1.22);
+ }
+ 100% {
+ transform: scale(1);
+ }
 }
 
 @keyframes slide-up-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-20px) translateX(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(220px) translateX(var(--confetti-drift, 0px)) rotate(var(--confetti-rotate, 180deg));
-    opacity: 0;
-  }
+ from {
+ opacity: 0;
+ transform: translateY(16px);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0);
+ }
 }
 
 @keyframes toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(-12px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+ from {
+ opacity: 0;
+ transform: translateY(-12px) scale(0.96);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0) scale(1);
+ }
 }
 
 @keyframes overlay-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+ from {
+ opacity: 0;
+ }
+ to {
+ opacity: 1;
+ }
 }
 
 @keyframes overlay-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+ from {
+ opacity: 1;
+ }
+ to {
+ opacity: 0;
+ }
+}
+
+@keyframes tab-pop {
+ 0% {
+ transform: scale(0.6) rotate(-14deg);
+ }
+ 60% {
+ transform: scale(1.14) rotate(4deg);
+ }
+ 100% {
+ transform: none;
+ }
+}
+
+@keyframes tab-stretch {
+ 0% {
+ transform: scaleX(1.16) scaleY(0.88);
+ }
+ 100% {
+ transform: none;
+ }
 }
 
 /*
- * Directional page-to-page View Transitions — home <-> restaurant menu,
- * orders list <-> order detail, and menu -> order tracking right after
- * placing an order. Each <Link>/router.push carries a "nav-forward" or
- * "nav-back" transitionType (see the page files), which these rules turn
- * into a slide. Keeps the page clickable mid-transition (unnamed content
- * isn't hit-tested otherwise), and drops to an instant swap — the
- * browser's own default — for reduce-motion, same as the rest of this
- * file's motion.
+ * View transitions — keep functional.
  */
 :root {
-  --vt-duration-exit: 150ms;
-  --vt-duration-enter: 210ms;
-  --vt-duration-move: 400ms;
+ --vt-duration-exit: 150ms;
+ --vt-duration-enter: 210ms;
+ --vt-duration-move: 400ms;
 }
 
 ::view-transition {
-  pointer-events: none;
+ pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-  }
-}
-
-/*
- * Safety net: everything above is opt-in under no-preference, but library
- * animations (tw-animate's dialog/sheet enter/exit, Tailwind's pulse and
- * ping) aren't. With reduce set, collapse all of them to an instant end
- * state. Spinners are exempt — they're a progress signal, not decoration.
- * (The startup splash animates with the Web Animations API, which this
- * doesn't touch; components/splash/engine.ts handles reduced motion itself.)
- */
-@media (prefers-reduced-motion: reduce) {
-  *:not(.animate-spin),
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+ ::view-transition-old(*),
+ ::view-transition-new(*),
+ ::view-transition-group(*) {
+ animation-duration: 0s !important;
+ animation-delay: 0s !important;
+ }
 }
 
 @keyframes vt-fade {
-  from {
-    filter: blur(3px);
-    opacity: 0;
-  }
-  to {
-    filter: blur(0);
-    opacity: 1;
-  }
+ from {
+ filter: blur(3px);
+ opacity: 0;
+ }
+ to {
+ filter: blur(0);
+ opacity: 1;
+ }
 }
 
 ::view-transition-old(.nav-forward) {
-  --vt-slide-offset: -60px;
-  animation:
-    var(--vt-duration-exit) ease-in both vt-fade reverse,
-    var(--vt-duration-move) ease-in-out both vt-slide reverse;
+ --vt-slide-offset: -60px;
+ animation:
+ var(--vt-duration-exit) ease-in both vt-fade reverse,
+ var(--vt-duration-move) ease-in-out both vt-slide reverse;
 }
 ::view-transition-new(.nav-forward) {
-  --vt-slide-offset: 60px;
-  animation:
-    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
-    var(--vt-duration-move) ease-in-out both vt-slide;
+ --vt-slide-offset: 60px;
+ animation:
+ var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+ var(--vt-duration-move) ease-in-out both vt-slide;
 }
 
 ::view-transition-old(.nav-back) {
-  --vt-slide-offset: 60px;
-  animation:
-    var(--vt-duration-exit) ease-in both vt-fade reverse,
-    var(--vt-duration-move) ease-in-out both vt-slide reverse;
+ --vt-slide-offset: 60px;
+ animation:
+ var(--vt-duration-exit) ease-in both vt-fade reverse,
+ var(--vt-duration-move) ease-in-out both vt-slide reverse;
 }
 ::view-transition-new(.nav-back) {
-  --vt-slide-offset: -60px;
-  animation:
-    var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
-    var(--vt-duration-move) ease-in-out both vt-slide;
+ --vt-slide-offset: -60px;
+ animation:
+ var(--vt-duration-enter) ease-out var(--vt-duration-exit) both vt-fade,
+ var(--vt-duration-move) ease-in-out both vt-slide;
 }
 
 @keyframes vt-slide {
-  from {
-    translate: var(--vt-slide-offset);
-  }
-  to {
-    translate: 0;
-  }
+ from {
+ translate: var(--vt-slide-offset);
+ }
+ to {
+ translate: 0;
+ }
 }
 
 /*
- * The loading.tsx -> page.tsx handoff (see REVEAL_EXIT/REVEAL_ENTER in
- * lib/nav-transition.ts): the skeleton slides down and out as the
- * Suspense boundary resolves, the real content slides up and in.
+ * Loading transitions.
  */
 ::view-transition-old(.slide-down) {
-  animation:
-    var(--vt-duration-exit) ease-out both vt-fade reverse,
-    var(--vt-duration-exit) ease-out both vt-slide-y reverse;
+ animation:
+ var(--vt-duration-exit) ease-out both vt-fade reverse,
+ var(--vt-duration-exit) ease-out both vt-slide-y reverse;
 }
 ::view-transition-new(.slide-up) {
-  animation:
-    var(--vt-duration-enter) ease-in var(--vt-duration-exit) both vt-fade,
-    var(--vt-duration-move) ease-in both vt-slide-y;
+ animation:
+ var(--vt-duration-enter) ease-in var(--vt-duration-exit) both vt-fade,
+ var(--vt-duration-move) ease-in both vt-slide-y;
 }
 
 @keyframes vt-slide-y {
-  from {
-    transform: translateY(10px);
-  }
-  to {
-    transform: translateY(0);
-  }
+ from {
+ transform: translateY(10px);
+ }
+ to {
+ transform: translateY(0);
+ }
+}
+
+/*
+ * Reduced motion safety net.
+ */
+@media (prefers-reduced-motion: reduce) {
+ *:not(.animate-spin),
+ *::before,
+ *::after {
+ animation-duration: 0.01ms !important;
+ animation-iteration-count: 1 !important;
+ transition-duration: 0.01ms !important;
+ scroll-behavior: auto !important;
+ }
 }

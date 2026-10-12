@@ -9,28 +9,28 @@ import { getAllUsers } from "@/lib/data/admin";
 export const metadata: Metadata = { title: "Users · College Bites Admin" };
 
 export default async function AdminUsersPage() {
-  const users = await getAllUsers();
+ const users = await getAllUsers();
 
-  return (
-    <>
-      <div>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <BackToDashboardLink />
-          <Link
-            href="/admin/banned"
-            className={adminPill}
-          >
-            <ShieldBan className="size-4" aria-hidden="true" />
-            Banned users
-          </Link>
-        </div>
-        <h1 className="mt-4 font-heading text-headline font-bold">Users</h1>
-        <p className="mt-1 text-muted-foreground">
-          Everyone registered on College Bites, {users.length} in total.
-        </p>
-      </div>
+ return (
+ <>
+ <div>
+ <div className="flex flex-wrap items-center justify-between gap-2">
+ <BackToDashboardLink />
+ <Link
+ href="/admin/banned"
+ className={adminPill}
+ >
+ <ShieldBan className="size-4" aria-hidden="true" />
+ Banned users
+ </Link>
+ </div>
+ <h1 className="mt-4 font-heading text-headline font-bold">Users</h1>
+ <p className="mt-1 text-muted-foreground">
+ Everyone registered on College Bites, {users.length} in total.
+ </p>
+ </div>
 
-      <UsersList users={users} />
-    </>
-  );
+ <UsersList users={users} />
+ </>
+ );
 }

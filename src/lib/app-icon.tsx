@@ -19,40 +19,40 @@ const MARK_SRC = `data:image/png;base64,${markData.toString("base64")}`;
  * updating in one place.
  */
 export function appIconResponse({
-  width,
-  height,
-  borderRadius = 0,
-  markScale = 1,
+ width,
+ height,
+ borderRadius = 0,
+ markScale = 1,
 }: {
-  width: number;
-  height: number;
-  /** 0 (default) for full-bleed icons — maskable/apple-touch icons where the OS applies its own mask. */
-  borderRadius?: number;
-  /**
-   * Mark width as a fraction of the icon. Maskable icons must keep the
-   * artwork inside the central 80%-diameter circle Android may crop to.
-   */
-  markScale?: number;
+ width: number;
+ height: number;
+ /** 0 (default) for full-bleed icons — maskable/apple-touch icons where the OS applies its own mask. */
+ borderRadius?: number;
+ /**
+ * Mark width as a fraction of the icon. Maskable icons must keep the
+ * artwork inside the central 80%-diameter circle Android may crop to.
+ */
+ markScale?: number;
 }) {
-  const markSize = Math.round(width * markScale);
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          borderRadius,
-          background: MARK_TILE,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={MARK_SRC} alt="" width={markSize} height={markSize} />
-      </div>
-    ),
-    { width, height },
-  );
+ const markSize = Math.round(width * markScale);
+ return new ImageResponse(
+ (
+ <div
+ style={{
+ width: "100%",
+ height: "100%",
+ display: "flex",
+ alignItems: "center",
+ justifyContent: "center",
+ overflow: "hidden",
+ borderRadius,
+ background: MARK_TILE,
+ }}
+ >
+ {/* eslint-disable-next-line @next/next/no-img-element */}
+ <img src={MARK_SRC} alt="" width={markSize} height={markSize} />
+ </div>
+ ),
+ { width, height },
+ );
 }

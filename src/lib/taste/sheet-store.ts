@@ -10,21 +10,21 @@ let open = false;
 const listeners = new Set<() => void>();
 
 function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
+ listeners.add(listener);
+ return () => listeners.delete(listener);
 }
 
 export function setTasteSheetOpen(next: boolean) {
-  open = next;
-  listeners.forEach((l) => l());
+ open = next;
+ listeners.forEach((l) => l());
 }
 
 export function openTasteSheet() {
-  setTasteSheetOpen(true);
+ setTasteSheetOpen(true);
 }
 
 export function useTasteSheetOpen(): boolean {
-  return useSyncExternalStore(subscribe, () => open, () => false);
+ return useSyncExternalStore(subscribe, () => open, () => false);
 }
 
 // The "Finish your profile" card's memory, per device: "never" after ×,
@@ -34,27 +34,27 @@ const NUDGE_KEY = "collegebites.taste-nudge";
 const SNOOZE_MS = 3 * 24 * 60 * 60 * 1000;
 
 export function tasteNudgeHidden(): boolean {
-  try {
-    const v = localStorage.getItem(NUDGE_KEY);
-    if (v === "never") return true;
-    return v !== null && Date.now() < Number(v);
-  } catch {
-    return false;
-  }
+ try {
+ const v = localStorage.getItem(NUDGE_KEY);
+ if (v === "never") return true;
+ return v !== null && Date.now() < Number(v);
+ } catch {
+ return false;
+ }
 }
 
 export function snoozeTasteNudge() {
-  try {
-    if (localStorage.getItem(NUDGE_KEY) !== "never") localStorage.setItem(NUDGE_KEY, String(Date.now() + SNOOZE_MS));
-  } catch {
-    // Storage unavailable — it may show again next visit; harmless.
-  }
+ try {
+ if (localStorage.getItem(NUDGE_KEY) !== "never") localStorage.setItem(NUDGE_KEY, String(Date.now() + SNOOZE_MS));
+ } catch {
+ // Storage unavailable — it may show again next visit; harmless.
+ }
 }
 
 export function dismissTasteNudge() {
-  try {
-    localStorage.setItem(NUDGE_KEY, "never");
-  } catch {
-    // As above.
-  }
+ try {
+ localStorage.setItem(NUDGE_KEY, "never");
+ } catch {
+ // As above.
+ }
 }

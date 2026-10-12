@@ -10,9 +10,9 @@ import { getSessionProfile, type Profile } from "@/lib/profile";
  * is just so a non-admin never sees the dashboard shell in the first place.
  */
 export async function requireAdmin(): Promise<Profile> {
-  const { user, profile } = await getSessionProfile();
-  if (!user) redirect("/login");
-  if (!profile) redirect("/welcome");
-  if (profile.role !== "admin") redirect("/");
-  return profile;
+ const { user, profile } = await getSessionProfile();
+ if (!user) redirect("/login");
+ if (!profile) redirect("/welcome");
+ if (profile.role !== "admin") redirect("/");
+ return profile;
 }

@@ -3,28 +3,27 @@
 import { useState, type CSSProperties } from "react";
 
 type Piece = {
-  left: number;
-  delay: number;
-  duration: number;
-  drift: number;
-  rotate: number;
-  color: string;
+ left: number;
+ delay: number;
+ duration: number;
+ drift: number;
+ rotate: number;
+ color: string;
 };
 
-// The palette's six confetti colours (--confetti-1…6 in globals.css), so
-// the burst matches whichever theme the student picked.
-const COLORS = [1, 2, 3, 4, 5, 6].map((n) => `var(--confetti-${n})`);
+// Clean Zomato-style confetti colors — red, green, and neutral accents.
+const COLORS = ["#E23744", "#60A756", "#1C1C1C", "#696969", "#F5A3AB", "#A8D89E"];
 const PIECE_COUNT = 20;
 
 function makePieces(): Piece[] {
-  return Array.from({ length: PIECE_COUNT }, () => ({
-    left: Math.random() * 100,
-    delay: Math.random() * 150,
-    duration: 1100 + Math.random() * 500,
-    drift: (Math.random() - 0.5) * 80,
-    rotate: 180 + Math.random() * 360,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-  }));
+ return Array.from({ length: PIECE_COUNT }, () => ({
+ left: Math.random() * 100,
+ delay: Math.random() * 150,
+ duration: 1100 + Math.random() * 500,
+ drift: (Math.random() - 0.5) * 80,
+ rotate: 180 + Math.random() * 360,
+ color: COLORS[Math.floor(Math.random() * COLORS.length)],
+ }));
 }
 
 /**
@@ -35,26 +34,26 @@ function makePieces(): Piece[] {
  * celebration overlay's lifecycle.
  */
 export function ConfettiBurst() {
-  const [pieces] = useState(makePieces);
+ const [pieces] = useState(makePieces);
 
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      {pieces.map((p, i) => (
-        <span
-          key={i}
-          className="animate-confetti-fall absolute top-0 h-2.5 w-1.5 rounded-[1px]"
-          style={
-            {
-              left: `${p.left}%`,
-              backgroundColor: p.color,
-              animationDelay: `${p.delay}ms`,
-              animationDuration: `${p.duration}ms`,
-              "--confetti-drift": `${p.drift}px`,
-              "--confetti-rotate": `${p.rotate}deg`,
-            } as CSSProperties
-          }
-        />
-      ))}
-    </div>
-  );
+ return (
+ <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+ {pieces.map((p, i) => (
+ <span
+ key={i}
+ className="animate-confetti-fall absolute top-0 h-2.5 w-1.5 rounded-[1px]"
+ style={
+ {
+ left: `${p.left}%`,
+ backgroundColor: p.color,
+ animationDelay: `${p.delay}ms`,
+ animationDuration: `${p.duration}ms`,
+ "--confetti-drift": `${p.drift}px`,
+ "--confetti-rotate": `${p.rotate}deg`,
+ } as CSSProperties
+ }
+ />
+ ))}
+ </div>
+ );
 }

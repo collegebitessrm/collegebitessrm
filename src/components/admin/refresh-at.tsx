@@ -9,12 +9,12 @@ import { useRouter } from "next/navigation";
  * time passes, without the admin reloading.
  */
 export function RefreshAt({ at }: { at: number | null }) {
-  const router = useRouter();
-  useEffect(() => {
-    if (at === null) return;
-    // +1 s so the server's own clock is past the boundary too.
-    const timeout = setTimeout(() => router.refresh(), Math.max(0, at - Date.now()) + 1000);
-    return () => clearTimeout(timeout);
-  }, [at, router]);
-  return null;
+ const router = useRouter();
+ useEffect(() => {
+ if (at === null) return;
+ // +1 s so the server's own clock is past the boundary too.
+ const timeout = setTimeout(() => router.refresh(), Math.max(0, at - Date.now()) + 1000);
+ return () => clearTimeout(timeout);
+ }, [at, router]);
+ return null;
 }
