@@ -286,7 +286,7 @@ export function OrderTracking({
 													</span>
 												)}
 												{/* Call restaurant button — appears after preparing is done, hides when delivered */}
-												{i === 2 && step.state === "done" && showRestaurantPhone && status !== "delivered" && (
+												{i === 2 && step.state === "done" && showRestaurantPhone && (
 													<a
 														href={`tel:${initialOrder.restaurantPhone}`}
 														className="mt-2 inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-orange-600 active:scale-95"
