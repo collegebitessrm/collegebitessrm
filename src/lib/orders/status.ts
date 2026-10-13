@@ -97,21 +97,21 @@ export function orderTimeline(status: OrderStatus): TimelineStep[] {
  break;
  case "preparing":
  confirmed = "done";
- preparing = "done";
- outForDelivery = "current";
+ preparing = "current";
+ outForDelivery = "upcoming";
  atGate = "upcoming";
  break;
  case "out_for_delivery":
  confirmed = "done";
  preparing = "done";
- outForDelivery = "done";
- atGate = "current";
+ outForDelivery = "current";
+ atGate = "upcoming";
  break;
  case "at_gate":
  confirmed = "done";
  preparing = "done";
  outForDelivery = "done";
- atGate = "done";
+ atGate = "current";
  break;
  case "delivered":
  confirmed = "done";

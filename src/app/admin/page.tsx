@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Discount, History, PackageX, Star, Storefront, Users } from "@/components/icons";
+import { BarChart, Discount, History, PackageX, Star, Storefront, Users } from "@/components/icons";
 import { MarkAllDeliveredButton } from "@/components/admin/mark-all-delivered-button";
 import { NewOrderAlerts } from "@/components/admin/new-order-alerts";
 import { OrderingKillSwitch } from "@/components/admin/ordering-kill-switch";
@@ -77,6 +77,10 @@ export default async function AdminPage() {
  <Link href="/admin/menu" className={adminPill}>
  <Storefront className="size-4" aria-hidden="true" />
  Menu
+ </Link>
+ <Link href="/admin/analytics" className={adminPill}>
+ <BarChart className="size-4" aria-hidden="true" />
+ Analytics
  </Link>
  </div>
 

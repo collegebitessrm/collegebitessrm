@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Phone, Star } from "@/components/icons";
 import type { AdminOrderDetail } from "@/lib/data/admin";
 import { deliveryWindow, formatOrderTimestamp } from "@/lib/date";
@@ -13,6 +14,7 @@ import { CopyOrderButton, OrderActions, useOrderStatus, WhatsAppButton, WhatsApp
 
 /** Everything about one order, for /admin/orders/[id] — opened by tapping an order card. */
 export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
+ const router = useRouter();
  const [status, setStatus] = useOrderStatus(order.status);
  const badge = statusBadge(status);
  const slot = deliveryWindow(order.createdAt, order.deliveryMinutes);
@@ -117,7 +119,7 @@ export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
  </Section>
  )}
 
- <OrderActions order={order} status={status} onStatusChange={setStatus} />
+ <OrderActions order={order} status={status} onStatusChange={setStatus} onDeleted={() => router.push("/admin/history")} />
  </div>
  );
 }

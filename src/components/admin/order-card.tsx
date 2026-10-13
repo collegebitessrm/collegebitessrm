@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, Copy, Loader2, MessageCircle } from "@/components/icons";
+import { Check, Copy, Loader2, MessageCircle, Trash2 } from "@/components/icons";
 import {
  AlertDialog,
  AlertDialogAction,
@@ -15,7 +15,7 @@ import {
  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { BlurImage } from "@/components/blur-image";
-import { advanceOrderStatus, cancelOrder } from "@/lib/admin/actions";
+import { advanceOrderStatus, cancelOrder, deleteOrder } from "@/lib/admin/actions";
 import type { AdminOrder } from "@/lib/data/admin";
 import type { OrderStatus } from "@/lib/data/types";
 import { getDishPhoto } from "@/lib/data/dish-photos";
@@ -199,22 +199,30 @@ export function OrderActions({
  order,
  status,
  onStatusChange,
+ onDeleted,
  className,
 }: {
  order: AdminOrder;
  status: OrderStatus;
  onStatusChange: (status: OrderStatus) => void;
+ /** Called after a successful delete so the parent can remove the card / redirect. */
+ onDeleted?: () => void;
  className?: string;
 }) {
  const [advancing, startAdvance] = useTransition();
  const [cancelOpen, setCancelOpen] = useState(false);
  const [cancelling, startCancel] = useTransition();
+ const [deleteOpen, setDeleteOpen] = useState(false);
+ const [deleting, startDelete] = useTransition();
 
  const label = advanceLabel(status);
  const isFinalStep = status === "confirmed"; // → delivered
  // Cancel only exists before confirmation — once an admin confirms with
  // the restaurant, the only path forward is marking it delivered.
  const cancellable = status === "pending";
+ // Delete only on terminal orders — active orders would strand the student's
+ // live tracking page.
+ const deletable = status === "delivered" || status === "cancelled";
 
  function advance() {
  startAdvance(async () => {
@@ -241,7 +249,20 @@ export function OrderActions({
  });
  }
 
- if (!label && !cancellable) return null;
+ function confirmDelete() {
+ startDelete(async () => {
+ const result = await deleteOrder(order.id, status);
+ if (result.ok) {
+ setDeleteOpen(false);
+ toast.success("Order deleted.");
+ onDeleted?.();
+ } else {
+ toast.error(result.error);
+ }
+ });
+ }
+
+ if (!label && !cancellable && !deletable) return null;
 
  return (
  <div className={cn("flex items-center gap-2", className)}>
@@ -291,6 +312,43 @@ export function OrderActions({
  >
  {cancelling && <Loader2 className="size-4 animate-spin" />}
  Cancel order
+ </AlertDialogAction>
+ </AlertDialogFooter>
+ </AlertDialogContent>
+ </AlertDialog>
+ )}
+
+ {deletable && (
+ <AlertDialog open={deleteOpen} onOpenChange={(next) => (deleting ? null : setDeleteOpen(next))}>
+ <AlertDialogTrigger
+ render={
+ <button
+ type="button"
+ aria-label="Delete order"
+ title="Delete order"
+ className="flex h-11 w-11 items-center justify-center rounded-2xl border border-destructive/30 bg-destructive/5 text-destructive outline-none hover:bg-destructive/10 focus-visible:ring-3 focus-visible:ring-ring/80"
+ />
+ }
+ >
+ <Trash2 className="size-4" />
+ </AlertDialogTrigger>
+ <AlertDialogContent>
+ <AlertDialogHeader>
+ <AlertDialogTitle>Delete this order?</AlertDialogTitle>
+ <AlertDialogDescription>
+ Order {formatOrderNumber(order.dailyNumber)} from {order.restaurantName} will be
+ permanently deleted, including its items and review. This can&apos;t be undone.
+ </AlertDialogDescription>
+ </AlertDialogHeader>
+ <AlertDialogFooter>
+ <AlertDialogCancel disabled={deleting}>Keep order</AlertDialogCancel>
+ <AlertDialogAction
+ disabled={deleting}
+ onClick={confirmDelete}
+ className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+ >
+ {deleting && <Loader2 className="size-4 animate-spin" />}
+ Delete order
  </AlertDialogAction>
  </AlertDialogFooter>
  </AlertDialogContent>

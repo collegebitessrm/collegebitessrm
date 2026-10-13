@@ -138,6 +138,19 @@ export function startOfTodayIST(now: Date = new Date()): Date {
  return new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - (5 * 60 + 30) * 60_000);
 }
 
+/**
+ * The UTC instant of the start of the current IST week (Sunday 00:00 IST).
+ * Weekly analytics count Sunday–Saturday, matching the campus's natural
+ * week boundary.
+ */
+export function startOfWeekIST(now: Date = new Date()): Date {
+ const [year, month, day] = dayKeyFmt.format(now).split("-").map(Number);
+ const d = new Date(Date.UTC(year, month - 1, day, 0, 0, 0) - (5 * 60 + 30) * 60_000);
+ // getUTCDay() returns 0 for Sunday — subtract that many days to reach Sunday.
+ d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+ return d;
+}
+
 const monthYearFmt = new Intl.DateTimeFormat("en-IN", {
  timeZone: IST,
  month: "long",

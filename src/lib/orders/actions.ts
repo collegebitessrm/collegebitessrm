@@ -188,3 +188,36 @@ const PLACE_ORDER_ERRORS: Record<string, string> = {
  offer_wrong_restaurant: "Offers are only on Clg Bites Biryani Nation orders, so it's been removed. Check the total and place your order again.",
  offer_not_eligible: "Your cart doesn't qualify for that many free biryanis. Every 3 Full biryanis get 1 Single free.",
 };
+
+export type CancelOrderResult =
+ | { ok: true }
+ | { ok: false; error: string };
+
+/**
+ * Students can cancel their own orders, but only while still pending.
+ * Once the admin confirms, only admins can cancel (via the admin actions).
+ * The real boundary is the cancel_my_order() function — this is a friendly
+ * wrapper that maps its error keys to messages.
+ */
+export async function cancelMyOrder(orderId: string): Promise<CancelOrderResult> {
+ const { user } = await getSessionProfile();
+ if (!user) {
+  return { ok: false, error: "Looks like you got signed out. Sign in again." };
+ }
+
+ const supabase = await createClient();
+ const { error } = await supabase.rpc("cancel_my_order", { p_order_id: orderId });
+
+ if (error) {
+  const key = error.message ?? "";
+  if (key === "not_authenticated") {
+   return { ok: false, error: "Looks like you got signed out. Sign in again." };
+  }
+  if (key === "order_not_cancellable") {
+   return { ok: false, error: "This order has already been confirmed by the restaurant and can no longer be cancelled." };
+  }
+  return { ok: false, error: "Couldn't cancel the order. Please try again." };
+ }
+
+ return { ok: true };
+}

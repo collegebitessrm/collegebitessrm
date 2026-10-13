@@ -8,6 +8,16 @@ import { EmptyState } from "@/components/empty-state";
 import { IconTile } from "@/components/icon-tile";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { DiscountPicker, type OfferOption } from "@/components/cart/discount-picker";
+import {
+ AlertDialog,
+ AlertDialogAction,
+ AlertDialogCancel,
+ AlertDialogContent,
+ AlertDialogDescription,
+ AlertDialogFooter,
+ AlertDialogHeader,
+ AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { MAX_NOTES } from "@/lib/cart/limits";
@@ -135,6 +145,7 @@ function CartContents({
  const [placing, startPlacing] = useTransition();
  const [offer, setOffer] = useState<OfferKey | null>(null);
  const [rawPicks, setRawPicks] = useState<Record<string, number>>({});
+ const [showConfirm, setShowConfirm] = useState(false);
  const { amount } = cartTotals(cart);
 
  // Offers. Everything below is derived from the cart, so changing the cart
@@ -180,6 +191,11 @@ function CartContents({
  notes.length + suggestedNote.length + 2 <= MAX_NOTES;
 
  function submit() {
+ setShowConfirm(true);
+ }
+
+ function confirmOrder() {
+ setShowConfirm(false);
  setError(null);
  startPlacing(async () => {
  const result = await placeOrder({
@@ -346,6 +362,21 @@ function CartContents({
  <span className="font-heading text-xl tabular-nums">{formatRupees(toPay)}</span>
  </button>
  </footer>
+
+ <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+ <AlertDialogContent>
+ <AlertDialogHeader>
+ <AlertDialogTitle>Confirm your order</AlertDialogTitle>
+ <AlertDialogDescription>
+ You're ordering {cartTotals(cart).items} {cartTotals(cart).items === 1 ? "item" : "items"} from {cart.restaurantName} for {formatRupees(toPay)}. Pay at Gate 3 on delivery.
+ </AlertDialogDescription>
+ </AlertDialogHeader>
+ <AlertDialogFooter>
+ <AlertDialogCancel>Cancel</AlertDialogCancel>
+ <AlertDialogAction onClick={confirmOrder}>Yes, place order</AlertDialogAction>
+ </AlertDialogFooter>
+ </AlertDialogContent>
+ </AlertDialog>
  </>
  );
 }

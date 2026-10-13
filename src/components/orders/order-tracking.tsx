@@ -16,6 +16,7 @@ import {
 	Share2,
 	Storefront,
 	Timer,
+	X,
 	type AppIcon,
 } from "@/components/icons";
 import { BlurImage } from "@/components/blur-image";
@@ -24,6 +25,17 @@ import { CelebrationOverlay } from "@/components/celebration-overlay";
 import { NotifyMeCard } from "@/components/notifications/notify-me-card";
 import { RateOrder } from "@/components/orders/rate-order";
 import { SupportButtons } from "@/components/support-buttons";
+import {
+ AlertDialog,
+ AlertDialogAction,
+ AlertDialogCancel,
+ AlertDialogContent,
+ AlertDialogDescription,
+ AlertDialogFooter,
+ AlertDialogHeader,
+ AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { cancelMyOrder } from "@/lib/orders/actions";
 import type { OrderDetail } from "@/lib/data/orders";
 import type { OrderStatus } from "@/lib/data/types";
 import { deliveryWindow, formatTime, isPastDeliveryTime } from "@/lib/date";
@@ -91,6 +103,8 @@ export function OrderTracking({
 	const [updatedAt, setUpdatedAt] = useState(initialOrder.updatedAt);
 	const [deliveredAt, setDeliveredAt] = useState(initialOrder.deliveredAt);
 	const [live, setLive] = useState(false);
+	const [showCancelDialog, setShowCancelDialog] = useState(false);
+	const [cancelling, setCancelling] = useState(false);
 
 	useEffect(() => {
 		if (showSuccess) router.replace(`/orders/${initialOrder.id}`);
@@ -121,6 +135,24 @@ export function OrderTracking({
 	const steps = cancelled ? [] : orderTimeline(status);
 	const eta = deliveryWindow(initialOrder.createdAt, initialOrder.deliveryMinutes);
 
+	// Students can cancel their own orders, but only while still pending.
+	// Once the admin confirms, only admins can cancel.
+	const canCancel = !cancelled && status === "pending";
+
+	async function handleCancel() {
+		setCancelling(true);
+		const result = await cancelMyOrder(initialOrder.id);
+		setCancelling(false);
+		setShowCancelDialog(false);
+
+		if (result.ok) {
+			toast.success("Order cancelled");
+			setStatus("cancelled");
+		} else {
+			toast.error(result.error);
+		}
+	}
+
 	// Up to three distinct photos of what was ordered.
 	const photos = initialOrder.items
 		.map((item) => ({ dishName: item.dishName, src: getDishPhoto(initialOrder.restaurantName, item.dishName, item.imageUrl) }))
@@ -128,9 +160,6 @@ export function OrderTracking({
 		.filter((p, i, all) => all.findIndex((q) => q.src === p.src) === i)
 		.slice(0, 3);
 
-	// Show restaurant phone when delayed or out for delivery / at gate (for delay contact).
-	const isDelayed = !cancelled && status !== "delivered" && isPastDeliveryTime(initialOrder.createdAt, initialOrder.deliveryMinutes);
-	const showRestaurantPhone = isDelayed || status === "out_for_delivery" || status === "at_gate";
 
 	return (
 		<>
@@ -285,21 +314,12 @@ export function OrderTracking({
 														<Timer className="size-3.5" /> In progress
 													</span>
 												)}
-												{/* Call restaurant button — appears after preparing is done, hides when delivered */}
-												{i === 2 && step.state === "done" && showRestaurantPhone && (
-													<a
-														href={`tel:${initialOrder.restaurantPhone}`}
-														className="mt-2 inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-orange-600 active:scale-95"
-													>
-														<Phone className="size-3.5" />
-														{isDelayed ? "Running late? Call restaurant" : "Contact delivery"}: {initialOrder.restaurantPhone}
-													</a>
-												)}
 											</div>
 										</li>
 									))}
 								</ol>
 							</div>
+
 
 						</>
 					)}
@@ -392,6 +412,24 @@ export function OrderTracking({
 						</div>
 					) : (
 						<>
+							{/* Cancel button — only while order is still pending */}
+							{canCancel && (
+								<div className="mt-4 flex items-center rounded-[1.5rem] border bg-card p-4 shadow-card">
+									<div className="flex-1">
+										<p className="text-sm font-semibold text-foreground">Changed your mind?</p>
+										<p className="text-xs text-muted-foreground">Cancel before the restaurant confirms</p>
+									</div>
+									<button
+										type="button"
+										onClick={() => setShowCancelDialog(true)}
+										className="flex h-10 items-center gap-1.5 rounded-full bg-destructive/10 px-4 text-sm font-semibold text-destructive outline-none transition-all hover:bg-destructive/20 focus-visible:ring-3 focus-visible:ring-ring/80"
+									>
+										<X className="size-4" />
+										Cancel order
+									</button>
+								</div>
+							)}
+
 							{/* Support */}
 							<div className="mt-4 flex items-center rounded-[1.5rem] border bg-card p-4 shadow-card">
 								<div className="flex-1">
@@ -425,6 +463,24 @@ export function OrderTracking({
 					)}
 				</ViewTransition>
 			</main>
+
+			{/* Cancel confirmation dialog */}
+			<AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Cancel this order?</AlertDialogTitle>
+						<AlertDialogDescription>
+							You&apos;re about to cancel order {formatOrderNumber(initialOrder.dailyNumber)} from {initialOrder.restaurantName}. This can&apos;t be undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel disabled={cancelling}>Keep order</AlertDialogCancel>
+						<AlertDialogAction onClick={handleCancel} disabled={cancelling} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+							{cancelling ? "Cancelling…" : "Yes, cancel order"}
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</>
 	);
 }

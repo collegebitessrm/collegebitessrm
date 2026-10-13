@@ -236,6 +236,73 @@ function statusPayload(order: OrderNotifyRow, status: OrderStatus): PushPayload 
 }
 
 /**
+ * Deletes one order permanently. Only terminal orders (delivered /
+ * cancelled) can be deleted — active orders are blocked because the
+ * student's live tracking page would be left pointing at a gone row.
+ * The RLS policy enforces the same rule server-side; this is a friendly
+ * early check. Cascades clean up order_items, order_reviews, and
+ * order_item_ratings automatically.
+ */
+export async function deleteOrder(orderId: string, currentStatus: OrderStatus): Promise<AdminActionResult> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+
+ if (currentStatus !== "delivered" && currentStatus !== "cancelled") {
+ return { ok: false, error: "Only delivered or cancelled orders can be deleted." };
+ }
+
+ const supabase = await createClient();
+
+ // Log the deletion before removing the order, so stats can count it
+ // and subtract its revenue/items from analytics.
+ const { data: order, error: fetchError } = await supabase
+ .from("orders")
+ .select("restaurant_id, status, total_amount, order_items(dish_name, quantity)")
+ .eq("id", orderId)
+ .eq("status", currentStatus)
+ .single();
+
+ if (fetchError || !order) {
+ return { ok: false, error: "Couldn't find that order. Please try again." };
+ }
+
+ // Count fulls/singles/starters from the order items before deletion.
+ let fulls = 0, singles = 0, starters = 0;
+ for (const item of order.order_items ?? []) {
+   if (item.dish_name.includes("(Full)")) fulls++;
+   if (item.dish_name.includes("(Single)")) singles++;
+   // Starters detection: category name contains "starter" — but we don't have
+   // category here, so we use a simple heuristic: dish name contains "starter"
+   // or is in a starters section. For now, count items with "starter" in name.
+   if (item.dish_name.toLowerCase().includes("starter")) starters++;
+ }
+
+ const { error: logError } = await supabase
+ .from("deleted_orders_log")
+ .insert({
+   restaurant_id: order.restaurant_id,
+   status: order.status,
+   total_amount: order.total_amount,
+   items_summary: { fulls, singles, starters },
+ });
+
+ if (logError) {
+ return { ok: false, error: "Couldn't log the deletion. Please try again." };
+ }
+
+ const { error } = await supabase
+ .from("orders")
+ .delete()
+ .eq("id", orderId)
+ .eq("status", currentStatus);
+ if (error) return { ok: false, error: "Couldn't delete that order. Please try again." };
+
+ revalidatePath("/admin");
+ revalidatePath("/admin/history");
+ return { ok: true };
+}
+
+/**
  * Cancels one order. Only orders that haven't already finished one way or
  * the other can be cancelled — `currentStatus` is compare-and-swapped the
  * same way advanceOrderStatus() is, so a stale screen can't cancel an

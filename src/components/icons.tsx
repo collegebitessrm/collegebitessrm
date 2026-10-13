@@ -23,6 +23,7 @@ import type { ComponentType } from "react";
 import type { Icon as PhosphorIcon, IconProps } from "@phosphor-icons/react/dist/lib/types";
 import { ArrowClockwise as PhArrowClockwise } from "@phosphor-icons/react/dist/ssr/ArrowClockwise";
 import { ArrowCounterClockwise as PhArrowCounterClockwise } from "@phosphor-icons/react/dist/ssr/ArrowCounterClockwise";
+import { Barbell as PhBarbell } from "@phosphor-icons/react/dist/ssr/Barbell";
 import { ArrowLeft as PhArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
 import { ArrowRight as PhArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
 import { ArrowsDownUp as PhArrowsDownUp } from "@phosphor-icons/react/dist/ssr/ArrowsDownUp";
@@ -143,6 +144,8 @@ export const ArrowRight = make(PhArrowRight, "ArrowRight", "bold");
 export const ArrowsDownUp = make(PhArrowsDownUp, "ArrowsDownUp");
 /** Centurion milestone */
 export const Award = make(PhMedal, "Award");
+/** analytics */
+export const BarChart = make(PhBarbell, "BarChart");
 /** cash at pickup */
 export const Banknote = make(PhMoney, "Banknote");
 /** notifications on */
