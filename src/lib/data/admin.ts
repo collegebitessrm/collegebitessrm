@@ -82,7 +82,7 @@ export type AdminOrder = {
  studentBanned: boolean;
  /** In the order they were added; `subtotal` = unit price × quantity, snapshotted at order time.
  * `isFree` = a Single biryani given free by the biryani offer (its value is in discountAmount). */
- items: { dishName: string; quantity: number; subtotal: number; isFree: boolean }[];
+ items: { dishName: string; quantity: number; subtotal: number; isFree: boolean; imageUrl: string | null }[];
  dailyNumber: number;
  /** The discount offer the student used, if any; totalAmount is already after it. */
  discountOffer: OfferKey | null;
@@ -101,13 +101,13 @@ type AdminOrderRow = {
  restaurant_id: string;
  restaurants: { name: string; phone: string | null; delivery_minutes: number } | null;
  users: { full_name: string; is_banned: boolean } | null;
- order_items: { dish_name: string; quantity: number; subtotal: number; is_free: boolean }[];
+ order_items: { dish_name: string; quantity: number; subtotal: number; is_free: boolean; dishes: { image_url: string | null } | null }[];
  discount_offer: OfferKey | null;
  discount_amount: number;
 };
 
 const ADMIN_ORDER_COLUMNS =
- "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal, is_free), daily_number, discount_offer, discount_amount";
+ "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount";
 
 function toAdminOrder(o: AdminOrderRow): AdminOrder {
  return {
@@ -129,6 +129,7 @@ function toAdminOrder(o: AdminOrderRow): AdminOrder {
  quantity: i.quantity,
  subtotal: Number(i.subtotal),
  isFree: i.is_free,
+ imageUrl: i.dishes?.image_url ?? null,
  })),
  dailyNumber: o.daily_number,
  discountOffer: o.discount_offer,
@@ -153,14 +154,14 @@ export async function getAdminOrderDetail(id: string): Promise<AdminOrderDetail 
  supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, discount_offer, discount_amount, restaurants(name, phone, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal, is_free)",
+ "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, discount_offer, discount_amount, restaurants(name, phone, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal, is_free, dishes(image_url))",
  )
  .eq("id", id)
  .maybeSingle<
  Omit<AdminOrderRow, "users" | "order_items"> & {
  delivered_at: string | null;
  users: { full_name: string; is_banned: boolean; email: string | null; registration_number: string | null } | null;
- order_items: { id: string; dish_name: string; quantity: number; unit_price: number; subtotal: number; is_free: boolean }[];
+ order_items: { id: string; dish_name: string; quantity: number; unit_price: number; subtotal: number; is_free: boolean; dishes: { image_url: string | null } | null }[];
  }
  >(),
  supabase
@@ -427,6 +428,7 @@ export type AdminRestaurantFull = {
  cuisineTags: string[];
  isActive: boolean;
  deliveryMinutes: number;
+ coverImageUrl: string | null;
 };
 
 /** Every restaurant with all editable fields — for /admin/restaurants. */
@@ -434,7 +436,7 @@ export async function getAdminRestaurantsFull(): Promise<AdminRestaurantFull[]> 
  const supabase = await createClient();
  const { data, error } = await supabase
  .from("restaurants")
- .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes")
+ .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes, cover_image_url")
  .order("name");
  if (error) throw error;
  return (data ?? []).map((r) => ({
@@ -445,6 +447,7 @@ export async function getAdminRestaurantsFull(): Promise<AdminRestaurantFull[]> 
  cuisineTags: r.cuisine_tags ?? [],
  isActive: r.is_active,
  deliveryMinutes: r.delivery_minutes,
+ coverImageUrl: r.cover_image_url ?? null,
  }));
 }
 
@@ -466,6 +469,7 @@ export type AdminMenuDish = {
  sortOrder: number;
  categoryId: string | null;
  restaurantId: string;
+ imageUrl: string | null;
 };
 
 /** One restaurant's full menu (categories + dishes) for /admin/menu. */
@@ -482,7 +486,7 @@ export async function getAdminMenuData(): Promise<AdminMenuData> {
  supabase.from("dish_categories").select("id, name, sort_order, restaurant_id").order("sort_order"),
  supabase
  .from("dishes")
- .select("id, name, price, is_veg, note, is_available, sort_order, category_id, restaurant_id")
+ .select("id, name, price, is_veg, note, is_available, sort_order, category_id, restaurant_id, image_url")
  .order("sort_order"),
  ]);
  if (restaurantsResult.error) throw restaurantsResult.error;
@@ -504,6 +508,7 @@ export async function getAdminMenuData(): Promise<AdminMenuData> {
  sortOrder: d.sort_order,
  categoryId: d.category_id,
  restaurantId: d.restaurant_id,
+ imageUrl: d.image_url ?? null,
  };
  const key = d.category_id;
  const arr = dishesByCategory.get(key) ?? [];
@@ -540,6 +545,7 @@ export type AdminDish = {
  restaurantId: string;
  restaurantName: string;
  category: string | null;
+ imageUrl: string | null;
 };
 
 /**
@@ -556,7 +562,7 @@ export async function getAdminDishes(): Promise<AdminDish[]> {
  const { data, error } = await supabase
  .from("dishes")
  .select(
- "id, name, price, is_veg, is_available, sort_order, restaurant_id, restaurants(name), dish_categories(name, sort_order)",
+ "id, name, price, is_veg, is_available, sort_order, restaurant_id, image_url, restaurants(name), dish_categories(name, sort_order)",
  )
  .returns<
  {
@@ -589,5 +595,6 @@ export async function getAdminDishes(): Promise<AdminDish[]> {
  restaurantId: d.restaurant_id,
  restaurantName: d.restaurants?.name ?? "",
  category: d.dish_categories?.name ?? null,
+ imageUrl: d.image_url ?? null,
  }));
 }

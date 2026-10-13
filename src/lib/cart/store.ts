@@ -14,6 +14,8 @@ export type CartLine = {
  price: number;
  isVeg: boolean;
  quantity: number;
+ /** Admin-uploaded dish photo URL. */
+ imageUrl: string | null;
 };
 
 export type Cart = {
@@ -82,7 +84,7 @@ export function useCart(): Cart {
 }
 
 export type CartRestaurant = { id: string; name: string };
-export type CartDish = { id: string; name: string; price: number; is_veg: boolean };
+export type CartDish = { id: string; name: string; price: number; is_veg: boolean; image_url?: string | null };
 
 /** True if adding from this restaurant would throw away another restaurant's cart. */
 export function conflictsWithCart(restaurantId: string) {
@@ -117,7 +119,7 @@ export function addToCart(restaurant: CartRestaurant, dish: CartDish) {
  )
  : [
  ...base.lines,
- { dishId: dish.id, name: dish.name, price: dish.price, isVeg: dish.is_veg, quantity: 1 },
+ { dishId: dish.id, name: dish.name, price: dish.price, isVeg: dish.is_veg, quantity: 1, imageUrl: dish.image_url ?? null },
  ];
 
  write({ ...base, lines });

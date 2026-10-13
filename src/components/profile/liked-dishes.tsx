@@ -31,7 +31,7 @@ export function LikedDishes({ dishes }: { dishes: LikedDish[] }) {
  ) : (
  <ul className="-mx-6 mt-3 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pt-1 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
  {dishes.map((d) => {
- const photo = getDishPhoto(d.restaurantName, d.name);
+ const photo = getDishPhoto(d.restaurantName, d.name, d.imageUrl);
  return (
  <li key={d.id} className="w-32 shrink-0 snap-start">
  <Link

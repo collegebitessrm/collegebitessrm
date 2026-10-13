@@ -150,7 +150,7 @@ function DishRow({
  onChange: (available: boolean) => void;
 }) {
  const [pending, startTransition] = useTransition();
- const photo = getDishPhoto(dish.restaurantName, dish.name);
+ const photo = getDishPhoto(dish.restaurantName, dish.name, dish.imageUrl);
 
  function toggle() {
  const next = !available;

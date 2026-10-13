@@ -193,7 +193,7 @@ function RateSheet({
  <DishRating
  key={item.id}
  item={item}
- photo={getDishPhoto(restaurantName, item.dishName)}
+ photo={getDishPhoto(restaurantName, item.dishName, item.imageUrl)}
  value={ratings[item.id] ?? 0}
  onChange={(v) => setRatings((r) => ({ ...r, [item.id]: v }))}
  />

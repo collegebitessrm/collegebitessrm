@@ -112,8 +112,8 @@ function EmptyOrders() {
 
 /** First dish in the order that has a photo, if any. */
 function orderPhoto(order: OrderSummary): string | undefined {
- for (const dish of order.dishNames) {
- const photo = getDishPhoto(order.restaurantName, dish);
+ for (let i = 0; i < order.dishNames.length; i++) {
+ const photo = getDishPhoto(order.restaurantName, order.dishNames[i], order.dishImageUrls[i]);
  if (photo) return photo;
  }
 }

@@ -31,7 +31,7 @@ export function DishGrid({ dishes, restaurants }: { dishes: SearchableDish[]; re
  <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5">
  {dishes.slice(0, shown).map((d, i) => {
  const r = byId.get(d.restaurantId);
- const photo = r ? getDishPhoto(r.name, d.name) : undefined;
+ const photo = r ? getDishPhoto(r.name, d.name, d.imageUrl) : undefined;
  return (
  <li
  key={d.id}

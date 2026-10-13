@@ -21,6 +21,8 @@ export type OrderSummary = {
  itemsSummary: string;
  /** Snapshotted dish names in order — the orders list looks up a photo from the first one it can. */
  dishNames: string[];
+ /** Admin-uploaded dish photo URLs, parallel to dishNames. */
+ dishImageUrls: (string | null)[];
  dailyNumber: number;
  /** The restaurant's delivery promise — the in-progress card's road rides against it. */
  deliveryMinutes: number;
@@ -50,6 +52,8 @@ export type OrderItem = {
  subtotal: number;
  /** A Single biryani given free by the biryani offer. */
  isFree: boolean;
+ /** Admin-uploaded dish photo URL. */
+ imageUrl: string | null;
 };
 
 /** The student's own review of an order (order_reviews + order_item_ratings), if they've left one. */
@@ -90,7 +94,7 @@ type OrderSummaryRow = {
  created_at: string;
  restaurant_id: string;
  restaurants: { name: string; delivery_minutes: number } | null;
- order_items: { dish_name: string; quantity: number }[];
+ order_items: { dish_name: string; quantity: number; dishes: { image_url: string | null } | null }[];
  daily_number: number;
  delivered_at: string | null;
  order_reviews: { order_id: string } | { order_id: string }[] | null;
@@ -110,7 +114,7 @@ export async function getOrderHistory(userId: string): Promise<OrderSummary[]> {
  const { data, error } = await supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, restaurant_id, restaurants(name, delivery_minutes), order_items(dish_name, quantity), daily_number, delivered_at, order_reviews(order_id)",
+ "id, status, total_amount, created_at, restaurant_id, restaurants(name, delivery_minutes), order_items(dish_name, quantity, dishes(image_url)), daily_number, delivered_at, order_reviews(order_id)",
  )
  .eq("user_id", userId)
  .order("created_at", { ascending: false })
@@ -128,6 +132,7 @@ export async function getOrderHistory(userId: string): Promise<OrderSummary[]> {
  itemCount: o.order_items.reduce((sum, item) => sum + item.quantity, 0),
  itemsSummary: summarizeItems(o.order_items),
  dishNames: o.order_items.map((i) => i.dish_name),
+ dishImageUrls: o.order_items.map((i) => i.dishes?.image_url ?? null),
  dailyNumber: o.daily_number,
  deliveryMinutes: o.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
  rateable: isRateable(o.status, o.delivered_at, hasReview(o.order_reviews)),
@@ -190,7 +195,7 @@ type OrderDetailRow = {
  notes: string | null;
  restaurant_id: string;
  restaurants: { name: string; phone: string; delivery_minutes: number } | null;
- order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number; is_free: boolean }[];
+ order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number; is_free: boolean; image_url: string | null }[];
  daily_number: number;
  discount_offer: OfferKey | null;
  discount_amount: number;
@@ -347,7 +352,7 @@ export const getOrder = cache(async function getOrder(
  const { data, error } = await supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free), daily_number, discount_offer, discount_amount, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
+ "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
  )
  .eq("id", id)
  .eq("user_id", userId)
@@ -377,6 +382,7 @@ export const getOrder = cache(async function getOrder(
  quantity: i.quantity,
  subtotal: i.subtotal,
  isFree: i.is_free,
+ imageUrl: i.dishes?.image_url ?? null,
  })),
  dailyNumber: data.daily_number,
  discountOffer: data.discount_offer,

@@ -37,7 +37,7 @@ export function PortionSheet({
  onClose: () => void;
 }) {
  const first = pick?.portions[0]?.dish;
- const photo = first ? getDishPhoto(restaurantName, first.name) : undefined;
+ const photo = first ? getDishPhoto(restaurantName, first.name, first.image_url) : undefined;
 
  return (
  <Sheet open={pick !== null} onOpenChange={(open) => !open && onClose()}>

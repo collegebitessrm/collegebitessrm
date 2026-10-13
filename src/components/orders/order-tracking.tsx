@@ -123,7 +123,7 @@ export function OrderTracking({
 
 	// Up to three distinct photos of what was ordered.
 	const photos = initialOrder.items
-		.map((item) => ({ dishName: item.dishName, src: getDishPhoto(initialOrder.restaurantName, item.dishName) }))
+		.map((item) => ({ dishName: item.dishName, src: getDishPhoto(initialOrder.restaurantName, item.dishName, item.imageUrl) }))
 		.filter((p): p is { dishName: string; src: string } => !!p.src)
 		.filter((p, i, all) => all.findIndex((q) => q.src === p.src) === i)
 		.slice(0, 3);

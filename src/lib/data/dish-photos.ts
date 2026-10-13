@@ -202,13 +202,13 @@ export const DISH_PHOTOS: Record<string, Record<string, string>> = {
 };
 
 /** Cover photo for a restaurant's hero banner, or undefined for the placeholder. */
-export function getRestaurantCoverPhoto(restaurantName: string): string | undefined {
- return RESTAURANT_COVER_PHOTOS[restaurantName];
+export function getRestaurantCoverPhoto(restaurantName: string, dbUrl?: string | null): string | undefined {
+ return dbUrl || RESTAURANT_COVER_PHOTOS[restaurantName];
 }
 
 /** Thumbnail photo for a dish, or undefined for the placeholder. */
-export function getDishPhoto(restaurantName: string, dishName: string): string | undefined {
- return DISH_PHOTOS[restaurantName]?.[dishName];
+export function getDishPhoto(restaurantName: string, dishName: string, dbUrl?: string | null): string | undefined {
+ return dbUrl || DISH_PHOTOS[restaurantName]?.[dishName];
 }
 
 /**
@@ -244,8 +244,9 @@ export type CardSlide = { src: string; dish?: { id: string; name: string; price:
  */
 export function getRestaurantCardSlides(
  restaurantName: string,
- dishes: { id: string; name: string; price: number; isVeg: boolean; isAvailable: boolean }[],
+ dishes: { id: string; name: string; price: number; isVeg: boolean; isAvailable: boolean; imageUrl?: string | null }[],
  orderCounts: Record<string, number> = {},
+ coverImageUrl?: string | null,
 ): CardSlide[] {
  const photos = DISH_PHOTOS[restaurantName] ?? {};
  const signature = SIGNATURE_DISHES[restaurantName] ?? [];
@@ -254,7 +255,7 @@ export function getRestaurantCardSlides(
  return i === -1 ? signature.length : i;
  };
 
- const cover = getRestaurantCoverPhoto(restaurantName);
+ const cover = getRestaurantCoverPhoto(restaurantName, coverImageUrl);
  const seen = new Set<string>(cover ? [cover] : []);
  const dishSlides: CardSlide[] = [];
  const count = (id: string) => orderCounts[id] ?? 0;
@@ -263,7 +264,7 @@ export function getRestaurantCardSlides(
  .filter((d) => d.isAvailable)
  .sort((a, b) => count(b.id) - count(a.id) || rank(a.name) - rank(b.name));
  for (const d of ordered) {
- const src = photos[d.name];
+ const src = d.imageUrl || photos[d.name];
  if (!src || seen.has(src)) continue;
  seen.add(src);
  dishSlides.push({ src, dish: { id: d.id, name: d.name, price: d.price, isVeg: d.isVeg } });

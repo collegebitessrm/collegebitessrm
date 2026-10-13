@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Loader2, PencilSimple, Plus, Storefront, Trash2 } from "@/components/icons";
+import { Loader2, PencilSimple, Plus, Storefront, Trash2, X } from "@/components/icons";
 import { adminAction, adminPill } from "@/components/admin/styles";
 import {
  AlertDialog,
@@ -202,6 +202,7 @@ function RestaurantForm({
  cuisineTags?: string[];
  deliveryMinutes?: number;
  isActive?: boolean;
+ coverImageUrl?: string | null;
  }) => Promise<void>;
 }) {
  const [pending, startTransition] = useTransition();
@@ -211,6 +212,32 @@ function RestaurantForm({
  const [cuisineTags, setCuisineTags] = useState(initial?.cuisineTags.join(", ") ?? "");
  const [deliveryMinutes, setDeliveryMinutes] = useState(initial?.deliveryMinutes ?? 40);
  const [isActive, setIsActive] = useState(initial?.isActive ?? true);
+ const [coverImageUrl, setCoverImageUrl] = useState(initial?.coverImageUrl ?? null);
+ const [uploading, setUploading] = useState(false);
+
+ async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+ const file = e.target.files?.[0];
+ if (!file) return;
+
+ setUploading(true);
+ const formData = new FormData();
+ formData.append("file", file);
+
+ try {
+ const res = await fetch("/api/upload", { method: "POST", body: formData });
+ const data = await res.json();
+ if (res.ok) {
+ setCoverImageUrl(data.url);
+ toast.success("Image uploaded.");
+ } else {
+ toast.error(data.error || "Upload failed.");
+ }
+ } catch {
+ toast.error("Upload failed. Please try again.");
+ } finally {
+ setUploading(false);
+ }
+ }
 
  function handleSubmit(e: React.FormEvent) {
  e.preventDefault();
@@ -229,6 +256,7 @@ function RestaurantForm({
  .filter(Boolean),
  deliveryMinutes: Number(deliveryMinutes) || 40,
  isActive,
+ coverImageUrl,
  });
  });
  }
@@ -301,6 +329,44 @@ function RestaurantForm({
  />
  <span className="text-sm font-semibold">Active (visible to students)</span>
  </label>
+
+ <div className="flex flex-col gap-1.5">
+ <span className="text-label font-semibold">Cover image</span>
+ {coverImageUrl && (
+ <div className="relative h-32 overflow-hidden rounded-xl border">
+ <img src={coverImageUrl} alt="Cover preview" className="h-full w-full object-cover" />
+ <button
+ type="button"
+ onClick={() => setCoverImageUrl(null)}
+ className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+ aria-label="Remove cover image"
+ >
+ <X className="size-4" />
+ </button>
+ </div>
+ )}
+ <label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-ring/30 bg-card px-4 text-sm text-muted-foreground hover:border-ring/60 hover:text-foreground">
+ {uploading ? (
+ <>
+ <Loader2 className="size-4 animate-spin" />
+ Uploading...
+ </>
+ ) : (
+ <>
+ <Plus className="size-4" />
+ {coverImageUrl ? "Change image" : "Upload image"}
+ </>
+ )}
+ <input
+ type="file"
+ accept="image/png,image/jpeg,image/webp"
+ onChange={handleFileUpload}
+ disabled={uploading}
+ className="sr-only"
+ />
+ </label>
+ </div>
+
  <div className="mt-2 flex justify-end">
  <button
  type="submit"

@@ -51,7 +51,7 @@ export function OrderCard({ order }: { order: AdminOrder }) {
 
  // First ordered dish that has a photo — same lookup as the student side.
  const photo = order.items
- .map((i) => getDishPhoto(order.restaurantName, i.dishName))
+ .map((i) => getDishPhoto(order.restaurantName, i.dishName, i.imageUrl))
  .find((src): src is string => !!src);
 
  // The whole card opens the order's page: the token link stretches over

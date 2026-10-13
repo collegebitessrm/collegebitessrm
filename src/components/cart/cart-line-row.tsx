@@ -25,7 +25,7 @@ function prefersReducedMotion() {
  * can't (or doesn't know to) swipe.
  */
 export function CartLineRow({ line, restaurantName }: { line: CartLine; restaurantName: string | null }) {
- const photo = restaurantName ? getDishPhoto(restaurantName, line.name) : undefined;
+ const photo = restaurantName ? getDishPhoto(restaurantName, line.name, line.imageUrl) : undefined;
  const [dragX, setDragX] = useState(0);
  const [dragging, setDragging] = useState(false);
  const [removing, setRemoving] = useState(false);

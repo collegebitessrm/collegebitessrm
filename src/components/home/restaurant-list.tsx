@@ -96,6 +96,7 @@ export function RestaurantList({
  r.name,
  dishes.filter((d) => d.restaurantId === r.id),
  dishOrderCounts,
+ r.cover_image_url,
  ),
  ]),
  ),

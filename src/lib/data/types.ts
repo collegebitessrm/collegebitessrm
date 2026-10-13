@@ -9,6 +9,8 @@ export type Restaurant = {
  is_active: boolean;
  /** Minutes from ordering to the promised delivery (40; Biryani Nation 60). */
  delivery_minutes: number;
+ /** Admin-uploaded cover image URL (falls back to static photo if null). */
+ cover_image_url: string | null;
 };
 
 export type DishCategory = {
@@ -28,6 +30,8 @@ export type Dish = {
  note: string | null;
  is_available: boolean;
  sort_order: number;
+ /** Admin-uploaded dish photo URL (falls back to static photo if null). */
+ image_url: string | null;
 };
 
 export type OrderStatus =

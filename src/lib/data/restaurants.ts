@@ -10,7 +10,7 @@ export async function getRestaurants(): Promise<Restaurant[]> {
  const supabase = await createClient();
  const { data, error } = await supabase
  .from("restaurants")
- .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes")
+ .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes, cover_image_url")
  .order("is_active", { ascending: false })
  .order("name");
 
@@ -27,6 +27,8 @@ export type SearchableDish = {
  restaurantId: string;
  /** e.g. "Non-Veg Biryani" — searched too, so "veg biryani" finds the whole section. */
  category: string | null;
+ /** Admin-uploaded dish photo URL. */
+ imageUrl: string | null;
 };
 
 /**
@@ -38,7 +40,7 @@ export async function getSearchableDishes(): Promise<SearchableDish[]> {
  const supabase = await createClient();
  const { data, error } = await supabase
  .from("dishes")
- .select("id, name, price, is_veg, is_available, restaurant_id, sort_order, dish_categories(name)")
+ .select("id, name, price, is_veg, is_available, restaurant_id, sort_order, image_url, dish_categories(name)")
  .order("sort_order")
  .returns<
  {
@@ -48,6 +50,7 @@ export async function getSearchableDishes(): Promise<SearchableDish[]> {
  is_veg: boolean;
  is_available: boolean;
  restaurant_id: string;
+ image_url: string | null;
  dish_categories: { name: string } | null;
  }[]
  >();
@@ -61,6 +64,7 @@ export async function getSearchableDishes(): Promise<SearchableDish[]> {
  isAvailable: d.is_available,
  restaurantId: d.restaurant_id,
  category: d.dish_categories?.name ?? null,
+ imageUrl: d.image_url ?? null,
  }));
 }
 

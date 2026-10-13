@@ -41,7 +41,7 @@ export function buildRail(
 	const row: RailDish[] = [];
 	for (const t of trending) {
 		const d = byId.get(t.dishId);
-		const photo = d && getDishPhoto(t.restaurantName, d.name);
+		const photo = d && getDishPhoto(t.restaurantName, d.name, d.imageUrl);
 		if (!d || !d.isAvailable || !photo || row.length >= MAX) continue;
 		row.push({ ...pick(d, t.restaurantName, photo), rank: row.length + 1 });
 	}
@@ -51,7 +51,7 @@ export function buildRail(
 		.map((r) =>
 			getSignatureDishes(r.name).flatMap((name) => {
 				const d = dishes.find((x) => x.restaurantId === r.id && x.name === name && x.isAvailable);
-				const photo = d && getDishPhoto(r.name, d.name);
+				const photo = d && getDishPhoto(r.name, d.name, d.imageUrl);
 				return d && photo ? [pick(d, names.get(d.restaurantId) ?? r.name, photo)] : [];
 			}),
 		);

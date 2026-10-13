@@ -341,6 +341,7 @@ export async function createRestaurant(data: {
  description?: string;
  cuisineTags?: string[];
  deliveryMinutes?: number;
+ coverImageUrl?: string | null;
 }): Promise<AdminActionResult & { id?: string }> {
  const denied = await assertAdmin();
  if (denied) return denied;
@@ -354,6 +355,7 @@ export async function createRestaurant(data: {
  description: data.description?.trim() || null,
  cuisine_tags: data.cuisineTags ?? [],
  delivery_minutes: data.deliveryMinutes ?? 40,
+ cover_image_url: data.coverImageUrl || null,
  is_active: true,
  })
  .select("id")
@@ -376,6 +378,7 @@ export async function updateRestaurant(
  cuisineTags?: string[];
  deliveryMinutes?: number;
  isActive?: boolean;
+ coverImageUrl?: string | null;
  },
 ): Promise<AdminActionResult> {
  const denied = await assertAdmin();
@@ -389,6 +392,7 @@ export async function updateRestaurant(
  if (data.cuisineTags !== undefined) updates.cuisine_tags = data.cuisineTags;
  if (data.deliveryMinutes !== undefined) updates.delivery_minutes = data.deliveryMinutes;
  if (data.isActive !== undefined) updates.is_active = data.isActive;
+ if (data.coverImageUrl !== undefined) updates.cover_image_url = data.coverImageUrl || null;
 
  const { error } = await supabase.from("restaurants").update(updates).eq("id", id);
  if (error) return { ok: false, error: "Couldn't update restaurant. Please try again." };
@@ -498,6 +502,7 @@ export async function createDish(data: {
  isVeg: boolean;
  categoryId?: string | null;
  note?: string;
+ imageUrl?: string | null;
 }): Promise<AdminActionResult & { id?: string }> {
  const denied = await assertAdmin();
  if (denied) return denied;
@@ -529,6 +534,7 @@ export async function createDish(data: {
  is_veg: data.isVeg,
  category_id: data.categoryId ?? null,
  note: data.note?.trim() || null,
+ image_url: data.imageUrl || null,
  is_available: true,
  sort_order: nextSortOrder,
  })
@@ -552,6 +558,7 @@ export async function updateDish(
  categoryId?: string | null;
  note?: string;
  isAvailable?: boolean;
+ imageUrl?: string | null;
  },
 ): Promise<AdminActionResult> {
  const denied = await assertAdmin();
@@ -565,6 +572,7 @@ export async function updateDish(
  if (data.categoryId !== undefined) updates.category_id = data.categoryId ?? null;
  if (data.note !== undefined) updates.note = data.note?.trim() || null;
  if (data.isAvailable !== undefined) updates.is_available = data.isAvailable;
+ if (data.imageUrl !== undefined) updates.image_url = data.imageUrl || null;
 
  const { error } = await supabase.from("dishes").update(updates).eq("id", id);
  if (error) return { ok: false, error: "Couldn't update dish. Please try again." };

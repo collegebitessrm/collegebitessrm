@@ -50,7 +50,7 @@ export function DishCard({
 }) {
 	const portioned = (portions?.length ?? 0) > 1;
 	const soldOut = portioned ? portions!.every((p) => !p.dish.is_available) : !dish.is_available;
-	const photo = getDishPhoto(restaurantName, dish.name);
+	const photo = getDishPhoto(restaurantName, dish.name, dish.image_url);
 	const displayName = portioned ? splitPortion(dish.name).base : dish.name;
 	const inCart = quantity > 0;
 

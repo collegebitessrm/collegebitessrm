@@ -9,6 +9,7 @@ import {
  PencilSimple,
  Plus,
  Trash2,
+ X,
 } from "@/components/icons";
 import { adminAction, adminPill } from "@/components/admin/styles";
 import {
@@ -364,6 +365,11 @@ function DishRow({
  return (
  <div className="flex items-center gap-3 rounded-xl border bg-card/50 p-2.5 pr-3">
  <VegMark isVeg={dish.isVeg} className="size-4 shrink-0" />
+ {dish.imageUrl && (
+ <div className="relative size-10 shrink-0 overflow-hidden rounded-lg border">
+ <img src={dish.imageUrl} alt="" className="h-full w-full object-cover" />
+ </div>
+ )}
  <div className="min-w-0 flex-1">
  <p className="flex items-center gap-1.5 font-semibold text-sm">
  <span className="truncate">{dish.name}</span>
@@ -515,6 +521,7 @@ function DishForm({
  isVeg: boolean;
  categoryId?: string | null;
  note?: string;
+ imageUrl?: string | null;
  }) => Promise<void>;
 }) {
  const [pending, startTransition] = useTransition();
@@ -525,8 +532,34 @@ function DishForm({
  const [selectedCategory, setSelectedCategory] = useState(
  dish?.categoryId ?? categoryId ?? "",
  );
+ const [imageUrl, setImageUrl] = useState(dish?.imageUrl ?? null);
+ const [uploading, setUploading] = useState(false);
 
  const effectiveRestaurantId = dish?.restaurantId ?? restaurantId ?? "";
+
+ async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+ const file = e.target.files?.[0];
+ if (!file) return;
+
+ setUploading(true);
+ const formData = new FormData();
+ formData.append("file", file);
+
+ try {
+ const res = await fetch("/api/upload", { method: "POST", body: formData });
+ const data = await res.json();
+ if (res.ok) {
+ setImageUrl(data.url);
+ toast.success("Image uploaded.");
+ } else {
+ toast.error(data.error || "Upload failed.");
+ }
+ } catch {
+ toast.error("Upload failed. Please try again.");
+ } finally {
+ setUploading(false);
+ }
+ }
 
  function handleSubmit(e: React.FormEvent) {
  e.preventDefault();
@@ -546,6 +579,7 @@ function DishForm({
  isVeg,
  categoryId: selectedCategory || null,
  note: note.trim() || undefined,
+ imageUrl,
  });
  });
  }
@@ -619,6 +653,44 @@ function DishForm({
  className="h-11 rounded-2xl border bg-card px-4 text-sm shadow-card outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
  />
  </label>
+
+ <div className="flex flex-col gap-1.5">
+ <span className="text-label font-semibold">Dish photo (optional)</span>
+ {imageUrl && (
+ <div className="relative h-28 w-28 overflow-hidden rounded-xl border">
+ <img src={imageUrl} alt="Dish preview" className="h-full w-full object-cover" />
+ <button
+ type="button"
+ onClick={() => setImageUrl(null)}
+ className="absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+ aria-label="Remove dish photo"
+ >
+ <X className="size-3.5" />
+ </button>
+ </div>
+ )}
+ <label className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-ring/30 bg-card px-4 text-sm text-muted-foreground hover:border-ring/60 hover:text-foreground">
+ {uploading ? (
+ <>
+ <Loader2 className="size-4 animate-spin" />
+ Uploading...
+ </>
+ ) : (
+ <>
+ <Plus className="size-4" />
+ {imageUrl ? "Change photo" : "Upload photo"}
+ </>
+ )}
+ <input
+ type="file"
+ accept="image/png,image/jpeg,image/webp"
+ onChange={handleFileUpload}
+ disabled={uploading}
+ className="sr-only"
+ />
+ </label>
+ </div>
+
  <div className="mt-2 flex justify-end">
  <button
  type="submit"

@@ -63,7 +63,7 @@ export function CartBar({
  Dropped below 360px so the total never gets squeezed. */}
  <div className="flex shrink-0 -space-x-3 max-[359px]:hidden" aria-hidden="true">
  {cart.lines.slice(0, 2).map((line) => {
- const photo = cart.restaurantName ? getDishPhoto(cart.restaurantName, line.name) : undefined;
+ const photo = cart.restaurantName ? getDishPhoto(cart.restaurantName, line.name, line.imageUrl) : undefined;
  return (
  <span
  key={line.dishId}
