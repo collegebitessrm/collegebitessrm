@@ -195,7 +195,7 @@ type OrderDetailRow = {
  notes: string | null;
  restaurant_id: string;
  restaurants: { name: string; phone: string; delivery_minutes: number } | null;
- order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number; is_free: boolean; image_url: string | null }[];
+ order_items: { id: string; dish_name: string; unit_price: number; quantity: number; subtotal: number; is_free: boolean; dishes: { image_url: string | null } | null }[];
  daily_number: number;
  discount_offer: OfferKey | null;
  discount_amount: number;

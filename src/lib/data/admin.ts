@@ -573,6 +573,7 @@ export async function getAdminDishes(): Promise<AdminDish[]> {
  is_available: boolean;
  sort_order: number;
  restaurant_id: string;
+ image_url: string | null;
  restaurants: { name: string } | null;
  dish_categories: { name: string; sort_order: number } | null;
  }[]

@@ -100,6 +100,7 @@ export async function getUsualCart(userId: string): Promise<UsualCart | null> {
  name: dish.name,
  price: dish.price,
  isVeg: dish.is_veg,
+ imageUrl: null,
  // Not clamped to MAX_QUANTITY here — refillCart() owns that, same
  // as every other cart-store write path.
  quantity: l.quantity,
