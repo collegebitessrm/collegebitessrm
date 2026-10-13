@@ -8,14 +8,14 @@ import { isUuid } from "@/lib/ids";
 import { getRestaurantCount } from "./restaurants";
 import type { OrderStatus } from "./types";
 
-export type AdminRestaurant = { id: string; name: string; is_active: boolean };
+export type AdminRestaurant = { id: string; name: string; is_active: boolean; cover_image_url: string | null };
 
 /** Every restaurant, for the open/closed toggle list and the vendor stat. */
 export async function getAdminRestaurants(): Promise<AdminRestaurant[]> {
  const supabase = await createClient();
  const { data, error } = await supabase
  .from("restaurants")
- .select("id, name, is_active")
+ .select("id, name, is_active, cover_image_url")
  .order("name");
 
  if (error) throw error;

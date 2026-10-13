@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { BlurImage } from "@/components/blur-image";
 import { Loader2, PencilSimple, Plus, Storefront, Trash2, X } from "@/components/icons";
 import { adminAction, adminPill } from "@/components/admin/styles";
 import {
@@ -213,6 +214,18 @@ function RestaurantForm({
  const [deliveryMinutes, setDeliveryMinutes] = useState(initial?.deliveryMinutes ?? 40);
  const [isActive, setIsActive] = useState(initial?.isActive ?? true);
  const [coverImageUrl, setCoverImageUrl] = useState(initial?.coverImageUrl ?? null);
+ // Extract the storage path from the public URL so replacements can delete the old file.
+ // Supabase public URLs: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
+ const [coverImagePath, setCoverImagePath] = useState<string | null>(() => {
+ if (!initial?.coverImageUrl) return null;
+ try {
+ const url = new URL(initial.coverImageUrl);
+ const match = url.pathname.match(/\/storage\/v1\/object\/public\/[^/]+\/(.+)$/);
+ return match ? decodeURIComponent(match[1]) : null;
+ } catch {
+ return null;
+ }
+ });
  const [uploading, setUploading] = useState(false);
 
  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -222,12 +235,14 @@ function RestaurantForm({
  setUploading(true);
  const formData = new FormData();
  formData.append("file", file);
+ if (coverImagePath) formData.append("oldPath", coverImagePath);
 
  try {
  const res = await fetch("/api/upload", { method: "POST", body: formData });
  const data = await res.json();
  if (res.ok) {
  setCoverImageUrl(data.url);
+ setCoverImagePath(data.path);
  toast.success("Image uploaded.");
  } else {
  toast.error(data.error || "Upload failed.");
@@ -333,8 +348,14 @@ function RestaurantForm({
  <div className="flex flex-col gap-1.5">
  <span className="text-label font-semibold">Cover image</span>
  {coverImageUrl && (
- <div className="relative h-32 overflow-hidden rounded-xl border">
- <img src={coverImageUrl} alt="Cover preview" className="h-full w-full object-cover" />
+ <div className="relative h-32 overflow-hidden rounded-xl border bg-secondary">
+ <BlurImage
+ src={coverImageUrl}
+ alt="Cover preview"
+ sizes="256px"
+ className="h-full w-full object-cover"
+ onError={() => setCoverImageUrl(null)}
+ />
  <button
  type="button"
  onClick={() => setCoverImageUrl(null)}

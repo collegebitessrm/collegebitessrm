@@ -154,7 +154,7 @@ export const getRestaurantMenu = cache(async function getRestaurantMenu(
  const [restaurantResult, categoriesResult, dishesResult] = await Promise.all([
  supabase
  .from("restaurants")
- .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes")
+ .select("id, name, phone, description, cuisine_tags, is_active, delivery_minutes, cover_image_url")
  .eq("id", id)
  .maybeSingle<Restaurant>(),
  supabase
@@ -166,7 +166,7 @@ export const getRestaurantMenu = cache(async function getRestaurantMenu(
  .returns<DishCategory[]>(),
  supabase
  .from("dishes")
- .select("id, restaurant_id, category_id, name, price, is_veg, note, is_available, sort_order")
+ .select("id, restaurant_id, category_id, name, price, is_veg, note, is_available, sort_order, image_url")
  .eq("restaurant_id", id)
  .order("sort_order")
  .order("name")

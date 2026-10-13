@@ -50,7 +50,7 @@ function RestaurantToggleCard({
  // being shown as plain "Open" (which would read as taking orders right
  // now) or "Closed" (which would misattribute the pause to this restaurant).
  const paused = active && !orderingEnabled;
- const cover = getRestaurantCoverPhoto(restaurant.name);
+ const cover = getRestaurantCoverPhoto(restaurant.name, restaurant.cover_image_url);
 
  function toggle() {
  const next = !active;

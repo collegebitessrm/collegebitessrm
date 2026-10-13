@@ -16,7 +16,7 @@ const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${supabaseUrl}`,
   "font-src 'self' data:",
   `connect-src 'self' ${supabaseUrl} ${supabaseWs}`.trim(),
   "worker-src 'self'",
@@ -30,6 +30,15 @@ const csp = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cpatbcisnrvyjztyqutq.supabase.co",
+        pathname: "/storage/v1/object/public/restaurant-images/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {

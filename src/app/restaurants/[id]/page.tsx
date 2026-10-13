@@ -72,7 +72,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
  const dishesTried = cards.filter((c) =>
  c.kind === "dish" ? triedDishIds.has(c.dish.id) : c.portions.some((p) => triedDishIds.has(p.dish.id)),
  ).length;
- const cover = getRestaurantCoverPhoto(restaurant.name);
+ const cover = getRestaurantCoverPhoto(restaurant.name, restaurant.cover_image_url);
  const statusBadge = (
  <span
  className={cn(

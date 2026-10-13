@@ -18,6 +18,8 @@ export async function POST(request: NextRequest) {
 
 	const formData = await request.formData();
 	const file = formData.get("file") as File | null;
+	// Optional: path of the previously uploaded file to delete (storage-relative path)
+	const oldPath = formData.get("oldPath") as string | null;
 
 	if (!file) {
 		return NextResponse.json({ error: "No file provided." }, { status: 400 });
@@ -65,6 +67,17 @@ export async function POST(request: NextRequest) {
 			{ error: "Upload failed. Please try again." },
 			{ status: 500 },
 		);
+	}
+
+	// Delete the old file so storage doesn't accumulate orphaned images
+	if (oldPath) {
+		const { error: removeError } = await supabase.storage
+			.from(BUCKET_NAME)
+			.remove([oldPath]);
+		if (removeError) {
+			// Non-fatal — the new file is already uploaded; just log it
+			console.warn("Failed to remove old image:", oldPath, removeError);
+		}
 	}
 
 	// Get the public URL
