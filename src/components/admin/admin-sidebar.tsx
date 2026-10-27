@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  type AppIcon,
   BarChart,
   Discount,
   History,
@@ -31,7 +32,7 @@ export type NavItem = {
   href: string;
   label: string;
   description: string;
-  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+  icon: AppIcon;
   badge?: string;
   badgeTone?: "orange" | "green";
   exact?: boolean;
@@ -153,7 +154,7 @@ export function AdminSidebar({ className }: { className?: string }) {
                       : "bg-secondary text-muted-foreground group-hover:text-[#FF6B00]",
                   )}
                 >
-                  <Icon className="size-4" aria-hidden="true" />
+                  <Icon className="size-4" aria-hidden={true} />
                 </div>
                 <div className="min-w-0">
                   <p className="truncate font-bold leading-tight">{item.label}</p>
@@ -268,7 +269,7 @@ export function AdminMobileMenuTrigger() {
                         : "bg-secondary text-[#FF6B00]",
                     )}
                   >
-                    <Icon className="size-4.5" aria-hidden="true" />
+                    <Icon className="size-4.5" aria-hidden={true} />
                   </div>
                   <div className="min-w-0">
                     <p className="truncate font-bold text-sm leading-tight">{item.label}</p>

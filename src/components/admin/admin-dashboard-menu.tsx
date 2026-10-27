@@ -115,7 +115,7 @@ export function AdminDashboardMenu({ activeOffersCount = 0 }: Props) {
                         : "bg-card border border-border/60 text-muted-foreground group-hover:text-foreground",
                     )}
                   >
-                    <Icon className="size-4" aria-hidden="true" />
+                    <Icon className="size-4" aria-hidden={true} />
                   </div>
 
                   {item.badge && (
