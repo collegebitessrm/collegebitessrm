@@ -33,7 +33,9 @@ import { BellSlash as PhBellSlash } from "@phosphor-icons/react/dist/ssr/BellSla
 import { Bird as PhBird } from "@phosphor-icons/react/dist/ssr/Bird";
 import { BowlFood as PhBowlFood } from "@phosphor-icons/react/dist/ssr/BowlFood";
 import { BowlSteam as PhBowlSteam } from "@phosphor-icons/react/dist/ssr/BowlSteam";
+import { Calendar as PhCalendar } from "@phosphor-icons/react/dist/ssr/Calendar";
 import { CalendarHeart as PhCalendarHeart } from "@phosphor-icons/react/dist/ssr/CalendarHeart";
+import { TrendUp as PhTrendUp } from "@phosphor-icons/react/dist/ssr/TrendUp";
 import { CaretDown as PhCaretDown } from "@phosphor-icons/react/dist/ssr/CaretDown";
 import { CaretRight as PhCaretRight } from "@phosphor-icons/react/dist/ssr/CaretRight";
 import { Carrot as PhCarrot } from "@phosphor-icons/react/dist/ssr/Carrot";
@@ -64,6 +66,7 @@ import { Heart as PhHeart } from "@phosphor-icons/react/dist/ssr/Heart";
 import { House as PhHouse } from "@phosphor-icons/react/dist/ssr/House";
 import { IceCream as PhIceCream } from "@phosphor-icons/react/dist/ssr/IceCream";
 import { Leaf as PhLeaf } from "@phosphor-icons/react/dist/ssr/Leaf";
+import { List as PhList } from "@phosphor-icons/react/dist/ssr/List";
 import { LockSimple as PhLockSimple } from "@phosphor-icons/react/dist/ssr/LockSimple";
 import { MagnifyingGlass as PhMagnifyingGlass } from "@phosphor-icons/react/dist/ssr/MagnifyingGlass";
 import { MapPin as PhMapPin } from "@phosphor-icons/react/dist/ssr/MapPin";
@@ -154,8 +157,12 @@ export const Bell = make(PhBell, "Bell");
 export const BellOff = make(PhBellSlash, "BellOff");
 /** admin alerts armed */
 export const BellRing = make(PhBellRinging, "BellRing");
+/** date filter */
+export const Calendar = make(PhCalendar, "Calendar");
 /** Thursday special */
 export const CalendarHeart = make(PhCalendarHeart, "CalendarHeart");
+/** profit / growth */
+export const TrendUp = make(PhTrendUp, "TrendUp");
 /** done / confirm */
 export const Check = make(PhCheck, "Check", "bold");
 /** success toasts */
@@ -168,6 +175,7 @@ export const ChefHat = make(PhChefHat, "ChefHat");
 export const ChevronDown = make(PhCaretDown, "ChevronDown", "bold");
 /** row chevron */
 export const ChevronRight = make(PhCaretRight, "ChevronRight", "bold");
+export const CaretRight = ChevronRight;
 /** shadcn submenu */
 export const ChevronRightIcon = make(PhCaretRight, "ChevronRightIcon", "bold");
 /** juices */
@@ -212,6 +220,8 @@ export const LogOut = make(PhSignOut, "LogOut");
 export const MapPin = make(PhMapPin, "MapPin");
 /** WhatsApp buttons */
 export const MessageCircle = make(PhWhatsappLogo, "MessageCircle");
+/** navigation / sidebar menu */
+export const Menu = make(PhList, "Menu", "bold");
 /** review notes */
 export const MessageSquareText = make(PhChatCenteredText, "MessageSquareText");
 /** stepper */

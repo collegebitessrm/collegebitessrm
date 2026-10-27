@@ -334,6 +334,7 @@ export async function cancelOrder(orderId: string, currentStatus: OrderStatus): 
  after(() => notifyUser(supabase, cancelled.user_id, statusPayload(cancelled, "cancelled")));
 
  revalidatePath("/admin");
+ revalidatePath("/admin/history");
  return { ok: true };
 }
 

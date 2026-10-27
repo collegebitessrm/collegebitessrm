@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BarChart, Discount, History, PackageX, Star, Storefront, Users } from "@/components/icons";
+import { AdminDashboardMenu } from "@/components/admin/admin-dashboard-menu";
 import { MarkAllDeliveredButton } from "@/components/admin/mark-all-delivered-button";
 import { NewOrderAlerts } from "@/components/admin/new-order-alerts";
 import { OrderingKillSwitch } from "@/components/admin/ordering-kill-switch";
@@ -7,110 +7,72 @@ import { OrderList } from "@/components/admin/order-list";
 import { RefreshAt } from "@/components/admin/refresh-at";
 import { RestaurantToggleList } from "@/components/admin/restaurant-toggle-list";
 import { StatCards } from "@/components/admin/stat-cards";
-import { adminPill } from "@/components/admin/styles";
 import { getAdminOrders, getAdminRestaurants, getConfirmedOrderCount, getOrderCounts } from "@/lib/data/admin";
 import { deliveryDue, formatShortDay, startOfTodayIST } from "@/lib/date";
 import { getOrderingState } from "@/lib/data/settings";
 import { getOffers } from "@/lib/data/offers";
 
 export default async function AdminPage() {
- const [restaurants, orderCounts, ordering, orders, confirmedCount, offers] = await Promise.all([
- getAdminRestaurants(),
- getOrderCounts(startOfTodayIST()),
- getOrderingState(),
- getAdminOrders(),
- getConfirmedOrderCount(),
- getOffers(),
- ]);
+  const [restaurants, orderCounts, ordering, orders, confirmedCount, offers] = await Promise.all([
+    getAdminRestaurants(),
+    getOrderCounts(startOfTodayIST()),
+    getOrderingState(),
+    getAdminOrders(),
+    getConfirmedOrderCount(),
+    getOffers(),
+  ]);
 
- const activeRestaurants = restaurants.filter((r) => r.is_active).length;
+  const activeRestaurants = restaurants.filter((r) => r.is_active).length;
 
- // When the next finished order's delivery time passes and it should move
- // to history.
- const nextDropOff = orders
- .filter((o) => o.status === "delivered" || o.status === "cancelled")
- .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes).getTime());
+  // When the next finished order's delivery time passes and it should move
+  // to history.
+  const nextDropOff = orders
+    .filter((o) => o.status === "delivered" || o.status === "cancelled")
+    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes).getTime());
 
- return (
- <>
- <StatCards
- todayLabel={formatShortDay(new Date().toISOString())}
- totalOrders={orderCounts.total}
- confirmedOrders={orderCounts.confirmed}
- completedOrders={orderCounts.completed}
- activeRestaurants={activeRestaurants}
- totalRestaurants={restaurants.length}
- >
- <OrderingKillSwitch ordering={ordering} />
- </StatCards>
+  return (
+    <>
+      <StatCards
+        todayLabel={formatShortDay(new Date().toISOString())}
+        totalOrders={orderCounts.total}
+        confirmedOrders={orderCounts.confirmed}
+        completedOrders={orderCounts.completed}
+        activeRestaurants={activeRestaurants}
+        totalRestaurants={restaurants.length}
+      >
+        <OrderingKillSwitch ordering={ordering} />
+      </StatCards>
 
- <div className="flex flex-wrap gap-2">
- <Link href="/admin/history" className={adminPill}>
- <History className="size-4" aria-hidden="true" />
- Order history
- </Link>
- <Link href="/admin/users" className={adminPill}>
- <Users className="size-4" aria-hidden="true" />
- Users
- </Link>
- <Link href="/admin/reviews" className={adminPill}>
- <Star className="size-4" aria-hidden="true" />
- Reviews
- </Link>
- <Link href="/admin/sold-out" className={adminPill}>
- <PackageX className="size-4" aria-hidden="true" />
- Sold out
- </Link>
- <Link href="/admin/offers" className={adminPill}>
- <Discount className="size-4" aria-hidden="true" />
- Offers
- {offers.active.length > 0 && (
- <span className="rounded-full bg-success-soft px-2 py-0.5 text-xs font-bold text-success">
- {offers.active.length} on
- </span>
- )}
- </Link>
- <Link href="/admin/restaurants" className={adminPill}>
- <Storefront className="size-4" aria-hidden="true" />
- Restaurants
- </Link>
- <Link href="/admin/menu" className={adminPill}>
- <Storefront className="size-4" aria-hidden="true" />
- Menu
- </Link>
- <Link href="/admin/analytics" className={adminPill}>
- <BarChart className="size-4" aria-hidden="true" />
- Analytics
- </Link>
- </div>
+      {/* Structured Admin Menu Modules */}
+      <AdminDashboardMenu activeOffersCount={offers.active.length} />
 
- <NewOrderAlerts />
+      <NewOrderAlerts />
 
- <section>
- <h2 className="mb-3 font-heading text-title font-bold">Restaurants</h2>
- <RestaurantToggleList
- restaurants={restaurants}
- orderingEnabled={ordering.open}
- forcedClosed={ordering.mode === "closed"}
- closedChip="Paused"
- />
- </section>
+      <section>
+        <h2 className="mb-3 font-heading text-title font-bold">Restaurants</h2>
+        <RestaurantToggleList
+          restaurants={restaurants}
+          orderingEnabled={ordering.open}
+          forcedClosed={ordering.mode === "closed"}
+          closedChip="Paused"
+        />
+      </section>
 
- <section>
- <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
- <h2 className="font-heading text-title font-bold">Current orders</h2>
- <MarkAllDeliveredButton confirmedCount={confirmedCount} />
- </div>
- <p className="-mt-1 mb-3 text-sm text-muted-foreground">
- Orders stay here until their delivery time passes, then move to{" "}
- <Link href="/admin/history" className="font-semibold text-primary underline underline-offset-2">
- Order history
- </Link>
- . Anything still waiting on you stays until it&apos;s done.
- </p>
- <OrderList orders={orders} restaurants={restaurants} />
- <RefreshAt at={nextDropOff.length ? Math.min(...nextDropOff) : null} />
- </section>
- </>
- );
+      <section>
+        <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+          <h2 className="font-heading text-title font-bold">Current orders</h2>
+          <MarkAllDeliveredButton confirmedCount={confirmedCount} />
+        </div>
+        <p className="-mt-1 mb-3 text-sm text-muted-foreground">
+          Orders stay here until their delivery time passes, then move to{" "}
+          <Link href="/admin/history" className="font-semibold text-primary underline underline-offset-2">
+            Order history
+          </Link>
+          . Anything still waiting on you stays until it&apos;s done.
+        </p>
+        <OrderList orders={orders} restaurants={restaurants} />
+        <RefreshAt at={nextDropOff.length ? Math.min(...nextDropOff) : null} />
+      </section>
+    </>
+  );
 }
