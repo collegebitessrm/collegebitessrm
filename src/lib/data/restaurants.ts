@@ -92,8 +92,8 @@ export async function getRestaurantMenuStats(): Promise<Record<string, Restauran
  }
  return stats;
 }
-
-export { getFallbackRestaurantRating, type RestaurantRating } from "./restaurant-ratings";
+import { getFallbackRestaurantRating, type RestaurantRating } from "./restaurant-ratings";
+export { getFallbackRestaurantRating, type RestaurantRating };
 
 /**
  * Calculates per-restaurant average rating and review counts.
