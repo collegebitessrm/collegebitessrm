@@ -73,11 +73,11 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
     try {
       const res = await broadcastOrdersOpenNotification();
       if (res.ok) {
-        toast.success(
-          typeof res.count === "number" && res.count > 0
-            ? `Broadcast sent to ${res.count} subscribed device(s)! 🍕`
-            : "Notification broadcast sent to users! 🍕"
-        );
+        if (typeof res.count === "number" && res.count > 0) {
+          toast.success(`Broadcast sent to ${res.count} subscribed device(s)! 🍕`);
+        } else {
+          toast.error("0 devices subscribed yet. Turn on notifications on your phone/browser first!");
+        }
       } else {
         toast.error(res.error || "Failed to broadcast notification.");
       }

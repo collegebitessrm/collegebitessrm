@@ -7,9 +7,8 @@ import { useSyncExternalStore } from "react";
 export type ThemePreference = "light" | "dark" | "system";
 
 const STORAGE_KEY = "collegebites.theme";
-// First-time visitors follow their OS's light/dark setting. Only an
-// explicit choice (the Appearance toggle) moves them off "system".
-const DEFAULT: ThemePreference = "system";
+// Default theme is light. Users can explicitly switch to dark or system in settings.
+const DEFAULT: ThemePreference = "light";
 
 function isValid(v: unknown): v is ThemePreference {
  return v === "light" || v === "dark" || v === "system";

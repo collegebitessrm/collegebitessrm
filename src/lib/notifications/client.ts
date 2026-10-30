@@ -18,6 +18,13 @@ export type PushState =
   | "ios-needs-install" // Safari only pushes from a Home Screen install
   | "unsupported";
 
+function getCleanVapidKey(): string | null {
+  const rawKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  if (!rawKey) return null;
+  const key = rawKey.trim().replace(/^["']|["']$/g, "").replace(/[\r\n\s]/g, "");
+  return key || null;
+}
+
 export function pushState(): PushState {
   if (typeof window === "undefined") return "unsupported";
   const iosLike = /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -26,7 +33,7 @@ export function pushState(): PushState {
     !("serviceWorker" in navigator) ||
     !("PushManager" in window) ||
     !("Notification" in window) ||
-    !process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+    !getCleanVapidKey()
   ) {
     return iosLike && !installed ? "ios-needs-install" : "unsupported";
   }
@@ -54,19 +61,35 @@ export async function enablePush(): Promise<{ ok: true } | { ok: false; error: s
     const registration = await navigator.serviceWorker.register("/sw.js");
     await navigator.serviceWorker.ready;
 
-    const rawKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-    const key = rawKey?.trim().replace(/^["']|["']$/g, "").replace(/[\r\n\s]/g, "");
+    const key = getCleanVapidKey();
     if (!key) return { ok: false, error: "Notifications aren't set up on the server yet." };
 
-    // Reuse the existing subscription when there is one: the browser keeps
-    // it across visits, and subscribing again with the same key returns it.
-    const existing = await registration.pushManager.getSubscription();
-    const subscription =
-      existing ??
-      (await registration.pushManager.subscribe({
+    const targetKeyBytes = urlBase64ToUint8Array(key);
+    let subscription = await registration.pushManager.getSubscription();
+
+    // If an existing subscription exists, verify it matches our current VAPID key
+    if (subscription) {
+      let matches = false;
+      if (subscription.options?.applicationServerKey) {
+        const existingBytes = new Uint8Array(subscription.options.applicationServerKey);
+        matches =
+          existingBytes.length === targetKeyBytes.length &&
+          existingBytes.every((val, i) => val === targetKeyBytes[i]);
+      }
+      if (!matches) {
+        // Old VAPID key: unsubscribe to replace with the fresh key
+        await subscription.unsubscribe().catch(() => {});
+        subscription = null;
+      }
+    }
+
+    // Subscribe freshly with the new key if not already subscribed to this key
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(key),
-      }));
+        applicationServerKey: targetKeyBytes,
+      });
+    }
 
     return await saveSubscription(subscription.toJSON(), navigator.userAgent);
   } catch (error) {
@@ -90,12 +113,29 @@ export async function disablePush(): Promise<{ ok: true } | { ok: false; error: 
   }
 }
 
-/** True when this browser currently holds a subscription (permission alone isn't enough). */
+/** True when this browser currently holds a valid subscription matching the current VAPID key. */
 export async function hasPushSubscription(): Promise<boolean> {
   if (pushState() !== "granted") return false;
   try {
     const registration = await navigator.serviceWorker.getRegistration();
-    return Boolean(await registration?.pushManager.getSubscription());
+    const subscription = await registration?.pushManager.getSubscription();
+    if (!subscription) return false;
+
+    const key = getCleanVapidKey();
+    if (!key) return false;
+
+    // Check if subscription was created with current key
+    if (subscription.options?.applicationServerKey) {
+      const targetKeyBytes = urlBase64ToUint8Array(key);
+      const existingBytes = new Uint8Array(subscription.options.applicationServerKey);
+      if (
+        existingBytes.length !== targetKeyBytes.length ||
+        !existingBytes.every((val, i) => val === targetKeyBytes[i])
+      ) {
+        return false; // Stale subscription from old key
+      }
+    }
+    return true;
   } catch {
     return false;
   }
