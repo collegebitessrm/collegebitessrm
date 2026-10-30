@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
-import { notifyUser, type PushPayload } from "@/lib/notifications/send";
+import { notifyAllSubscribers, notifyUser, type PushPayload } from "@/lib/notifications/send";
 import type { OrderStatus } from "@/lib/data/types";
 import type { OrderingMode } from "@/lib/ordering";
 import { isOfferKey, type OfferKey } from "@/lib/offers";
@@ -60,8 +60,45 @@ export async function setOrderingMode(mode: OrderingMode): Promise<AdminActionRe
  revalidatePath("/", "layout"); // student home + menu pages read is_active
  }
 
+ if (mode === "open") {
+  // Broadcast push to all subscribed students that ordering is open
+  after(async () => {
+   try {
+    await notifyAllSubscribers({
+     title: "🍕 Orders are Now Open!",
+     body: "College Bites is taking orders! Browse menus and place your food order before batch deliveries fill up.",
+     url: "/",
+     tag: "ordering-opened",
+    });
+   } catch (err) {
+    console.error("Broadcast push error on ordering open:", err);
+   }
+  });
+  revalidatePath("/", "layout");
+ }
+
  revalidatePath("/admin");
  return { ok: true };
+}
+
+/**
+ * Manually broadcast "Orders are Open" notification to all subscribed users.
+ */
+export async function broadcastOrdersOpenNotification(): Promise<{ ok: boolean; count?: number; error?: string }> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+
+ try {
+  const result = await notifyAllSubscribers({
+   title: "🍕 Orders are Now Open!",
+   body: "College Bites is taking orders! Browse menus and place your food order before batch deliveries fill up.",
+   url: "/",
+   tag: "ordering-opened",
+  });
+  return { ok: true, count: result.sent };
+ } catch (err: any) {
+  return { ok: false, error: err?.message || "Failed to broadcast notification." };
+ }
 }
 
 /**

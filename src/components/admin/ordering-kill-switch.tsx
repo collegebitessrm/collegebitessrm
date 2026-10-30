@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Power } from "@/components/icons";
+import { Bell, Loader2, Power } from "@/components/icons";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { setOrderingMode } from "@/lib/admin/actions";
+import { broadcastOrdersOpenNotification, setOrderingMode } from "@/lib/admin/actions";
 import type { OrderingMode, OrderingState } from "@/lib/ordering";
 import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
@@ -25,9 +25,9 @@ const MODES: { mode: OrderingMode; label: string }[] = [
 
 const CONFIRM: Record<OrderingMode, { title: string; body: string; action: string }> = {
   open: {
-    title: "Open ordering?",
-    body: "Students can order right away from every restaurant that's turned on. It stays open until you close it.",
-    action: "Open ordering",
+    title: "Open ordering & notify users?",
+    body: "Students can order right away from turned-on restaurants. An instant push notification will be sent to all subscribed users alerting them that ordering is open!",
+    action: "Open & notify users",
   },
   closed: {
     title: "Close ordering campus-wide?",
@@ -44,6 +44,7 @@ const CONFIRM: Record<OrderingMode, { title: string; body: string; action: strin
 export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
   const router = useRouter();
   const [target, setTarget] = useState<OrderingMode | null>(null);
+  const [broadcasting, setBroadcasting] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const status = ordering.open ? "Open until you close it" : "Closed until you open it";
@@ -53,13 +54,38 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
     startTransition(async () => {
       const result = await setOrderingMode(target);
       if (result.ok) {
-        toast.success(target === "open" ? "Ordering is open." : "Ordering is closed.");
+        toast.success(
+          target === "open"
+            ? "Ordering is open. Notification broadcast sent to users!"
+            : "Ordering is closed."
+        );
         setTarget(null);
         router.refresh();
       } else {
         toast.error(result.error);
       }
     });
+  }
+
+  async function handleBroadcast() {
+    if (broadcasting) return;
+    setBroadcasting(true);
+    try {
+      const res = await broadcastOrdersOpenNotification();
+      if (res.ok) {
+        toast.success(
+          typeof res.count === "number" && res.count > 0
+            ? `Broadcast sent to ${res.count} subscribed device(s)! 🍕`
+            : "Notification broadcast sent to users! 🍕"
+        );
+      } else {
+        toast.error(res.error || "Failed to broadcast notification.");
+      }
+    } catch {
+      toast.error("Failed to broadcast notification.");
+    } finally {
+      setBroadcasting(false);
+    }
   }
 
   return (
@@ -80,29 +106,48 @@ export function OrderingKillSwitch({ ordering }: { ordering: OrderingState }) {
         </div>
       </div>
 
-      <div
-        role="radiogroup"
-        aria-label="Ordering mode"
-        className="flex shrink-0 w-full sm:w-auto rounded-full bg-primary-foreground/10 p-1"
-      >
-        {MODES.map(({ mode, label }) => {
-          const active = ordering.mode === mode;
-          return (
-            <button
-              key={mode}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() => !active && setTarget(mode)}
-              className={cn(
-                "h-9 flex-1 sm:flex-initial rounded-full px-4 text-sm font-bold outline-none transition focus-visible:ring-3 focus-visible:ring-hero-foreground/60 active:scale-95",
-                active ? "bg-primary-foreground text-primary shadow-xs" : "text-primary-foreground/85 hover:text-primary-foreground",
-              )}
-            >
-              {label}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+        {ordering.open && (
+          <button
+            type="button"
+            onClick={handleBroadcast}
+            disabled={broadcasting}
+            title="Send 'Orders are Open' push notification to all subscribed users"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary-foreground/15 hover:bg-primary-foreground/25 px-3.5 text-xs font-bold text-primary-foreground transition outline-none active:scale-95 disabled:opacity-60"
+          >
+            {broadcasting ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Bell className="size-3.5" />
+            )}
+            <span>Notify Users</span>
+          </button>
+        )}
+
+        <div
+          role="radiogroup"
+          aria-label="Ordering mode"
+          className="flex shrink-0 w-full sm:w-auto rounded-full bg-primary-foreground/10 p-1"
+        >
+          {MODES.map(({ mode, label }) => {
+            const active = ordering.mode === mode;
+            return (
+              <button
+                key={mode}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => !active && setTarget(mode)}
+                className={cn(
+                  "h-9 flex-1 sm:flex-initial rounded-full px-4 text-sm font-bold outline-none transition focus-visible:ring-3 focus-visible:ring-hero-foreground/60 active:scale-95",
+                  active ? "bg-primary-foreground text-primary shadow-xs" : "text-primary-foreground/85 hover:text-primary-foreground",
+                )}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <AlertDialog open={target !== null} onOpenChange={(next) => !next && !pending && setTarget(null)}>

@@ -1,5 +1,6 @@
 import { Bell, ChevronDown, Heart, MapPin, MoonStars, Sun, Sunrise, Sunset, type AppIcon } from "@/components/icons";
 import { AboutDialog } from "@/components/home/about-dialog";
+import { HeaderNotificationBell } from "@/components/home/header-notification-bell";
 import { BrandLogo } from "@/components/brand-logo";
 import { Avatar } from "@/components/taste/avatar";
 import { OpenTasteSheetButton } from "@/components/taste/taste-sheet";
@@ -50,13 +51,7 @@ export function HomeHeader({
 					>
 						<Heart className="size-5" />
 					</button>
-					<button
-						type="button"
-						aria-label="Notifications"
-						className="flex size-10 items-center justify-center rounded-full border border-border bg-card text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/80"
-					>
-						<Bell className="size-5" />
-					</button>
+					<HeaderNotificationBell />
 				</div>
 			</div>
 

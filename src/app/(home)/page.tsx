@@ -20,71 +20,68 @@ import { getTimeOfDayIST, isThursdayIST } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
 import { NewUserWhatsAppPrompt } from "@/components/channel/whatsapp-channel-modal";
+import { OrderOpenPermissionPrompt } from "@/components/notifications/order-open-permission-prompt";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
- const { signedIn } = await searchParams;
- // Kicked off up front rather than after requireProfile() resolves —
- // none of these need the profile, so there's no reason to make them
- // wait behind that lookup instead of running alongside it.
- const profilePromise = requireProfile();
- const restaurantsPromise = getRestaurants();
- const menuStatsPromise = getRestaurantMenuStats();
- const dishesPromise = getSearchableDishes();
- const orderingPromise = getOrderingState();
- const offersPromise = getOffers();
- const trendingDishesPromise = getTrendingDishes();
- const dishOrderCountsPromise = getDishOrderCounts();
- const thursdaySpecialPromise = isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null);
- const ratingsPromise = getRestaurantRatings();
+  const { signedIn } = await searchParams;
+  const profile = await requireProfile();
 
- const profile = await profilePromise;
- const [restaurants, menuStats, ratings, dishes, ordering, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked, offers] = await Promise.all([
- restaurantsPromise,
- menuStatsPromise,
- ratingsPromise,
- dishesPromise,
- orderingPromise,
- thursdaySpecialPromise,
- trendingDishesPromise,
- getRatePromptOrder(profile.id),
- dishOrderCountsPromise,
- getTasteProfile(profile.id),
- hasPlacedOrder(profile.id),
- getLikedDishes(profile.id),
- offersPromise,
- ]);
- const fromHearts = heartCravings(liked);
- const timeOfDay = getTimeOfDayIST();
- const orderingEnabled = ordering.open;
+  const [restaurants, ordering, menuStats, dishes, thursdaySpecial, trendingDishes] = await Promise.all([
+    getRestaurants(),
+    getOrderingState(),
+    getRestaurantMenuStats(),
+    getSearchableDishes(),
+    isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null),
+    getTrendingDishes(),
+  ]);
 
- return (
- <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
- <SignInWelcomeToast justSignedIn={signedIn === "1"} />
- {/* WhatsApp channel prompt: shows for new users who haven't placed an order yet */}
- <NewUserWhatsAppPrompt isNewUser={!placedOrder} userName={profile.full_name} />
- {ratePrompt && <RatePrompt order={ratePrompt} />}
- <TasteSheetHost taste={taste} fromHearts={fromHearts} />
- {placedOrder && answeredCount(taste) < 3 && <FinishProfileNudge taste={taste} />}
- <ViewTransition {...NAV_TRANSITION}>
- <ViewTransition {...REVEAL_ENTER}>
- <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} avatar={taste.avatar} />
- {thursdaySpecial && <ThursdayNudge special={thursdaySpecial} />}
- {!orderingEnabled && <OrderingPausedBanner ordering={ordering} />}
- <RestaurantList
- restaurants={restaurants}
- orderingEnabled={orderingEnabled}
- closedChip={ordering.short}
- closedLine={ordering.headline}
- menuStats={menuStats}
- dishes={dishes}
- dishOrderCounts={dishOrderCounts}
- trendingDishes={trendingDishes}
- cravings={cravingOrder(taste, fromHearts)}
- ratings={ratings}
- />
- </ViewTransition>
- </ViewTransition>
- <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} spiceLevel={taste.spiceLevel} offers={offers} hasTabBar />
- </main>
- );
+  const dishOrderCountsPromise = getDishOrderCounts();
+  const offersPromise = getOffers();
+  const ratingsPromise = getRestaurantRatings();
+
+  const [ratings, ratePrompt, dishOrderCounts, taste, placedOrder, liked, offers] = await Promise.all([
+    ratingsPromise,
+    getRatePromptOrder(profile.id),
+    dishOrderCountsPromise,
+    getTasteProfile(profile.id),
+    hasPlacedOrder(profile.id),
+    getLikedDishes(profile.id),
+    offersPromise,
+  ]);
+  const fromHearts = heartCravings(liked);
+  const timeOfDay = getTimeOfDayIST();
+  const orderingEnabled = ordering.open;
+
+  return (
+    <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
+      <SignInWelcomeToast justSignedIn={signedIn === "1"} />
+      {/* WhatsApp channel prompt: shows for new users who haven't placed an order yet */}
+      <NewUserWhatsAppPrompt isNewUser={!placedOrder} userName={profile.full_name} />
+      {/* Ask for notification permission if not yet granted so users receive "Orders Opened" broadcasts */}
+      <OrderOpenPermissionPrompt />
+      {ratePrompt && <RatePrompt order={ratePrompt} />}
+      <TasteSheetHost taste={taste} fromHearts={fromHearts} />
+      {placedOrder && answeredCount(taste) < 3 && <FinishProfileNudge taste={taste} />}
+      <ViewTransition {...NAV_TRANSITION}>
+        <ViewTransition {...REVEAL_ENTER}>
+          <HomeHeader fullName={profile.full_name} timeOfDay={timeOfDay} avatar={taste.avatar} />
+          {thursdaySpecial && <ThursdayNudge special={thursdaySpecial} />}
+          {!orderingEnabled && <OrderingPausedBanner ordering={ordering} />}
+          <RestaurantList
+            restaurants={restaurants}
+            orderingEnabled={orderingEnabled}
+            closedChip={ordering.short}
+            closedLine={ordering.headline}
+            menuStats={menuStats}
+            dishes={dishes}
+            dishOrderCounts={dishOrderCounts}
+            trendingDishes={trendingDishes}
+            cravings={cravingOrder(taste, fromHearts)}
+            ratings={ratings}
+          />
+        </ViewTransition>
+      </ViewTransition>
+      <CartBar profilePhone={profile.phone} orderingEnabled={orderingEnabled} closedNote={ordering.headline} spiceLevel={taste.spiceLevel} offers={offers} hasTabBar />
+    </main>
+  );
 }
