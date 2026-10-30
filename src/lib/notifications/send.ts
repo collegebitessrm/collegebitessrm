@@ -26,12 +26,22 @@ export type PushPayload = {
 
 type SubscriptionRow = { id: string; endpoint: string; p256dh: string; auth: string };
 
+function cleanKey(val?: string): string | undefined {
+  if (!val) return undefined;
+  return val.trim().replace(/^["']|["']$/g, "").replace(/[\r\n\s]/g, "");
+}
+
 function configured(): boolean {
-  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  const publicKey = cleanKey(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY);
+  const privateKey = cleanKey(process.env.VAPID_PRIVATE_KEY);
   if (!publicKey || !privateKey) return false;
-  webpush.setVapidDetails(CONTACT, publicKey, privateKey);
-  return true;
+  try {
+    webpush.setVapidDetails(CONTACT, publicKey, privateKey);
+    return true;
+  } catch (err) {
+    console.error("setVapidDetails error:", err);
+    return false;
+  }
 }
 
 /**
@@ -67,8 +77,12 @@ async function deliver(
         );
       } catch (error) {
         const status = (error as { statusCode?: number }).statusCode;
-        if (status === 404 || status === 410) gone.push(row.id);
-        else console.error("push failed", status ?? error);
+        // 404/410 = unsubscribed/gone, 400/401/403 = invalid/mismatched VAPID credentials
+        if (status === 404 || status === 410 || status === 403 || status === 401 || status === 400) {
+          gone.push(row.id);
+        } else {
+          console.error("push failed", status ?? error);
+        }
       }
     }),
   );

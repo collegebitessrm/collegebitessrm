@@ -54,7 +54,8 @@ export async function enablePush(): Promise<{ ok: true } | { ok: false; error: s
     const registration = await navigator.serviceWorker.register("/sw.js");
     await navigator.serviceWorker.ready;
 
-    const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    const rawKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    const key = rawKey?.trim().replace(/^["']|["']$/g, "").replace(/[\r\n\s]/g, "");
     if (!key) return { ok: false, error: "Notifications aren't set up on the server yet." };
 
     // Reuse the existing subscription when there is one: the browser keeps
@@ -102,7 +103,8 @@ export async function hasPushSubscription(): Promise<boolean> {
 
 /** The VAPID public key travels as base64url; PushManager wants raw bytes. */
 function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
-  const padded = (base64 + "=".repeat((4 - (base64.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/");
+  const clean = base64.trim().replace(/^["']|["']$/g, "").replace(/[\r\n\s]/g, "");
+  const padded = (clean + "=".repeat((4 - (clean.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/");
   const raw = atob(padded);
   const bytes = new Uint8Array(new ArrayBuffer(raw.length));
   for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
