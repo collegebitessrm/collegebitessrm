@@ -5,7 +5,7 @@ import { OrderingPausedBanner } from "@/components/home/ordering-paused-banner";
 import { RestaurantList } from "@/components/home/restaurant-list";
 import { SignInWelcomeToast } from "@/components/home/sign-in-welcome-toast";
 import { ThursdayNudge } from "@/components/home/thursday-nudge";
-import { getRestaurantMenuStats, getRestaurants, getSearchableDishes, getThursdaySpecial } from "@/lib/data/restaurants";
+import { getRestaurantMenuStats, getRestaurantRatings, getRestaurants, getSearchableDishes, getThursdaySpecial } from "@/lib/data/restaurants";
 import { getOrderingState } from "@/lib/data/settings";
 import { getOffers } from "@/lib/data/offers";
 import { getDishOrderCounts, getTrendingDishes } from "@/lib/data/trending";
@@ -19,6 +19,7 @@ import { answeredCount, cravingOrder, heartCravings } from "@/lib/taste/options"
 import { getTimeOfDayIST, isThursdayIST } from "@/lib/date";
 import { NAV_TRANSITION, REVEAL_ENTER } from "@/lib/nav-transition";
 import { requireProfile } from "@/lib/profile";
+import { NewUserWhatsAppPrompt } from "@/components/channel/whatsapp-channel-modal";
 
 export default async function Home({ searchParams }: PageProps<"/">) {
  const { signedIn } = await searchParams;
@@ -34,11 +35,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
  const trendingDishesPromise = getTrendingDishes();
  const dishOrderCountsPromise = getDishOrderCounts();
  const thursdaySpecialPromise = isThursdayIST() ? getThursdaySpecial() : Promise.resolve(null);
+ const ratingsPromise = getRestaurantRatings();
 
  const profile = await profilePromise;
- const [restaurants, menuStats, dishes, ordering, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked, offers] = await Promise.all([
+ const [restaurants, menuStats, ratings, dishes, ordering, thursdaySpecial, trendingDishes, ratePrompt, dishOrderCounts, taste, placedOrder, liked, offers] = await Promise.all([
  restaurantsPromise,
  menuStatsPromise,
+ ratingsPromise,
  dishesPromise,
  orderingPromise,
  thursdaySpecialPromise,
@@ -57,6 +60,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
  return (
  <main className="mx-auto w-full max-w-md px-6 pt-6 pb-28">
  <SignInWelcomeToast justSignedIn={signedIn === "1"} />
+ {/* WhatsApp channel prompt: shows for new users who haven't placed an order yet */}
+ <NewUserWhatsAppPrompt isNewUser={!placedOrder} userName={profile.full_name} />
  {ratePrompt && <RatePrompt order={ratePrompt} />}
  <TasteSheetHost taste={taste} fromHearts={fromHearts} />
  {placedOrder && answeredCount(taste) < 3 && <FinishProfileNudge taste={taste} />}
@@ -75,6 +80,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
  dishOrderCounts={dishOrderCounts}
  trendingDishes={trendingDishes}
  cravings={cravingOrder(taste, fromHearts)}
+ ratings={ratings}
  />
  </ViewTransition>
  </ViewTransition>

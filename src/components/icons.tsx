@@ -65,6 +65,7 @@ import { Hamburger as PhHamburger } from "@phosphor-icons/react/dist/ssr/Hamburg
 import { Heart as PhHeart } from "@phosphor-icons/react/dist/ssr/Heart";
 import { House as PhHouse } from "@phosphor-icons/react/dist/ssr/House";
 import { IceCream as PhIceCream } from "@phosphor-icons/react/dist/ssr/IceCream";
+import { Info as PhInfo } from "@phosphor-icons/react/dist/ssr/Info";
 import { Leaf as PhLeaf } from "@phosphor-icons/react/dist/ssr/Leaf";
 import { List as PhList } from "@phosphor-icons/react/dist/ssr/List";
 import { LockSimple as PhLockSimple } from "@phosphor-icons/react/dist/ssr/LockSimple";
@@ -206,6 +207,8 @@ export const History = make(PhClockCounterClockwise, "History");
 export const Home = make(PhHouse, "Home");
 /** no orders */
 export const Inbox = make(PhTray, "Inbox");
+/** information tooltip / notice */
+export const Info = make(PhInfo, "Info");
 /** all categories */
 export const LayoutGrid = make(PhSquaresFour, "LayoutGrid");
 /** veg */

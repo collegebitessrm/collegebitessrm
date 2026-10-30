@@ -3,6 +3,7 @@ import { formatRupees } from "@/lib/format";
 import { OFFERS } from "@/lib/offers";
 import { formatStoredMobile } from "@/lib/phone";
 import { formatOrderNumber } from "./status";
+import { parseDeliveryLocation } from "@/lib/orders/delivery-location";
 
 /** "A1 Biryani Dum Biryani - 1" — the one way the admin side writes a line item (card, WhatsApp, copy).
  * A biryani given free by the offer reads "… - 1 (free)", so the restaurant knows too. */
@@ -27,9 +28,10 @@ function itemLinesWithPrices(order: AdminOrder): string[] {
 
 /** The confirmation the admin sends from an order card's WhatsApp button. */
 export function whatsAppConfirmation(order: AdminOrder): string {
+    const { location } = parseDeliveryLocation(order.notes);
     return [
         `Hi ${order.studentName}, this is College Bites, confirming your order ${formatOrderNumber(order.dailyNumber)}`,
-        `from ${order.restaurantName}:`,
+        `from ${order.restaurantName} (Delivery to: ${location}):`,
         ...itemLinesWithPrices(order),
         "Do you want to go ahead with this order? Reply yes to confirm.",
     ].join("\n");
@@ -37,21 +39,30 @@ export function whatsAppConfirmation(order: AdminOrder): string {
 
 /** The message sent to the restaurant to confirm the order with them. */
 export function whatsAppRestaurantConfirmation(order: AdminOrder): string {
+    const { location, cleanNotes } = parseDeliveryLocation(order.notes);
     const lines = [
         `New order ${formatOrderNumber(order.dailyNumber)} from College Bites:`,
         "",
         `Student: ${order.studentName}`,
         `Phone: ${formatStoredMobile(order.contactPhone)}`,
+        `Delivery Location: ${location}`,
         "",
         "Order:",
         ...order.items.map((i) => ` • ${itemLine(i)}`),
     ];
-    if (order.notes) {
-        lines.push("", `Note: "${order.notes}"`);
+    if (cleanNotes) {
+        lines.push("", `Note: "${cleanNotes}"`);
     }
     lines.push("", `Total: ${formatRupees(order.totalAmount)}`);
 
     return lines.join("\n");
+}
+
+/**
+ * Message to ask the restaurant for an ETA / status update on a delayed or overdue order.
+ */
+export function whatsAppRestaurantDelayInquiry(order: Pick<AdminOrder, "dailyNumber">): string {
+    return `Hi, could you please confirm the current status of order #${formatOrderNumber(order.dailyNumber)} and its expected delivery time? Please share the updated ETA so we can keep the customer informed.`;
 }
 
 /**
@@ -70,9 +81,10 @@ const COPY_WITH_PRICES = new Set([
  * price, with the offer and total lines the WhatsApp message uses.
  */
 export function orderDetailsText(order: AdminOrder): string {
+    const { location } = parseDeliveryLocation(order.notes);
     return [
         formatStoredMobile(order.contactPhone),
-        order.studentName,
+        `${order.studentName} (${location})`,
         order.restaurantName,
         ...(COPY_WITH_PRICES.has(order.restaurantId) ? itemLinesWithPrices(order) : order.items.map(itemLine)),
     ].join("\n");

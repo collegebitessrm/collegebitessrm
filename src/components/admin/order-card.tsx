@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, Copy, Loader2, MessageCircle, Trash2 } from "@/components/icons";
+import { getOverdueState, OverdueBadge, DelayBanner, DelayReportModal } from "@/components/admin/delay-report-modal";
+import { deliveryDue } from "@/lib/date";
+import { AlertCircle, Check, Copy, Loader2, MapPin, MessageCircle, PencilSimple, Trash2 } from "@/components/icons";
+import { EditOrderItemsModal } from "./edit-order-items-modal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +27,7 @@ import { formatRupees } from "@/lib/format";
 import { OFFERS } from "@/lib/offers";
 import { itemLine, orderDetailsText, whatsAppConfirmation, whatsAppRestaurantConfirmation } from "@/lib/orders/admin-text";
 import { advanceLabel, formatOrderNumber, nextStatus, statusBadge } from "@/lib/orders/status";
+import { parseDeliveryLocation } from "@/lib/orders/delivery-location";
 import { formatStoredMobile, whatsAppLink } from "@/lib/phone";
 import { toast } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
@@ -37,21 +41,31 @@ import { cn } from "@/lib/utils";
  */
 export function useOrderStatus(propStatus: OrderStatus) {
   const [status, setStatus] = useState(propStatus);
-  const [prevPropStatus, setPrevPropStatus] = useState(propStatus);
-  if (propStatus !== prevPropStatus) {
-    setPrevPropStatus(propStatus);
+  const [prevProp, setPrevProp] = useState(propStatus);
+  if (propStatus !== prevProp) {
+    setPrevProp(propStatus);
     setStatus(propStatus);
   }
   return [status, setStatus] as const;
 }
 
+/** One order on the admin dashboard: token, restaurant, items, total, status and actions. */
 export function OrderCard({ order }: { order: AdminOrder }) {
-  const [status, setStatus] = useOrderStatus(order.status);
-  const badge = statusBadge(status);
+  const [currentOrder, setCurrentOrder] = useState<AdminOrder>(order);
+  const [status, setStatus] = useOrderStatus(currentOrder.status);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDelayOpen, setIsDelayOpen] = useState(false);
+  const { location } = parseDeliveryLocation(currentOrder.notes);
+  const badge = statusBadge(status, location === "Friends PG" ? "Friends PG" : "Gate 3");
+  const overdueState = getOverdueState(currentOrder);
+
+  useEffect(() => {
+    setCurrentOrder(order);
+  }, [order]);
 
   // First ordered dish that has a photo — same lookup as the student side.
-  const photo = order.items
-    .map((i) => getDishPhoto(order.restaurantName, i.dishName, i.imageUrl))
+  const photo = currentOrder.items
+    .map((i) => getDishPhoto(currentOrder.restaurantName, i.dishName, i.imageUrl))
     .find((src): src is string => !!src);
 
   // The whole card opens the order's page: the token link stretches over
@@ -63,60 +77,133 @@ export function OrderCard({ order }: { order: AdminOrder }) {
           {photo ? (
             <BlurImage src={photo} alt="" sizes="56px" className="object-cover" />
           ) : (
-            <span aria-hidden="true">{order.restaurantName.trim().charAt(0)}</span>
+            <span aria-hidden="true">{currentOrder.restaurantName.trim().charAt(0)}</span>
           )}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <Link
-              href={`/admin/orders/${order.id}`}
+              href={`/admin/orders/${currentOrder.id}`}
               className="rounded-md font-heading text-2xl leading-none font-bold tabular-nums outline-none after:absolute after:inset-0 after:rounded-3xl focus-visible:after:ring-3 focus-visible:after:ring-ring/80"
             >
-              {formatOrderNumber(order.dailyNumber)}
+              {formatOrderNumber(currentOrder.dailyNumber)}
               <span className="sr-only">, open order details</span>
             </Link>
-            <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold", badge.className)}>
-              {badge.label}
-            </span>
+            <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold", badge.className)}>{badge.label}</span>
+{overdueState && <OverdueBadge state={overdueState} />}
           </div>
-          <p className="mt-1 truncate text-sm text-muted-foreground">{formatOrderTimestamp(order.createdAt)}</p>
+          <p className="mt-1 truncate text-sm text-muted-foreground">{formatOrderTimestamp(currentOrder.createdAt)}</p>
         </div>
       </div>
 
-      <OrderSummaryBox order={order} className="mt-3" />
+      <OrderSummaryBox
+        order={currentOrder}
+        onEditClick={() => setIsEditOpen(true)}
+        onDelayClick={() => setIsDelayOpen(true)}
+        className="mt-3"
+      />
 
       {/* Financials & Copy Row */}
       <div className="mt-3 flex items-center justify-between gap-2 border-t border-border/40 pt-3">
         <div className="flex flex-col">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Total</span>
           <span className="font-heading text-xl font-extrabold tabular-nums text-foreground">
-            {formatRupees(order.totalAmount)}
+            {formatRupees(currentOrder.totalAmount)}
           </span>
         </div>
         <div className="relative z-10 flex items-center gap-1.5">
-          <CopyOrderButton order={order} />
+          {status !== "delivered" && status !== "cancelled" && (
+            <button
+              type="button"
+              onClick={() => setIsDelayOpen(true)}
+              aria-label={currentOrder.delayReason ? "Manage delay" : "Report delay"}
+              title={currentOrder.delayReason ? "Manage delay" : "Report delay"}
+              className={cn(
+                "flex h-9 items-center gap-1.5 rounded-full border px-3 text-xs font-semibold outline-none transition focus-visible:ring-3 focus-visible:ring-ring/80 active:scale-95",
+                currentOrder.delayReason
+                  ? "border-amber-300 bg-amber-100 text-amber-900 hover:bg-amber-200 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300"
+                  : "border-amber-200/90 bg-amber-50/80 text-amber-700 hover:bg-amber-100 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400 dark:hover:bg-amber-500/20",
+              )}
+            >
+              <AlertCircle className="size-3.5" aria-hidden="true" />
+              <span>{currentOrder.delayReason ? "Delayed" : "Delay"}</span>
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setIsEditOpen(true)}
+            aria-label="Edit items and quantities"
+            title="Edit items and quantities"
+            className="flex h-9 items-center gap-1.5 rounded-full border border-orange-200/90 bg-orange-50/80 px-3 text-xs font-semibold text-[#FF6B00] outline-none transition hover:bg-orange-100 hover:text-[#e05f00] focus-visible:ring-3 focus-visible:ring-ring/80 active:scale-95"
+          >
+            <PencilSimple className="size-3.5" aria-hidden="true" />
+            <span>Edit</span>
+          </button>
+          <CopyOrderButton order={currentOrder} />
         </div>
       </div>
 
       {/* WhatsApp Message Actions: Symmetrical 50/50 or full-width buttons */}
       <div className="relative z-10 mt-2.5 flex items-center gap-2">
-        <WhatsAppButton order={order} className="flex-1" />
-        <WhatsAppRestaurantButton order={order} className="flex-1" />
+        <WhatsAppButton order={currentOrder} className="flex-1" />
+        <WhatsAppRestaurantButton order={currentOrder} className="flex-1" />
       </div>
 
       {/* Status Advance & Cancel Actions */}
-      <OrderActions order={order} status={status} onStatusChange={setStatus} className="relative z-10 mt-2.5" />
+      <OrderActions order={currentOrder} status={status} onStatusChange={setStatus} className="relative z-10 mt-2.5" />
+
+      {/* Edit Order Items Modal */}
+      <EditOrderItemsModal
+        order={currentOrder}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onOrderUpdated={(updated) => setCurrentOrder(updated)}
+      />
+
+      {/* Delay Report Modal */}
+      <DelayReportModal
+        order={currentOrder}
+        open={isDelayOpen}
+        onOpenChange={setIsDelayOpen}
+        onDelayUpdated={(delayData) => setCurrentOrder((prev) => ({ ...prev, ...delayData }))}
+      />
     </div>
   );
 }
 
 /** "From <restaurant>", one "Dish - qty" line per dish with its price, the note, then the student's name and number — what the copy button copies. */
-export function OrderSummaryBox({ order, className }: { order: AdminOrder; className?: string }) {
+export function OrderSummaryBox({
+  order,
+  className,
+  onEditClick,
+  onDelayClick,
+}: {
+  order: AdminOrder;
+  className?: string;
+  onEditClick?: () => void;
+  onDelayClick?: () => void;
+}) {
+  const { location, cleanNotes } = parseDeliveryLocation(order.notes);
+  const originalEtaIso = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName).toISOString();
+
   return (
     <div className={cn("rounded-2xl bg-secondary px-3.5 py-3", className)}>
-      <p className="text-label text-muted-foreground">
-        From <span className="font-semibold text-foreground">{order.restaurantName}</span>
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-label text-muted-foreground">
+          From <span className="font-semibold text-foreground">{order.restaurantName}</span>
+        </p>
+        {onEditClick && (
+          <button
+            type="button"
+            onClick={onEditClick}
+            aria-label="Edit items"
+            className="relative z-10 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-bold text-[#FF6B00] hover:bg-orange-100/60 transition active:scale-95"
+          >
+            <PencilSimple className="size-3" />
+            <span>Edit items</span>
+          </button>
+        )}
+      </div>
       <ul className="mt-1.5 flex flex-col gap-1 text-sm">
         {order.items.map((item, i) => (
           <li key={i} className="flex items-baseline justify-between gap-3">
@@ -133,7 +220,30 @@ export function OrderSummaryBox({ order, className }: { order: AdminOrder; class
           </li>
         )}
       </ul>
-      {order.notes && <p className="mt-2 text-sm text-muted-foreground italic">“{order.notes}”</p>}
+
+      {/* Delivery location badge */}
+      <div className="mt-2.5 flex items-center justify-between border-t border-border/40 pt-2 text-xs">
+        <span className="flex items-center gap-1 font-semibold text-primary">
+          <MapPin className="size-3.5" />
+          {location === "Friends PG" ? "Friends PG" : "SRM AP (Gate 3)"}
+        </span>
+        <span className="rounded-full bg-background/60 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+          Handover
+        </span>
+      </div>
+      {order.delayReason && (
+        <DelayBanner
+          delayReason={order.delayReason}
+          updatedEta={order.updatedEta}
+          delayUpdatedAt={order.delayUpdatedAt}
+          awaitingEtaConfirmation={order.awaitingEtaConfirmation}
+          originalEtaIso={originalEtaIso}
+          onEdit={onDelayClick}
+        />
+      )}
+
+      {cleanNotes && <p className="mt-1.5 text-sm text-muted-foreground italic">“{cleanNotes}”</p>}
+
       <div className="mt-2.5 border-t border-foreground/10 pt-2.5">
         <div className="flex items-center gap-2">
           <p className="truncate text-sm font-semibold">{order.studentName}</p>
@@ -237,7 +347,8 @@ export function OrderActions({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, startDelete] = useTransition();
 
-  const label = advanceLabel(status);
+  const { location } = parseDeliveryLocation(order.notes);
+  const label = advanceLabel(status, location === "Friends PG" ? "Friends PG" : "Gate 3");
   const isFinalStep = nextStatus(status) === "delivered";
   // Cancel is available before and after confirmation for any active order.
   // (once delivered or cancelled, an order is terminal).
@@ -284,20 +395,16 @@ export function OrderActions({
     });
   }
 
-  if (!label && !cancellable && !deletable) return null;
-
   return (
     <div className={cn("flex items-center gap-2", className)}>
       {label && (
         <button
           type="button"
-          disabled={advancing}
           onClick={advance}
+          disabled={advancing}
           className={cn(
-            "flex h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl text-sm font-bold outline-none focus-visible:ring-3 focus-visible:ring-ring/80 active:scale-95 disabled:opacity-70",
-            isFinalStep
-              ? "bg-success text-success-foreground hover:bg-success/90"
-              : "bg-primary text-primary-foreground hover:bg-primary/90",
+            "flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl bg-primary text-sm font-bold text-primary-foreground outline-none transition hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 active:scale-95 disabled:opacity-60",
+            advancing && "animate-shimmer",
           )}
         >
           {advancing && <Loader2 className="size-4 animate-spin" />}

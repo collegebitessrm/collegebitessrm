@@ -12,7 +12,7 @@ import { groupPortions } from "@/lib/menu/portions";
 import { getTasteProfile } from "@/lib/data/taste";
 import { getLikedDishes } from "@/lib/data/favorites";
 import { getHighlyReorderedDishIds } from "@/lib/data/reorders";
-import { getRestaurantMenu } from "@/lib/data/restaurants";
+import { getFallbackRestaurantRating, getRestaurantMenu, getRestaurantRatings } from "@/lib/data/restaurants";
 import { isUuid } from "@/lib/ids";
 import { getOrderingState } from "@/lib/data/settings";
 import { getOffers } from "@/lib/data/offers";
@@ -42,15 +42,17 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
  const offersPromise = getOffers();
  const highlyReorderedPromise = getHighlyReorderedDishIds();
  const menuPromise = getRestaurantMenu(id);
+ const ratingsPromise = getRestaurantRatings();
  // ?dish=<id> — set by Trending and the Thursday banner so the menu opens
  // scrolled to that dish instead of the top of a 40-dish list.
  const { dish } = await searchParams;
  const focusDishId = typeof dish === "string" && isUuid(dish) ? dish : null;
 
  const profile = await profilePromise;
- const [menu, ordering, triedDishIds, usualDishId, highlyReorderedDishIds, taste, liked, offers] = await Promise.all([
+ const [menu, ordering, ratings, triedDishIds, usualDishId, highlyReorderedDishIds, taste, liked, offers] = await Promise.all([
  menuPromise,
  orderingPromise,
+ ratingsPromise,
  getTriedDishIds(profile.id, id),
  getUsualDishId(profile.id, id),
  highlyReorderedPromise,
@@ -61,6 +63,7 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
  if (!menu) notFound();
 
  const { restaurant, sections } = menu;
+ const rating = ratings[restaurant.id] ?? getFallbackRestaurantRating(restaurant.name);
  const active = restaurant.is_active;
  const orderingEnabled = ordering.open;
  const orderable = active && orderingEnabled;
@@ -119,7 +122,13 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
 
  <div className="relative -mt-7 rounded-t-[1.75rem] bg-background px-6 shadow-[0_-12px_30px_-18px_var(--glow-sun)]">
  <header className="pt-6 pb-3">
- <h1 className="font-heading text-headline font-bold">{restaurant.name}</h1>
+ <div className="flex items-center gap-2.5">
+  <h1 className="font-heading text-headline font-bold">{restaurant.name}</h1>
+  <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-extrabold text-white shadow-2xs">
+   <span>{rating.rating.toFixed(1)}</span>
+   <Star className="size-3 text-white icon-solid" />
+  </span>
+ </div>
  {restaurant.description && (
  <p className="mt-1 flex items-center gap-1 text-muted-foreground">
  <MapPin className="size-4 shrink-0" />
@@ -127,6 +136,11 @@ export default async function RestaurantPage({ params, searchParams }: PageProps
  </p>
  )}
  <ul className="mt-3 flex flex-wrap items-center gap-1.5 text-xs font-semibold">
+ <li className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 font-bold text-amber-800 dark:text-amber-300">
+  <Star className="size-3 text-amber-500 icon-solid" />
+  <span>{rating.rating.toFixed(1)}</span>
+  {rating.count > 0 && <span className="font-normal opacity-75">({rating.count}+ reviews)</span>}
+ </li>
  {restaurant.cuisine_tags.map((tag) => (
  <li key={tag} className="rounded-full bg-secondary px-2.5 py-1 text-primary">
  {tag}

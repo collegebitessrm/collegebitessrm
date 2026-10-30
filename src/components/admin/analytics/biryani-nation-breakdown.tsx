@@ -5,9 +5,10 @@ import type { BiryaniNationBreakdown } from "@/lib/data/analytics-types";
 type Props = {
   breakdown: BiryaniNationBreakdown;
   onEditRatesClick?: () => void;
+  overrideProfit?: number | null;
 };
 
-export function BiryaniNationBreakdownView({ breakdown, onEditRatesClick }: Props) {
+export function BiryaniNationBreakdownView({ breakdown, onEditRatesClick, overrideProfit }: Props) {
   const rows = [
     {
       label: "Full Biryani",
@@ -188,7 +189,21 @@ export function BiryaniNationBreakdownView({ breakdown, onEditRatesClick }: Prop
                 Configured rates
               </td>
               <td className="py-3.5 px-4 text-right tabular-nums font-extrabold text-[#FF6B00]">
-                {formatRupees(breakdown.totalProfit)}
+                <div className="flex flex-col items-end">
+                  <div className="flex items-center gap-1.5">
+                    <span>{formatRupees(typeof overrideProfit === "number" ? overrideProfit : breakdown.totalProfit)}</span>
+                    {typeof overrideProfit === "number" && overrideProfit !== breakdown.totalProfit && (
+                      <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold text-[#FF6B00] uppercase tracking-wide">
+                        Edited
+                      </span>
+                    )}
+                  </div>
+                  {typeof overrideProfit === "number" && overrideProfit !== breakdown.totalProfit && (
+                    <span className="text-[10px] font-normal text-gray-400">
+                      Actual: {formatRupees(breakdown.totalProfit)}
+                    </span>
+                  )}
+                </div>
               </td>
             </tr>
           </tfoot>

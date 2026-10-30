@@ -2,6 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/ids";
 import type { Dish, DishCategory, MenuSection, Restaurant } from "./types";
 
@@ -90,6 +91,65 @@ export async function getRestaurantMenuStats(): Promise<Record<string, Restauran
  s.minPrice = Math.min(s.minPrice, Number(price));
  }
  return stats;
+}
+
+export { getFallbackRestaurantRating, type RestaurantRating } from "./restaurant-ratings";
+
+/**
+ * Calculates per-restaurant average rating and review counts.
+ * Uses real student ratings submitted via order_item_ratings where available,
+ * falling back gracefully to curated baseline ratings.
+ */
+export async function getRestaurantRatings(): Promise<Record<string, RestaurantRating>> {
+ const ratingsMap: Record<string, RestaurantRating> = {};
+
+ try {
+  const adminClient = createAdminClient();
+  const supabase = adminClient ?? (await createClient());
+
+  const { data: reviews, error } = await supabase
+   .from("order_reviews")
+   .select("orders!inner(restaurant_id), order_item_ratings(rating)");
+
+  if (!error && reviews) {
+   const stats: Record<string, { totalStars: number; ratingCount: number; reviewCount: number }> = {};
+
+   for (const row of reviews as any[]) {
+    const restId = row.orders?.restaurant_id;
+    if (!restId) continue;
+
+    const itemRatings = Array.isArray(row.order_item_ratings) ? row.order_item_ratings : [];
+    if (itemRatings.length === 0) continue;
+
+    if (!stats[restId]) {
+     stats[restId] = { totalStars: 0, ratingCount: 0, reviewCount: 0 };
+    }
+
+    stats[restId].reviewCount += 1;
+    for (const item of itemRatings) {
+     const stars = Number(item.rating);
+     if (stars >= 1 && stars <= 5) {
+      stats[restId].totalStars += stars;
+      stats[restId].ratingCount += 1;
+     }
+    }
+   }
+
+   for (const [restId, s] of Object.entries(stats)) {
+    if (s.ratingCount > 0) {
+     const avg = Number((s.totalStars / s.ratingCount).toFixed(1));
+     ratingsMap[restId] = {
+      rating: avg,
+      count: s.reviewCount,
+     };
+    }
+   }
+  }
+ } catch (err) {
+  console.error("Error fetching restaurant ratings:", err);
+ }
+
+ return ratingsMap;
 }
 
 /**

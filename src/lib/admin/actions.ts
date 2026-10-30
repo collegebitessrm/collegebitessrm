@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { after } from "next/server";
 import { notifyUser, type PushPayload } from "@/lib/notifications/send";
 import type { OrderStatus } from "@/lib/data/types";
@@ -9,6 +10,10 @@ import { isOfferKey, type OfferKey } from "@/lib/offers";
 import { formatOrderNumber, nextStatus } from "@/lib/orders/status";
 import { getSessionProfile } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { isUuid } from "@/lib/ids";
+import type { KpiAdjustment, KpiOverrides, KpiType, ProfitRates, RestaurantKpiOverridesMap } from "@/lib/data/analytics-types";
+import { identifyRestaurantKey } from "@/lib/data/analytics";
 
 export type AdminActionResult = { ok: true } | { ok: false; error: string };
 
@@ -233,6 +238,127 @@ function statusPayload(order: OrderNotifyRow, status: OrderStatus): PushPayload 
  };
  const { title, body } = copy[status] ?? { title: `Order ${token} updated`, body: `${where} · ${status}` };
  return { title, body, url: `/orders/${order.id}`, tag: `order-${order.id}` };
+}
+
+/**
+ * Records a restaurant-reported delay on an order.
+ *
+ * - `delayReason` — what the restaurant told you (e.g. "High volume").
+ * - `updatedEtaIso` — the new confirmed ETA as an ISO string, or null when
+ *   the restaurant hasn't given a specific time yet.
+ * - `awaitingConfirmation` — set true when there's no confirmed ETA so the
+ *   tracking page shows "Awaiting confirmation" instead of the stale original.
+ *
+ * Realtime already publishes the orders table, so the customer tracking page
+ * receives these column changes via its existing subscription without a reload.
+ */
+export async function updateOrderDelay(
+ orderId: string,
+ delayReason: string,
+ updatedEtaIso: string | null,
+ awaitingConfirmation: boolean,
+): Promise<AdminActionResult> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+ if (!isUuid(orderId)) return { ok: false, error: "Invalid order ID." };
+
+ const trimmed = delayReason.trim();
+ if (!trimmed) return { ok: false, error: "A delay reason is required." };
+ if (trimmed.length > 300) return { ok: false, error: "Reason is too long (max 300 characters)." };
+
+ // If an ETA was provided, validate it is a parseable date in the future.
+ if (updatedEtaIso !== null) {
+  const eta = new Date(updatedEtaIso);
+  if (isNaN(eta.getTime())) return { ok: false, error: "Invalid ETA date." };
+ }
+
+ const supabase = await createClient();
+
+ const { data: existing } = await supabase
+  .from("orders")
+  .select("updated_eta")
+  .eq("id", orderId)
+  .maybeSingle();
+
+ const { error } = await supabase
+  .from("orders")
+  .update({
+   delay_reason: trimmed,
+   updated_eta: updatedEtaIso,
+   delay_updated_at: new Date().toISOString(),
+   awaiting_eta_confirmation: awaitingConfirmation,
+  })
+  .eq("id", orderId);
+
+ if (error) return { ok: false, error: "Couldn't save the delay. Please try again." };
+
+ try {
+  const { data: authData } = await supabase.auth.getUser();
+  await supabase.from("order_delay_history").insert({
+   order_id: orderId,
+   previous_eta: existing?.updated_eta ?? null,
+   new_eta: updatedEtaIso,
+   delay_reason: trimmed,
+   awaiting_eta_confirmation: awaitingConfirmation,
+   created_by: authData?.user?.id ?? null,
+  });
+ } catch {
+  // Non-blocking audit failure
+ }
+
+ // Free-first customer web push notification (Section 8)
+ try {
+  const { data: orderUser } = await supabase
+   .from("orders")
+   .select("user_id, daily_number")
+   .eq("id", orderId)
+   .maybeSingle();
+
+  if (orderUser?.user_id) {
+   const { notifyUser } = await import("@/lib/notifications/send");
+   const { formatOrderNumber } = await import("@/lib/orders/status");
+   const num = formatOrderNumber(orderUser.daily_number);
+   await notifyUser(supabase, orderUser.user_id, {
+    title: `Order ${num} delay update`,
+    body: updatedEtaIso
+     ? `Your order has a revised arrival time. Tap to view.`
+     : `Restaurant delay update: ${trimmed.slice(0, 75)}. Tap for live status.`,
+    url: `/orders/${orderId}`,
+    tag: `order-${orderId}`,
+   });
+  }
+ } catch {
+  // Non-blocking notification failure
+ }
+
+ revalidatePath("/admin");
+ return { ok: true };
+}
+
+/**
+ * Clears all delay information from an order (e.g. the delay resolved,
+ * or the admin entered it by mistake). Sets every delay column back to null/false.
+ */
+export async function clearOrderDelay(orderId: string): Promise<AdminActionResult> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+ if (!isUuid(orderId)) return { ok: false, error: "Invalid order ID." };
+
+ const supabase = await createClient();
+ const { error } = await supabase
+  .from("orders")
+  .update({
+   delay_reason: null,
+   updated_eta: null,
+   delay_updated_at: null,
+   awaiting_eta_confirmation: false,
+  })
+  .eq("id", orderId);
+
+ if (error) return { ok: false, error: "Couldn't clear the delay. Please try again." };
+
+ revalidatePath("/admin");
+ return { ok: true };
 }
 
 /**
@@ -714,4 +840,419 @@ export async function searchStudents(query: string): Promise<SearchStudentsResul
  isBanned: u.is_banned,
  })),
  };
+}
+
+/**
+ * Persists customized profit commission rates in the HTTP cookie `cb_profit_rates`
+ * so they remain active across page reloads, browser restarts, and subsequent visits.
+ */
+export async function saveProfitRatesAction(rates: ProfitRates): Promise<AdminActionResult> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+
+ const cookieStore = await cookies();
+ cookieStore.set("cb_profit_rates", JSON.stringify(rates), {
+ path: "/",
+ maxAge: 60 * 60 * 24 * 365, // 1 year
+ sameSite: "lax",
+ });
+
+ revalidatePath("/admin/analytics");
+ return { ok: true };
+}
+
+/**
+ * Persists customized KPI display overrides (collections, profit, orders, items)
+ * in HTTP cookie `cb_analytics_kpi_overrides`.
+ */
+export async function saveKpiOverridesAction(overrides: RestaurantKpiOverridesMap | KpiOverrides): Promise<AdminActionResult> {
+  const denied = await assertAdmin();
+  if (denied) return denied;
+
+  const cookieStore = await cookies();
+  cookieStore.set("cb_analytics_kpi_overrides", JSON.stringify(overrides), {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: "lax",
+  });
+
+  revalidatePath("/admin/analytics");
+  return { ok: true };
+}
+
+export type CreateKpiAdjustmentInput = {
+  restaurantId: string;
+  businessDate: string; // YYYY-MM-DD
+  kpiType: KpiType;
+  amount: number;
+  reason: string;
+};
+
+export type CreateKpiAdjustmentResult =
+  | { ok: true; adjustment: KpiAdjustment }
+  | { ok: false; error: string };
+
+const KPI_ADJUSTMENTS_COOKIE = "cb_kpi_adjustments_log";
+
+function parseCookieAdjustments(raw?: string): KpiAdjustment[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw));
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+}
+
+/**
+ * Creates a new restaurant-specific and date-specific KPI adjustment.
+ * Persists to Supabase `public.kpi_adjustments` and syncs cookie fallback.
+ */
+export async function createKpiAdjustmentAction(
+  input: CreateKpiAdjustmentInput,
+): Promise<CreateKpiAdjustmentResult> {
+  const denied = await assertAdmin();
+  if (denied) return denied;
+
+  const { profile } = await getSessionProfile();
+  const adminName = profile?.full_name || profile?.email || "Admin";
+
+  const { restaurantId, businessDate, kpiType, amount, reason } = input;
+
+  if (!restaurantId || !isUuid(restaurantId)) {
+    return { ok: false, error: "Please select a valid restaurant." };
+  }
+  if (!businessDate || !/^\d{4}-\d{2}-\d{2}$/.test(businessDate)) {
+    return { ok: false, error: "Please specify a valid business date (YYYY-MM-DD)." };
+  }
+  if (!["collections", "profit", "orders", "items_sold"].includes(kpiType)) {
+    return { ok: false, error: "Invalid KPI type." };
+  }
+  if (typeof amount !== "number" || isNaN(amount) || amount === 0) {
+    return { ok: false, error: "Please provide a non-zero adjustment amount." };
+  }
+  if ((kpiType === "orders" || kpiType === "items_sold") && !Number.isInteger(amount)) {
+    return { ok: false, error: "Count-based adjustments (orders/items) must be whole numbers." };
+  }
+  if (!reason || reason.trim().length < 2) {
+    return { ok: false, error: "Please provide a clear reason for the adjustment." };
+  }
+
+  const supabase = await createClient();
+
+  // Validate restaurant exists
+  const { data: restaurant, error: restError } = await supabase
+    .from("restaurants")
+    .select("id, name")
+    .eq("id", restaurantId)
+    .single();
+
+  if (restError || !restaurant) {
+    return { ok: false, error: "Couldn't find the selected restaurant." };
+  }
+
+  const newAdjustmentId = crypto.randomUUID();
+  const nowIso = new Date().toISOString();
+  const restaurantKey = identifyRestaurantKey(restaurant.name);
+
+  const adjustmentRecord: KpiAdjustment = {
+    id: newAdjustmentId,
+    restaurantId,
+    restaurantName: restaurant.name,
+    restaurantKey,
+    businessDate,
+    kpiType,
+    amount,
+    reason: reason.trim(),
+    adminId: profile?.id || null,
+    createdBy: adminName,
+    createdAt: nowIso,
+    isReversed: false,
+    reversedAt: null,
+    reversedBy: null,
+  };
+
+  // Try inserting into Supabase
+  try {
+    const { error: insertError } = await supabase.from("kpi_adjustments").insert({
+      id: newAdjustmentId,
+      restaurant_id: restaurantId,
+      business_date: businessDate,
+      kpi_type: kpiType,
+      amount,
+      reason: reason.trim(),
+      admin_id: profile?.id || null,
+      created_by: adminName,
+      created_at: nowIso,
+      is_reversed: false,
+    });
+
+    if (insertError) {
+      return { ok: false, error: insertError.message || "Failed to save adjustment in Supabase." };
+    }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Database error";
+    return { ok: false, error: msg };
+  }
+
+  // Clear any legacy cookie if present
+  try {
+    const cookieStore = await cookies();
+    if (cookieStore.has(KPI_ADJUSTMENTS_COOKIE)) {
+      cookieStore.delete(KPI_ADJUSTMENTS_COOKIE);
+    }
+  } catch {
+    // ignore
+  }
+
+  revalidatePath("/admin/analytics");
+
+  return { ok: true, adjustment: adjustmentRecord };
+}
+
+/**
+ * Reverses a previously saved KPI adjustment without deleting the audit history.
+ */
+export async function reverseKpiAdjustmentAction(
+  adjustmentId: string,
+  reversalReason?: string,
+): Promise<AdminActionResult> {
+  const denied = await assertAdmin();
+  if (denied) return denied;
+
+  const { profile } = await getSessionProfile();
+  const adminName = profile?.full_name || profile?.email || "Admin";
+  const nowIso = new Date().toISOString();
+
+  const supabase = await createClient();
+
+  // Try updating in Supabase
+  try {
+    const { error } = await supabase
+      .from("kpi_adjustments")
+      .update({
+        is_reversed: true,
+        reversed_at: nowIso,
+        reversed_by: adminName,
+        reversal_reason: reversalReason || "Reversed by admin",
+      })
+      .eq("id", adjustmentId);
+
+    if (error) {
+      return { ok: false, error: error.message || "Failed to reverse adjustment." };
+    }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Database error";
+    return { ok: false, error: msg };
+  }
+
+  // Clean up any legacy cookie
+  try {
+    const cookieStore = await cookies();
+    if (cookieStore.has(KPI_ADJUSTMENTS_COOKIE)) {
+      cookieStore.delete(KPI_ADJUSTMENTS_COOKIE);
+    }
+  } catch {
+    // ignore
+  }
+
+  revalidatePath("/admin/analytics");
+  return { ok: true };
+}
+
+export type UpdateOrderItemInput = {
+ id?: string;
+ dishId?: string | null;
+ dishName: string;
+ unitPrice: number;
+ quantity: number;
+ isFree?: boolean;
+};
+
+/**
+ * Loads all dishes for a restaurant so the admin can pick items to add to an order.
+ */
+export async function getRestaurantDishesAction(
+ restaurantId: string,
+): Promise<{ id: string; name: string; price: number }[]> {
+ const denied = await assertAdmin();
+ if (denied) return [];
+
+ const supabase = await createClient();
+ const { data } = await supabase
+ .from("dishes")
+ .select("id, name, price")
+ .eq("restaurant_id", restaurantId)
+ .order("name");
+
+ return (data ?? []).map((d) => ({
+ id: d.id,
+ name: d.name,
+ price: Number(d.price),
+ }));
+}
+
+/**
+ * Updates an order's items and quantities, and recalculates its discount & total amount.
+ */
+export async function updateOrderItemsAction(
+ orderId: string,
+ newItems: UpdateOrderItemInput[],
+): Promise<AdminActionResult> {
+ const denied = await assertAdmin();
+ if (denied) return denied;
+
+ if (!newItems || newItems.length === 0) {
+ return { ok: false, error: "An order must contain at least one item." };
+ }
+
+ for (const item of newItems) {
+ if (!item.dishName?.trim()) {
+ return { ok: false, error: "Item name cannot be empty." };
+ }
+ if (isNaN(item.quantity) || item.quantity <= 0) {
+ return { ok: false, error: `Invalid quantity for ${item.dishName}.` };
+ }
+ if (isNaN(item.unitPrice) || item.unitPrice < 0) {
+ return { ok: false, error: `Invalid price for ${item.dishName}.` };
+ }
+ }
+
+ const adminClient = createAdminClient();
+ const supabase = adminClient ?? (await createClient());
+
+ // Fetch order info for discount calculation
+ const { data: order, error: orderErr } = await supabase
+ .from("orders")
+ .select("id, discount_offer, status")
+ .eq("id", orderId)
+ .single();
+
+ if (orderErr || !order) {
+ return { ok: false, error: "Order not found." };
+ }
+
+ // Fetch existing items
+ const { data: existingItems, error: existingErr } = await supabase
+ .from("order_items")
+ .select("id")
+ .eq("order_id", orderId);
+
+ if (existingErr) {
+ return { ok: false, error: "Failed to load current items." };
+ }
+
+ const existingIds = new Set((existingItems ?? []).map((i) => i.id));
+ const keepIds = new Set<string>();
+
+ // Update or insert items
+ for (const item of newItems) {
+ const isFree = Boolean(item.isFree);
+ const unitPrice = item.unitPrice;
+ const quantity = Math.round(item.quantity);
+ const dishId = item.dishId && isUuid(item.dishId) ? item.dishId : null;
+
+ if (item.id && existingIds.has(item.id)) {
+ keepIds.add(item.id);
+ const { error: updErr } = await supabase
+ .from("order_items")
+ .update({
+ dish_name: item.dishName.trim(),
+ unit_price: unitPrice,
+ quantity: quantity,
+ is_free: isFree,
+ dish_id: dishId,
+ })
+ .eq("id", item.id);
+
+ if (updErr) {
+ return { ok: false, error: `Failed to update ${item.dishName}.` };
+ }
+ } else {
+ const { data: inserted, error: insErr } = await supabase
+ .from("order_items")
+ .insert({
+ order_id: orderId,
+ dish_id: dishId,
+ dish_name: item.dishName.trim(),
+ unit_price: unitPrice,
+ quantity: quantity,
+ is_free: isFree,
+ })
+ .select("id")
+ .single();
+
+ if (insErr) {
+ return { ok: false, error: `Failed to add ${item.dishName}.` };
+ }
+ if (inserted?.id) {
+ keepIds.add(inserted.id);
+ }
+ }
+ }
+
+ // Delete removed items
+ for (const id of existingIds) {
+ if (!keepIds.has(id)) {
+ const { error: delErr } = await supabase
+ .from("order_items")
+ .delete()
+ .eq("id", id);
+
+ if (delErr) {
+ return { ok: false, error: "Failed to remove deleted items." };
+ }
+ }
+ }
+
+ // Calculate totals
+ let itemsTotal = 0;
+ let freeItemsTotal = 0;
+ for (const item of newItems) {
+ const sub = item.unitPrice * Math.round(item.quantity);
+ if (item.isFree) {
+ freeItemsTotal += sub;
+ } else {
+ itemsTotal += sub;
+ }
+ }
+
+ let discountAmount = 0;
+ if (order.discount_offer === "pct10") {
+ discountAmount = Math.round(itemsTotal * 0.10);
+ } else if (order.discount_offer === "pct20") {
+ discountAmount = Math.round(itemsTotal * 0.20);
+ } else if (order.discount_offer === "biryani") {
+ discountAmount = freeItemsTotal;
+ }
+
+ const allSubtotal = itemsTotal + freeItemsTotal;
+ const totalAmount = Math.max(0, allSubtotal - discountAmount);
+
+ const { error: finalOrderErr } = await supabase
+ .from("orders")
+ .update({
+ total_amount: totalAmount,
+ discount_amount: discountAmount,
+ updated_at: new Date().toISOString(),
+ })
+ .eq("id", orderId);
+
+ if (finalOrderErr) {
+ return { ok: false, error: "Failed to update order total." };
+ }
+
+ revalidatePath("/admin");
+ revalidatePath("/admin/history");
+ revalidatePath(`/admin/orders/${orderId}`);
+ revalidatePath(`/orders/${orderId}`);
+ revalidatePath("/admin/analytics");
+ revalidatePath("/", "layout");
+
+ return { ok: true };
 }

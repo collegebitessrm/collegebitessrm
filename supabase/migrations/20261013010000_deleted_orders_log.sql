@@ -19,5 +19,3 @@ create policy "Admins can manage deleted orders log" on public.deleted_orders_lo
   for all to authenticated
   using ((select public.is_admin()))
   with check ((select public.is_admin()));
-
-</

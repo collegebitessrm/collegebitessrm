@@ -1,6 +1,8 @@
 import "server-only";
 
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { formatOrderNumber } from "@/lib/orders/status";
 import { formatOrderTimestamp, istDayKey } from "@/lib/date";
 import {
@@ -13,6 +15,9 @@ import {
   type BiryaniNationBreakdown,
   type OrdersAnalyticsData,
   type ProfitRates,
+  type KpiAdjustment,
+  type KpiAdjustmentTotals,
+  type PartnerRestaurantInfo,
   DEFAULT_COMMISSION_PER_ITEM,
   DEFAULT_PROFIT_RATES,
   RESTAURANT_TABS,
@@ -53,6 +58,15 @@ export function resolveProfitRates(
   }
 
   if (typeof param === "string") {
+    try {
+      const decoded = decodeURIComponent(param);
+      const parsed = JSON.parse(decoded);
+      if (typeof parsed === "object" && parsed !== null) {
+        return resolveProfitRates(parsed);
+      }
+    } catch {
+      // not decoded JSON
+    }
     try {
       const parsed = JSON.parse(param);
       if (typeof parsed === "object" && parsed !== null) {
@@ -121,7 +135,8 @@ export async function getOrdersAnalyticsData(params?: {
   profitRate?: number | string;
   rates?: string | ProfitRates;
 }): Promise<OrdersAnalyticsData> {
-  const supabase = await createClient();
+  const adminClient = createAdminClient();
+  const supabase = adminClient ?? (await createClient());
   const todayIst = getTodayIstString();
 
   // Resolve granular profit rates
@@ -428,7 +443,98 @@ export async function getOrdersAnalyticsData(params?: {
     biryaniBreakdown.chinese.profit +
     biryaniBreakdown.others.profit;
 
-  // Format restaurants performance list
+  // 5. Query manual KPI adjustments for the active date range
+  let dbAdjustments: any[] = [];
+  try {
+    const { data: adjRows, error: adjErr } = await supabase
+      .from("kpi_adjustments")
+      .select("*")
+      .gte("business_date", startDate)
+      .lte("business_date", endDate)
+      .order("created_at", { ascending: false });
+
+    if (!adjErr && adjRows) {
+      dbAdjustments = adjRows;
+    }
+  } catch {
+    // kpi_adjustments table might not exist yet
+  }
+
+  // Clean up legacy bloated cookie if still present in browser
+  try {
+    const cookieStore = await cookies();
+    if (cookieStore.has("cb_kpi_adjustments_log")) {
+      cookieStore.delete("cb_kpi_adjustments_log");
+    }
+  } catch {
+    // ignore
+  }
+
+  // Merge and deduplicate by ID
+  const adjustmentMap = new Map<string, KpiAdjustment>();
+
+  for (const d of dbAdjustments) {
+    const rInfo = restaurantMap.get(d.restaurant_id);
+    const rKey = rInfo?.key || identifyRestaurantKey(rInfo?.name || "");
+    adjustmentMap.set(d.id, {
+      id: d.id,
+      restaurantId: d.restaurant_id,
+      restaurantName: rInfo?.name || "Restaurant",
+      restaurantKey: rKey,
+      businessDate: d.business_date,
+      kpiType: d.kpi_type,
+      amount: Number(d.amount) || 0,
+      reason: d.reason || "",
+      adminId: d.admin_id,
+      createdBy: d.created_by,
+      createdAt: d.created_at,
+      isReversed: Boolean(d.is_reversed),
+      reversedAt: d.reversed_at,
+      reversedBy: d.reversed_by,
+      reversalReason: d.reversal_reason,
+    });
+  }
+
+  const allLoadedAdjustments: KpiAdjustment[] = Array.from(adjustmentMap.values()).sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  // Compute sums of applicable adjustments (excluding reversed adjustments)
+  const restaurantAdjustments: Record<RestaurantFilterKey, KpiAdjustmentTotals> = {
+    all: { collections: 0, profit: 0, orders: 0, itemsSold: 0 },
+    biryani: { collections: 0, profit: 0, orders: 0, itemsSold: 0 },
+    triangle: { collections: 0, profit: 0, orders: 0, itemsSold: 0 },
+    home: { collections: 0, profit: 0, orders: 0, itemsSold: 0 },
+  };
+
+  for (const adj of allLoadedAdjustments) {
+    if (adj.isReversed) continue;
+    const rKey = adj.restaurantKey;
+    const amt = adj.amount;
+    if (adj.kpiType === "collections") {
+      if (rKey && rKey in restaurantAdjustments) restaurantAdjustments[rKey].collections += amt;
+      restaurantAdjustments.all.collections += amt;
+    } else if (adj.kpiType === "profit") {
+      if (rKey && rKey in restaurantAdjustments) restaurantAdjustments[rKey].profit += amt;
+      restaurantAdjustments.all.profit += amt;
+    } else if (adj.kpiType === "orders") {
+      if (rKey && rKey in restaurantAdjustments) restaurantAdjustments[rKey].orders += amt;
+      restaurantAdjustments.all.orders += amt;
+    } else if (adj.kpiType === "items_sold") {
+      if (rKey && rKey in restaurantAdjustments) restaurantAdjustments[rKey].itemsSold += amt;
+      restaurantAdjustments.all.itemsSold += amt;
+    }
+  }
+
+  const totalAdjustments = restaurantAdjustments.all;
+
+  const partnerRestaurants: PartnerRestaurantInfo[] = restaurants.map((r) => ({
+    id: r.id,
+    name: r.name,
+    key: identifyRestaurantKey(r.name),
+  }));
+
+  // Format restaurants performance list incorporating their individual adjustments
   const restaurantsPerformance: RestaurantPerformance[] = restaurants.map((r) => {
     const s = restaurantStatsMap.get(r.id) ?? {
       deliveredOrders: 0,
@@ -436,17 +542,31 @@ export async function getOrdersAnalyticsData(params?: {
       collections: 0,
       profit: 0,
     };
-    const avgOrderValue = s.deliveredOrders > 0 ? Math.round(s.collections / s.deliveredOrders) : 0;
+    const rKey = identifyRestaurantKey(r.name);
+    const adj = restaurantAdjustments[rKey] ?? { collections: 0, profit: 0, orders: 0, itemsSold: 0 };
+    const adjustedOrders = s.deliveredOrders + adj.orders;
+    const adjustedCollections = s.collections + adj.collections;
+    const adjustedProfit = s.profit + adj.profit;
+    const adjustedItems = s.itemsSold + adj.itemsSold;
+    const avgOrderValue = adjustedOrders > 0 ? Math.round(adjustedCollections / adjustedOrders) : 0;
+    const isEdited = adj.collections !== 0 || adj.profit !== 0 || adj.orders !== 0 || adj.itemsSold !== 0;
+
     return {
       id: r.id,
       name: r.name,
-      key: identifyRestaurantKey(r.name),
+      key: rKey,
       isActive: r.is_active,
-      deliveredOrders: s.deliveredOrders,
-      itemsSold: s.itemsSold,
-      collections: s.collections,
-      profit: s.profit,
+      deliveredOrders: adjustedOrders,
+      itemsSold: adjustedItems,
+      collections: adjustedCollections,
+      profit: adjustedProfit,
       avgOrderValue,
+      actualProfit: s.profit,
+      actualCollections: s.collections,
+      actualOrders: s.deliveredOrders,
+      actualItemsSold: s.itemsSold,
+      adjustments: adj,
+      isEdited,
     };
   });
 
@@ -495,6 +615,10 @@ export async function getOrdersAnalyticsData(params?: {
     totalOrders: deliveredOrders.length,
     totalItemsSold,
     totalProfit,
+    partnerRestaurants,
+    adjustments: allLoadedAdjustments,
+    restaurantAdjustments,
+    totalAdjustments,
     restaurantsPerformance,
     biryaniNationBreakdown: selectedRestaurant === "biryani" ? biryaniBreakdown : null,
     categoryBreakdown: selectedRestaurant !== "all" && selectedRestaurant !== "biryani" ? categoryBreakdown : null,

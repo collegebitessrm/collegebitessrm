@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Search, SearchX, X } from "@/components/icons";
 import { EmptyState } from "@/components/empty-state";
 import { getRestaurantCardSlides } from "@/lib/data/dish-photos";
+import type { RestaurantRating } from "@/lib/data/restaurant-ratings";
 import type { RestaurantMenuStats, SearchableDish } from "@/lib/data/restaurants";
 import type { TrendingDish } from "@/lib/data/trending";
 import type { Restaurant } from "@/lib/data/types";
@@ -49,6 +50,7 @@ export function RestaurantList({
  dishOrderCounts,
  trendingDishes,
  cravings = [],
+ ratings = {},
 }: {
  restaurants: Restaurant[];
  /** Every dish (getSearchableDishes) — searched and filtered on the client. */
@@ -66,6 +68,7 @@ export function RestaurantList({
  /** Food-type keys to lead "What's on your mind?": the taste profile's cravings, then
  * what the student's hearted dishes point to (cravingOrder()). */
  cravings?: string[];
+ ratings?: Record<string, RestaurantRating>;
 }) {
  const [query, setQuery] = useState("");
  const [sheetOpen, setSheetOpen] = useState(false);
@@ -269,6 +272,7 @@ export function RestaurantList({
  slides={slidesByRestaurant[r.id] ?? []}
  slideDelay={i * 700}
  eager={i === 0 && !showResults}
+ rating={ratings[r.id]}
  />
  </li>
  ))}

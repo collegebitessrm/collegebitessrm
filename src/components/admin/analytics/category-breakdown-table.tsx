@@ -5,9 +5,10 @@ import type { CategoryStat } from "@/lib/data/analytics-types";
 type Props = {
   restaurantName: string;
   categories: CategoryStat[];
+  overrideProfit?: number | null;
 };
 
-export function CategoryBreakdownTable({ restaurantName, categories }: Props) {
+export function CategoryBreakdownTable({ restaurantName, categories, overrideProfit }: Props) {
   const totalItems = categories.reduce((sum, c) => sum + c.itemsSold, 0);
   const totalCollections = categories.reduce((sum, c) => sum + c.collections, 0);
   const totalProfit = categories.reduce((sum, c) => sum + c.profit, 0);
@@ -89,10 +90,22 @@ export function CategoryBreakdownTable({ restaurantName, categories }: Props) {
                 </p>
               </div>
               <div className="text-right">
-                <span className="text-[10px] font-bold text-[#FF6B00] uppercase">Total Profit</span>
+                <div className="flex items-center justify-end gap-1">
+                  <span className="text-[10px] font-bold text-[#FF6B00] uppercase">Total Profit</span>
+                  {typeof overrideProfit === "number" && overrideProfit !== totalProfit && (
+                    <span className="rounded-full bg-orange-200/80 px-1 py-0.2 text-[8px] font-bold text-[#FF6B00] uppercase">
+                      Edited
+                    </span>
+                  )}
+                </div>
                 <p className="mt-0.5 font-extrabold text-[#FF6B00] text-sm tabular-nums truncate">
-                  {formatRupees(totalProfit)}
+                  {formatRupees(typeof overrideProfit === "number" ? overrideProfit : totalProfit)}
                 </p>
+                {typeof overrideProfit === "number" && overrideProfit !== totalProfit && (
+                  <p className="text-[9px] text-gray-500 font-medium">
+                    Actual: {formatRupees(totalProfit)}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -156,7 +169,21 @@ export function CategoryBreakdownTable({ restaurantName, categories }: Props) {
                   Configured rate
                 </td>
                 <td className="py-3.5 px-4 text-right tabular-nums font-extrabold text-[#FF6B00]">
-                  {formatRupees(totalProfit)}
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-center gap-1.5">
+                      <span>{formatRupees(typeof overrideProfit === "number" ? overrideProfit : totalProfit)}</span>
+                      {typeof overrideProfit === "number" && overrideProfit !== totalProfit && (
+                        <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold text-[#FF6B00] uppercase tracking-wide">
+                          Edited
+                        </span>
+                      )}
+                    </div>
+                    {typeof overrideProfit === "number" && overrideProfit !== totalProfit && (
+                      <span className="text-[10px] font-normal text-gray-400">
+                        Actual: {formatRupees(totalProfit)}
+                      </span>
+                    )}
+                  </div>
                 </td>
               </tr>
             </tfoot>

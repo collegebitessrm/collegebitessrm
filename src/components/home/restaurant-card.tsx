@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight, MapPin, Timer } from "@/components/icons";
+import { ArrowRight, MapPin, Star, Timer } from "@/components/icons";
 import type { CardSlide } from "@/lib/data/dish-photos";
+import { getFallbackRestaurantRating, type RestaurantRating } from "@/lib/data/restaurant-ratings";
 import type { RestaurantMenuStats } from "@/lib/data/restaurants";
 import type { Restaurant } from "@/lib/data/types";
 import { formatRupees } from "@/lib/format";
@@ -9,7 +10,7 @@ import { RestaurantPhotoSlides } from "./restaurant-photo-slides";
 
 /*
  * Restaurant card: photo on top with status chip, name + details below.
- * Full-width card with shadow, bold prices.
+ * Full-width card with shadow, bold prices, and customer rating.
  */
 export function RestaurantCard({
 	restaurant,
@@ -20,6 +21,7 @@ export function RestaurantCard({
 	slides,
 	slideDelay,
 	eager = false,
+	rating,
 }: {
 	restaurant: Restaurant;
 	orderingEnabled: boolean;
@@ -29,10 +31,12 @@ export function RestaurantCard({
 	slides: CardSlide[];
 	slideDelay?: number;
 	eager?: boolean;
+	rating?: RestaurantRating;
 }) {
 	const active = restaurant.is_active;
 	const open = active && orderingEnabled;
 	const paused = active && !orderingEnabled;
+	const displayRating = rating ?? getFallbackRestaurantRating(restaurant.name);
 
 	return (
 		<Link
@@ -60,13 +64,31 @@ export function RestaurantCard({
 						</span>
 						{!active ? "Closed" : paused ? closedChip : "Open"}
 					</span>
+
+					{/* Top-right floating rating chip */}
+					<span
+						className="pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/65 backdrop-blur-md px-2.5 py-1 text-xs font-bold text-white shadow-xs ring-1 ring-white/10"
+						aria-label={`${displayRating.rating} star rating`}
+					>
+						<Star className="size-3 text-amber-400 icon-solid" />
+						<span>{displayRating.rating.toFixed(1)}</span>
+						{displayRating.count > 0 && (
+							<span className="text-[10px] text-white/70 font-normal">({displayRating.count})</span>
+						)}
+					</span>
 				</RestaurantPhotoSlides>
 			</div>
 
 			<div className="p-4">
 				<div className="flex items-start justify-between gap-2">
 					<div className="min-w-0 flex-1">
-						<h3 className="truncate font-heading text-lg font-bold text-foreground">{restaurant.name}</h3>
+						<div className="flex items-center gap-2">
+							<h3 className="truncate font-heading text-lg font-bold text-foreground">{restaurant.name}</h3>
+							<span className="inline-flex shrink-0 items-center gap-0.5 rounded-md bg-emerald-600 px-1.5 py-0.5 text-[11px] font-extrabold text-white shadow-2xs">
+								<span>{displayRating.rating.toFixed(1)}</span>
+								<Star className="size-2.5 text-white icon-solid" />
+							</span>
+						</div>
 						{restaurant.description && (
 							<p className="mt-1 flex items-center gap-1 truncate text-sm text-muted-foreground">
 								<MapPin className="size-3.5 shrink-0" />
@@ -86,6 +108,13 @@ export function RestaurantCard({
 				</div>
 
 				<ul className="mt-3 flex flex-wrap items-center gap-1.5">
+					<li className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-amber-800 dark:text-amber-300">
+						<Star className="size-3 text-amber-500 icon-solid" />
+						<span>{displayRating.rating.toFixed(1)}</span>
+						{displayRating.count > 0 && (
+							<span className="text-[10px] font-medium opacity-75">({displayRating.count}+)</span>
+						)}
+					</li>
 					{restaurant.cuisine_tags.slice(0, 3).map((tag) => (
 						<li key={tag} className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-medium text-primary">
 							{tag}

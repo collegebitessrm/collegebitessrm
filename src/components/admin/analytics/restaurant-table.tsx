@@ -81,10 +81,22 @@ export function RestaurantTable({ restaurants, totalCollections }: Props) {
                 </div>
 
                 <div className="rounded-xl bg-gradient-to-br from-orange-50/90 to-orange-100/40 p-2.5 border border-orange-200/60">
-                  <span className="text-[10px] uppercase font-bold text-[#FF6B00]">Profit</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold text-[#FF6B00]">Profit</span>
+                    {r.isEdited && typeof r.actualProfit === "number" && r.actualProfit !== r.profit && (
+                      <span className="rounded-full bg-orange-200/70 px-1 py-0.2 text-[8px] font-bold text-[#FF6B00] uppercase">
+                        Adjusted
+                      </span>
+                    )}
+                  </div>
                   <p className="mt-0.5 font-extrabold text-[#FF6B00] tabular-nums">
                     {formatRupees(r.profit)}
                   </p>
+                  {r.isEdited && typeof r.actualProfit === "number" && r.actualProfit !== r.profit && (
+                    <p className="text-[9px] text-gray-500 font-medium">
+                      Actual: {formatRupees(r.actualProfit)}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -124,16 +136,45 @@ export function RestaurantTable({ restaurants, totalCollections }: Props) {
                     </div>
                   </td>
                   <td className="py-3.5 px-4 text-center font-bold text-[#0F172A] tabular-nums">
-                    {r.deliveredOrders}
+                    <div>{r.deliveredOrders}</div>
+                    {typeof r.actualOrders === "number" && r.actualOrders !== r.deliveredOrders && (
+                      <span className="text-[10px] font-normal text-gray-400 block">
+                        Act: {r.actualOrders}
+                      </span>
+                    )}
                   </td>
                   <td className="py-3.5 px-4 text-center font-bold text-[#0F172A] tabular-nums">
-                    {r.itemsSold}
+                    <div>{r.itemsSold}</div>
+                    {typeof r.actualItemsSold === "number" && r.actualItemsSold !== r.itemsSold && (
+                      <span className="text-[10px] font-normal text-gray-400 block">
+                        Act: {r.actualItemsSold}
+                      </span>
+                    )}
                   </td>
                   <td className="py-3.5 px-4 text-right font-bold text-[#0F172A] tabular-nums">
-                    {formatRupees(r.collections)}
+                    <div>{formatRupees(r.collections)}</div>
+                    {typeof r.actualCollections === "number" && r.actualCollections !== r.collections && (
+                      <span className="text-[10px] font-normal text-gray-400 block">
+                        Act: {formatRupees(r.actualCollections)}
+                      </span>
+                    )}
                   </td>
                   <td className="py-3.5 px-4 text-right font-extrabold text-[#FF6B00] tabular-nums">
-                    {formatRupees(r.profit)}
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-center gap-1.5">
+                        <span>{formatRupees(r.profit)}</span>
+                        {r.isEdited && typeof r.actualProfit === "number" && r.actualProfit !== r.profit && (
+                          <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[9px] font-bold text-[#FF6B00] uppercase tracking-wide">
+                            Adjusted
+                          </span>
+                        )}
+                      </div>
+                      {r.isEdited && typeof r.actualProfit === "number" && r.actualProfit !== r.profit && (
+                        <span className="text-[10px] font-normal text-gray-400">
+                          Actual: {formatRupees(r.actualProfit)}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="py-3.5 px-4 text-right text-gray-600 tabular-nums">
                     {r.deliveredOrders > 0 ? formatRupees(r.avgOrderValue) : "—"}

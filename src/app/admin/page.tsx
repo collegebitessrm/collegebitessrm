@@ -4,6 +4,7 @@ import { MarkAllDeliveredButton } from "@/components/admin/mark-all-delivered-bu
 import { NewOrderAlerts } from "@/components/admin/new-order-alerts";
 import { OrderingKillSwitch } from "@/components/admin/ordering-kill-switch";
 import { OrderList } from "@/components/admin/order-list";
+import { OverdueOrdersMonitor } from "@/components/admin/overdue-orders-monitor";
 import { RefreshAt } from "@/components/admin/refresh-at";
 import { RestaurantToggleList } from "@/components/admin/restaurant-toggle-list";
 import { StatCards } from "@/components/admin/stat-cards";
@@ -28,7 +29,7 @@ export default async function AdminPage() {
   // to history.
   const nextDropOff = orders
     .filter((o) => o.status === "delivered" || o.status === "cancelled")
-    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes).getTime());
+    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes, o.restaurantName).getTime());
 
   return (
     <>
@@ -57,6 +58,8 @@ export default async function AdminPage() {
           closedChip="Paused"
         />
       </section>
+
+      <OverdueOrdersMonitor orders={orders} />
 
       <section>
         <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">

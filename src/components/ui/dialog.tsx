@@ -89,11 +89,16 @@ function DialogDescription({
  )
 }
 
+function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+ return <div data-slot="dialog-header" className={cn("flex flex-col gap-1.5", className)} {...props} />
+}
+
 export {
  Dialog,
  DialogClose,
  DialogContent,
  DialogDescription,
+ DialogHeader,
  DialogOverlay,
  DialogPortal,
  DialogTitle,

@@ -219,13 +219,30 @@ export type AdminOrder = {
  userId: string;
  studentName: string;
  studentBanned: boolean;
- /** In the order they were added; `subtotal` = unit price × quantity, snapshotted at order time.
- * `isFree` = a Single biryani given free by the biryani offer (its value is in discountAmount). */
- items: { dishName: string; quantity: number; subtotal: number; isFree: boolean; imageUrl: string | null }[];
+ /** In the order they were added; `subtotal` = unit price × quantity, snapshotted at order time. */
+ items: {
+  id?: string;
+  dishId?: string | null;
+  dishName: string;
+  unitPrice?: number;
+  quantity: number;
+  subtotal: number;
+  isFree: boolean;
+  imageUrl: string | null;
+ }[];
  dailyNumber: number;
  /** The discount offer the student used, if any; totalAmount is already after it. */
  discountOffer: OfferKey | null;
  discountAmount: number;
+ // Delay management fields — all null/false unless admin has reported a delay.
+ /** Admin-entered reason for the delay (e.g. "High volume at restaurant"). */
+ delayReason: string | null;
+ /** Confirmed new ETA as an ISO string; null = no confirmed time yet. */
+ updatedEta: string | null;
+ /** When delay info was last recorded. */
+ delayUpdatedAt: string | null;
+ /** True once a delay is logged but no confirmed ETA is available yet. */
+ awaitingEtaConfirmation: boolean;
 };
 
 type AdminOrderRow = {
@@ -239,14 +256,27 @@ type AdminOrderRow = {
  user_id: string;
  restaurant_id: string;
  restaurants: { name: string; phone: string | null; delivery_minutes: number } | null;
- users: { full_name: string; is_banned: boolean } | null;
- order_items: { dish_name: string; quantity: number; subtotal: number; is_free: boolean; dishes: { image_url: string | null } | null }[];
+ users: { full_name: string | null; is_banned: boolean } | null;
+ order_items: {
+  id?: string;
+  dish_id?: string | null;
+  dish_name: string;
+  unit_price?: number;
+  quantity: number;
+  subtotal: number;
+  is_free: boolean;
+  dishes: { image_url: string | null } | null;
+ }[];
  discount_offer: OfferKey | null;
  discount_amount: number;
+ delay_reason: string | null;
+ updated_eta: string | null;
+ delay_updated_at: string | null;
+ awaiting_eta_confirmation: boolean;
 };
 
 const ADMIN_ORDER_COLUMNS =
- "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(dish_name, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount";
+ "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(id, dish_id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation";
 
 function toAdminOrder(o: AdminOrderRow): AdminOrder {
  return {
@@ -263,16 +293,28 @@ function toAdminOrder(o: AdminOrderRow): AdminOrder {
  deliveryMinutes: o.restaurants?.delivery_minutes ?? DEFAULT_DELIVERY_MINUTES,
  studentName: o.users?.full_name ?? "Student",
  studentBanned: o.users?.is_banned ?? false,
- items: o.order_items.map((i) => ({
- dishName: i.dish_name,
- quantity: i.quantity,
- subtotal: Number(i.subtotal),
- isFree: i.is_free,
- imageUrl: i.dishes?.image_url ?? null,
- })),
+ items: o.order_items.map((i) => {
+  const qty = i.quantity;
+  const sub = Number(i.subtotal);
+  const unit = i.unit_price ? Number(i.unit_price) : qty > 0 ? Math.round(sub / qty) : 0;
+  return {
+   id: i.id,
+   dishId: i.dish_id ?? null,
+   dishName: i.dish_name,
+   unitPrice: unit,
+   quantity: qty,
+   subtotal: sub,
+   isFree: i.is_free,
+   imageUrl: i.dishes?.image_url ?? null,
+  };
+ }),
  dailyNumber: o.daily_number,
  discountOffer: o.discount_offer,
  discountAmount: Number(o.discount_amount),
+ delayReason: o.delay_reason ?? null,
+ updatedEta: o.updated_eta ?? null,
+ delayUpdatedAt: o.delay_updated_at ?? null,
+ awaitingEtaConfirmation: o.awaiting_eta_confirmation ?? false,
  };
 }
 
@@ -363,7 +405,7 @@ export async function getAdminOrders(now: Date = new Date()): Promise<AdminOrder
  if (error) throw error;
  return (data ?? [])
  .map(toAdminOrder)
- .filter((o) => !isFinished(o.status) || !isPastDeliveryTime(o.createdAt, o.deliveryMinutes, now));
+ .filter((o) => !isFinished(o.status) || !isPastDeliveryTime(o.createdAt, o.deliveryMinutes, now, o.restaurantName));
 }
 
 function isFinished(status: OrderStatus) {

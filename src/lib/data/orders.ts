@@ -85,6 +85,11 @@ export type OrderDetail = {
  /** The discount offer used, if any; totalAmount is already after it. */
  discountOffer: OfferKey | null;
  discountAmount: number;
+ // Delay management — null/false unless admin has reported a delay.
+ delayReason: string | null;
+ updatedEta: string | null;
+ delayUpdatedAt: string | null;
+ awaitingEtaConfirmation: boolean;
 };
 
 type OrderSummaryRow = {
@@ -200,6 +205,10 @@ type OrderDetailRow = {
  discount_offer: OfferKey | null;
  discount_amount: number;
  delivered_at: string | null;
+ delay_reason: string | null;
+ updated_eta: string | null;
+ delay_updated_at: string | null;
+ awaiting_eta_confirmation: boolean;
  // One-to-one via order_reviews.order_id; PostgREST may return an object or a one-element array.
  order_reviews: ReviewRow | ReviewRow[] | null;
 };
@@ -352,7 +361,7 @@ export const getOrder = cache(async function getOrder(
  const { data, error } = await supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
+ "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
  )
  .eq("id", id)
  .eq("user_id", userId)
@@ -387,5 +396,9 @@ export const getOrder = cache(async function getOrder(
  dailyNumber: data.daily_number,
  discountOffer: data.discount_offer,
  discountAmount: Number(data.discount_amount),
+ delayReason: data.delay_reason ?? null,
+ updatedEta: data.updated_eta ?? null,
+ delayUpdatedAt: data.delay_updated_at ?? null,
+ awaitingEtaConfirmation: data.awaiting_eta_confirmation ?? false,
  };
 });

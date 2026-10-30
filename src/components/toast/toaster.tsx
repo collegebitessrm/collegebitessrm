@@ -4,6 +4,16 @@ import { AlertCircle, CheckCircle2 } from "@/components/icons";
 import { useToasts } from "@/lib/toast/store";
 import { cn } from "@/lib/utils";
 
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  const origError = console.error;
+  console.error = (...args: unknown[]) => {
+    if (typeof args[0] === "string" && args[0].includes("Encountered a script tag")) {
+      return;
+    }
+    origError.apply(console, args);
+  };
+}
+
 /** Fixed top-of-screen stack of short "saved"/"error" pop-ups. Mounted once in the root layout. */
 export function Toaster() {
  const toasts = useToasts();

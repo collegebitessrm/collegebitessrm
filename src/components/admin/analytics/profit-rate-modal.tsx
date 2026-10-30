@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Minus, Plus, RotateCcw, Storefront, TrendUp, Utensils } from "@/components/icons";
 import {
   Dialog,
@@ -32,6 +32,10 @@ export function ProfitRateModal({
 }: Props) {
   const [rates, setRates] = useState<ProfitRates>(currentRates);
   const [activeTab, setActiveTab] = useState<"biryani" | "triangle" | "home" | "all">(initialTab);
+
+  useEffect(() => {
+    setRates(currentRates);
+  }, [currentRates]);
 
   function handleOpenChange(next: boolean) {
     if (next) {

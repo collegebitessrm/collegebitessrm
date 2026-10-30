@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Banknote, Loader2, MapPin, Phone, Plus, QrCode, X } from "@/components/icons";
@@ -9,14 +9,14 @@ import { IconTile } from "@/components/icon-tile";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { DiscountPicker, type OfferOption } from "@/components/cart/discount-picker";
 import {
- AlertDialog,
- AlertDialogAction,
- AlertDialogCancel,
- AlertDialogContent,
- AlertDialogDescription,
- AlertDialogFooter,
- AlertDialogHeader,
- AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,7 @@ import { MAX_NOTES } from "@/lib/cart/limits";
 import { cartTotals, clearCart, reconcileCart, useCart, type Cart } from "@/lib/cart/store";
 import { formatRupees } from "@/lib/format";
 import { placeOrder } from "@/lib/orders/actions";
+import { type DeliveryLocation } from "@/lib/orders/delivery-location";
 import { formatLocalMobile, formatStoredMobile, normalizeIndianMobile } from "@/lib/phone";
 import { toast } from "@/lib/toast/store";
 import { spiceNote } from "@/lib/taste/options";
@@ -33,444 +34,550 @@ import { cn } from "@/lib/utils";
 const eyebrow = "text-label text-muted-foreground";
 
 export function CartSheet({
- open,
- onOpenChange,
- profilePhone,
- orderingEnabled,
- closedNote,
- spiceLevel = null,
- offers = NO_OFFERS,
+  open,
+  onOpenChange,
+  profilePhone,
+  orderingEnabled,
+  closedNote,
+  spiceLevel = null,
+  offers = NO_OFFERS,
 }: {
- open: boolean;
- onOpenChange: (open: boolean) => void;
- /** Stored "+91XXXXXXXXXX" — the default contact number for the order. */
- profilePhone: string;
- /** Campus-wide kill switch — disables the "Place order" button when off. */
- orderingEnabled: boolean;
- closedNote?: string;
- spiceLevel?: number | null;
- /** Discount offers the admin has on — the "Apply discount" bar. */
- offers?: OffersState;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Stored "+91XXXXXXXXXX" — the default contact number for the order. */
+  profilePhone: string;
+  /** Campus-wide kill switch — disables the "Place order" button when off. */
+  orderingEnabled: boolean;
+  closedNote?: string;
+  spiceLevel?: number | null;
+  /** Discount offers the admin has on — the "Apply discount" bar. */
+  offers?: OffersState;
 }) {
- const cart = useCart();
- const empty = cart.lines.length === 0;
+  const cart = useCart();
+  const empty = cart.lines.length === 0;
 
- return (
- <Sheet open={open} onOpenChange={onOpenChange}>
- <SheetContent
- side="bottom"
- showCloseButton={false}
- className="mx-auto max-h-[92dvh] w-full max-w-md gap-0 rounded-t-[2rem] border-t-0 bg-background p-0 text-base"
- >
- <header className="flex items-start gap-3 border-b px-6 pt-6 pb-4">
- <div className="min-w-0 flex-1">
- <SheetTitle className="font-heading text-headline font-bold">Your cart</SheetTitle>
- <SheetDescription className={cn("mt-0.5 truncate text-base", empty && "sr-only")}>
- {empty
- ? "Your cart is empty"
- : `${cart.restaurantName} · ${cartTotals(cart).items} ${cartTotals(cart).items === 1 ? "item" : "items"}`}
- </SheetDescription>
- </div>
- <button
- type="button"
- onClick={() => onOpenChange(false)}
- aria-label="Close cart"
- className="flex size-12 shrink-0 items-center justify-center rounded-full border bg-card shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
- >
- <X className="size-5" />
- </button>
- </header>
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        showCloseButton={false}
+        className="mx-auto max-h-[92dvh] w-full max-w-md gap-0 rounded-t-[2rem] border-t-0 bg-background p-0 text-base"
+      >
+        <header className="flex items-start gap-3 border-b px-6 pt-6 pb-4">
+          <div className="min-w-0 flex-1">
+            <SheetTitle className="font-heading text-headline font-bold">Your cart</SheetTitle>
+            <SheetDescription className={cn("mt-0.5 truncate text-base", empty && "sr-only")}>
+              {empty
+                ? "Your cart is empty"
+                : `${cart.restaurantName} · ${cartTotals(cart).items} ${cartTotals(cart).items === 1 ? "item" : "items"}`}
+            </SheetDescription>
+          </div>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            aria-label="Close cart"
+            className="flex size-12 shrink-0 items-center justify-center rounded-full border bg-card shadow-card outline-none hover:border-ring/50 focus-visible:ring-3 focus-visible:ring-ring/80"
+          >
+            <X className="size-5" />
+          </button>
+        </header>
 
- {empty ? (
- <EmptyCart onBrowse={() => onOpenChange(false)} />
- ) : (
- <CartContents
- cart={cart}
- profilePhone={profilePhone}
- orderingEnabled={orderingEnabled}
- closedNote={closedNote}
- spiceLevel={spiceLevel}
- offers={offers}
- onPlaced={() => onOpenChange(false)}
- />
- )}
- </SheetContent>
- </Sheet>
- );
+        {empty ? (
+          <EmptyCart onBrowse={() => onOpenChange(false)} />
+        ) : (
+          <CartContents
+            cart={cart}
+            profilePhone={profilePhone}
+            orderingEnabled={orderingEnabled}
+            closedNote={closedNote}
+            spiceLevel={spiceLevel}
+            offers={offers}
+            onPlaced={() => onOpenChange(false)}
+          />
+        )}
+      </SheetContent>
+    </Sheet>
+  );
 }
 
 function EmptyCart({ onBrowse }: { onBrowse: () => void }) {
- return (
- <div className="px-8 pb-14">
- <EmptyState
- art="plates"
- title="Nothing here yet"
- action={
- <Link
- href="/"
- onClick={onBrowse}
- className="pressable flex h-14 items-center rounded-full bg-primary px-8 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
- >
- Browse restaurants
- </Link>
- }
- >
- Pick a restaurant and add a few dishes. Most orders take under a minute.
- </EmptyState>
- </div>
- );
+  return (
+    <div className="px-8 pb-14">
+      <EmptyState
+        art="plates"
+        title="Nothing here yet"
+        action={
+          <Link
+            href="/"
+            onClick={onBrowse}
+            className="pressable flex h-14 items-center rounded-full bg-primary px-8 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
+          >
+            Browse restaurants
+          </Link>
+        }
+      >
+        Pick a restaurant and add a few dishes. Most orders take under a minute.
+      </EmptyState>
+    </div>
+  );
 }
 
 function CartContents({
- cart,
- profilePhone,
- orderingEnabled,
- closedNote,
- spiceLevel,
- offers,
- onPlaced,
+  cart,
+  profilePhone,
+  orderingEnabled,
+  closedNote,
+  spiceLevel,
+  offers,
+  onPlaced,
 }: {
- cart: Cart;
- profilePhone: string;
- orderingEnabled: boolean;
- closedNote?: string;
- spiceLevel: number | null;
- offers: OffersState;
- onPlaced: () => void;
+  cart: Cart;
+  profilePhone: string;
+  orderingEnabled: boolean;
+  closedNote?: string;
+  spiceLevel: number | null;
+  offers: OffersState;
+  onPlaced: () => void;
 }) {
- const router = useRouter();
- const [notes, setNotes] = useState("");
- const [contactPhone, setContactPhone] = useState(profilePhone);
- const [error, setError] = useState<string | null>(null);
- const [placing, startPlacing] = useTransition();
- const [offer, setOffer] = useState<OfferKey | null>(null);
- const [rawPicks, setRawPicks] = useState<Record<string, number>>({});
- const [showConfirm, setShowConfirm] = useState(false);
- const { amount } = cartTotals(cart);
+  const router = useRouter();
+  const [notes, setNotes] = useState("");
+  const [contactPhone, setContactPhone] = useState(profilePhone);
+  const [error, setError] = useState<string | null>(null);
+  const [placing, startPlacing] = useTransition();
+  const [offer, setOffer] = useState<OfferKey | null>(null);
+  const [rawPicks, setRawPicks] = useState<Record<string, number>>({});
+  const [showConfirm, setShowConfirm] = useState(false);
+  const { amount } = cartTotals(cart);
 
- // Offers. Everything below is derived from the cart, so changing the cart
- // can never leave a discount it no longer earns (place_order() re-checks).
- const freeChoices = offers.freeChoices.filter((c) => c.restaurantId === cart.restaurantId && c.isAvailable);
- const allowance = freeAllowance(cart.lines);
- const picks: Record<string, number> = {};
- let pickedCount = 0;
- for (const c of freeChoices) {
- const q = Math.min(rawPicks[c.id] ?? 0, allowance - pickedCount);
- if (q > 0) {
- picks[c.id] = q;
- pickedCount += q;
- }
- }
- const freeItems = freeChoices.filter((c) => picks[c.id]).map((c) => ({ ...c, quantity: picks[c.id] }));
- // Every offer is Biryani Nation only (place_order() checks it too).
- const offerHere = cart.restaurantId === OFFER_RESTAURANT_ID;
- const offerOptions: OfferOption[] = offers.active.map((key) => {
- if (!offerHere) return { key, saving: 0, blocked: `Only at ${OFFER_RESTAURANT_NAME}` };
- if (key !== "biryani") return { key, saving: discountAmount(key, amount), blocked: null };
- if (freeChoices.length === 0) return { key, saving: 0, blocked: "No Single biryanis on sale right now" };
- if (allowance === 0) {
- const more = fullsToNextFree(cart.lines);
- return { key, saving: 0, blocked: `Add ${more} more Full ${more === 1 ? "biryani" : "biryanis"} to unlock` };
- }
- return { key, saving: discountAmount("biryani", amount, freeItems), blocked: null };
- });
- const appliedOffer = offerOptions.find((o) => o.key === offer && !o.blocked)?.key ?? null;
- const discount = discountAmount(appliedOffer, amount, freeItems);
- const needsPick = appliedOffer === "biryani" && pickedCount === 0;
- // `amount` is the paid lines only. A free Single is added to the item
- // total at its menu price and taken off again as the discount, so the
- // student pays exactly the paid lines — the same sum place_order() makes.
- const freeValue = appliedOffer === "biryani" ? discount : 0;
- const itemTotal = amount + freeValue;
- const toPay = itemTotal - discount;
- // From the taste profile: a one-tap note, offered until it's in the box.
- const suggestedNote = spiceNote(spiceLevel);
- const showSuggestion =
- suggestedNote !== null &&
- !notes.toLowerCase().includes(suggestedNote.toLowerCase()) &&
- notes.length + suggestedNote.length + 2 <= MAX_NOTES;
+  // Friends PG option is available ONLY for Local Home Kitchen
+  const isLocalHome = Boolean(
+    cart.restaurantName?.toLowerCase().includes("local home") ||
+    cart.restaurantName?.toLowerCase().includes("home kitchen") ||
+    cart.restaurantId === "99142bb3-5d63-4fc7-8b5c-0a1ef4c63919"
+  );
 
- function submit() {
- setShowConfirm(true);
- }
+  // Default is always SRM AP
+  const [deliveryLocation, setDeliveryLocation] = useState<DeliveryLocation>("SRM AP");
 
- function confirmOrder() {
- setShowConfirm(false);
- setError(null);
- startPlacing(async () => {
- const result = await placeOrder({
- restaurantId: cart.restaurantId!,
- lines: cart.lines.map((l) => ({ dishId: l.dishId, quantity: l.quantity, price: l.price })),
- notes,
- contactPhone,
- offer: appliedOffer,
- freeItems: appliedOffer === "biryani" ? freeItems.map((f) => ({ dishId: f.id, quantity: f.quantity })) : [],
- });
- if (result.ok) {
- clearCart();
- onPlaced();
- router.push(`/orders/${result.orderId}?placed=1`, { transitionTypes: ["nav-forward"] });
- return;
- }
- if (result.offerEnded) {
- setOffer(null);
- router.refresh();
- }
- if (result.removedDishIds || result.updatedPrices) {
- reconcileCart(result.removedDishIds ?? [], result.updatedPrices ?? []);
- }
- setError(result.error);
- toast.error(result.error);
- });
- }
+  useEffect(() => {
+    // If not Local Home, strictly default to SRM AP
+    if (!isLocalHome) {
+      setDeliveryLocation("SRM AP");
+      return;
+    }
 
- // Only the Place-order button is pinned. The bill, payment notes and the
- // handover/contact card all scroll with the items: the old pinned footer
- // (bill + payment box + button, ~300px) left so little room on a phone
- // that the contact card got cut off mid-sentence. The bottom edge of the
- // scroll area fades out so it reads as "more below", not as clipped.
- return (
- <>
- <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-1.5rem),transparent)]">
- <ul>
- {cart.lines.map((line) => (
- <CartLineRow key={line.dishId} line={line} restaurantName={cart.restaurantName} />
- ))}
- </ul>
+    try {
+      const saved = localStorage.getItem("college_bites_delivery_location");
+      if (saved === "Friends PG") {
+        setDeliveryLocation("Friends PG");
+      } else {
+        setDeliveryLocation("SRM AP");
+      }
+    } catch {
+      setDeliveryLocation("SRM AP");
+    }
+  }, [isLocalHome]);
 
- <label className="mt-5 block">
- <span className="sr-only">Order notes</span>
- <Textarea
- value={notes}
- onChange={(e) => setNotes(e.target.value)}
- maxLength={MAX_NOTES}
- rows={2}
- placeholder="Order notes, e.g. “less spicy”"
- className="min-h-14 resize-none rounded-2xl bg-card px-5 py-4 text-base shadow-card md:text-base"
- />
- </label>
- {showSuggestion && (
- <button
- type="button"
- onClick={() => setNotes((n) => (n.trim() ? `${n.trim()}. ${suggestedNote}` : suggestedNote))}
- className="mt-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-secondary px-3.5 text-sm font-semibold text-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
- >
- <Plus className="size-3.5" />
- {suggestedNote}
- </button>
- )}
+  function handleLocationChange(loc: DeliveryLocation) {
+    if (loc === "Friends PG" && !isLocalHome) {
+      toast.error("Friends PG delivery is only available for Local Home Kitchen");
+      return;
+    }
+    setDeliveryLocation(loc);
+    try {
+      localStorage.setItem("college_bites_delivery_location", loc);
+    } catch {}
+  }
 
- <div className="mt-4 divide-y rounded-2xl border bg-card shadow-card">
- <div className="flex items-center gap-4 px-5 py-4">
- <IconTile>
- <MapPin className="text-primary size-5" aria-hidden="true" />
- </IconTile>
- <div>
- <p className={eyebrow}>Handover point</p>
- <p className="font-semibold">Gate 3</p>
- </div>
- </div>
- <ContactPhone value={contactPhone} onChange={setContactPhone} />
- </div>
+  const effectiveLocation: DeliveryLocation = isLocalHome ? deliveryLocation : "SRM AP";
 
- {offerOptions.length > 0 && (
- <DiscountPicker
- options={offerOptions}
- selected={offer}
- onSelect={setOffer}
- freeChoices={freeChoices}
- allowance={allowance}
- picks={picks}
- onPick={(dishId, quantity) => setRawPicks({ ...picks, [dishId]: quantity })}
- />
- )}
+  // Offers. Everything below is derived from the cart, so changing the cart
+  // can never leave a discount it no longer earns (place_order() re-checks).
+  const freeChoices = offers.freeChoices.filter((c) => c.restaurantId === cart.restaurantId && c.isAvailable);
+  const allowance = freeAllowance(cart.lines);
+  const picks: Record<string, number> = {};
+  let pickedCount = 0;
+  for (const c of freeChoices) {
+    const q = Math.min(rawPicks[c.id] ?? 0, allowance - pickedCount);
+    if (q > 0) {
+      picks[c.id] = q;
+      pickedCount += q;
+    }
+  }
+  const freeItems = freeChoices.filter((c) => picks[c.id]).map((c) => ({ ...c, quantity: picks[c.id] }));
+  // Every offer is Biryani Nation only (place_order() checks it too).
+  const offerHere = cart.restaurantId === OFFER_RESTAURANT_ID;
+  const offerOptions: OfferOption[] = offers.active.map((key) => {
+    if (!offerHere) return { key, saving: 0, blocked: `Only at ${OFFER_RESTAURANT_NAME}` };
+    if (key !== "biryani") return { key, saving: discountAmount(key, amount), blocked: null };
+    if (freeChoices.length === 0) return { key, saving: 0, blocked: "No Single biryanis on sale right now" };
+    if (allowance === 0) {
+      const more = fullsToNextFree(cart.lines);
+      return { key, saving: 0, blocked: `Add ${more} more Full ${more === 1 ? "biryani" : "biryanis"} to unlock` };
+    }
+    return { key, saving: discountAmount("biryani", amount, freeItems), blocked: null };
+  });
+  const appliedOffer = offerOptions.find((o) => o.key === offer && !o.blocked)?.key ?? null;
+  const discount = discountAmount(appliedOffer, amount, freeItems);
+  const needsPick = appliedOffer === "biryani" && pickedCount === 0;
+  // `amount` is the paid lines only. A free Single is added to the item
+  // total at its menu price and taken off again as the discount, so the
+  // student pays exactly the paid lines — the same sum place_order() makes.
+  const freeValue = appliedOffer === "biryani" ? discount : 0;
+  const itemTotal = amount + freeValue;
+  const toPay = itemTotal - discount;
+  // From the taste profile: a one-tap note, offered until it's in the box.
+  const suggestedNote = spiceNote(spiceLevel);
+  const showSuggestion =
+    suggestedNote !== null &&
+    !notes.toLowerCase().includes(suggestedNote.toLowerCase()) &&
+    notes.length + suggestedNote.length + 2 <= MAX_NOTES;
 
- <div className="mt-4 rounded-2xl border bg-card px-5 py-4 shadow-card">
- <dl className="space-y-1.5">
- <div className="flex justify-between text-muted-foreground">
- <dt>Item total</dt>
- <dd className="tabular-nums">{formatRupees(itemTotal)}</dd>
- </div>
- {discount > 0 && (
- <div className="flex justify-between gap-3 font-semibold text-success">
- <dt className="min-w-0">
- {appliedOffer === "biryani"
- ? `Free: ${freeItems.map((f) => (f.quantity > 1 ? `${f.name} × ${f.quantity}` : f.name)).join(", ")}`
- : OFFERS[appliedOffer!].short}
- </dt>
- <dd className="shrink-0 tabular-nums">−{formatRupees(discount)}</dd>
- </div>
- )}
- <div className="flex items-center justify-between text-muted-foreground">
- <dt>Delivery to Gate 3</dt>
- <dd className="rounded-full bg-success-soft px-2.5 py-0.5 text-sm font-semibold text-success">Free</dd>
- </div>
- <div className="flex items-baseline justify-between border-t border-dashed pt-2.5">
- <dt className="font-semibold">To pay at pickup</dt>
- <dd key={toPay} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-primary">
- {formatRupees(toPay)}
- </dd>
- </div>
- </dl>
- <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
- <li className="flex items-center gap-2.5">
- <Banknote className="size-4 shrink-0 text-primary" aria-hidden="true" />
- Pay on delivery, cash or UPI at the gate.
- </li>
- <li className="flex items-center gap-2.5">
- <QrCode className="size-4 shrink-0 text-primary" aria-hidden="true" />
- Paying cash? Exact change helps.
- </li>
- </ul>
- </div>
- </div>
+  function submit() {
+    setShowConfirm(true);
+  }
 
- <footer className="border-t bg-background px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
- {!orderingEnabled && (
- <p className="mb-3 rounded-2xl border border-pink-soft-foreground/15 bg-secondary px-4 py-3 text-center text-sm text-foreground">
- {closedNote ? `${closedNote}.` : "Ordering is paused campus-wide right now."} Your cart will
- wait.
- </p>
- )}
+  function confirmOrder() {
+    setShowConfirm(false);
+    setError(null);
+    startPlacing(async () => {
+      const result = await placeOrder({
+        restaurantId: cart.restaurantId!,
+        lines: cart.lines.map((l) => ({ dishId: l.dishId, quantity: l.quantity, price: l.price })),
+        notes,
+        contactPhone,
+        deliveryLocation: effectiveLocation,
+        offer: appliedOffer,
+        freeItems: appliedOffer === "biryani" ? freeItems.map((f) => ({ dishId: f.id, quantity: f.quantity })) : [],
+      });
+      if (result.ok) {
+        clearCart();
+        onPlaced();
+        router.push(`/orders/${result.orderId}?placed=1`, { transitionTypes: ["nav-forward"] });
+        return;
+      }
+      if (result.offerEnded) {
+        setOffer(null);
+        router.refresh();
+      }
+      if (result.removedDishIds || result.updatedPrices) {
+        reconcileCart(result.removedDishIds ?? [], result.updatedPrices ?? []);
+      }
+      setError(result.error);
+      toast.error(result.error);
+    });
+  }
 
- {needsPick && orderingEnabled && (
- <p className="mb-3 text-center text-sm text-muted-foreground">
- Pick your free Single biryani above, or remove the offer.
- </p>
- )}
+  // Only the Place-order button is pinned. The bill, payment notes and the
+  // handover/contact card all scroll with the items: the old pinned footer
+  // (bill + payment box + button, ~300px) left so little room on a phone
+  // that the contact card got cut off mid-sentence. The bottom edge of the
+  // scroll area fades out so it reads as "more below", not as clipped.
+  return (
+    <>
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 [mask-image:linear-gradient(to_bottom,#000_calc(100%-1.5rem),transparent)]">
+        <ul>
+          {cart.lines.map((line) => (
+            <CartLineRow key={line.dishId} line={line} restaurantName={cart.restaurantName} />
+          ))}
+        </ul>
 
- {error && (
- <p id="place-order-error" role="alert" className="mb-3 text-center text-sm text-destructive">
- {error}
- </p>
- )}
+        <label className="mt-5 block">
+          <span className="sr-only">Order notes</span>
+          <Textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            maxLength={MAX_NOTES}
+            rows={2}
+            placeholder="Order notes, e.g. “less spicy”"
+            className="min-h-14 resize-none rounded-2xl bg-card px-5 py-4 text-base shadow-card md:text-base"
+          />
+        </label>
+        {showSuggestion && (
+          <button
+            type="button"
+            onClick={() => setNotes((n) => (n.trim() ? `${n.trim()}. ${suggestedNote}` : suggestedNote))}
+            className="mt-2 inline-flex h-9 items-center gap-1.5 rounded-full bg-secondary px-3.5 text-sm font-semibold text-foreground outline-none hover:brightness-95 focus-visible:ring-2 focus-visible:ring-ring/80"
+          >
+            <Plus className="size-3.5" />
+            {suggestedNote}
+          </button>
+        )}
 
- <button
- type="button"
- onClick={submit}
- disabled={placing || !orderingEnabled || needsPick}
- aria-describedby={error ? "place-order-error" : undefined}
- className={cn(
- " flex h-14 w-full items-center justify-between gap-2 rounded-full bg-primary px-6 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70 disabled:shadow-none",
- placing && "animate-shimmer",
- )}
- >
- <span className="flex items-center gap-2">
- {placing && <Loader2 className="size-5 animate-spin" />}
- {placing ? "Placing order…" : "Place order"}
- </span>
- <span className="font-heading text-xl tabular-nums">{formatRupees(toPay)}</span>
- </button>
- </footer>
+        <div className="mt-4 divide-y rounded-2xl border bg-card shadow-card">
+          {/* Delivery Location Selector */}
+          <div className="px-5 py-4">
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MapPin className="text-primary size-4" aria-hidden="true" />
+                <span className={eyebrow}>Delivery location</span>
+              </div>
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                Select address
+              </span>
+            </div>
 
- <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
- <AlertDialogContent>
- <AlertDialogHeader>
- <AlertDialogTitle>Confirm your order</AlertDialogTitle>
- <AlertDialogDescription>
- You're ordering {cartTotals(cart).items} {cartTotals(cart).items === 1 ? "item" : "items"} from {cart.restaurantName} for {formatRupees(toPay)}. Pay at Gate 3 on delivery.
- </AlertDialogDescription>
- </AlertDialogHeader>
- <AlertDialogFooter>
- <AlertDialogCancel>Cancel</AlertDialogCancel>
- <AlertDialogAction onClick={confirmOrder}>Yes, place order</AlertDialogAction>
- </AlertDialogFooter>
- </AlertDialogContent>
- </AlertDialog>
- </>
- );
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => handleLocationChange("SRM AP")}
+                className={cn(
+                  "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all",
+                  effectiveLocation === "SRM AP"
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/25 shadow-sm"
+                    : "border-border/70 hover:border-border hover:bg-muted/40",
+                )}
+              >
+                <div className="flex w-full items-center justify-between">
+                  <span className="font-bold text-sm text-foreground">SRM AP</span>
+                  {effectiveLocation === "SRM AP" && (
+                    <span className="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      ✓
+                    </span>
+                  )}
+                </div>
+                <span className="mt-0.5 text-xs text-muted-foreground">Gate 3 handover</span>
+              </button>
+
+              <button
+                type="button"
+                disabled={!isLocalHome}
+                onClick={() => handleLocationChange("Friends PG")}
+                className={cn(
+                  "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all",
+                  !isLocalHome
+                    ? "border-dashed border-border/60 bg-muted/30 opacity-55 cursor-not-allowed"
+                    : effectiveLocation === "Friends PG"
+                    ? "border-primary bg-primary/5 ring-2 ring-primary/25 shadow-sm"
+                    : "border-border/70 hover:border-border hover:bg-muted/40",
+                )}
+              >
+                <div className="flex w-full items-center justify-between">
+                  <span className="font-bold text-sm text-foreground">Friends PG</span>
+                  {effectiveLocation === "Friends PG" && (
+                    <span className="flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      ✓
+                    </span>
+                  )}
+                </div>
+                <span className="mt-0.5 text-xs text-muted-foreground">
+                  {isLocalHome ? "Main entrance" : "Only Local Home"}
+                </span>
+              </button>
+            </div>
+            {!isLocalHome && (
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                * Friends PG delivery is exclusively available for Local Home Kitchen orders.
+              </p>
+            )}
+          </div>
+
+          <ContactPhone value={contactPhone} onChange={setContactPhone} />
+        </div>
+
+        {offerOptions.length > 0 && (
+          <DiscountPicker
+            options={offerOptions}
+            selected={offer}
+            onSelect={setOffer}
+            freeChoices={freeChoices}
+            allowance={allowance}
+            picks={picks}
+            onPick={(dishId, quantity) => setRawPicks({ ...picks, [dishId]: quantity })}
+          />
+        )}
+
+        <div className="mt-4 rounded-2xl border bg-card px-5 py-4 shadow-card">
+          <dl className="space-y-1.5">
+            <div className="flex justify-between text-muted-foreground">
+              <dt>Item total</dt>
+              <dd className="tabular-nums">{formatRupees(itemTotal)}</dd>
+            </div>
+            {discount > 0 && (
+              <div className="flex justify-between gap-3 font-semibold text-success">
+                <dt className="min-w-0">
+                  {appliedOffer === "biryani"
+                    ? `Free: ${freeItems.map((f) => (f.quantity > 1 ? `${f.name} × ${f.quantity}` : f.name)).join(", ")}`
+                    : OFFERS[appliedOffer!].short}
+                </dt>
+                <dd className="shrink-0 tabular-nums">−{formatRupees(discount)}</dd>
+              </div>
+            )}
+            <div className="flex items-center justify-between text-muted-foreground">
+              <dt>Delivery to {effectiveLocation === "Friends PG" ? "Friends PG" : "SRM AP"}</dt>
+              <dd className="rounded-full bg-success-soft px-2.5 py-0.5 text-sm font-semibold text-success">Free</dd>
+            </div>
+            <div className="flex items-baseline justify-between border-t border-dashed pt-2.5">
+              <dt className="font-semibold">To pay at pickup</dt>
+              <dd key={toPay} className="animate-bounce-count font-heading text-3xl font-bold tabular-nums text-primary">
+                {formatRupees(toPay)}
+              </dd>
+            </div>
+          </dl>
+          <ul className="mt-3 space-y-1.5 border-t pt-3 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2.5">
+              <Banknote className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              Pay on delivery, cash or UPI at {effectiveLocation === "Friends PG" ? "Friends PG" : "the gate"}.
+            </li>
+            <li className="flex items-center gap-2.5">
+              <QrCode className="size-4 shrink-0 text-primary" aria-hidden="true" />
+              Paying cash? Exact change helps.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <footer className="border-t bg-background px-6 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        {!orderingEnabled && (
+          <p className="mb-3 rounded-2xl border border-pink-soft-foreground/15 bg-secondary px-4 py-3 text-center text-sm text-foreground">
+            {closedNote ? `${closedNote}.` : "Ordering is paused campus-wide right now."} Your cart will
+            wait.
+          </p>
+        )}
+
+        {needsPick && orderingEnabled && (
+          <p className="mb-3 text-center text-sm text-muted-foreground">
+            Pick your free Single biryani above, or remove the offer.
+          </p>
+        )}
+
+        {error && (
+          <p id="place-order-error" role="alert" className="mb-3 text-center text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={submit}
+          disabled={placing || !orderingEnabled || needsPick}
+          aria-describedby={error ? "place-order-error" : undefined}
+          className={cn(
+            " flex h-14 w-full items-center justify-between gap-2 rounded-full bg-primary px-6 text-lg font-bold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80 disabled:opacity-70 disabled:shadow-none",
+            placing && "animate-shimmer",
+          )}
+        >
+          <span className="flex items-center gap-2">
+            {placing && <Loader2 className="size-5 animate-spin" />}
+            {placing ? "Placing order…" : "Place order"}
+          </span>
+          <span className="font-heading text-xl tabular-nums">{formatRupees(toPay)}</span>
+        </button>
+      </footer>
+
+      <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm your order</AlertDialogTitle>
+            <AlertDialogDescription>
+              You&apos;re ordering {cartTotals(cart).items} {cartTotals(cart).items === 1 ? "item" : "items"} from{" "}
+              {cart.restaurantName} for {formatRupees(toPay)}. Delivery to{" "}
+              <strong className="font-semibold text-foreground">
+                {effectiveLocation === "Friends PG" ? "Friends PG" : "SRM AP (Gate 3)"}
+              </strong>
+              . Pay on delivery.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmOrder}>Yes, place order</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
 }
 
 /** The order's contact number. Changing it here affects only this order. */
 function ContactPhone({ value, onChange }: { value: string; onChange: (v: string) => void }) {
- const [editing, setEditing] = useState(false);
- const [draft, setDraft] = useState("");
- const [invalid, setInvalid] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [invalid, setInvalid] = useState(false);
 
- function save() {
- const normalized = normalizeIndianMobile(draft);
- if (!normalized) return setInvalid(true);
- onChange(normalized);
- setEditing(false);
- }
+  function save() {
+    const normalized = normalizeIndianMobile(draft);
+    if (!normalized) return setInvalid(true);
+    onChange(normalized);
+    setEditing(false);
+  }
 
- if (!editing) {
- return (
- <div className="flex items-center gap-4 px-5 py-4">
- <IconTile>
- <Phone className="text-primary size-5" aria-hidden="true" />
- </IconTile>
- <div className="min-w-0 flex-1">
- <p className={eyebrow}>Your number</p>
- <p className="font-semibold tabular-nums">{formatStoredMobile(value)}</p>
- <p className="mt-1 text-sm text-muted-foreground">
- Make sure this is your WhatsApp number before placing the order.
- </p>
- </div>
- <button
- type="button"
- onClick={() => {
- setDraft(formatLocalMobile(value.replace(/^\+91/, "")));
- setInvalid(false);
- setEditing(true);
- }}
- className="rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/80"
- >
- Change
- </button>
- </div>
- );
- }
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-4 px-5 py-4">
+        <IconTile>
+          <Phone className="text-primary size-5" aria-hidden="true" />
+        </IconTile>
+        <div className="min-w-0 flex-1">
+          <p className={eyebrow}>Your number</p>
+          <p className="font-semibold tabular-nums">{formatStoredMobile(value)}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Make sure this is your WhatsApp number before placing the order.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setDraft(formatLocalMobile(value.replace(/^\+91/, "")));
+            setInvalid(false);
+            setEditing(true);
+          }}
+          className="rounded-md font-semibold text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring/80"
+        >
+          Change
+        </button>
+      </div>
+    );
+  }
 
- return (
- <div className="px-5 py-4">
- <label htmlFor="contact-phone" className={eyebrow}>
- Number for this order
- </label>
- <div className="mt-2 flex gap-2">
- <div
- className={cn(
- "flex h-12 min-w-0 flex-1 items-center rounded-xl border bg-background focus-within:border-ring",
- invalid && "border-destructive focus-within:border-destructive",
- )}
- >
- <span className="pl-3 text-muted-foreground">+91</span>
- <span className="mx-2 h-6 w-px bg-border" aria-hidden="true" />
- <input
- id="contact-phone"
- type="tel"
- inputMode="numeric"
- autoComplete="tel-national"
- autoFocus
- value={draft}
- onChange={(e) => {
- setDraft(formatLocalMobile(e.target.value));
- setInvalid(false);
- }}
- onKeyDown={(e) => e.key === "Enter" && save()}
- aria-invalid={invalid || undefined}
- aria-describedby="contact-phone-hint"
- className="h-full min-w-0 flex-1 bg-transparent pr-3 tabular-nums outline-none"
- />
- </div>
- <button
- type="button"
- onClick={save}
- className=" h-12 rounded-full bg-primary px-5 font-semibold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
- >
- Save
- </button>
- </div>
- <p id="contact-phone-hint" className={cn("mt-1.5 text-sm", invalid ? "text-destructive" : "text-muted-foreground")}>
- {invalid ? "Enter a valid 10-digit mobile number." : "Only for this order. Your profile number stays the same."}
- </p>
- <button
- type="button"
- onClick={() => setEditing(false)}
- className="mt-1 text-sm font-medium text-muted-foreground hover:underline"
- >
- Cancel
- </button>
- </div>
- );
+  return (
+    <div className="px-5 py-4">
+      <label htmlFor="contact-phone" className={eyebrow}>
+        Number for this order
+      </label>
+      <div className="mt-2 flex gap-2">
+        <div
+          className={cn(
+            "flex h-12 min-w-0 flex-1 items-center rounded-xl border bg-background focus-within:border-ring",
+            invalid && "border-destructive focus-within:border-destructive",
+          )}
+        >
+          <span className="pl-3 text-muted-foreground">+91</span>
+          <span className="mx-2 h-6 w-px bg-border" aria-hidden="true" />
+          <input
+            id="contact-phone"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel-national"
+            autoFocus
+            value={draft}
+            onChange={(e) => {
+              setDraft(formatLocalMobile(e.target.value));
+              setInvalid(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && save()}
+            aria-invalid={invalid || undefined}
+            aria-describedby="contact-phone-hint"
+            className="h-full min-w-0 flex-1 bg-transparent pr-3 tabular-nums outline-none"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={save}
+          className=" h-12 rounded-full bg-primary px-5 font-semibold text-primary-foreground outline-none hover:brightness-110 focus-visible:ring-3 focus-visible:ring-ring/80"
+        >
+          Save
+        </button>
+      </div>
+      <p id="contact-phone-hint" className={cn("mt-1.5 text-sm", invalid ? "text-destructive" : "text-muted-foreground")}>
+        {invalid ? "Enter a valid 10-digit mobile number." : "Only for this order. Your profile number stays the same."}
+      </p>
+      <button
+        type="button"
+        onClick={() => setEditing(false)}
+        className="mt-1 text-sm font-medium text-muted-foreground hover:underline"
+      >
+        Cancel
+      </button>
+    </div>
+  );
 }
