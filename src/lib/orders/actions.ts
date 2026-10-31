@@ -10,6 +10,7 @@ import { formatRupees } from "@/lib/format";
 import { formatOrderNumber } from "@/lib/orders/status";
 import { isOfferKey, type OfferKey } from "@/lib/offers";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { type DeliveryLocation, formatOrderNotes } from "@/lib/orders/delivery-location";
 
 export type PlaceOrderInput = {
@@ -160,19 +161,40 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   // Buzz the admin's phone, after the student already has their response —
   // a slow push service must never hold up an order.
   after(async () => {
-    const { data: placed } = await supabase
-      .from("orders")
-      .select("daily_number, total_amount")
-      .eq("id", orderId)
-      .single();
-    if (!placed) return;
-    await notifyAdmins({
-      title: `New order ${formatOrderNumber(placed.daily_number)} · ${formatRupees(placed.total_amount)} (${deliveryLocation})`,
-      body: `${menu.restaurant.name} · ${profile.full_name} · ${deliveryLocation}`,
-      url: "/admin",
-      tag: `order-${orderId}`,
-      urgent: true,
-    });
+    try {
+      const adminDb = createAdminClient();
+      let dailyNumber: number | null = null;
+      let totalAmount: number | null = null;
+
+      if (adminDb) {
+        const { data: placed, error: placedError } = await adminDb
+          .from("orders")
+          .select("daily_number, total_amount")
+          .eq("id", orderId)
+          .single();
+
+        if (placedError) {
+          console.error("[placeOrder:after] Error querying order for notification:", placedError.message);
+        } else if (placed) {
+          dailyNumber = placed.daily_number;
+          totalAmount = placed.total_amount;
+        }
+      }
+
+      const orderTitle = dailyNumber != null
+        ? `New order ${formatOrderNumber(dailyNumber)}${totalAmount != null ? ` · ${formatRupees(totalAmount)}` : ""} (${deliveryLocation})`
+        : `New order (${deliveryLocation})`;
+
+      await notifyAdmins({
+        title: orderTitle,
+        body: `${menu.restaurant.name} · ${profile.full_name} · ${deliveryLocation}`,
+        url: "/admin",
+        tag: `order-${orderId}`,
+        urgent: true,
+      });
+    } catch (err) {
+      console.error("[placeOrder:after] Failed to notify admins:", err);
+    }
   });
 
   return { ok: true, orderId };

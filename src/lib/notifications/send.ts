@@ -5,10 +5,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 /**
- * Who gets the "new order" alert. Everyone else with the admin role keeps
- * full dashboard access — this is only about which phone buzzes.
+ * Who gets the "new order" alert. Admins with role = 'admin' or an email
+ * in this list (or the ADMIN_ALERT_EMAILS env variable) will receive pushes.
  */
-export const ADMIN_ALERT_EMAILS = ["collegebitessrm@gmail.com"];
+export const ADMIN_ALERT_EMAILS = [
+  "collegebitessrm@gmail.com",
+  "nagaadithya999@gmail.com",
+];
 
 /** Contact address push services use to reach us about a misbehaving sender. */
 const CONTACT = `mailto:${ADMIN_ALERT_EMAILS[0]}`;
@@ -39,10 +42,12 @@ function configured(): boolean {
     webpush.setVapidDetails(CONTACT, publicKey, privateKey);
     return true;
   } catch (err) {
-    console.error("setVapidDetails error:", err);
+    console.error("[push:configured] setVapidDetails error:", err);
     return false;
   }
 }
+
+export type DeliverResult = { sent: number; failed: number };
 
 /**
  * Sends one payload to a set of devices and forgets the ones the push
@@ -50,12 +55,19 @@ function configured(): boolean {
  * revoked, app deleted). Never throws: a notification failing must not
  * fail the order or status change that triggered it.
  */
-async function deliver(
+export async function deliver(
   supabase: SupabaseClient,
   rows: SubscriptionRow[],
   payload: PushPayload,
-): Promise<void> {
-  if (rows.length === 0 || !configured()) return;
+): Promise<DeliverResult> {
+  if (rows.length === 0) return { sent: 0, failed: 0 };
+
+  if (!configured()) {
+    console.error(
+      "[deliver] Web Push is not configured. Missing or invalid VAPID keys (NEXT_PUBLIC_VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY).",
+    );
+    return { sent: 0, failed: rows.length };
+  }
 
   const body = JSON.stringify({
     title: payload.title,
@@ -67,6 +79,9 @@ async function deliver(
   });
 
   const gone: string[] = [];
+  let sent = 0;
+  let failed = 0;
+
   await Promise.all(
     rows.map(async (row) => {
       try {
@@ -75,19 +90,26 @@ async function deliver(
           body,
           { TTL: 60 * 30, urgency: payload.urgent ? "high" : "normal" },
         );
+        sent++;
       } catch (error) {
+        failed++;
         const status = (error as { statusCode?: number }).statusCode;
-        // 404/410 = unsubscribed/gone, 400/401/403 = invalid/mismatched VAPID credentials
-        if (status === 404 || status === 410 || status === 403 || status === 401 || status === 400) {
+        console.error(`[deliver] Push to device failed with status ${status}:`, error);
+        // Only 404/410 mean the subscription is permanently gone.
+        // 401/403/400 are credentials/formatting issues and should NOT delete user devices.
+        if (status === 404 || status === 410) {
           gone.push(row.id);
-        } else {
-          console.error("push failed", status ?? error);
         }
       }
     }),
   );
 
-  if (gone.length > 0) await supabase.from("push_subscriptions").delete().in("id", gone);
+  if (gone.length > 0) {
+    console.log(`[deliver] Pruning ${gone.length} expired push subscription(s)...`);
+    await supabase.from("push_subscriptions").delete().in("id", gone);
+  }
+
+  return { sent, failed };
 }
 
 /**
@@ -99,53 +121,80 @@ export async function notifyUser(
   supabase: SupabaseClient,
   userId: string,
   payload: PushPayload,
-): Promise<void> {
+): Promise<DeliverResult> {
   const { data, error } = await supabase
     .from("push_subscriptions")
     .select("id, endpoint, p256dh, auth")
     .eq("user_id", userId);
   if (error) {
-    console.error("push lookup failed", error.message);
-    return;
+    console.error("[notifyUser] push lookup failed:", error.message);
+    return { sent: 0, failed: 0 };
   }
-  await deliver(supabase, data ?? [], payload);
+  return await deliver(supabase, data ?? [], payload);
 }
 
 /**
- * Notifies the alert address(es) above — used when a student places an
- * order. The student's own session can't read anyone else's devices, so
- * this one goes through the service-role client; with no service-role key
- * configured it simply does nothing (the dashboard's own live alert still
- * works).
+ * Returns user IDs of all admin accounts: checks role='admin' in public.users
+ * as well as accounts matching ADMIN_ALERT_EMAILS or process.env.ADMIN_ALERT_EMAILS.
  */
-export async function notifyAdmins(payload: PushPayload): Promise<void> {
-  const supabase = createAdminClient();
-  if (!supabase) {
-    console.warn("SUPABASE_SERVICE_ROLE_KEY missing — admin push skipped");
-    return;
+export async function getAdminUserIds(supabase: SupabaseClient): Promise<string[]> {
+  const envEmails = process.env.ADMIN_ALERT_EMAILS
+    ? process.env.ADMIN_ALERT_EMAILS.split(",")
+        .map((e) => e.trim().toLowerCase())
+        .filter(Boolean)
+    : [];
+  const alertEmails = Array.from(
+    new Set([...ADMIN_ALERT_EMAILS.map((e) => e.toLowerCase()), ...envEmails]),
+  );
+
+  const { data: adminUsers, error: adminError } = await supabase
+    .from("users")
+    .select("id, email, role")
+    .or(`role.eq.admin,email.in.(${alertEmails.map((e) => `"${e}"`).join(",")})`);
+
+  if (adminError) {
+    console.error("[getAdminUserIds] Admin user lookup failed:", adminError.message);
+    return [];
   }
 
-  const { data: admins, error: adminError } = await supabase
-    .from("users")
-    .select("id")
-    .in("email", ADMIN_ALERT_EMAILS);
-  if (adminError || !admins?.length) {
-    if (adminError) console.error("admin lookup failed", adminError.message);
-    return;
+  return (adminUsers ?? []).map((a) => a.id);
+}
+
+/**
+ * Notifies all admins when a student places an order.
+ * Queries using the service-role client across all admin user devices.
+ */
+export async function notifyAdmins(payload: PushPayload): Promise<DeliverResult> {
+  const supabase = createAdminClient();
+  if (!supabase) {
+    console.warn("[notifyAdmins] SUPABASE_SERVICE_ROLE_KEY missing — admin push skipped");
+    return { sent: 0, failed: 0 };
+  }
+
+  const adminIds = await getAdminUserIds(supabase);
+  if (!adminIds.length) {
+    console.warn("[notifyAdmins] No admin users found with role='admin' or matching alert emails.");
+    return { sent: 0, failed: 0 };
   }
 
   const { data, error } = await supabase
     .from("push_subscriptions")
     .select("id, endpoint, p256dh, auth")
-    .in(
-      "user_id",
-      admins.map((a) => a.id),
-    );
+    .in("user_id", adminIds);
+
   if (error) {
-    console.error("admin push lookup failed", error.message);
-    return;
+    console.error("[notifyAdmins] Admin push lookup failed:", error.message);
+    return { sent: 0, failed: 0 };
   }
-  await deliver(supabase, data ?? [], payload);
+
+  if (!data || data.length === 0) {
+    console.warn(
+      `[notifyAdmins] Found ${adminIds.length} admin user(s), but none have registered devices in push_subscriptions. Admins must tap 'Turn on alerts' in /admin.`,
+    );
+    return { sent: 0, failed: 0 };
+  }
+
+  return await deliver(supabase, data, payload);
 }
 
 /**
@@ -172,6 +221,6 @@ export async function notifyAllSubscribers(payload: PushPayload): Promise<{ sent
     return { sent: 0, total: 0 };
   }
 
-  await deliver(supabase, data, payload);
-  return { sent: data.length, total: data.length };
+  const result = await deliver(supabase, data, payload);
+  return { sent: result.sent, total: data.length };
 }
