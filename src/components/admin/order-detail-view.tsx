@@ -26,8 +26,8 @@ export function OrderDetailView({ order }: { order: AdminOrderDetail }) {
   const { location, cleanNotes } = parseDeliveryLocation(currentOrder.notes);
   const badge = statusBadge(status, location === "Friends PG" ? "Friends PG" : "Gate 3");
   const overdueState = getOverdueState(currentOrder);
-  const originalEtaIso = deliveryDue(currentOrder.createdAt, currentOrder.deliveryMinutes, currentOrder.restaurantName).toISOString();
-  const slot = deliveryWindow(currentOrder.createdAt, currentOrder.deliveryMinutes, currentOrder.restaurantName);
+  const originalEtaIso = deliveryDue(currentOrder.createdAt, currentOrder.deliveryMinutes, currentOrder.restaurantName, currentOrder.confirmedAt).toISOString();
+  const slot = deliveryWindow(currentOrder.createdAt, currentOrder.deliveryMinutes, currentOrder.restaurantName, currentOrder.confirmedAt);
 
   useEffect(() => {
     setCurrentOrder(order);

@@ -189,12 +189,11 @@ author.
   (`tone="card"`, no message). The step list sits in a card below the
   pass. `statusBadge()` (`src/lib/orders/status.ts`, shared with admin)
   uses the brand sheet's colours: Placed / Preparing gold, Confirmed cyan,
-  Out for delivery pink, Delivered green, Cancelled red. `deliveryWindow(createdAt, minutes)`
-  (`src/lib/date.ts`) returns `{ lead, time }` — "Delivery by" the placed
-  time plus the restaurant's `delivery_minutes` (40 by default, Biryani
-  Nation 60) — with no-break spaces inside `time`, so "8:15 PM" can never
-  wrap apart. `deliveryDue()` / `isPastDeliveryTime()` are the same
-  promise as a Date / a check. Once delivered, the ticket page also carries the
+  Out for delivery pink, Delivered green, Cancelled red. `deliveryWindow(createdAt, minutes, restaurantName, confirmedAt)`
+  (`src/lib/date.ts`) returns `{ lead, time }` — "Delivery by" respecting restaurant schedules
+  and counting relative durations from order confirmation (`confirmed_at`), with pending orders
+  showing "Waiting for confirmation" on tracking cards. `deliveryDue()` / `isPastDeliveryTime()`
+  follow the same promise as a Date / a check. Once delivered, the ticket page also carries the
   rating card (`RateOrder`, see `order_reviews`).
 - **Campus pass details per palette** (`PassArt`,
   `src/components/theme/pass-art.tsx`): Vice keeps its striped sun in the

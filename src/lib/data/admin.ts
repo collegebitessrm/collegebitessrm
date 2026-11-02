@@ -243,6 +243,8 @@ export type AdminOrder = {
  delayUpdatedAt: string | null;
  /** True once a delay is logged but no confirmed ETA is available yet. */
  awaitingEtaConfirmation: boolean;
+ /** When the restaurant / admin confirmed the order; null while pending. */
+ confirmedAt: string | null;
 };
 
 type AdminOrderRow = {
@@ -273,10 +275,11 @@ type AdminOrderRow = {
  updated_eta: string | null;
  delay_updated_at: string | null;
  awaiting_eta_confirmation: boolean;
+ confirmed_at?: string | null;
 };
 
 const ADMIN_ORDER_COLUMNS =
- "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(id, dish_id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation";
+ "id, status, total_amount, created_at, contact_phone, notes, user_id, restaurant_id, restaurants(name, phone, delivery_minutes), users(full_name, is_banned), order_items(id, dish_id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation, confirmed_at";
 
 function toAdminOrder(o: AdminOrderRow): AdminOrder {
  return {
@@ -315,6 +318,7 @@ function toAdminOrder(o: AdminOrderRow): AdminOrder {
  updatedEta: o.updated_eta ?? null,
  delayUpdatedAt: o.delay_updated_at ?? null,
  awaitingEtaConfirmation: o.awaiting_eta_confirmation ?? false,
+ confirmedAt: o.confirmed_at ?? null,
  };
 }
 
@@ -335,7 +339,7 @@ export async function getAdminOrderDetail(id: string): Promise<AdminOrderDetail 
  supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, discount_offer, discount_amount, restaurants(name, phone, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal, is_free, dishes(image_url))",
+ "id, status, total_amount, created_at, confirmed_at, delivered_at, contact_phone, notes, user_id, restaurant_id, daily_number, discount_offer, discount_amount, restaurants(name, phone, delivery_minutes), users(full_name, is_banned, email, registration_number), order_items(id, dish_name, quantity, unit_price, subtotal, is_free, dishes(image_url))",
  )
  .eq("id", id)
  .maybeSingle<

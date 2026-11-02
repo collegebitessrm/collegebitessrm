@@ -217,13 +217,30 @@ export async function advanceOrderStatus(
  const targetStatus = currentStatus === "confirmed" ? "preparing" : next;
 
  const supabase = await createClient();
- const { data, error } = await supabase
+ const updatePayload: Record<string, unknown> = { status: targetStatus };
+ if (currentStatus === "pending") {
+  updatePayload.confirmed_at = new Date().toISOString();
+ }
+
+ let { data, error } = await supabase
  .from("orders")
- .update({ status: targetStatus })
+ .update(updatePayload)
  .eq("id", orderId)
  .eq("status", currentStatus)
  .select("id, user_id, daily_number, restaurants(name)")
  .returns<OrderNotifyRow[]>();
+
+ if (error && updatePayload.confirmed_at) {
+  const retry = await supabase
+  .from("orders")
+  .update({ status: targetStatus })
+  .eq("id", orderId)
+  .eq("status", currentStatus)
+  .select("id, user_id, daily_number, restaurants(name)")
+  .returns<OrderNotifyRow[]>();
+  data = retry.data;
+  error = retry.error;
+ }
  if (error) return { ok: false, error: "Couldn't update that order. Please try again." };
  if (!data || data.length === 0) {
  return { ok: false, error: "That order just changed. Refresh and try again." };

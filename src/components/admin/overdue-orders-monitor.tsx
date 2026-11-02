@@ -52,7 +52,7 @@ export function OverdueOrdersMonitor({
     const now = new Date();
     return activeOrders
       .map((order) => {
-        const originalEta = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName);
+        const originalEta = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName, order.confirmedAt);
         const currentEta = order.updatedEta ? new Date(order.updatedEta) : originalEta;
         const overdueState = getOverdueState(order, now);
         const minutesOverdue = getMinutesOverdue(order, now);

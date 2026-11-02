@@ -82,12 +82,13 @@ type Phase = {
 
 const pick = (lines: string[], ms: number) => lines[Math.floor(ms / LINE_MS) % lines.length];
 
-function phaseAt(status: OrderStatus, createdAt: string, now: number | null): Phase {
+function phaseAt(status: OrderStatus, createdAt: string, now: number | null, confirmedAt?: string | null): Phase {
  if (status === "delivered") return { p: 1, cooking: false, line: null, late: false };
  if (status === "cancelled") return { p: 0, cooking: false, line: null, late: false };
+ const baseTime = confirmedAt ? new Date(confirmedAt).getTime() : new Date(createdAt).getTime();
  // At the gate: scooter waits at GATE_WAIT_P with gate arrival lines
  if (status === "at_gate") {
- const gateLine = now === null ? null : pick(GATE_LINES, now - new Date(createdAt).getTime());
+ const gateLine = now === null ? null : pick(GATE_LINES, now - baseTime);
  return { p: GATE_WAIT_P, cooking: false, line: gateLine, late: false };
  }
  const onTheWay = status === "out_for_delivery";
@@ -98,7 +99,7 @@ function phaseAt(status: OrderStatus, createdAt: string, now: number | null): Ph
  ? { p: 0.5, cooking: false, line: null, late: false }
  : { p: KITCHEN_P, cooking: true, line: null, late: false };
  }
- const elapsed = now - new Date(createdAt).getTime();
+ const elapsed = now - baseTime;
  const late = elapsed >= LATE_AFTER_MINUTES * 60_000;
  const lateLine = late ? pick(LATE_LINES, elapsed - LATE_AFTER_MINUTES * 60_000) : null;
 
@@ -140,6 +141,7 @@ export function DeliveryRoad({
  status,
  restaurantName,
  createdAt,
+ confirmedAt,
  tone = "hero",
  showMessage = true,
 }: {
@@ -147,6 +149,8 @@ export function DeliveryRoad({
  restaurantName: string;
  /** When the order was placed — the start of the timeline. */
  createdAt: string;
+ /** When the order was confirmed. */
+ confirmedAt?: string | null;
  tone?: "hero" | "card";
  showMessage?: boolean;
 }) {
@@ -162,7 +166,7 @@ export function DeliveryRoad({
  clearInterval(every);
  };
  }, [riding]);
- const { p, cooking, line, late } = phaseAt(status, createdAt, now);
+ const { p, cooking, line, late } = phaseAt(status, createdAt, now, confirmedAt);
  const arrived = status === "delivered";
  const hero = tone === "hero";
 

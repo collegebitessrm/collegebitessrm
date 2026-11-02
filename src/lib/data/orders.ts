@@ -70,6 +70,8 @@ export type OrderDetail = {
  totalAmount: number;
  createdAt: string;
  updatedAt: string;
+ /** When the restaurant / admin confirmed the order; null while pending. */
+ confirmedAt: string | null;
  /** Set by the set_delivered_at trigger; the 7-day review window counts from it. */
  deliveredAt: string | null;
  review: OrderReview | null;
@@ -205,6 +207,7 @@ type OrderDetailRow = {
  discount_offer: OfferKey | null;
  discount_amount: number;
  delivered_at: string | null;
+ confirmed_at?: string | null;
  delay_reason: string | null;
  updated_eta: string | null;
  delay_updated_at: string | null;
@@ -361,7 +364,7 @@ export const getOrder = cache(async function getOrder(
  const { data, error } = await supabase
  .from("orders")
  .select(
- "id, status, total_amount, created_at, updated_at, delivered_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
+ "id, status, total_amount, created_at, updated_at, delivered_at, confirmed_at, contact_phone, notes, restaurant_id, restaurants(name, phone, delivery_minutes), order_items(id, dish_name, unit_price, quantity, subtotal, is_free, dishes(image_url)), daily_number, discount_offer, discount_amount, delay_reason, updated_eta, delay_updated_at, awaiting_eta_confirmation, order_reviews(note, created_at, order_item_ratings(order_item_id, rating))",
  )
  .eq("id", id)
  .eq("user_id", userId)
@@ -376,6 +379,7 @@ export const getOrder = cache(async function getOrder(
  totalAmount: data.total_amount,
  createdAt: data.created_at,
  updatedAt: data.updated_at,
+ confirmedAt: data.confirmed_at ?? null,
  deliveredAt: data.delivered_at,
  review: toReview(data.order_reviews),
  contactPhone: data.contact_phone,

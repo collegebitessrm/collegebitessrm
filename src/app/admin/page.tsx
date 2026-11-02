@@ -29,7 +29,7 @@ export default async function AdminPage() {
   // to history.
   const nextDropOff = orders
     .filter((o) => o.status === "delivered" || o.status === "cancelled")
-    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes, o.restaurantName).getTime());
+    .map((o) => deliveryDue(o.createdAt, o.deliveryMinutes, o.restaurantName, o.confirmedAt).getTime());
 
   return (
     <>

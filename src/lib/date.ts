@@ -89,61 +89,94 @@ function getIstMinutesFromMidnight(d: Date): number {
 /**
  * When an order is promised by, respecting restaurant-specific schedule rules:
  * - Biryani Nation:
- *   - Orders before 12:30 PM -> 1:00 PM
- *   - Orders at/after 12:30 PM (or after 1:00 PM) -> +1 hour (60 min)
+ *   - Morning before 12:30 PM -> 1:00 PM (13:00 IST)
+ *   - Morning/afternoon (12:30 PM to 5:00 PM) -> +1 hour (60 min) after confirmation
+ *   - Evening before 7:30 PM (5:00 PM to 7:30 PM) -> 8:00 PM (20:00 IST)
+ *   - Evening at/after 7:30 PM -> +1 hour (60 min) after confirmation
  * - Triangle Food Court:
- *   - Morning before 12:20 PM -> 12:50 PM
- *   - Morning/afternoon after 12:20 PM (up to 5:00 PM) -> +1 hour (60 min)
- *   - Evening before 7:00 PM (5:00 PM to 7:00 PM) -> 7:30 PM
- *   - Evening at/after 7:00 PM (or after 7:30 PM) -> +50 min
+ *   - Morning before 12:20 PM -> 12:50 PM (12:50 IST)
+ *   - Morning/afternoon after 12:20 PM (up to 5:00 PM) -> +1 hour (60 min) after confirmation
+ *   - Evening before 7:00 PM (5:00 PM to 7:00 PM) -> 7:30 PM (19:30 IST)
+ *   - Evening at/after 7:00 PM (or after 7:30 PM) -> +50 min after confirmation
  * - Local Home Kitchen:
- *   - Always +50 min
+ *   - Always +50 min after confirmation
+ *
+ * When an order is confirmed, the countdown starts from confirmedAt.
+ * If confirmedAt is not yet set (order still pending or legacy orders), it falls back to the order's created_at.
  */
 export function deliveryDue(
 	iso: string,
 	minutes: number = DEFAULT_DELIVERY_MINUTES,
 	restaurantName?: string | null,
+	confirmedAt?: string | null,
 ): Date {
 	const orderDate = new Date(iso);
+	const baseDate = confirmedAt ? new Date(confirmedAt) : orderDate;
 	const restKey = normalizeRestaurantKey(restaurantName);
-	const istMins = getIstMinutesFromMidnight(orderDate);
+	const orderIstMins = getIstMinutesFromMidnight(orderDate);
 
 	if (restKey === "biryani") {
-		// Before 12:30 PM (750 mins): fixed estimate at 1:00 PM (13:00 IST)
-		if (istMins < 750) {
-			return createIstTimeDate(orderDate, 13, 0);
+		// Morning / lunch shift (before 5:00 PM / 17:00 IST = 1020 mins)
+		if (orderIstMins < 750) {
+			// Placed before 12:30 PM (750 mins): fixed estimate at 1:00 PM (13:00 IST)
+			const fixedLunch = createIstTimeDate(orderDate, 13, 0);
+			if (confirmedAt && baseDate.getTime() > fixedLunch.getTime() - 15 * 60_000) {
+				return new Date(baseDate.getTime() + 60 * 60_000);
+			}
+			return fixedLunch;
 		}
-		// At or after 12:30 PM / after 1:00 PM: 1 hour after order time
-		return new Date(orderDate.getTime() + 60 * 60_000);
+		if (orderIstMins < 1020) {
+			// After 12:30 PM up to 5:00 PM: 1 hour after confirmation
+			return new Date(baseDate.getTime() + 60 * 60_000);
+		}
+		// Evening / dinner shift (from 5:00 PM onwards)
+		if (orderIstMins < 1170) {
+			// Placed before 7:30 PM (1170 mins): fixed estimate at 8:00 PM (20:00 IST)
+			const fixedDinner = createIstTimeDate(orderDate, 20, 0);
+			if (confirmedAt && baseDate.getTime() > fixedDinner.getTime() - 15 * 60_000) {
+				return new Date(baseDate.getTime() + 60 * 60_000);
+			}
+			return fixedDinner;
+		}
+		// At or after 7:30 PM: 1 hour after confirmation
+		return new Date(baseDate.getTime() + 60 * 60_000);
 	}
 
 	if (restKey === "triangle") {
 		// Morning / lunch shift (before 5:00 PM / 17:00 IST = 1020 mins)
-		if (istMins < 740) {
+		if (orderIstMins < 740) {
 			// Before 12:20 PM (740 mins): fixed estimate at 12:50 PM (12:50 IST)
-			return createIstTimeDate(orderDate, 12, 50);
+			const fixedLunch = createIstTimeDate(orderDate, 12, 50);
+			if (confirmedAt && baseDate.getTime() > fixedLunch.getTime() - 15 * 60_000) {
+				return new Date(baseDate.getTime() + 60 * 60_000);
+			}
+			return fixedLunch;
 		}
-		if (istMins < 1020) {
-			// After 12:20 PM up to 5:00 PM: 1 hour after order time
-			return new Date(orderDate.getTime() + 60 * 60_000);
+		if (orderIstMins < 1020) {
+			// After 12:20 PM up to 5:00 PM: 1 hour after confirmation
+			return new Date(baseDate.getTime() + 60 * 60_000);
 		}
 		// Evening / dinner shift (from 5:00 PM onwards)
-		if (istMins < 1140) {
+		if (orderIstMins < 1140) {
 			// Before 7:00 PM (1140 mins): fixed estimate at 7:30 PM (19:30 IST)
-			return createIstTimeDate(orderDate, 19, 30);
+			const fixedDinner = createIstTimeDate(orderDate, 19, 30);
+			if (confirmedAt && baseDate.getTime() > fixedDinner.getTime() - 15 * 60_000) {
+				return new Date(baseDate.getTime() + 50 * 60_000);
+			}
+			return fixedDinner;
 		}
-		// At or after 7:00 PM (or after 7:30 PM): add 50 mins
-		return new Date(orderDate.getTime() + 50 * 60_000);
+		// At or after 7:00 PM (or after 7:30 PM): add 50 mins after confirmation
+		return new Date(baseDate.getTime() + 50 * 60_000);
 	}
 
 	if (restKey === "home") {
-		// Local Home Kitchen: always 50 minutes after order time
-		return new Date(orderDate.getTime() + 50 * 60_000);
+		// Local Home Kitchen: always 50 minutes after confirmation
+		return new Date(baseDate.getTime() + 50 * 60_000);
 	}
 
 	// Fallback when no restaurant matches or unspecified
 	const deliveryMins = minutes > 0 ? minutes : DEFAULT_DELIVERY_MINUTES;
-	return new Date(orderDate.getTime() + deliveryMins * 60_000);
+	return new Date(baseDate.getTime() + deliveryMins * 60_000);
 }
 
 /**
@@ -154,8 +187,9 @@ export function deliveryWindow(
 	iso: string,
 	minutes: number = DEFAULT_DELIVERY_MINUTES,
 	restaurantName?: string | null,
+	confirmedAt?: string | null,
 ): { lead: string; time: string } {
-	return { lead: "Delivery by", time: time(deliveryDue(iso, minutes, restaurantName)).replace(/ /g, " ") };
+	return { lead: "Delivery by", time: time(deliveryDue(iso, minutes, restaurantName, confirmedAt)).replace(/ /g, " ") };
 }
 
 /** True once an order's promised delivery time has passed. */
@@ -164,8 +198,9 @@ export function isPastDeliveryTime(
 	minutes: number = DEFAULT_DELIVERY_MINUTES,
 	now: Date = new Date(),
 	restaurantName?: string | null,
+	confirmedAt?: string | null,
 ): boolean {
-	return now.getTime() >= deliveryDue(iso, minutes, restaurantName).getTime();
+	return now.getTime() >= deliveryDue(iso, minutes, restaurantName, confirmedAt).getTime();
 }
 
 const weekdayFmt = new Intl.DateTimeFormat("en-US", { timeZone: IST, weekday: "long" });

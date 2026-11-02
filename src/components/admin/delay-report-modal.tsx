@@ -50,15 +50,15 @@ export const DELAY_DURATIONS = [
  * null          — not yet approaching.
  */
 export function getOverdueState(
-  order: Pick<AdminOrder, "createdAt" | "deliveryMinutes" | "restaurantName" | "updatedEta" | "status">,
+  order: Pick<AdminOrder, "createdAt" | "deliveryMinutes" | "restaurantName" | "updatedEta" | "status"> & { confirmedAt?: string | null },
   now: Date = new Date(),
 ): "overdue" | "approaching" | null {
-  if (order.status === "delivered" || order.status === "cancelled") return null;
+  if (order.status === "delivered" || order.status === "cancelled" || order.status === "pending") return null;
 
   // Use the admin-set updated ETA if available, otherwise the computed original.
   const eta = order.updatedEta
     ? new Date(order.updatedEta)
-    : deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName);
+    : deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName, order.confirmedAt);
 
   const diff = eta.getTime() - now.getTime();
   if (diff <= 0) return "overdue";
@@ -71,13 +71,13 @@ export function getOverdueState(
  * or 0 if it is not overdue.
  */
 export function getMinutesOverdue(
-  order: Pick<AdminOrder, "createdAt" | "deliveryMinutes" | "restaurantName" | "updatedEta" | "status">,
+  order: Pick<AdminOrder, "createdAt" | "deliveryMinutes" | "restaurantName" | "updatedEta" | "status"> & { confirmedAt?: string | null },
   now: Date = new Date(),
 ): number {
-  if (order.status === "delivered" || order.status === "cancelled") return 0;
+  if (order.status === "delivered" || order.status === "cancelled" || order.status === "pending") return 0;
   const eta = order.updatedEta
     ? new Date(order.updatedEta)
-    : deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName);
+    : deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName, order.confirmedAt);
   const diff = now.getTime() - eta.getTime();
   return diff > 0 ? Math.round(diff / 60_000) : 0;
 }
@@ -100,7 +100,7 @@ export function DelayReportModal({ order, open, onOpenChange, onDelayUpdated }: 
   const [saving, startSave] = useTransition();
   const [clearing, startClear] = useTransition();
 
-  const originalEta = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName);
+  const originalEta = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName, order.confirmedAt);
 
   // Selected predefined reason or "Other reason."
   const [selectedPreset, setSelectedPreset] = useState<string>(() => {

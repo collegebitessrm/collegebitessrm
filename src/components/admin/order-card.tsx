@@ -184,7 +184,7 @@ export function OrderSummaryBox({
   onDelayClick?: () => void;
 }) {
   const { location, cleanNotes } = parseDeliveryLocation(order.notes);
-  const originalEtaIso = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName).toISOString();
+  const originalEtaIso = deliveryDue(order.createdAt, order.deliveryMinutes, order.restaurantName, order.confirmedAt).toISOString();
 
   return (
     <div className={cn("rounded-2xl bg-secondary px-3.5 py-3", className)}>

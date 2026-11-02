@@ -104,6 +104,7 @@ export function OrderTracking({
 	const router = useRouter();
 	const [showSuccess] = useState(justPlaced);
 	const [status, setStatus] = useState(initialOrder.status);
+	const [confirmedAt, setConfirmedAt] = useState(initialOrder.confirmedAt);
 	const [updatedAt, setUpdatedAt] = useState(initialOrder.updatedAt);
 	const [deliveredAt, setDeliveredAt] = useState(initialOrder.deliveredAt);
 	const [delayReason, setDelayReason] = useState(initialOrder.delayReason);
@@ -139,6 +140,7 @@ export function OrderTracking({
 			.on<{
 				status: OrderStatus;
 				updated_at: string;
+				confirmed_at?: string | null;
 				delivered_at: string | null;
 				delay_reason?: string | null;
 				updated_eta?: string | null;
@@ -150,6 +152,7 @@ export function OrderTracking({
 				(payload) => {
 					setStatus(payload.new.status);
 					setUpdatedAt(payload.new.updated_at);
+					if (payload.new.confirmed_at !== undefined) setConfirmedAt(payload.new.confirmed_at);
 					setDeliveredAt(payload.new.delivered_at);
 					if (payload.new.delay_reason !== undefined) setDelayReason(payload.new.delay_reason);
 					if (payload.new.updated_eta !== undefined) setUpdatedEta(payload.new.updated_eta);
@@ -170,8 +173,8 @@ export function OrderTracking({
 	const cancelled = status === "cancelled";
 	const isDelivered = status === "delivered";
 	const steps = cancelled ? [] : orderTimeline(status, destinationName);
-	const eta = deliveryWindow(initialOrder.createdAt, initialOrder.deliveryMinutes, initialOrder.restaurantName);
-	const originalDue = deliveryDue(initialOrder.createdAt, initialOrder.deliveryMinutes, initialOrder.restaurantName);
+	const eta = deliveryWindow(initialOrder.createdAt, initialOrder.deliveryMinutes, initialOrder.restaurantName, confirmedAt);
+	const originalDue = deliveryDue(initialOrder.createdAt, initialOrder.deliveryMinutes, initialOrder.restaurantName, confirmedAt);
 	const effectiveDue = updatedEta ? new Date(updatedEta) : originalDue;
 	const isPastEta = !isDelivered && !cancelled && Date.now() > effectiveDue.getTime();
 	const delayMinutes = updatedEta
@@ -310,7 +313,11 @@ export function OrderTracking({
 								<div className="ml-4 flex-1">
 									<div className="flex items-center gap-2">
 										<p className="text-sm font-medium text-muted-foreground">
-											{delayReason ? (updatedEta ? "Revised arrival" : "Estimated arrival") : "Estimated arrival"}
+											{status === "pending" && !updatedEta
+												? "Order status"
+												: delayReason
+													? (updatedEta ? "Revised arrival" : "Estimated arrival")
+													: "Estimated arrival"}
 										</p>
 										{delayReason && (
 											<span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-500/20 dark:text-amber-300">
@@ -318,13 +325,25 @@ export function OrderTracking({
 											</span>
 										)}
 									</div>
-									<p className="mt-0.5 font-heading text-2xl font-bold tabular-nums text-foreground">
-										{updatedEta
-											? formatTime(updatedEta)
-											: awaitingEtaConfirmation
-												? "Awaiting update…"
-												: eta.time}
+									<p className={cn(
+										"mt-0.5 font-heading font-bold text-foreground",
+										status === "pending" && !updatedEta
+											? "text-lg text-amber-600 dark:text-amber-400"
+											: "text-2xl tabular-nums",
+									)}>
+										{status === "pending" && !updatedEta
+											? "Waiting for confirmation"
+											: updatedEta
+												? formatTime(updatedEta)
+												: awaitingEtaConfirmation
+													? "Awaiting update…"
+													: eta.time}
 									</p>
+									{status === "pending" && !updatedEta && (
+										<p className="mt-0.5 text-xs text-muted-foreground">
+											ETA will appear once confirmed
+										</p>
+									)}
 									{delayReason && updatedEta && (
 										<p className="mt-0.5 text-xs text-muted-foreground">Original ETA was {eta.time}</p>
 									)}

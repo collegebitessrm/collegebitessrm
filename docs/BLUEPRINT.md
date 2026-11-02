@@ -228,6 +228,7 @@ SQL editor (so it's missing from the database's migration history).
 | 28 | `20261001030000_biryani_nation_menu_update` | Data: Biryani Nation's second price list, Half Chicken Dum Biryani, Fried Rice section (40 dishes; 153 in all) |
 | 31 | `20261004000000_offers_biryani_nation_only` | `place_order()`: every offer only on Biryani Nation orders (`offer_wrong_restaurant`) |
 | 32 | `20261004010000_local_home_kitchen_menu_update` | Data: Local Home Kitchen's new menu — 18 prices, 14 new dishes incl. two KFC sections, 5 dropped, 1 rename (81 dishes; 162 in all) |
+| 39 | `20261102000000_order_confirmed_at` | Add `confirmed_at` to `orders`, auto-set via trigger/action on confirmation; delivery countdown starts after confirmation |
 
 Files apply cleanly in filename order on a fresh project. A few of the
 early files mention VIT-AP / Main Gate in their SQL comments; applied
