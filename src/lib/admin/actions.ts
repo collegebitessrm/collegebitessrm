@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { after } from "next/server";
 import { notifyAllSubscribers, notifyUser, type PushPayload } from "@/lib/notifications/send";
@@ -793,7 +793,7 @@ export async function createDish(data: {
 
  revalidatePath("/admin/menu");
  revalidatePath("/", "layout");
- revalidateTag("restaurant-menu-stats");
+ updateTag("restaurant-menu-stats");
  return { ok: true, id: result.id };
 }
 
@@ -828,7 +828,7 @@ export async function updateDish(
 
  revalidatePath("/admin/menu");
  revalidatePath("/", "layout");
- revalidateTag("restaurant-menu-stats");
+ updateTag("restaurant-menu-stats");
  return { ok: true };
 }
 
@@ -853,7 +853,7 @@ export async function deleteDish(id: string): Promise<AdminActionResult> {
 
  revalidatePath("/admin/menu");
  revalidatePath("/", "layout");
- revalidateTag("restaurant-menu-stats");
+ updateTag("restaurant-menu-stats");
  return { ok: true };
 }
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { isUuid } from "@/lib/ids";
 import { createClient } from "@/lib/supabase/server";
 import { MAX_REVIEW_NOTE } from "./limits";
@@ -31,7 +31,7 @@ export async function submitReview(input: {
 
  revalidatePath(`/orders/${input.orderId}`);
  revalidatePath("/orders");
- revalidateTag("restaurant-ratings");
+ updateTag("restaurant-ratings");
  return { ok: true };
 }
 
