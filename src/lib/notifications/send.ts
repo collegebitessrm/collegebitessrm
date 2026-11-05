@@ -69,6 +69,16 @@ export async function deliver(
     return { sent: 0, failed: rows.length };
   }
 
+  // Deduplicate rows by endpoint so no device receives duplicate pushes
+  const seenEndpoints = new Set<string>();
+  const uniqueRows: SubscriptionRow[] = [];
+  for (const row of rows) {
+    if (row.endpoint && !seenEndpoints.has(row.endpoint)) {
+      seenEndpoints.add(row.endpoint);
+      uniqueRows.push(row);
+    }
+  }
+
   const body = JSON.stringify({
     title: payload.title,
     body: payload.body,
@@ -82,31 +92,47 @@ export async function deliver(
   let sent = 0;
   let failed = 0;
 
-  await Promise.all(
-    rows.map(async (row) => {
-      try {
-        await webpush.sendNotification(
-          { endpoint: row.endpoint, keys: { p256dh: row.p256dh, auth: row.auth } },
-          body,
-          { TTL: 60 * 30, urgency: payload.urgent ? "high" : "normal" },
-        );
-        sent++;
-      } catch (error) {
-        failed++;
-        const status = (error as { statusCode?: number }).statusCode;
-        console.error(`[deliver] Push to device failed with status ${status}:`, error);
-        // Only 404/410 mean the subscription is permanently gone.
-        // 401/403/400 are credentials/formatting issues and should NOT delete user devices.
-        if (status === 404 || status === 410) {
-          gone.push(row.id);
+  // Process in batches of 25 to avoid saturating network connections & function timeouts
+  const BATCH_SIZE = 25;
+  for (let i = 0; i < uniqueRows.length; i += BATCH_SIZE) {
+    const batch = uniqueRows.slice(i, i + BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (row) => {
+        try {
+          await webpush.sendNotification(
+            { endpoint: row.endpoint, keys: { p256dh: row.p256dh, auth: row.auth } },
+            body,
+            { TTL: 60 * 30, urgency: payload.urgent ? "high" : "normal" },
+          );
+          sent++;
+        } catch (error) {
+          failed++;
+          const status = (error as { statusCode?: number }).statusCode;
+          const errMsg = (error as { message?: string }).message || "push error";
+          // Sanitize log: NEVER log the error object directly as it exposes the endpoint token
+          console.error(
+            `[deliver] Push to subscription ${row.id} failed with status ${status ?? "unknown"}: ${errMsg}`,
+          );
+          // Only 404 (Not Found) and 410 (Gone) indicate the subscription is permanently expired.
+          // Temporary failures (429, 500, 502, 503) should not prune the subscription.
+          if (status === 404 || status === 410) {
+            gone.push(row.id);
+          }
         }
-      }
-    }),
-  );
+      }),
+    );
+  }
 
   if (gone.length > 0) {
     console.log(`[deliver] Pruning ${gone.length} expired push subscription(s)...`);
-    await supabase.from("push_subscriptions").delete().in("id", gone);
+    // Always use service-role admin client to bypass RLS and guarantee deletion
+    const adminDb = createAdminClient() ?? supabase;
+    const { error: pruneError } = await adminDb.from("push_subscriptions").delete().in("id", gone);
+    if (pruneError) {
+      console.error("[deliver] Failed to prune expired subscriptions:", pruneError.message);
+    } else {
+      console.log(`[deliver] Successfully pruned ${gone.length} expired subscription(s)`);
+    }
   }
 
   return { sent, failed };

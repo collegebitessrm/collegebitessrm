@@ -53,6 +53,12 @@ export function appIconResponse({
  <img src={MARK_SRC} alt="" width={markSize} height={markSize} />
  </div>
  ),
- { width, height },
+ {
+ width,
+ height,
+ headers: {
+ "Cache-Control": "public, max-age=31536000, immutable",
+ },
+ },
  );
 }

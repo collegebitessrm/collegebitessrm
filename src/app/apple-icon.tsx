@@ -5,9 +5,11 @@ import { appIconResponse } from "@/lib/app-icon";
 // <link rel="apple-touch-icon">). Apple applies its own
 // rounded-square mask, so like the manifest's maskable icon this is
 // full-bleed (no corners of its own).
+export const dynamic = "force-static";
+export const revalidate = false;
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default function AppleIcon() {
- return appIconResponse({ width: size.width, height: size.height, markScale: 1 });
+  return appIconResponse({ width: size.width, height: size.height, markScale: 1 });
 }

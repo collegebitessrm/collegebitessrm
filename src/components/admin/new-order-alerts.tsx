@@ -47,9 +47,21 @@ export function NewOrderAlerts() {
       setPushOn(has);
       setBlocked(pushState() === "denied" || pushState() === "unsupported");
 
-      // Auto-sync with database if permission is already granted in this browser
+      // Auto-sync with database at most once every 24 hours to prevent repeated POST /admin server actions on every page load
       if (has && pushState() === "granted") {
-        void enablePush().catch(() => {});
+        try {
+          const lastSynced = Number(localStorage.getItem("cb_admin_push_synced") || "0");
+          const ONE_DAY = 24 * 60 * 60 * 1000;
+          if (Date.now() - lastSynced > ONE_DAY) {
+            void enablePush()
+              .then((res) => {
+                if (res.ok) localStorage.setItem("cb_admin_push_synced", String(Date.now()));
+              })
+              .catch(() => {});
+          }
+        } catch {
+          // Ignore private browsing storage restrictions
+        }
       }
     })();
     return () => {
@@ -98,6 +110,9 @@ export function NewOrderAlerts() {
     startTransition(async () => {
       const result = await enablePush();
       if (result.ok) {
+        try {
+          localStorage.setItem("cb_admin_push_synced", String(Date.now()));
+        } catch {}
         setPushOn(true);
         playAdminAlertSound();
         toast.success("Alerts on! You will get notifications for every new order.");

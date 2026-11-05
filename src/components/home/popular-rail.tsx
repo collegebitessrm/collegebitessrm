@@ -109,6 +109,7 @@ export function PopularRail({ rail }: { rail: Rail }) {
 					>
 						<Link
 							href={`/restaurants/${d.restaurantId}?dish=${d.id}`}
+							prefetch={false}
 							transitionTypes={["nav-forward"]}
 							className="pressable group block rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/80"
 						>

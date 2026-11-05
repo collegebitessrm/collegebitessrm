@@ -417,21 +417,21 @@ function isFinished(status: OrderStatus) {
 }
 
 // Capped so the history page stays cheap to load as order history grows —
-// a "load more" / date-range picker can come later if needed.
-const HISTORY_ORDERS_LIMIT = 2000;
+// Capped to recent orders so history loads efficiently without massive payload sizes.
+const HISTORY_ORDERS_DEFAULT_LIMIT = 200;
 
-/** Every order ever placed, most recent first — for the admin order-history page (grouped by day there). */
-export async function getAdminOrderHistory(): Promise<AdminOrder[]> {
- const supabase = await createClient();
- const { data, error } = await supabase
- .from("orders")
- .select(ADMIN_ORDER_COLUMNS)
- .order("created_at", { ascending: false })
- .limit(HISTORY_ORDERS_LIMIT)
- .returns<AdminOrderRow[]>();
+/** Recent orders, most recent first — for the admin order-history page (grouped by day there). */
+export async function getAdminOrderHistory(limit: number = HISTORY_ORDERS_DEFAULT_LIMIT): Promise<AdminOrder[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select(ADMIN_ORDER_COLUMNS)
+    .order("created_at", { ascending: false })
+    .limit(limit)
+    .returns<AdminOrderRow[]>();
 
- if (error) throw error;
- return (data ?? []).map(toAdminOrder);
+  if (error) throw error;
+  return (data ?? []).map(toAdminOrder);
 }
 
 export type AdminUser = {

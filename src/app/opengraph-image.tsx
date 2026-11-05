@@ -20,6 +20,8 @@ import { SITE_URL } from "@/lib/site";
  */
 
 export const alt = "College Bites: food delivery for SRM University AP students, pickup at Gate 3";
+export const dynamic = "force-static";
+export const revalidate = false;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/jpeg";
 
@@ -94,5 +96,10 @@ export default async function OpengraphImage() {
  );
  const png = Buffer.from(await card.arrayBuffer());
  const jpeg = await sharp(png).jpeg({ quality: 82, mozjpeg: true, progressive: true }).toBuffer();
- return new Response(new Uint8Array(jpeg), { headers: { "Content-Type": contentType } });
+ return new Response(new Uint8Array(jpeg), {
+  headers: {
+   "Content-Type": contentType,
+   "Cache-Control": "public, max-age=31536000, immutable",
+  },
+ });
 }

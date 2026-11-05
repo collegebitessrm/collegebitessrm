@@ -197,6 +197,7 @@ export function TabBar() {
 						<Link
 							key={href}
 							href={href}
+							prefetch={false}
 							draggable={false}
 							aria-current={isActive ? "page" : undefined}
 							onClick={(event) => onLinkClick(event, isActive)}

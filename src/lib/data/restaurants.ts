@@ -1,10 +1,20 @@
 import "server-only";
 
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isUuid } from "@/lib/ids";
 import type { Dish, DishCategory, MenuSection, Restaurant } from "./types";
+
+function getStatelessSupabase() {
+  const adminClient = createAdminClient();
+  if (adminClient) return adminClient;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  return createSupabaseClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+}
 
 /** All restaurants for the student home screen — open ones first. */
 export async function getRestaurants(): Promise<Restaurant[]> {
@@ -76,22 +86,32 @@ export type RestaurantMenuStats = { dishCount: number; minPrice: number };
  * the "24 dishes · from ₹60" line on Home's restaurant cards. One small
  * query over dishes (public-read) rather than a column anywhere.
  */
-export async function getRestaurantMenuStats(): Promise<Record<string, RestaurantMenuStats>> {
- const supabase = await createClient();
- const { data, error } = await supabase
- .from("dishes")
- .select("restaurant_id, price")
- .eq("is_available", true);
+export const getRestaurantMenuStats = unstable_cache(
+  async (): Promise<Record<string, RestaurantMenuStats>> => {
+    const supabase = getStatelessSupabase();
+    const { data, error } = await supabase
+      .from("dishes")
+      .select("restaurant_id, price")
+      .eq("is_available", true);
 
- if (error) throw error;
- const stats: Record<string, RestaurantMenuStats> = {};
- for (const { restaurant_id, price } of data) {
- const s = (stats[restaurant_id] ??= { dishCount: 0, minPrice: Number(price) });
- s.dishCount += 1;
- s.minPrice = Math.min(s.minPrice, Number(price));
- }
- return stats;
-}
+    if (error) {
+      console.error("[getRestaurantMenuStats] query failed:", error.message);
+      return {};
+    }
+    const stats: Record<string, RestaurantMenuStats> = {};
+    for (const { restaurant_id, price } of data ?? []) {
+      const s = (stats[restaurant_id] ??= { dishCount: 0, minPrice: Number(price) });
+      s.dishCount += 1;
+      s.minPrice = Math.min(s.minPrice, Number(price));
+    }
+    return stats;
+  },
+  ["cb_restaurant_menu_stats"],
+  { revalidate: 3600, tags: ["restaurant-menu-stats"] },
+);
+
+
+
 import { getFallbackRestaurantRating, type RestaurantRating } from "./restaurant-ratings";
 export { getFallbackRestaurantRating, type RestaurantRating };
 
@@ -100,57 +120,62 @@ export { getFallbackRestaurantRating, type RestaurantRating };
  * Uses real student ratings submitted via order_item_ratings where available,
  * falling back gracefully to curated baseline ratings.
  */
-export async function getRestaurantRatings(): Promise<Record<string, RestaurantRating>> {
- const ratingsMap: Record<string, RestaurantRating> = {};
+export const getRestaurantRatings = unstable_cache(
+  async (): Promise<Record<string, RestaurantRating>> => {
+    const ratingsMap: Record<string, RestaurantRating> = {};
 
- try {
-  const adminClient = createAdminClient();
-  const supabase = adminClient ?? (await createClient());
+    try {
+      const supabase = getStatelessSupabase();
 
-  const { data: reviews, error } = await supabase
-   .from("order_reviews")
-   .select("orders!inner(restaurant_id), order_item_ratings(rating)");
+      const { data: reviews, error } = await supabase
+        .from("order_reviews")
+        .select("orders!inner(restaurant_id), order_item_ratings(rating)");
 
-  if (!error && reviews) {
-   const stats: Record<string, { totalStars: number; ratingCount: number; reviewCount: number }> = {};
+      if (!error && reviews) {
+        const stats: Record<string, { totalStars: number; ratingCount: number; reviewCount: number }> = {};
 
-   for (const row of reviews as any[]) {
-    const restId = row.orders?.restaurant_id;
-    if (!restId) continue;
+        for (const row of reviews as any[]) {
+          const restId = row.orders?.restaurant_id;
+          if (!restId) continue;
 
-    const itemRatings = Array.isArray(row.order_item_ratings) ? row.order_item_ratings : [];
-    if (itemRatings.length === 0) continue;
+          const itemRatings = Array.isArray(row.order_item_ratings) ? row.order_item_ratings : [];
+          if (itemRatings.length === 0) continue;
 
-    if (!stats[restId]) {
-     stats[restId] = { totalStars: 0, ratingCount: 0, reviewCount: 0 };
+          if (!stats[restId]) {
+            stats[restId] = { totalStars: 0, ratingCount: 0, reviewCount: 0 };
+          }
+
+          stats[restId].reviewCount += 1;
+          for (const item of itemRatings) {
+            const stars = Number(item.rating);
+            if (stars >= 1 && stars <= 5) {
+              stats[restId].totalStars += stars;
+              stats[restId].ratingCount += 1;
+            }
+          }
+        }
+
+        for (const [restId, s] of Object.entries(stats)) {
+          if (s.ratingCount > 0) {
+            const avg = Number((s.totalStars / s.ratingCount).toFixed(1));
+            ratingsMap[restId] = {
+              rating: avg,
+              count: s.reviewCount,
+            };
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching restaurant ratings:", err);
     }
 
-    stats[restId].reviewCount += 1;
-    for (const item of itemRatings) {
-     const stars = Number(item.rating);
-     if (stars >= 1 && stars <= 5) {
-      stats[restId].totalStars += stars;
-      stats[restId].ratingCount += 1;
-     }
-    }
-   }
+    return ratingsMap;
+  },
+  ["cb_restaurant_ratings"],
+  { revalidate: 3600, tags: ["restaurant-ratings"] },
+);
 
-   for (const [restId, s] of Object.entries(stats)) {
-    if (s.ratingCount > 0) {
-     const avg = Number((s.totalStars / s.ratingCount).toFixed(1));
-     ratingsMap[restId] = {
-      rating: avg,
-      count: s.reviewCount,
-     };
-    }
-   }
-  }
- } catch (err) {
-  console.error("Error fetching restaurant ratings:", err);
- }
 
- return ratingsMap;
-}
 
 /**
  * Number of currently-active restaurants — the "all 3" in the profile's

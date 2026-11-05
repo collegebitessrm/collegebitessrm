@@ -41,6 +41,7 @@ export function RestaurantCard({
 	return (
 		<Link
 			href={`/restaurants/${restaurant.id}`}
+			prefetch={false}
 			transitionTypes={["nav-forward"]}
 			className="pressable group block overflow-hidden rounded-[1.25rem] border border-border bg-card shadow-card outline-none transition-shadow hover:shadow-raised focus-visible:ring-3 focus-visible:ring-ring/80"
 		>
